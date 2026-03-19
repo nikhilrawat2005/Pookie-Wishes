@@ -1,0 +1,54 @@
+{
+  "templates": [
+    {
+      "id": "hello-kitty",
+      "name": "Hello Kitty",
+      "tagline": "Kawaii Birthday Vibes 🎀",
+      "badge": "Bestseller",
+      "emoji": "🎀",
+      "price": "₹99",
+      "demoUrl": "https://hellokittybirthday.vercel.app/",
+      "tags": ["kawaii", "pink", "cute", "girly", "aesthetic"],
+      "description": "A full kawaii birthday experience! Animated love letter, interactive cake-cutting, candle wish moment, memory match game, flip cards with hidden messages, and a final sealed letter. Adorable and absolutely iconic.",
+      "features": [
+        "💌 Animated birthday love letter",
+        "🎂 Interactive cake-cutting game",
+        "🕯️ Candle blow & make-a-wish",
+        "🃏 Memory match card game",
+        "🎁 Flip cards with hidden wishes",
+        "📬 Final sealed letter"
+      ],
+      "vibe": "Romantic & Cute",
+      "image": "images/hello-kitty-preview.jpg"
+    },
+    {
+      "id": "harry-potter",
+      "name": "Harry Potter",
+      "tagline": "Magical Birthday Wishes ⚡",
+      "badge": "Fan Favourite",
+      "emoji": "⚡",
+      "price": "₹99",
+      "demoUrl": "https://hp-template-tau.vercel.app/",
+      "tags": ["magic", "hogwarts", "wizard", "fantasy", "dark"],
+      "description": "Welcome to Hogwarts! Sideways story panels, flip memory cards, Wizard Word Hunt puzzle, Sorting Hat quiz, scratch-to-reveal birthday wish, and a final letter delivered by owl. Pure magic.",
+      "features": [
+        "⚡ Magical Hogwarts-style intro",
+        "📖 Sideways scrolling story panels",
+        "🧙 Wizard Word Hunt puzzle",
+        "🎩 Interactive Sorting Hat quiz",
+        "🎁 Scratch-to-reveal birthday wish",
+        "✉️ Final Hogwarts letter by owl"
+      ],
+      "vibe": "Magical & Epic",
+      "image": "images/harry-potter-preview.jpg"
+    }
+  ],
+  "comingSoon": [
+    { "id": "minecraft",  "name": "Minecraft",      "emoji": "⛏️", "tagline": "Block Party Incoming!" },
+    { "id": "barbie",     "name": "Barbie",          "emoji": "💅", "tagline": "It's a Barbie World!" },
+    { "id": "anime",      "name": "Anime Vibes",     "emoji": "🌸", "tagline": "Sugoi Birthday!" },
+    { "id": "bollywood",  "name": "Bollywood",       "emoji": "🎬", "tagline": "Filmy Birthday Wala Feel!" },
+    { "id": "space",      "name": "Space Aesthetic", "emoji": "🌌", "tagline": "Out of This World!" },
+    { "id": "among-us",   "name": "Among Us",        "emoji": "🚀", "tagline": "Sus Birthday Activated" }
+  ]
+}

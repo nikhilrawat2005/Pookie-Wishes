@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pookie Wish — Gifting Birthday Websites ✨</title>
+  <meta name="description" content="Send your bestie a full interactive birthday website — Hello Kitty, Harry Potter & more. Personalised, beautiful, just ₹99!">
+  <meta property="og:title" content="Pookie Wish — Birthday Websites They'll Never Forget">
+  <meta property="og:description" content="No boring texts. Gift them a whole interactive experience. ✨">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<!-- ══════════════ NAVBAR ══════════════ -->
+<nav class="navbar" id="nav">
+  <a href="/" class="nav-logo">Pookie Wish <sub>✨</sub></a>
+  <div class="nav-links">
+    <button class="btn btn-ghost"
+      onclick="document.getElementById('s-templates').scrollIntoView({behavior:'smooth'})">
+      Templates
+    </button>
+    <button class="btn btn-ghost"
+      onclick="document.getElementById('s-how').scrollIntoView({behavior:'smooth'})">
+      How It Works
+    </button>
+
+    <!-- Logged-out state -->
+    <button class="btn btn-primary" id="btn-login" onclick="openModal('modal-auth')">
+      Sign In 💖
+    </button>
+
+    <!-- Logged-in state -->
+    <div class="user-wrap hidden" id="u-wrap">
+      <img class="user-av" id="u-av" src="" alt="avatar" onclick="toggleDd()">
+      <div class="user-dd" id="u-dd">
+        <div class="dd-head">
+          <div class="dd-name"  id="dd-uname"></div>
+          <div class="dd-email" id="dd-uemail"></div>
+        </div>
+        <a class="dd-item" href="#s-favs"
+           onclick="document.getElementById('s-favs').scrollIntoView({behavior:'smooth'});closeDd()">
+          💖 My Favourites
+        </a>
+        <div class="dd-sep"></div>
+        <div class="dd-item red" onclick="doLogout()">🚪 Sign Out</div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- ══════════════ HERO ══════════════ -->
+<section class="hero">
+  <div class="dots-bg"></div>
+  <div class="blob blob-1"></div>
+  <div class="blob blob-2"></div>
+  <div class="blob blob-3"></div>
+
+  <div class="hero-chip">
+    <span class="chip-dot"></span>
+    Birthday websites that hit different ✨
+  </div>
+
+  <h1>
+    Gift a Birthday<br>
+    They'll <em>Never Forget</em>
+  </h1>
+
+  <p class="hero-sub">
+    Skip the generic text message. Send your bestie a full interactive birthday website — with games, love letters, surprises & more. Personalised just for them. Just ₹99. 🎁
+  </p>
+
+  <div class="hero-cta">
+    <button class="btn btn-primary btn-xl"
+      onclick="document.getElementById('s-templates').scrollIntoView({behavior:'smooth'})">
+      Explore Templates ✨
+    </button>
+    <button class="btn btn-soft-blue btn-xl"
+      onclick="document.getElementById('s-how').scrollIntoView({behavior:'smooth'})">
+      How It Works 👀
+    </button>
+  </div>
+
+  <!-- Social proof pill -->
+  <div class="hero-proof">
+    <div class="proof-avatars">
+      <div class="proof-av" style="background:linear-gradient(135deg,#e8829a,#a89ee8)">P</div>
+      <div class="proof-av" style="background:linear-gradient(135deg,#7aaee8,#a89ee8)">R</div>
+      <div class="proof-av" style="background:linear-gradient(135deg,#a89ee8,#e8829a)">S</div>
+      <div class="proof-av" style="background:linear-gradient(135deg,#7ac9b8,#7aaee8)">A</div>
+    </div>
+    <div>
+      <div class="proof-stars">★★★★★</div>
+      <div class="proof-text"><strong>500+ birthday wishes</strong> sent with love</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">scroll</div>
+</section>
+
+<!-- ══════════════ WHY US ══════════════ -->
+<section style="background:var(--bg2); border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr); padding:72px 0">
+  <div class="sec" style="padding-top:0;padding-bottom:0">
+    <div class="why-strip">
+      <div class="why-card">
+        <span class="why-ico">🎮</span>
+        <div class="why-ttl">Fully Interactive</div>
+        <p class="why-txt">Not just a card — actual games, puzzles, scratch reveals and animated experiences they can play through.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-ico">💌</span>
+        <div class="why-ttl">100% Personalised</div>
+        <p class="why-txt">Their name, your message, your photos — we build it just for them. No two websites are ever the same.</p>
+      </div>
+      <div class="why-card">
+        <span class="why-ico">⚡</span>
+        <div class="why-ttl">Ready in Hours</div>
+        <p class="why-txt">Order, chat with us on WhatsApp, and get your shareable link within a few hours. Fast, simple, magical.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ TEMPLATES ══════════════ -->
+<section id="s-templates" style="background:var(--bg); padding:96px 0">
+  <div class="sec" style="padding-top:0;padding-bottom:0">
+    <div class="sec-hd">
+      <span class="sec-chip">✨ templates</span>
+      <h2 class="sec-title">Choose an <em>Aesthetic</em></h2>
+      <p class="sec-sub">Each template is a complete interactive birthday experience. Hover to preview, then order with one click.</p>
+    </div>
+    <div class="t-grid" id="tpl-grid">
+      <div style="grid-column:1/-1; text-align:center; padding:60px; color:var(--dim)">
+        <div style="font-size:1.8rem; margin-bottom:10px">🌸</div>
+        Loading templates…
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ COMING SOON ══════════════ -->
+<section style="padding:80px 0; background:var(--bg2); border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr)">
+  <div class="sec" style="padding-top:0;padding-bottom:0">
+    <div class="sec-hd" style="margin-bottom:30px">
+      <span class="sec-chip lav">🔮 dropping soon</span>
+      <h2 class="sec-title" style="font-size:clamp(1.6rem,3vw,2.3rem)">More <em>Themes</em> Coming</h2>
+    </div>
+    <div class="cs-grid" id="cs-grid"></div>
+  </div>
+</section>
+
+<!-- ══════════════ HOW IT WORKS ══════════════ -->
+<section id="s-how" style="background:var(--bg)">
+  <div class="sec">
+    <div class="sec-hd">
+      <span class="sec-chip blue">📖 process</span>
+      <h2 class="sec-title">Simple as <em>1, 2, 3</em></h2>
+      <p class="sec-sub">No tech skills needed. Just fill a short form and we handle everything.</p>
+    </div>
+    <div class="how-grid">
+      <div class="how-card">
+        <div class="how-n">01</div>
+        <span class="how-ico">🎨</span>
+        <div class="how-ttl">Pick a Template</div>
+        <p class="how-txt">Browse our themed templates and find the one that perfectly matches your bestie's vibe and personality.</p>
+      </div>
+      <div class="how-card">
+        <div class="how-n">02</div>
+        <span class="how-ico">📝</span>
+        <div class="how-ttl">Fill the Order Form</div>
+        <p class="how-txt">Tell us the birthday person's name, date, and a heartfelt message. Takes under 2 minutes!</p>
+      </div>
+      <div class="how-card">
+        <div class="how-n">03</div>
+        <span class="how-ico">💬</span>
+        <div class="how-ttl">We WhatsApp You</div>
+        <p class="how-txt">We reach out on WhatsApp to collect photos and confirm details. You pay only after you're happy!</p>
+      </div>
+      <div class="how-card">
+        <div class="how-n">04</div>
+        <span class="how-ico">🔗</span>
+        <div class="how-ttl">Share & Surprise!</div>
+        <p class="how-txt">Get your custom link, share it with them, and watch them absolutely lose it. Best gift giver title: unlocked. 👑</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FAVOURITES ══════════════ -->
+<section id="s-favs" style="background:var(--bg2); border-top:1px solid var(--bdr); border-bottom:1px solid var(--bdr)">
+  <div class="sec">
+    <div class="sec-hd">
+      <span class="sec-chip">💖 saved</span>
+      <h2 class="sec-title">Your <em>Favourites</em></h2>
+      <p class="sec-sub">Sign in to save templates you love and come back to them anytime!</p>
+    </div>
+    <div id="fav-cont"></div>
+  </div>
+</section>
+
+<!-- ══════════════ CTA BANNER ══════════════ -->
+<section style="background:var(--bg); padding:80px 0">
+  <div class="sec" style="padding-top:0;padding-bottom:0; text-align:center">
+    <div style="background:linear-gradient(135deg, var(--pink-s), var(--blue-s), var(--lav-s)); border:1px solid var(--bdr2); border-radius:var(--rx); padding:56px 40px; max-width:680px; margin:0 auto">
+      <div style="font-size:3rem; margin-bottom:16px">🎂</div>
+      <h2 style="font-family:var(--fd); font-size:clamp(1.8rem,4vw,2.8rem); font-weight:700; letter-spacing:-0.5px; margin-bottom:12px; color:var(--text)">
+        Someone's birthday<br>coming up? <em style="font-style:italic; background:var(--g-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text">Don't wait.</em>
+      </h2>
+      <p style="color:var(--muted); margin-bottom:28px; font-size:1rem; line-height:1.8; max-width:400px; margin-left:auto; margin-right:auto; margin-bottom:28px">
+        Order now, get the link in hours, and give them a birthday moment they'll screenshot and share forever.
+      </p>
+      <button class="btn btn-primary btn-xl"
+        onclick="document.getElementById('s-templates').scrollIntoView({behavior:'smooth'})">
+        Order Now — Just ₹99 🎁
+      </button>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════ FOOTER ══════════════ -->
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="footer-grid">
+      <div>
+        <a href="/" class="f-logo">Pookie Wish</a>
+        <p class="f-desc">Birthday websites that feel personal, beautiful, and unforgettable. Because your people deserve more than a text. 🎂</p>
+      </div>
+      <div>
+        <div class="f-ctitle">Explore</div>
+        <div class="f-links">
+          <a href="#s-templates" onclick="event.preventDefault();document.getElementById('s-templates').scrollIntoView({behavior:'smooth'})">All Templates</a>
+          <a href="#s-how" onclick="event.preventDefault();document.getElementById('s-how').scrollIntoView({behavior:'smooth'})">How It Works</a>
+          <a href="#s-favs" onclick="event.preventDefault();document.getElementById('s-favs').scrollIntoView({behavior:'smooth'})">My Favourites</a>
+        </div>
+      </div>
+      <div>
+        <div class="f-ctitle">Contact</div>
+        <div class="f-links">
+          <a href="https://wa.me/918700113731" target="_blank">WhatsApp Us 💬</a>
+          <a href="mailto:hello@pookiewish.in">Email Us</a>
+          <a href="#">Instagram</a>
+        </div>
+      </div>
+    </div>
+    <div class="f-bottom">
+      <span>© 2025 Pookie Wish — made with <span class="f-heart">💖</span> for all the birthday besties</span>
+      <span>Just ₹99 per website ✨</span>
+    </div>
+  </div>
+</footer>
+
+<!-- ══════════════ AUTH MODAL ══════════════ -->
+<div class="overlay" id="modal-auth">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal('modal-auth')">✕</button>
+    <span class="modal-ico">🎂</span>
+    <h2>Welcome! 👋</h2>
+    <p>Sign in with Google to save your favourite templates, get notified when new themes drop, and manage your orders — all in one place!</p>
+    <button class="btn btn-google btn-full" onclick="googleLogin()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 48 48">
+        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.14z"/>
+        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
+        <path fill="#FBBC05" d="M10.53 28.59c-.49-1.47-.76-3.04-.76-4.59s.27-3.12.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/>
+        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.55 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
+      </svg>
+      Continue with Google
+    </button>
+    <div class="modal-or">no password needed</div>
+    <p style="font-size:.76rem; color:var(--dim); margin:0">We never share your data. Just vibes. ✨</p>
+  </div>
+</div>
+
+<!-- ══════════════ TOASTS ══════════════ -->
+<div id="toasts"></div>
+
+<!-- ══════════════ FIREBASE SDKs ══════════════ -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<!-- ══════════════ APP ══════════════ -->
+<script src="js/app.js"></script>
+</body>
+</html>
