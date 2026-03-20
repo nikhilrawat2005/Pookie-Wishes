@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>How It Works — Pookie Wishes ✨</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
   <link rel="stylesheet" href="../css/style.css">
 </head>
 <body>
-
 <nav class="navbar" id="nav">
   <a href="../index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a>
   <div class="nav-links">
@@ -16,12 +14,9 @@
     <a href="favorites.html" class="btn btn-ghost">Favourites 💖</a>
     <button class="btn btn-primary" id="btn-login" onclick="openModal('modal-auth')">Sign In</button>
     <div class="user-wrap hidden" id="u-wrap">
-      <img class="user-av" id="u-av" src="" alt="avatar" onclick="toggleDd()">
+      <img class="user-av" id="u-av" src="" alt="" onclick="toggleDd()">
       <div class="user-dd" id="u-dd">
-        <div class="dd-head">
-          <div class="dd-name" id="dd-uname"></div>
-          <div class="dd-email" id="dd-uemail"></div>
-        </div>
+        <div class="dd-head"><div class="dd-name" id="dd-uname"></div><div class="dd-email" id="dd-uemail"></div></div>
         <a class="dd-item" href="favorites.html">💖 My Favourites</a>
         <div class="dd-sep"></div>
         <div class="dd-item red" onclick="doLogout()">🚪 Sign Out</div>
@@ -29,117 +24,58 @@
     </div>
   </div>
 </nav>
-
 <main class="inner-page">
   <div class="inner-header">
-    <a href="../index.html" class="back-link">← Back to Templates</a>
+    <a href="../index.html" class="back-link">← All Templates</a>
     <div class="sec-chip blue">📖 process</div>
     <h1 class="inner-title">How It <em>Works</em></h1>
-    <p class="inner-sub">Simple, personal, and done quickly. Here's what happens after you place an order.</p>
+    <p class="inner-sub">Simple and personal. Here's exactly what happens after you place an order.</p>
   </div>
-
-  <!-- Steps -->
   <div class="hiw-steps">
-    <div class="hiw-card">
-      <div class="hiw-num">01</div>
-      <div class="hiw-ico">🎨</div>
-      <div class="hiw-ttl">Pick a Template</div>
-      <p class="hiw-txt">Browse our themed templates on the home page. Click <strong>Visit</strong> to preview the live website, then hit <strong>Order</strong> when you find the right one.</p>
-    </div>
+    <div class="hiw-card"><div class="hiw-num">01</div><div class="hiw-ico">🎨</div><div class="hiw-ttl">Pick a Template</div><p class="hiw-txt">Browse the templates on the home page. Click any card to see the full detail — with a video preview, all included features, and a live demo link. When you find the right one, hit <strong>Buy Now</strong>.</p></div>
     <div class="hiw-connector"></div>
-    <div class="hiw-card">
-      <div class="hiw-num">02</div>
-      <div class="hiw-ico">📝</div>
-      <div class="hiw-ttl">Fill the Order Form</div>
-      <p class="hiw-txt">Tell us the birthday person's name, their date, and a message from you. The form takes under 2 minutes.</p>
-    </div>
+    <div class="hiw-card"><div class="hiw-num">02</div><div class="hiw-ico">📝</div><div class="hiw-ttl">Fill the Order Form</div><p class="hiw-txt">Tell us the birthday person's name, their date, and optionally a message from you. You can also upload up to 4 photos at this stage if you have them ready. The form takes about 2 minutes.</p></div>
     <div class="hiw-connector"></div>
-    <div class="hiw-card">
-      <div class="hiw-num">03</div>
-      <div class="hiw-ico">💬</div>
-      <div class="hiw-ttl">We Contact You on WhatsApp</div>
-      <p class="hiw-txt">After placing your order, we'll message you on WhatsApp to collect photos and any extra details. We work on your site and share a preview before you pay.</p>
-    </div>
+    <div class="hiw-card"><div class="hiw-num">03</div><div class="hiw-ico">💬</div><div class="hiw-ttl">We Reach Out on WhatsApp</div><p class="hiw-txt">After you submit, we'll message you on WhatsApp to confirm your order details, collect any remaining photos, and discuss customisation. We'll give you a clear timeline at this stage.</p></div>
     <div class="hiw-connector"></div>
-    <div class="hiw-card">
-      <div class="hiw-num">04</div>
-      <div class="hiw-ico">🔗</div>
-      <div class="hiw-ttl">Get Your Link</div>
-      <p class="hiw-txt">Once you approve the site, we send you the shareable link. Share it with the birthday person — that's it!</p>
-    </div>
+    <div class="hiw-card"><div class="hiw-num">04</div><div class="hiw-ico">🔍</div><div class="hiw-ttl">Preview Before You Pay</div><p class="hiw-txt">We build your personalised website and send you a preview link to review. Once you're happy with it, we share the payment link. You only pay after you approve.</p></div>
+    <div class="hiw-connector"></div>
+    <div class="hiw-card"><div class="hiw-num">05</div><div class="hiw-ico">🔗</div><div class="hiw-ttl">Get Your Link & Share</div><p class="hiw-txt">After payment, we send you the final shareable link. DM it, post it, or text it directly. Watch them open it and absolutely lose it. 🎉</p></div>
   </div>
-
-  <!-- FAQ -->
   <div class="faq-section">
     <h2 class="faq-title">Common Questions</h2>
     <div class="faq-list">
-      <details class="faq-item">
-        <summary class="faq-q">How long does it take to get the website?</summary>
-        <p class="faq-a">It depends on when you send us the photos and how busy we are. Most orders are completed within a day or two. We'll give you a clear timeline on WhatsApp.</p>
-      </details>
-      <details class="faq-item">
-        <summary class="faq-q">What photos do I need to send?</summary>
-        <p class="faq-a">Any photos you want included — could be 2–3 pictures of you both, or solo photos of the birthday person. We'll guide you on WhatsApp.</p>
-      </details>
-      <details class="faq-item">
-        <summary class="faq-q">When do I pay?</summary>
-        <p class="faq-a">After we send you a preview and you're happy with it. We share the payment link on WhatsApp. Only ₹99!</p>
-      </details>
-      <details class="faq-item">
-        <summary class="faq-q">Can I request changes after seeing the preview?</summary>
-        <p class="faq-a">Yes — one round of changes is included. If you need more edits, we'll discuss on WhatsApp.</p>
-      </details>
-      <details class="faq-item">
-        <summary class="faq-q">How long does the link stay active?</summary>
-        <p class="faq-a">We keep the website live for at least 30 days. After that, reach out if you'd like it extended.</p>
-      </details>
+      <details class="faq-item"><summary class="faq-q">How long does it take?</summary><p class="faq-a">It depends on how quickly you send us photos and how many orders we have at the time. We'll give you an honest timeline on WhatsApp after you order. Most orders are completed within a day or two of receiving all photos.</p></details>
+      <details class="faq-item"><summary class="faq-q">What photos should I send?</summary><p class="faq-a">2–4 photos work best — could be photos of you both, or solo photos of the birthday person. Don't worry if you're not sure which to send, we'll guide you.</p></details>
+      <details class="faq-item"><summary class="faq-q">When do I pay?</summary><p class="faq-a">After we send you the preview link and you're happy with it. We share the UPI/payment link on WhatsApp at that point. Just ₹99!</p></details>
+      <details class="faq-item"><summary class="faq-q">Can I request changes to the preview?</summary><p class="faq-a">Yes. One round of changes is included at no extra cost. If you need more after that, we'll discuss on WhatsApp.</p></details>
+      <details class="faq-item"><summary class="faq-q">How long does the link stay active?</summary><p class="faq-a">We keep websites live for at least 30 days. If you need it extended, just message us on WhatsApp or email.</p></details>
+      <details class="faq-item"><summary class="faq-q">Can I order multiple templates?</summary><p class="faq-a">Yes! Add multiple templates to your cart and checkout together. Each one will be treated as a separate order and personalised individually.</p></details>
     </div>
   </div>
-
-  <!-- CTA -->
   <div class="hiw-cta">
     <h2>Ready to make someone's day? 🎂</h2>
-    <p>Pick a template and get started — it only takes a few minutes.</p>
+    <p>Pick a template and get started. It only takes a couple of minutes.</p>
     <a href="../index.html" class="btn btn-primary btn-xl">Browse Templates →</a>
   </div>
 </main>
+<footer class="footer"><div class="footer-inner"><div class="f-bottom" style="border-top:none;padding-top:0"><span>© 2025 Pookie Wishes — made with <span class="f-heart">💖</span></span><span>₹99 per website ✨</span></div></div></footer>
 
-<footer class="footer">
-  <div class="footer-inner">
-    <div class="f-bottom" style="border-top:none;padding-top:0">
-      <span>© 2025 Pookie Wishes — made with <span class="f-heart">💖</span></span>
-      <span>₹99 per website ✨</span>
-    </div>
-  </div>
-</footer>
-
-<!-- AUTH MODAL -->
 <div class="overlay" id="modal-auth">
   <div class="modal">
     <button class="modal-x" onclick="closeModal('modal-auth')">✕</button>
-    <span class="modal-ico">🎂</span>
-    <h2>Welcome!</h2>
-    <p>Sign in to save favourites and track your orders.</p>
+    <span class="modal-ico">🎂</span><h2>Welcome!</h2><p>Sign in to save favourites and track orders.</p>
     <button class="btn btn-google btn-full" onclick="googleLogin()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48">
-        <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.14z"/>
-        <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/>
-        <path fill="#FBBC05" d="M10.53 28.59c-.49-1.47-.76-3.04-.76-4.59s.27-3.12.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/>
-        <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.55 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/>
-      </svg>
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.14z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="#FBBC05" d="M10.53 28.59c-.49-1.47-.76-3.04-.76-4.59s.27-3.12.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.55 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/></svg>
       Continue with Google
     </button>
-    <div class="modal-or">or sign in with email</div>
+    <div class="modal-or">or</div>
     <div class="f-group"><input class="f-inp" id="auth-email" type="email" placeholder="your@email.com"></div>
     <div class="f-group"><input class="f-inp" id="auth-pw" type="password" placeholder="Password"></div>
-    <div style="display:flex;gap:8px;margin-bottom:10px">
-      <button class="btn btn-primary" style="flex:1" onclick="emailSignIn()">Sign In</button>
-      <button class="btn btn-soft"    style="flex:1" onclick="emailRegister()">Register</button>
-    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px"><button class="btn btn-primary" style="flex:1" onclick="emailSignIn()">Log In</button><button class="btn btn-soft" style="flex:1" onclick="emailRegister()">Register</button></div>
     <button class="btn btn-ghost btn-full" style="font-size:.8rem" onclick="resetPassword()">Forgot password?</button>
   </div>
 </div>
-
 <div id="toasts"></div>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
