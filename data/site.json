@@ -46,7 +46,7 @@
       ],
       "media": {
         "thumbnail": "media/hello-kitty/thumbnail.jpg",
-        "video": "media/hello-kitty/preview.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774022269/preview_z3mcd8.mp4",
         "gallery": [
           "media/hello-kitty/img1.jpg",
           "media/hello-kitty/img2.jpg",
@@ -78,7 +78,7 @@
       ],
       "media": {
         "thumbnail": "media/harry-potter/thumbnail.jpg",
-        "video": "media/harry-potter/preview.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774022365/preview_yvsyhy.mp4",
         "gallery": [
           "media/harry-potter/img1.jpg",
           "media/harry-potter/img2.jpg",

@@ -377,7 +377,7 @@ function buildCard(t) {
         </div>
         <div class="t-tagline">${t.tagline}</div>
         <div class="t-card-btns" onclick="event.stopPropagation()">
-          <a href="${t.demoUrl}" target="_blank" rel="noopener" class="btn btn-outline">👀 Visit</a>
+          <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">🛒 Add to Cart</button>
           <button class="btn btn-primary" onclick="openOrderModal('${t.id}')">Buy Now 🎁</button>
         </div>
       </div>
