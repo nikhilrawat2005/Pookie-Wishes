@@ -451,7 +451,7 @@ function buildCard(t) {
         <div class="t-tagline">${t.tagline}</div>
         <div class="t-card-btns" onclick="event.stopPropagation()">
           <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">🛒 Add to Cart</button>
-          <button class="btn btn-primary" onclick="event.stopPropagation();location.href='${detailUrl}'">Buy Now 🎁</button>
+          <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${t.id}',event); location.href='${ROOT}pages/checkout.html'">Buy Now 🎁</button>
         </div>
       </div>
     </div>`;
@@ -601,10 +601,7 @@ function renderDetailPage() {
               ${inCart?'🛒':'＋'}
             </button>
           </div>
-          <a href="${t.demoUrl}" target="_blank" rel="noopener"
-             class="btn btn-ghost btn-full" style="margin-top:8px">
-            👀 Visit Live Demo
-          </a>
+          <!-- "Visit Live Demo" button removed -->
         </div>
       </div>
     </div>`;
