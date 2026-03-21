@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Pookie Wishes ✨</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    body { background:var(--bg); }
+    .co-page { min-height:100vh; padding:88px 20px 60px; }
+    .co-wrap { max-width:980px; margin:0 auto; display:grid; grid-template-columns:1fr 340px; gap:24px; align-items:start; }
+    .co-card { background:var(--card); border:1px solid var(--bdr); border-radius:var(--rx); padding:36px 32px; box-shadow:var(--sh-md); }
+    .co-title { font-family:var(--fd); font-size:1.55rem; font-weight:700; color:var(--text); margin-bottom:5px; }
+    .co-sub { font-size:.875rem; color:var(--muted); line-height:1.75; margin-bottom:26px; }
+    .co-sec-lbl { font-family:var(--fm); font-size:.67rem; color:var(--pink); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:13px; display:flex; align-items:center; gap:8px; }
+    .co-sec-lbl::after { content:''; flex:1; height:1px; background:var(--bdr-pink); }
+    .co-sec { margin-bottom:26px; }
+    .divider { height:1px; background:var(--bdr); margin:22px 0; }
+    .bday-block { background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r); padding:16px; margin-bottom:12px; }
+    .ss-zone { border:2px dashed var(--bdr2); border-radius:var(--r); padding:22px; text-align:center; cursor:pointer; transition:all .2s; }
+    .ss-zone:hover { border-color:var(--pink); background:var(--pink-s); }
+    .ss-zone.done { border-color:var(--mint); border-style:solid; background:rgba(122,201,184,.06); }
+    .ss-ico { font-size:2.2rem; display:block; margin-bottom:8px; }
+    .ss-txt { font-size:.875rem; color:var(--muted); }
+    .ss-sub { font-size:.76rem; color:var(--dim); margin-top:3px; }
+    .ss-prev { max-width:100%; max-height:160px; border-radius:var(--rs); margin-top:12px; display:none; border:1px solid var(--bdr); }
+    .ss-prev.on { display:block; }
+    .ss-retake { font-size:.75rem; color:var(--pink); cursor:pointer; margin-top:7px; display:none; }
+    .ss-retake.on { display:block; }
+    .submit-note { background:var(--g-pink); border:1px solid var(--bdr-pink); border-radius:var(--r); padding:13px 16px; font-size:.82rem; color:var(--text2); line-height:1.8; margin-bottom:18px; }
+    /* Sidebar */
+    .co-sidebar { position:sticky; top:90px; display:flex; flex-direction:column; gap:14px; }
+    .sc { background:var(--card); border:1px solid var(--bdr); border-radius:var(--rx); padding:20px; box-shadow:var(--sh); }
+    .sc-title { font-family:var(--fd); font-size:.95rem; font-weight:700; color:var(--text); margin-bottom:13px; }
+    .sc-item { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--bdr); }
+    .sc-item:last-of-type { border:none; }
+    .sc-thumb { width:44px; height:32px; border-radius:8px; overflow:hidden; background:var(--bg3); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+    .sc-thumb img { width:100%; height:100%; object-fit:cover; }
+    .sc-name { font-size:.83rem; font-weight:600; color:var(--text); flex:1; }
+    .sc-price { font-family:var(--fm); font-size:.8rem; background:var(--g-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .sc-total { display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:11px; border-top:2px solid var(--bdr2); }
+    .sc-total-l { font-weight:600; font-size:.88rem; color:var(--text2); }
+    .sc-total-a { font-family:var(--fd); font-size:1.4rem; font-weight:700; background:var(--g-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .qr-img-wrap { border-radius:var(--r); overflow:hidden; border:1.5px solid var(--bdr2); margin-bottom:10px; }
+    .qr-img-wrap img { width:100%; display:block; }
+    .upi-lbl { font-size:.7rem; color:var(--dim); margin-bottom:4px; }
+    .upi-pill { font-family:var(--fm); font-size:.83rem; color:var(--text2); background:var(--bg2); border:1px solid var(--bdr2); border-radius:var(--rs); padding:7px 13px; display:inline-block; cursor:pointer; transition:all .2s; letter-spacing:.3px; }
+    .upi-pill:hover { border-color:var(--pink); background:var(--pink-s); }
+    .copy-ok { font-size:.7rem; color:var(--mint); margin-top:5px; display:none; }
+    .qr-steps { text-align:left; margin-top:12px; display:flex; flex-direction:column; gap:5px; }
+    .qr-step { display:flex; gap:7px; align-items:flex-start; font-size:.75rem; color:var(--muted); }
+    .qr-step-n { width:16px; height:16px; border-radius:50%; background:var(--pink-s); color:var(--pink); font-size:.6rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+    @media(max-width:768px) { .co-wrap{grid-template-columns:1fr} .co-sidebar{position:static;order:-1} .co-card{padding:22px 16px} }
+  </style>
+</head>
+<body>
+
+<nav class="navbar">
+  <a href="../index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a>
+  <div class="nav-links"><a href="../index.html" class="btn btn-ghost">← Back</a></div>
+</nav>
+
+<div class="co-page">
+  <div class="co-wrap">
+
+    <!-- FORM -->
+    <div class="co-card">
+      <div class="co-title">Place Your Order 🎂</div>
+      <div class="co-sub">Fill in the details, pay via UPI on the right, upload your screenshot, and submit. We'll verify and get back to you within 1–2 hours!</div>
+
+      <div class="co-sec">
+        <div class="co-sec-lbl">Your Details</div>
+        <div class="f-row">
+          <div class="f-group">
+            <label class="f-label">YOUR NAME *</label>
+            <input class="f-inp" id="f-name" type="text" placeholder="Priya Sharma" autocomplete="name">
+          </div>
+          <div class="f-group">
+            <label class="f-label">YOUR EMAIL * <span style="color:var(--dim);font-size:.7rem">(link sent here)</span></label>
+            <input class="f-inp" id="f-email" type="email" placeholder="priya@gmail.com" autocomplete="email">
+          </div>
+        </div>
+        <div class="f-group">
+          <label class="f-label">YOUR WHATSAPP *</label>
+          <input class="f-inp" id="f-phone" type="tel" placeholder="+91 98765 43210">
+        </div>
+      </div>
+
+      <div class="co-sec">
+        <div class="co-sec-lbl">Birthday Details</div>
+        <div id="bday-blocks"></div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="co-sec" style="margin-bottom:0">
+        <div class="co-sec-lbl">Payment Screenshot</div>
+        <div class="ss-zone" id="ss-zone" onclick="document.getElementById('ss-inp').click()">
+          <span class="ss-ico" id="ss-ico">📸</span>
+          <div class="ss-txt" id="ss-txt">Tap to upload your payment screenshot</div>
+          <div class="ss-sub" id="ss-sub">JPG or PNG · Max 10MB</div>
+          <img id="ss-prev" class="ss-prev" alt="screenshot">
+        </div>
+        <div class="ss-retake" id="ss-retake" onclick="document.getElementById('ss-inp').click()">↑ Change screenshot</div>
+        <input type="file" id="ss-inp" accept="image/*" style="display:none" onchange="handleSS(this)">
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="submit-note">
+        After submitting — we'll <strong>verify your payment within 1–2 hours</strong> and email you a personalisation form for your photos and wishes. 🌸
+      </div>
+      <button class="btn btn-primary btn-xl btn-full" id="submit-btn" onclick="submitOrder()">Submit Order ✨</button>
+      <p style="text-align:center;font-size:.74rem;color:var(--dim);margin-top:10px">
+        Questions? <a href="https://wa.me/918700113731" target="_blank" style="color:var(--pink)">WhatsApp us</a>
+      </p>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="co-sidebar">
+      <div class="sc">
+        <div class="sc-title">Order Summary 🛒</div>
+        <div id="sc-items"></div>
+        <div class="sc-total">
+          <span class="sc-total-l">Total</span>
+          <span class="sc-total-a">₹<span id="sc-total">0</span></span>
+        </div>
+      </div>
+      <div class="sc" style="text-align:center">
+        <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:3px">Pay via UPI 💳</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Scan QR or enter UPI ID below</div>
+        <div class="qr-img-wrap">
+          <img src="../media/payment-qr.png" id="qr-img" alt="UPI QR"
+               onerror="this.parentElement.innerHTML='<div style=padding:20px;font-size:.8rem;color:var(--muted)>QR not found.<br>Add: media/payment-qr.png</div>'">
+        </div>
+        <div class="upi-lbl">UPI ID — tap to copy</div>
+        <div class="upi-pill" id="upi-pill" onclick="copyUpi()">8700113731@fam</div>
+        <div class="copy-ok" id="copy-ok">✅ Copied!</div>
+        <div class="qr-steps">
+          <div class="qr-step"><div class="qr-step-n">1</div>Open GPay / PhonePe / Paytm</div>
+          <div class="qr-step"><div class="qr-step-n">2</div>Scan QR or enter UPI ID</div>
+          <div class="qr-step"><div class="qr-step-n">3</div>Pay ₹<span id="qr-amt">0</span></div>
+          <div class="qr-step"><div class="qr-step-n">4</div>Screenshot the success screen</div>
+          <div class="qr-step"><div class="qr-step-n">5</div>Upload screenshot in the form ←</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<!-- Firebase compat SDKs (NOT module type) -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<!-- EmailJS -->
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+<!-- App (loads SITE, exposes sendEmail) -->
+<script src="../js/app.js"></script>
+
+<script>
+let ssFile = null;
+
+window.addEventListener('DOMContentLoaded', async () => {
+  // SITE is loaded by app.js DOMContentLoaded — wait for it
+  await waitForSite();
+
+  const upiId = SITE.payment?.upiId || '8700113731@fam';
+  document.getElementById('upi-pill').textContent = upiId;
+
+  const cartItems = JSON.parse(localStorage.getItem('pw_cart') || '[]');
+  if (!cartItems.length) { window.location.href = '../index.html'; return; }
+
+  renderSummary(cartItems);
+  renderBdayBlocks(cartItems);
+});
+
+function waitForSite() {
+  return new Promise(resolve => {
+    const t = setInterval(() => { if (window.SITE) { clearInterval(t); resolve(); } }, 50);
+    setTimeout(() => { clearInterval(t); resolve(); }, 3000);
+  });
+}
+
+function renderSummary(items) {
+  const total = items.reduce((s,i) => s+i.price, 0);
+  document.getElementById('sc-total').textContent = total;
+  document.getElementById('qr-amt').textContent   = total;
+  const tpls = SITE.templates || [];
+  document.getElementById('sc-items').innerHTML = items.map(item => {
+    const tpl = tpls.find(t => t.id === item.id) || {};
+    const ph  = item.id==='hello-kitty' ? 'hk':'hp';
+    const bg  = ph==='hk' ? 'linear-gradient(135deg,#fff0f4,#f4eeff)':'linear-gradient(135deg,#f5eee8,#f0ece0)';
+    return `<div class="sc-item">
+      <div class="sc-thumb" style="${!tpl.media?.thumbnail?`background:${bg}`:''}">
+        ${tpl.media?.thumbnail ? `<img src="../${tpl.media.thumbnail}" onerror="this.style.display='none'">` : item.emoji}
+      </div>
+      <span class="sc-name">${item.emoji} ${item.name}</span>
+      <span class="sc-price">${item.currency||'₹'}${item.price}</span>
+    </div>`;
+  }).join('');
+}
+
+function renderBdayBlocks(items) {
+  const today = new Date().toISOString().split('T')[0];
+  document.getElementById('bday-blocks').innerHTML = items.map((item,i) => `
+    <div class="bday-block">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
+        <span style="font-family:var(--fd);font-weight:700;font-size:.9rem">${item.emoji} ${item.name}</span>
+        <span style="font-family:var(--fm);font-size:.63rem;background:var(--g-main);color:white;padding:3px 10px;border-radius:100px">${item.currency||'₹'}${item.price}</span>
+      </div>
+      <div class="f-row">
+        <div class="f-group"><label class="f-label">BIRTHDAY PERSON'S NAME *</label><input class="f-inp" id="bd-name-${i}" type="text" placeholder="e.g. Rahul"></div>
+        <div class="f-group"><label class="f-label">THEIR BIRTHDAY DATE *</label><input class="f-inp" id="bd-date-${i}" type="date"></div>
+      </div>
+      <div class="f-group"><label class="f-label">WHEN DO YOU NEED IT BY? *</label><input class="f-inp" id="bd-need-${i}" type="date" min="${today}"></div>
+    </div>`).join('');
+}
+
+function handleSS(input) {
+  const file = input.files[0];
+  if (!file) return;
+  if (file.size > 10*1024*1024) { toast('File must be under 10MB','err'); return; }
+  ssFile = file;
+  const reader = new FileReader();
+  reader.onload = e => {
+    document.getElementById('ss-prev').src = e.target.result;
+    document.getElementById('ss-prev').classList.add('on');
+    document.getElementById('ss-zone').classList.add('done');
+    document.getElementById('ss-ico').textContent  = '✅';
+    document.getElementById('ss-txt').textContent  = 'Screenshot added!';
+    document.getElementById('ss-sub').textContent  = file.name;
+    document.getElementById('ss-retake').classList.add('on');
+  };
+  reader.readAsDataURL(file);
+}
+
+function copyUpi() {
+  const id = document.getElementById('upi-pill').textContent.trim();
+  navigator.clipboard?.writeText(id).then(() => {
+    const el = document.getElementById('copy-ok');
+    el.style.display='block';
+    setTimeout(()=>el.style.display='none', 2500);
+  });
+}
+
+function validate() {
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const phone = document.getElementById('f-phone').value.trim();
+  const items = JSON.parse(localStorage.getItem('pw_cart')||'[]');
+  if (!name)               { toast('Enter your name','err'); return null; }
+  if (!email?.includes('@')){ toast('Enter a valid email','err'); return null; }
+  if (!phone)              { toast('Enter your WhatsApp number','err'); return null; }
+  if (!ssFile)             { toast('Please upload your payment screenshot','err'); return null; }
+  const orders = [];
+  for (let i=0; i<items.length; i++) {
+    const bdName = document.getElementById(`bd-name-${i}`)?.value.trim();
+    const bdDate = document.getElementById(`bd-date-${i}`)?.value;
+    const bdNeed = document.getElementById(`bd-need-${i}`)?.value;
+    if (!bdName||!bdDate||!bdNeed) { toast(`Fill all birthday details for ${items[i].name}`,'err'); return null; }
+    const fmt = d => new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
+    orders.push({ templateId:items[i].id, templateName:`${items[i].emoji} ${items[i].name}`, price:items[i].price, bdayName:bdName, bdayDate:fmt(bdDate), neededBy:fmt(bdNeed) });
+  }
+  return { name, email, phone, orders };
+}
+
+async function submitOrder() {
+  const data = validate();
+  if (!data) return;
+  const btn = document.getElementById('submit-btn');
+  btn.disabled=true; btn.textContent='Uploading screenshot…';
+  const orderId = 'PW-' + Date.now();
+  const total   = data.orders.reduce((s,o)=>s+o.price,0);
+
+  // 1. Upload screenshot to Firebase Storage
+  let ssUrl = '';
+  if (window.fbReady) {
+    try {
+      const ref = firebase.storage().ref(`payment-screenshots/${orderId}.jpg`);
+      await ref.put(ssFile);
+      ssUrl = await ref.getDownloadURL();
+    } catch(e) { console.warn('Screenshot upload failed:',e); ssUrl='(upload failed)'; }
+  }
+
+  // 2. Save to Firestore
+  btn.textContent='Saving order…';
+  if (window.fbReady) {
+    try {
+      await firebase.firestore().collection('orders').doc(orderId).set({
+        orderId, buyerName:data.name, buyerEmail:data.email, buyerPhone:data.phone,
+        orders:data.orders, totalAmount:total, screenshotUrl:ssUrl,
+        status:'pending_verification', deliveryStatus:'pending',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+    } catch(e) { console.warn('Firestore save failed:',e); }
+  }
+
+  // 3. Send both emails
+  btn.textContent='Sending emails…';
+  const orderLines = data.orders.map((o,i)=>`${i+1}. ${o.templateName} — For: ${o.bdayName} (${o.bdayDate}) — Needed by: ${o.neededBy}`).join('\n');
+  const tplNames = data.orders.map(o=>o.templateName).join(', ');
+  const bdNames  = data.orders.map(o=>o.bdayName).join(', ');
+  const bdDates  = data.orders.map(o=>o.bdayDate).join(', ');
+  const needBys  = data.orders.map(o=>o.neededBy).join(', ');
+
+  await Promise.allSettled([
+    sendEmail('templateId_user_ack', {
+      to_name:data.name, to_email:data.email, order_id:orderId,
+      template_name:tplNames, total_amount:`₹${total}`,
+      bday_person_name:bdNames, bday_date:bdDates, needed_by:needBys,
+      order_lines:orderLines
+    }),
+    sendEmail('templateId_admin_verify', {
+      to_email: SITE.payment?.adminVerifyEmail || 'nikhil2005114@gmail.com',
+      order_id:orderId, buyer_name:data.name, buyer_email:data.email, buyer_phone:data.phone,
+      template_name:tplNames, total_amount:`₹${total}`,
+      bday_person_name:bdNames, bday_date:bdDates, needed_by:needBys,
+      order_lines:orderLines, screenshot_url:ssUrl,
+      submitted_at: new Date().toLocaleString('en-IN')
+    })
+  ]);
+
+  localStorage.removeItem('pw_cart');
+  window.location.href = `order-success.html?id=${orderId}&email=${encodeURIComponent(data.email)}`;
+}
+</script>
+</body>
+</html>

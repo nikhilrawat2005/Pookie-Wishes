@@ -1,124 +1,170 @@
-# 🎂 Pookie Wish v3 — Setup & Deploy Guide
+# 🎂 Pookie Wishes — Setup Guide
 
 ---
 
-## ✅ What's Fixed in This Version
-
-- **Firebase config properly placed** — your real keys are in `js/app.js`, no more `<script>` tags inside JS files
-- **Firebase loaded correctly** — using compat SDKs via CDN in `index.html`
-- **Soft white/pink/blue unisex design** — clean, calming, sweet
-- **Order form** — 3-step with WhatsApp redirect to +918700113731
-- **`firebase.json`** included — ready to deploy instantly
-
----
-
-## 📁 File Structure
+## The Full Flow
 
 ```
-pookie-wish/
-├── index.html              ← Main landing page
-├── firebase.json           ← Firebase Hosting config (ready!)
-├── css/style.css           ← All styles
-├── js/app.js               ← Firebase auth + logic (config already in here!)
-├── data/templates.json     ← Template content (edit to add new themes)
-├── images/                 ← Put screenshots here:
-│   ├── hello-kitty-preview.jpg
-│   └── harry-potter-preview.jpg
-└── pages/
-    └── order.html          ← 3-step order form
+Customer submits order + payment screenshot
+        ↓
+Email 1 → Customer: "Order received, verifying in 1-2 hrs"  [Account 1, Template 1]
+Email 2 → You (nikhil2005114@gmail.com): "Verify this payment" [Account 2, Template 2]
+        ↓
+You verify payment → Admin Panel → "Send Form Link" button
+        ↓
+Email 3 → Customer: Google Form link + how to fill it  [Account 2, Template 3]
+        ↓
+Customer fills Google Form → Sheet updates → You get notification email
+        ↓
+You build website → Admin Panel → Enter link + QR → "Send Delivery"
+        ↓
+Email 4 → Customer: website link + QR code  [Account 1, Template 4]
 ```
 
 ---
 
-## 📸 Add Your Preview Images
+## ⭐ ONLY THING REMAINING — Add EmailJS Public Keys
 
-Take screenshots and save in `images/` folder:
+You've set up everything already! Just add the **Public Keys** for both EmailJS accounts to `data/site.json`.
 
-| File | From |
-|---|---|
-| `images/hello-kitty-preview.jpg` | https://hellokittybirthday.vercel.app |
-| `images/harry-potter-preview.jpg` | https://hp-template-tau.vercel.app |
+### Where to find Public Keys:
+- EmailJS Dashboard → Account → **General** → **Public Key** (it looks like `user_xxxxxxxxxx`)
 
-Until images are added, a nice animated emoji placeholder shows. ✅
+### Update `data/site.json`:
 
----
-
-## 🚀 Deploy to Firebase (Step by Step)
-
-**On your computer terminal/command prompt:**
-
-```bash
-# 1. Install Firebase CLI (one time only)
-npm install -g firebase-tools
-
-# 2. Login to Firebase
-firebase login
-
-# 3. Go into your project folder
-cd pookie-wish
-
-# 4. Link to your Firebase project
-firebase use pookie-wish
-
-# 5. Deploy!
-firebase deploy
-```
-
-You'll get a URL like: `https://pookie-wish.web.app` ✨
-
-**After deploy — add your domain to Firebase Auth:**
-1. Firebase Console → Authentication → Settings → Authorized domains
-2. Add: `pookie-wish.web.app`
-
----
-
-## ➕ Adding a New Template Later
-
-**Step 1** — Add to `data/templates.json` in the `"templates"` array:
 ```json
-{
-  "id": "minecraft",
-  "name": "Minecraft",
-  "tagline": "Block Party Incoming! ⛏️",
-  "badge": "New",
-  "emoji": "⛏️",
-  "price": "₹99",
-  "demoUrl": "https://your-template.vercel.app/",
-  "tags": ["gaming", "fun", "blocks"],
-  "description": "Your description...",
-  "features": ["⛏️ Feature 1", "🎮 Feature 2"],
-  "vibe": "Gamer Vibes",
-  "image": "images/minecraft-preview.jpg"
+"emailjs": {
+  "account1": {
+    "publicKey": "PASTE_ACCOUNT1_PUBLIC_KEY_HERE",
+    "serviceId": "service_xzo6x1l",
+    "templateId_user_ack": "template_1aqnbiw",
+    "templateId_delivery": "template_grv7vrj"
+  },
+  "account2": {
+    "publicKey": "PASTE_ACCOUNT2_PUBLIC_KEY_HERE",
+    "serviceId": "service_vbt862s",
+    "templateId_admin_verify": "template_5msdu99",
+    "templateId_form_link":    "template_5y8tzru"
+  }
 }
 ```
-
-**Step 2** — Add to `pages/order.html` in the `TEMPLATES` object:
-```js
-'minecraft': {
-  name: 'Minecraft Template', emoji: '⛏️',
-  tagline: 'Block Party!', price: '₹99',
-  demoUrl: 'https://your-template.vercel.app/',
-  phClass: 'hk', // use 'hk' for light bg, 'hp' for warm bg
-  features: ['⛏️ Feature 1'],
-  image: '../images/minecraft-preview.jpg'
-}
-```
-
-**Step 3** — Move it from `"comingSoon"` to `"templates"` in the JSON. Done! 🎉
 
 ---
 
-## 🔒 Firestore Security Rules (set before going live)
+## Template Variables Reference
 
-Firebase Console → Firestore → Rules tab → Replace with:
+### Template 1 (Account 1 — `template_1aqnbiw`) — User Acknowledgement
+Variables to add in EmailJS template:
+```
+{{to_name}}           → Customer's name
+{{to_email}}          → Customer's email
+{{order_id}}          → e.g. PW-1774123456
+{{template_name}}     → e.g. 🎀 Hello Kitty
+{{total_amount}}      → e.g. ₹99
+{{bday_person_name}}  → Birthday person's name
+{{bday_date}}         → Birthday date
+{{needed_by}}         → Needed by date
+{{order_lines}}       → Full order summary
+```
 
+### Template 2 (Account 2 — `template_5msdu99`) — Admin Verify
+Variables:
+```
+{{to_email}}          → nikhil2005114@gmail.com (hardcoded)
+{{order_id}}
+{{buyer_name}}
+{{buyer_email}}
+{{buyer_phone}}
+{{template_name}}
+{{total_amount}}
+{{bday_person_name}}
+{{bday_date}}
+{{needed_by}}
+{{order_lines}}
+{{screenshot_url}}    → Link to payment screenshot in Firebase Storage
+{{submitted_at}}      → Timestamp
+```
+
+### Template 3 (Account 2 — `template_5y8tzru`) — Google Form Link
+Variables:
+```
+{{to_name}}
+{{to_email}}
+{{order_id}}
+{{template_name}}
+{{bday_person_name}}
+{{bday_date}}
+{{needed_by}}
+{{order_lines}}
+{{google_form_link}}  → https://forms.gle/F2t9kw5QoGVhVxwr5
+```
+
+### Template 4 (Account 1 — `template_grv7vrj`) — Delivery
+Variables:
+```
+{{to_name}}
+{{to_email}}
+{{order_id}}
+{{template_name}}
+{{bday_person_name}}
+{{order_summary}}
+{{website_link}}      → URL you enter in admin panel
+{{qr_image_url}}      → QR image URL from Firebase Storage
+```
+
+---
+
+## Firebase Setup
+
+### Already configured in site.json:
+```json
+"firebase": {
+  "apiKey": "AIzaSyDSwNeLEDIuSOMeT-8vnPYifxax9NKj484",
+  "authDomain": "pookie-wish.firebaseapp.com",
+  "projectId": "pookie-wish",
+  "storageBucket": "pookie-wish.firebasestorage.app",
+  "messagingSenderId": "741136764035",
+  "appId": "1:741136764035:web:ee7453e7b0dd2b489a9fb6"
+}
+```
+
+### Enable in Firebase Console:
+1. **Authentication** → Sign-in method → Enable: Google + Email/Password
+2. **Firestore Database** → Create (test mode)
+3. **Storage** → Enable (for screenshots + QR uploads)
+4. **Authentication → Settings → Authorized domains** → Add:
+   `pookie-wishes.vercel.app`
+
+### Firestore Rules:
 ```
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+    match /orders/{orderId} {
+      allow create: if true;
+      allow read, update: if request.auth != null
+        && (request.auth.token.email == 'teamcipher.work@gmail.com'
+         || request.auth.token.email == 'nikhil2005114@gmail.com');
+    }
     match /users/{userId} {
-      allow read, write: if request.auth != null
-                         && request.auth.uid == userId;
+      allow read, write: if request.auth != null && request.auth.uid == userId;
+    }
+  }
+}
+```
+
+### Storage Rules:
+```
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    match /payment-screenshots/{f} {
+      allow write: if true;
+      allow read:  if request.auth != null;
+    }
+    match /qr-codes/{f} {
+      allow read:  if true;
+      allow write: if request.auth != null;
     }
   }
 }
@@ -126,4 +172,52 @@ service cloud.firestore {
 
 ---
 
-Made with 💖 by Pookie Wish
+## Google Form + Sheet
+
+Already set in `site.json`:
+- Form: `https://forms.gle/F2t9kw5QoGVhVxwr5`
+- Sheet: `https://docs.google.com/spreadsheets/d/1txBWJqKVMilNRIUJitL2wiIYpZCOoCOLuSFOS91JonM`
+
+**Enable email notifications on the form:**
+Form → Responses tab → 3 dots → "Get email notifications for new responses" ✅
+
+---
+
+## Admin Panel
+
+URL: `/admin/`
+
+Authorised emails (set in `admin/index.html`):
+- `teamcipher.work@gmail.com`
+- `nikhil2005114@gmail.com`
+
+**Workflow:**
+1. New order → you get Email 2
+2. Verify screenshot → Admin Panel → find order → **"Send Form Link Email"**
+3. Customer fills form → you get Google Form notification
+4. Build website → Admin Panel → enter link + upload QR → **"Send Delivery Email"**
+
+---
+
+## Deploy
+
+```bash
+# Option 1: Firebase Hosting
+firebase deploy
+
+# Option 2: Vercel (drag & drop)
+# Go to vercel.com/new → drag the pookie-wishes folder
+```
+
+After deploy, add your domain to Firebase Authorized Domains.
+
+---
+
+## Adding New Templates
+
+1. Upload video to Cloudinary → copy URL
+2. Edit `data/site.json` → add to `"templates"` array
+3. Add thumbnail to `media/your-template/thumbnail.jpg`
+4. Redeploy
+
+Made with 💖 — Pookie Wishes

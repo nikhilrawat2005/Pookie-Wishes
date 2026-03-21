@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Submitted! — Pookie Wishes ✨</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .pg { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:80px 20px; background:var(--g-hero); }
+    .card { background:var(--card); border:1px solid var(--bdr); border-radius:var(--rx); padding:52px 44px; max-width:540px; width:100%; text-align:center; box-shadow:var(--sh-lg); }
+    .big-ico { font-size:3.5rem; display:block; margin-bottom:16px; animation:bob 2.5s ease-in-out infinite; }
+    .ttl { font-family:var(--fd); font-size:1.9rem; font-weight:700; color:var(--text); margin-bottom:8px; }
+    .sub { color:var(--muted); font-size:.9rem; line-height:1.8; margin-bottom:22px; }
+    .order-pill { background:var(--pink-s); border:1px solid var(--bdr-pink); border-radius:var(--r); padding:11px 16px; font-family:var(--fm); font-size:.78rem; color:var(--text2); margin-bottom:22px; }
+    .steps { text-align:left; background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r); padding:16px 18px; margin-bottom:24px; }
+    .step { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--bdr); font-size:.85rem; color:var(--text2); }
+    .step:last-child { border:none; }
+    .sn { width:22px; height:22px; border-radius:50%; background:var(--g-main); color:white; font-size:.65rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+  </style>
+</head>
+<body>
+<nav class="navbar"><a href="../index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a></nav>
+
+<div class="pg">
+  <div class="card">
+    <span class="big-ico">🎉</span>
+    <div class="ttl">Order Submitted!</div>
+    <p class="sub">We've received your order and payment screenshot. We'll verify your payment and email you the next steps within 1–2 hours! 🌸</p>
+    <div class="order-pill">
+      Order ID: <strong id="show-id">—</strong><br>
+      Confirmation sent to: <strong id="show-email">—</strong>
+    </div>
+    <div class="steps">
+      <div class="step"><div class="sn">1</div><span>We verify your UPI payment — usually within 1–2 hours.</span></div>
+      <div class="step"><div class="sn">2</div><span>Once confirmed, we email you a Google Form link to add your wish message and photos.</span></div>
+      <div class="step"><div class="sn">3</div><span>We build your personalised website and email you the final link + QR code.</span></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:10px">
+      <a href="../index.html" class="btn btn-soft btn-lg">Browse More Templates</a>
+      <a href="#" id="wa-link" class="btn btn-ghost btn-lg" target="_blank">Need Help? WhatsApp Us 💬</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const p = new URLSearchParams(location.search);
+  document.getElementById('show-id').textContent    = p.get('id')    || '—';
+  document.getElementById('show-email').textContent = decodeURIComponent(p.get('email') || '—');
+  fetch('../data/site.json').then(r=>r.json()).then(d=>{
+    const wa   = (d.site?.whatsapp||'918700113731').replace(/\D/g,'');
+    const text = encodeURIComponent(`Hi! I need help with my Pookie Wishes order. Order ID: ${p.get('id')||'—'}`);
+    document.getElementById('wa-link').href = `https://wa.me/${wa}?text=${text}`;
+  });
+</script>
+</body>
+</html>

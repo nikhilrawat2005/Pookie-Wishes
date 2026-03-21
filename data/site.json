@@ -2,17 +2,37 @@
   "site": {
     "name": "Pookie Wishes",
     "tagline": "Birthday Websites They'll Never Forget ✨",
-    "description": "Send your bestie a full interactive birthday website. Personalised, beautiful, just ₹99.",
+    "description": "Send your bestie a full interactive birthday website. Personalised, beautiful.",
     "email": "teamcipher.work@gmail.com",
     "whatsapp": "918700113731",
     "instagram": "https://www.instagram.com/pookiewish/",
     "instagramHandle": "@pookiewish",
     "copyright": "© 2025 Pookie Wishes"
   },
+  "payment": {
+    "method": "upi_qr",
+    "upiId": "8700113731@fam",
+    "qrImage": "media/payment-qr.png",
+    "adminVerifyEmail": "nikhil2005114@gmail.com"
+  },
   "emailjs": {
-    "serviceId": "YOUR_EMAILJS_SERVICE_ID",
-    "templateId_order_confirm": "YOUR_TEMPLATE_ID",
-    "publicKey": "YOUR_EMAILJS_PUBLIC_KEY"
+    "_note": "Two separate EmailJS accounts — account1 handles templates 1+4, account2 handles templates 2+3",
+    "account1": {
+      "publicKey": "d8GpzMV2apHzv3Uk5",
+      "serviceId": "service_xzo6x1l",
+      "templateId_user_ack": "template_1aqnbiw",
+      "templateId_delivery": "template_grv7vrj"
+    },
+    "account2": {
+      "publicKey": "OO_vJ4EZwi-kVknfS",
+      "serviceId": "service_vbt862s",
+      "templateId_admin_verify": "template_5msdu99",
+      "templateId_form_link": "template_5y8tzru"
+    }
+  },
+  "googleForm": {
+    "formUrl": "https://forms.gle/F2t9kw5QoGVhVxwr5",
+    "sheetUrl": "https://docs.google.com/spreadsheets/d/1txBWJqKVMilNRIUJitL2wiIYpZCOoCOLuSFOS91JonM"
   },
   "firebase": {
     "apiKey": "AIzaSyDSwNeLEDIuSOMeT-8vnPYifxax9NKj484",
@@ -20,7 +40,7 @@
     "projectId": "pookie-wish",
     "storageBucket": "pookie-wish.firebasestorage.app",
     "messagingSenderId": "741136764035",
-    "appId": "1:741136764035:web:1164a5c857c3c6ec9a9fb6"
+    "appId": "1:741136764035:web:ee7453e7b0dd2b489a9fb6"
   },
   "templates": [
     {
@@ -31,10 +51,17 @@
       "emoji": "🎀",
       "price": 99,
       "currency": "₹",
+      "currencyCode": "INR",
       "demoUrl": "https://hellokittybirthday.vercel.app/",
-      "tags": ["kawaii", "pink", "cute", "aesthetic", "romantic"],
+      "tags": [
+        "kawaii",
+        "pink",
+        "cute",
+        "aesthetic",
+        "romantic"
+      ],
       "shortDesc": "A full kawaii birthday experience with interactive games, love letters, and surprises.",
-      "longDesc": "Step into a world of soft pinks and kawaii charm. This template takes the birthday person through an animated love letter they open themselves, a virtual birthday cake they cut, a candle wish moment, a memory match card game, flip cards with hidden messages from you, and a beautifully sealed final letter. Every interaction is personal and crafted to feel magical.",
+      "longDesc": "Step into a world of soft pinks and kawaii charm. This template takes the birthday person through an animated love letter, a virtual cake they cut, a candle wish moment, memory match game, flip cards with hidden messages, and a beautifully sealed final letter.",
       "vibe": "Romantic & Cute",
       "features": [
         "💌 Animated birthday love letter to open",
@@ -63,10 +90,17 @@
       "emoji": "⚡",
       "price": 99,
       "currency": "₹",
+      "currencyCode": "INR",
       "demoUrl": "https://hp-template-tau.vercel.app/",
-      "tags": ["magic", "hogwarts", "wizard", "fantasy", "dark"],
+      "tags": [
+        "magic",
+        "hogwarts",
+        "wizard",
+        "fantasy",
+        "dark"
+      ],
       "shortDesc": "A magical Hogwarts-themed birthday journey with puzzles, quizzes, and a letter by owl.",
-      "longDesc": "Welcome to Hogwarts! This template takes your birthday person on a full wizarding world journey — complete with messages from across the magical realm, sideways-scrolling story panels, flip memory cards with your photos, a Wizard Word Hunt puzzle, an interactive Sorting Hat quiz, a scratch-to-reveal birthday wish, and a final letter delivered by owl. Pure magic from start to finish.",
+      "longDesc": "Welcome to Hogwarts! This template takes your birthday person on a full wizarding world journey — sideways story panels, flip memory cards, Wizard Word Hunt puzzle, Sorting Hat quiz, scratch-to-reveal wish, and a final letter by owl.",
       "vibe": "Magical & Epic",
       "features": [
         "⚡ Magical Hogwarts-style intro",
@@ -89,11 +123,41 @@
     }
   ],
   "comingSoon": [
-    { "id": "minecraft",  "name": "Minecraft",      "emoji": "⛏️", "tagline": "Block Party Incoming!" },
-    { "id": "barbie",     "name": "Barbie",          "emoji": "💅", "tagline": "It's a Barbie World!" },
-    { "id": "anime",      "name": "Anime Vibes",     "emoji": "🌸", "tagline": "Sugoi Birthday!" },
-    { "id": "bollywood",  "name": "Bollywood",       "emoji": "🎬", "tagline": "Filmy Birthday Wala Feel!" },
-    { "id": "space",      "name": "Space Aesthetic", "emoji": "🌌", "tagline": "Out of This World!" },
-    { "id": "among-us",   "name": "Among Us",        "emoji": "🚀", "tagline": "Sus Birthday Activated" }
+    {
+      "id": "minecraft",
+      "name": "Minecraft",
+      "emoji": "⛏️",
+      "tagline": "Block Party Incoming!"
+    },
+    {
+      "id": "barbie",
+      "name": "Barbie",
+      "emoji": "💅",
+      "tagline": "It's a Barbie World!"
+    },
+    {
+      "id": "anime",
+      "name": "Anime Vibes",
+      "emoji": "🌸",
+      "tagline": "Sugoi Birthday!"
+    },
+    {
+      "id": "bollywood",
+      "name": "Bollywood",
+      "emoji": "🎬",
+      "tagline": "Filmy Birthday Wala Feel!"
+    },
+    {
+      "id": "space",
+      "name": "Space Aesthetic",
+      "emoji": "🌌",
+      "tagline": "Out of This World!"
+    },
+    {
+      "id": "among-us",
+      "name": "Among Us",
+      "emoji": "🚀",
+      "tagline": "Sus Birthday Activated"
+    }
   ]
 }
