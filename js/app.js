@@ -724,6 +724,41 @@ function galShowImg(src, el) {
 }
 
 // ═══════════════════════════════════════════════════════
+//  ORDER SAVING (NEW)
+// ═══════════════════════════════════════════════════════
+async function saveOrder(data) {
+  if (!fbReady) {
+    console.error("Firebase not ready");
+    toast("Firebase not ready – order not saved", "err");
+    return;
+  }
+
+  try {
+    const db = firebase.firestore();
+
+    const docRef = await db.collection("orders").add({
+      buyerName: data.name,
+      buyerEmail: data.email,
+      buyerPhone: data.phone,
+      templateName: data.template,
+      totalAmount: data.amount,
+      bdayPersonName: data.bdayName,
+      bdayDate: data.bdayDate,
+      neededBy: data.neededBy,
+      screenshotUrl: data.screenshot,
+      status: "pending_verification",
+      createdAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    console.log("Order saved:", docRef.id);
+    return docRef.id;
+  } catch (err) {
+    console.error("Error saving order:", err);
+    toast("Failed to save order: " + err.message, "err");
+  }
+}
+
+// ═══════════════════════════════════════════════════════
 //  MODALS
 // ═══════════════════════════════════════════════════════
 function openModal(id) {
@@ -785,5 +820,6 @@ Object.assign(window, {
   handleSearch, clearSearch,
   vidTogglePlay, vidToggleMute, vidFullscreen, vidSeek,
   galShowVideo, galShowImg,
-  sendEmail, // exported so checkout.html and admin can use
+  sendEmail,
+  saveOrder  // <-- newly added
 });
