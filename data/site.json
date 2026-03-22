@@ -1,13 +1,13 @@
 {
   "site": {
     "name": "Pookie Wishes",
-    "tagline": "Birthday Websites They'll Never Forget ✨",
-    "description": "Send your bestie a full interactive birthday website. Personalised, beautiful.",
+    "tagline": "Digital Surprises They'll Never Forget ✨",
+    "description": "Send your loved one a full interactive surprise website. Personalised, beautiful, and unforgettable.",
     "email": "teamcipher.work@gmail.com",
     "whatsapp": "918700113731",
     "instagram": "https://www.instagram.com/pookiewish/",
     "instagramHandle": "@pookiewish",
-    "copyright": "© 2025 Pookie Wishes"
+    "copyright": "© 2026 Pookie Wishes"
   },
   "payment": {
     "method": "upi_qr",
@@ -53,13 +53,7 @@
       "currency": "₹",
       "currencyCode": "INR",
       "demoUrl": "https://hellokittybirthday.vercel.app/",
-      "tags": [
-        "kawaii",
-        "pink",
-        "cute",
-        "aesthetic",
-        "romantic"
-      ],
+      "tags": ["kawaii", "pink", "cute", "aesthetic", "romantic"],
       "shortDesc": "A full kawaii experience with interactive games, love letters, and surprises. Perfect for someone who adores cute, dreamy moments.",
       "longDesc": "Step into a world of soft pinks and kawaii charm. This surprise takes the recipient through an animated love letter, a virtual cake they cut, a candle wish moment, memory match game, flip cards with hidden messages, and a beautifully sealed final letter. Made with love for that special someone who deserves all the sweetness.",
       "vibe": "Romantic & Cute",
@@ -92,13 +86,7 @@
       "currency": "₹",
       "currencyCode": "INR",
       "demoUrl": "https://hp-template-tau.vercel.app/",
-      "tags": [
-        "magic",
-        "hogwarts",
-        "wizard",
-        "fantasy",
-        "dark"
-      ],
+      "tags": ["magic", "hogwarts", "wizard", "fantasy", "dark"],
       "shortDesc": "A magical Hogwarts-themed journey with puzzles, quizzes, and a letter by owl. For the one who believes in magic.",
       "longDesc": "Welcome to Hogwarts! This magical journey takes your special person through sideways story panels, flip memory cards, Wizard Word Hunt puzzle, Sorting Hat quiz, scratch-to-reveal wish, and a final letter delivered by owl. Pure enchantment for the wizard in your life.",
       "vibe": "Magical & Epic",

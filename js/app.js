@@ -609,7 +609,6 @@ function renderDetailPage() {
               ${inCart?'🛒':'＋'}
             </button>
           </div>
-          <!-- "Visit Live Demo" button removed -->
         </div>
       </div>
     </div>`;
@@ -730,7 +729,7 @@ function galShowImg(src, el) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  ORDER SAVING (NEW)
+//  ORDER SAVING
 // ═══════════════════════════════════════════════════════
 async function saveOrder(data) {
   if (!fbReady) {

@@ -9,12 +9,11 @@
 </head>
 <body>
 
-<!-- NAVBAR -->
 <nav class="navbar" id="nav">
   <a href="index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a>
   <div class="nav-links">
     <a href="pages/how-it-works.html" class="btn btn-ghost">How It Works</a>
-    <a href="pages/favorites.html"    class="btn btn-ghost">Favourites 💖</a>
+    <a href="pages/favorites.html" class="btn btn-ghost">Favourites 💖</a>
     <div class="nav-cart-wrap" onclick="openCart()" title="Cart" style="cursor:pointer;padding:8px;position:relative">
       🛒 <span class="cart-count" style="display:none">0</span>
     </div>
@@ -28,10 +27,14 @@
         <div class="dd-item red" onclick="doLogout()">🚪 Sign Out</div>
       </div>
     </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="pages/how-it-works.html" class="btn btn-ghost">How It Works</a>
+    <a href="pages/favorites.html" class="btn btn-ghost">Favourites 💖</a>
   </div>
 </nav>
 
-<!-- HERO -->
 <section class="hero-compact">
   <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="dots-bg"></div>
   <div class="hero-inner">
@@ -40,14 +43,12 @@
     <p class="hero-sub">Interactive websites for birthdays, proposals, anniversaries, apologies, or any special moment. Fully customised, beautifully designed, and made just for them.</p>
     <div class="search-wrap">
       <span class="search-ico">🔍</span>
-      <input class="search-inp" id="search-inp" type="text"
-        placeholder="Search by moment — birthday, proposal, anniversary...">
+      <input class="search-inp" id="search-inp" type="text" placeholder="Search by moment — birthday, proposal, anniversary...">
       <button class="search-clear hidden" id="search-clear" onclick="clearSearch()">✕</button>
     </div>
   </div>
 </section>
 
-<!-- TEMPLATES -->
 <main class="page-main">
   <div class="filter-row">
     <span class="filter-label" id="filter-label">All Templates</span>
@@ -57,14 +58,12 @@
   <div class="t-grid" id="tpl-grid">
     <div class="load-msg"><span style="font-size:1.8rem">🌸</span>Loading templates…</div>
   </div>
-  <!-- Coming Soon -->
   <section class="cs-wrap">
     <h2 class="cs-title">More <em>Themes</em> Dropping Soon</h2>
     <div class="cs-grid" id="cs-grid"></div>
   </section>
 </main>
 
-<!-- FOOTER -->
 <footer class="footer">
   <div class="footer-inner">
     <div class="footer-grid">
@@ -96,7 +95,6 @@
   </div>
 </footer>
 
-<!-- CART DRAWER -->
 <div class="cart-overlay" id="cart-overlay"></div>
 <div class="cart-drawer" id="cart-drawer">
   <div class="cart-hd">
@@ -113,7 +111,6 @@
   </div>
 </div>
 
-<!-- AUTH MODAL -->
 <div class="overlay" id="modal-auth">
   <div class="modal">
     <button class="modal-x" onclick="closeModal('modal-auth')">✕</button>
@@ -129,13 +126,12 @@
     <div class="f-group"><input class="f-inp" id="auth-pw" type="password" placeholder="Password"></div>
     <div style="display:flex;gap:8px;margin-bottom:10px">
       <button class="btn btn-primary" style="flex:1" onclick="emailSignIn()">Log In</button>
-      <button class="btn btn-soft"    style="flex:1" onclick="emailRegister()">Register</button>
+      <button class="btn btn-soft" style="flex:1" onclick="emailRegister()">Register</button>
     </div>
     <button class="btn btn-ghost btn-full" style="font-size:.8rem" onclick="resetPassword()">Forgot password?</button>
   </div>
 </div>
 
-<!-- ORDER MODAL -->
 <div class="overlay" id="modal-order">
   <div class="modal order-modal" style="max-width:540px;text-align:left">
     <button class="modal-x" onclick="closeModal('modal-order')">✕</button>
@@ -153,7 +149,6 @@
       <div class="stp" id="ord-stp3"><div class="stp-dot">3</div><span>Done</span></div>
     </div>
 
-    <!-- Step 1 -->
     <div id="order-step1">
       <div class="order-note">Fill in the details. After submitting, we'll reach out on WhatsApp to collect photos and confirm everything before you pay.</div>
       <div class="f-row">
@@ -178,7 +173,6 @@
       <button class="btn btn-primary btn-full btn-lg" onclick="proceedToReview()">Review Order →</button>
     </div>
 
-    <!-- Step 2 -->
     <div id="order-step2" style="display:none">
       <div class="order-note" style="background:rgba(122,201,184,.08);border-color:rgba(122,201,184,.25)">✅ Looks good? Hit submit — we'll open WhatsApp with your order details.</div>
       <span class="wa-label">Your order summary</span>
@@ -189,7 +183,6 @@
       </div>
     </div>
 
-    <!-- Step 3 -->
     <div class="success-box" id="order-step3">
       <span class="s-ico">🎉</span>
       <h2>Order Placed!</h2>
@@ -216,16 +209,27 @@
 </script>
 <script src="js/app.js"></script>
 <script>
-function checkoutCart() {
-  if (!cart.length) return;
-  if (cart.length === 1) { closeCart(); openOrderModal(cart[0].id); return; }
-  const lines = cart.map(i=>`• ${i.emoji} ${i.name} — ${i.currency}${i.price}`).join('\n');
-  const total = cart.reduce((s,i)=>s+i.price,0);
-  const text  = `🛒 *Pookie Wishes Cart Order*\n\n${lines}\n\n*Total: ₹${total}*\n\nPlease confirm and guide me for each template!`;
-  const waNum = '918700113731';
-  window.open(`https://wa.me/${waNum}?text=${encodeURIComponent(text)}`, '_blank');
-  closeCart();
-}
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open');
+  });
+  mobileMenu.querySelectorAll('a').forEach(link => {
+    link.addEventListener('click', () => {
+      hamburger.classList.remove('open');
+      mobileMenu.classList.remove('open');
+    });
+  });
+  function checkoutCart() {
+    if (!cart.length) return;
+    if (cart.length === 1) { closeCart(); openOrderModal(cart[0].id); return; }
+    const lines = cart.map(i=>`• ${i.emoji} ${i.name} — ${i.currency}${i.price}`).join('\n');
+    const total = cart.reduce((s,i)=>s+i.price,0);
+    const text  = `🛒 *Pookie Wishes Cart Order*\n\n${lines}\n\n*Total: ₹${total}*\n\nPlease confirm and guide me for each template!`;
+    window.open(`https://wa.me/918700113731?text=${encodeURIComponent(text)}`, '_blank');
+    closeCart();
+  }
 </script>
 </body>
 </html>

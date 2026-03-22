@@ -12,6 +12,7 @@
   <div class="nav-links">
     <a href="../index.html" class="btn btn-ghost">Templates</a>
     <a href="favorites.html" class="btn btn-ghost">Favourites 💖</a>
+    <div class="nav-cart-wrap" onclick="openCart()" style="cursor:pointer;padding:8px;position:relative">🛒 <span class="cart-count" style="display:none">0</span></div>
     <button class="btn btn-primary" id="btn-login" onclick="openModal('modal-auth')">Sign In</button>
     <div class="user-wrap hidden" id="u-wrap">
       <img class="user-av" id="u-av" src="" alt="" onclick="toggleDd()">
@@ -22,6 +23,11 @@
         <div class="dd-item red" onclick="doLogout()">🚪 Sign Out</div>
       </div>
     </div>
+    <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+  </div>
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="../index.html" class="btn btn-ghost">Templates</a>
+    <a href="favorites.html" class="btn btn-ghost">Favourites 💖</a>
   </div>
 </nav>
 <main class="inner-page">
@@ -84,5 +90,23 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="../js/app.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (hamburger && mobileMenu) {
+    hamburger.addEventListener('click', () => {
+      hamburger.classList.toggle('open');
+      mobileMenu.classList.toggle('open');
+    });
+    mobileMenu.querySelectorAll('a').forEach(link => {
+      link.addEventListener('click', () => {
+        hamburger.classList.remove('open');
+        mobileMenu.classList.remove('open');
+      });
+    });
+  }
+});
+</script>
 </body>
 </html>
