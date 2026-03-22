@@ -149,9 +149,20 @@ window.addEventListener('DOMContentLoaded', async () => {
   db = firebase.firestore(); stor = firebase.storage();
   // EmailJS: no global init needed — per-send with publicKey param
   firebase.auth().onAuthStateChanged(user => {
-    if (user && ADMIN_EMAILS.includes(user.email)) showAdmin(user);
-    else if (user) { firebase.auth().signOut(); showErr('Not authorised.'); }
-    else { document.getElementById('login-pg').style.display='flex'; document.getElementById('admin-wrap').classList.remove('on'); }
+    // 🔥 NEW: Redirect non-admin users to home
+    if (user && ADMIN_EMAILS.includes(user.email)) {
+      showAdmin(user);
+    } else if (user) {
+      // User is logged in but not an admin
+      firebase.auth().signOut().then(() => {
+        window.location.href = "/";
+      }).catch(() => {
+        window.location.href = "/";
+      });
+    } else {
+      document.getElementById('login-pg').style.display='flex';
+      document.getElementById('admin-wrap').classList.remove('on');
+    }
   });
 });
 

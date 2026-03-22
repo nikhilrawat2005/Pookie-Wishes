@@ -85,6 +85,23 @@ function initFirebase() {
         await syncFavs(user.uid);
         if (PAGE === 'favorites') renderFavPage();
         else refreshFavBtns();
+
+        // 🔥 NEW: Admin button (if email is in admin list)
+        const ADMIN_EMAILS = [
+          "teamcipher.work@gmail.com",
+          "nikhil2005114@gmail.com"
+        ];
+        if (ADMIN_EMAILS.includes(user.email)) {
+          const nav = document.querySelector(".nav-links");
+          if (nav && !document.getElementById("admin-btn")) {
+            const btn = document.createElement("a");
+            btn.href = ROOT + "admin/index.html";
+            btn.innerText = "Admin Panel ⚙️";
+            btn.className = "btn btn-ghost";
+            btn.id = "admin-btn";
+            nav.appendChild(btn);
+          }
+        }
       } else {
         if (PAGE === 'favorites') showFavPrompt();
         else refreshFavBtns();
@@ -410,6 +427,10 @@ function renderCartDrawer() {
 function checkoutCart() {
   if (!cart.length) return;
   closeCart();
+  // 🔥 Note: The actual order submission happens on checkout.html.
+  // The `saveOrder` function below can be called from the checkout page.
+  // For example, after form submission, call:
+  // await saveOrder({ ...formData, screenshot: "URL" });
   window.location.href = (isPages ? '' : 'pages/') + 'checkout.html';
 }
 
@@ -751,6 +772,7 @@ async function saveOrder(data) {
     });
 
     console.log("Order saved:", docRef.id);
+    toast("Order saved successfully! ✅", "ok");
     return docRef.id;
   } catch (err) {
     console.error("Error saving order:", err);
