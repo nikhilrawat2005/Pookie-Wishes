@@ -78,6 +78,7 @@ function initFirebase() {
   try {
     if (!firebase.apps.length) firebase.initializeApp(cfg);
     fbReady = true;
+    window.fbReady = true;  // 🔥 EXPOSE GLOBALLY
     firebase.auth().onAuthStateChanged(async user => {
       currentUser = user;
       updateAuthUI(user);
@@ -110,6 +111,7 @@ function initFirebase() {
   } catch (e) {
     console.warn('[PW] Firebase init error:', e.message);
     fbReady = false;
+    window.fbReady = false;
   }
 }
 

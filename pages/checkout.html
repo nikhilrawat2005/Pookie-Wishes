@@ -270,6 +270,22 @@ function validate() {
 }
 
 async function submitOrder() {
+  // 🔥 Ensure Firebase is ready before proceeding
+  if (!window.fbReady) {
+    console.warn("Waiting for Firebase...");
+    await new Promise(resolve => {
+      const t = setInterval(() => {
+        if (window.fbReady) {
+          clearInterval(t);
+          resolve();
+        }
+      }, 100);
+    });
+  }
+
+  console.log("fbReady:", window.fbReady);
+  console.log("Saving order to Firestore...");
+
   const data = validate();
   if (!data) return;
   const btn = document.getElementById('submit-btn');
@@ -297,6 +313,7 @@ async function submitOrder() {
         status:'pending_verification', deliveryStatus:'pending',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
+      console.log("Order saved successfully:", orderId);
     } catch(e) { console.warn('Firestore save failed:',e); }
   }
 
