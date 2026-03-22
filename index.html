@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pookie Wishes — Birthday Websites ✨</title>
-  <meta name="description" content="Send your bestie a full interactive birthday website. Personalised, beautiful, just ₹99!">
+  <title>Pookie Wishes — Digital Surprises ✨</title>
+  <meta name="description" content="Create a personalised interactive website for any special moment — birthday, proposal, anniversary, or just because. Fully customised, beautifully designed, starting at ₹150.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
   <link rel="stylesheet" href="css/style.css">
 </head>
@@ -15,7 +15,6 @@
   <div class="nav-links">
     <a href="pages/how-it-works.html" class="btn btn-ghost">How It Works</a>
     <a href="pages/favorites.html"    class="btn btn-ghost">Favourites 💖</a>
-    <!-- Cart -->
     <div class="nav-cart-wrap" onclick="openCart()" title="Cart" style="cursor:pointer;padding:8px;position:relative">
       🛒 <span class="cart-count" style="display:none">0</span>
     </div>
@@ -36,14 +35,13 @@
 <section class="hero-compact">
   <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="dots-bg"></div>
   <div class="hero-inner">
-    <div class="hero-chip"><span class="chip-dot"></span>Interactive birthday websites · Just ₹99</div>
-    <h1>Gift a Birthday<br>They'll <em>Never Forget</em></h1>
-    <p class="hero-sub">Skip the generic text. Send a full interactive birthday website — games, love letters, surprises — personalised just for them.</p>
+    <div class="hero-chip"><span class="chip-dot"></span>Personalised digital surprises · Starting at ₹150</div>
+    <h1>Create a Surprise<br>They'll <em>Never Forget</em></h1>
+    <p class="hero-sub">Interactive websites for birthdays, proposals, anniversaries, apologies, or any special moment. Fully customised, beautifully designed, and made just for them.</p>
     <div class="search-wrap">
       <span class="search-ico">🔍</span>
       <input class="search-inp" id="search-inp" type="text"
-        placeholder="Search templates — Hello Kitty, Harry Potter…"
-        oninput="handleSearch(this.value)">
+        placeholder="Search by moment — birthday, proposal, anniversary...">
       <button class="search-clear hidden" id="search-clear" onclick="clearSearch()">✕</button>
     </div>
   </div>
@@ -55,6 +53,7 @@
     <span class="filter-label" id="filter-label">All Templates</span>
     <span class="filter-count" id="filter-count"></span>
   </div>
+  <div class="hero-sub" style="margin-bottom:24px; font-size:0.9rem;">Choose a design that fits their vibe. Each comes with interactive games, personalised messages, and hidden surprises.</div>
   <div class="t-grid" id="tpl-grid">
     <div class="load-msg"><span style="font-size:1.8rem">🌸</span>Loading templates…</div>
   </div>
@@ -71,7 +70,7 @@
     <div class="footer-grid">
       <div>
         <a href="index.html" class="f-logo">Pookie Wishes</a>
-        <p class="f-desc">Birthday websites that feel personal and memorable. Because your people deserve more than a text. 🎂</p>
+        <p class="f-desc">Digital surprises that feel personal and unforgettable. Because your people deserve more than a text. ✨</p>
       </div>
       <div>
         <div class="f-ctitle">Pages</div>
@@ -91,8 +90,8 @@
       </div>
     </div>
     <div class="f-bottom">
-      <span>© 2025 <span data-site-name>Pookie Wishes</span> — made with <span class="f-heart">💖</span></span>
-      <span>₹99 per website ✨</span>
+      <span>© 2026 <span data-site-name>Pookie Wishes</span> — made with <span class="f-heart">💖</span></span>
+      <span>Starting at ₹150 ✨</span>
     </div>
   </div>
 </footer>
@@ -205,10 +204,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<!-- EmailJS — add your public key after setup -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script>
-  // EmailJS init — key comes from site.json after setup
   window.addEventListener('load', () => {
     fetch('data/site.json').then(r=>r.json()).then(d => {
       if (d.emailjs?.publicKey && !d.emailjs.publicKey.startsWith('YOUR')) {
@@ -221,9 +218,7 @@
 <script>
 function checkoutCart() {
   if (!cart.length) return;
-  // Open order modal for first item, or handle multi
   if (cart.length === 1) { closeCart(); openOrderModal(cart[0].id); return; }
-  // Multiple items — open WhatsApp with full cart
   const lines = cart.map(i=>`• ${i.emoji} ${i.name} — ${i.currency}${i.price}`).join('\n');
   const total = cart.reduce((s,i)=>s+i.price,0);
   const text  = `🛒 *Pookie Wishes Cart Order*\n\n${lines}\n\n*Total: ₹${total}*\n\nPlease confirm and guide me for each template!`;

@@ -66,8 +66,18 @@
 
     <!-- FORM -->
     <div class="co-card">
-      <div class="co-title">Place Your Order 🎂</div>
-      <div class="co-sub">Fill in the details, pay via UPI on the right, upload your screenshot, and submit. We'll verify and get back to you within 1–2 hours!</div>
+      <div class="steps" style="margin-bottom:24px;">
+        <div class="stp active"><div class="stp-dot">1</div><span>Fill Details</span></div>
+        <div class="stp-line"></div>
+        <div class="stp"><div class="stp-dot">2</div><span>Pay via UPI</span></div>
+        <div class="stp-line"></div>
+        <div class="stp"><div class="stp-dot">3</div><span>Upload Screenshot</span></div>
+        <div class="stp-line"></div>
+        <div class="stp"><div class="stp-dot">4</div><span>We Verify & Start</span></div>
+      </div>
+
+      <div class="co-title">Place Your Order 💖</div>
+      <div class="co-sub">Fill in your details, pay via UPI, upload your screenshot, and we'll start creating your surprise.</div>
 
       <div class="co-sec">
         <div class="co-sec-lbl">Your Details</div>
@@ -109,7 +119,7 @@
       <div class="divider"></div>
 
       <div class="submit-note">
-        After submitting — we'll <strong>verify your payment within 1–2 hours</strong> and email you a personalisation form for your photos and wishes. 🌸
+        After submitting — we'll verify your payment and email you a personalisation form to add your photos and message. We'll start building your surprise as soon as we receive it! 💖
       </div>
       <button class="btn btn-primary btn-xl btn-full" id="submit-btn" onclick="submitOrder()">Submit Order ✨</button>
       <p style="text-align:center;font-size:.74rem;color:var(--dim);margin-top:10px">
@@ -128,7 +138,7 @@
         </div>
       </div>
       <div class="sc" style="text-align:center">
-        <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:3px">Pay via UPI 💳</div>
+        <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:3px">Pay securely via UPI 💳</div>
         <div style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Scan QR or enter UPI ID below</div>
         <div class="qr-img-wrap">
           <img src="../media/payment-qr.png" id="qr-img" alt="UPI QR"
@@ -152,21 +162,17 @@
 
 <div id="toasts"></div>
 
-<!-- Firebase compat SDKs (NOT module type) -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<!-- EmailJS -->
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<!-- App (loads SITE, exposes sendEmail) -->
 <script src="../js/app.js"></script>
 
 <script>
 let ssFile = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
-  // SITE is loaded by app.js DOMContentLoaded — wait for it
   await waitForSite();
 
   const upiId = SITE.payment?.upiId || '8700113731@fam';
@@ -270,9 +276,7 @@ function validate() {
 }
 
 async function submitOrder() {
-  // 🔥 Ensure Firebase is ready before proceeding
   if (!window.fbReady) {
-    console.warn("Waiting for Firebase...");
     await new Promise(resolve => {
       const t = setInterval(() => {
         if (window.fbReady) {
@@ -283,9 +287,6 @@ async function submitOrder() {
     });
   }
 
-  console.log("fbReady:", window.fbReady);
-  console.log("Saving order to Firestore...");
-
   const data = validate();
   if (!data) return;
   const btn = document.getElementById('submit-btn');
@@ -293,7 +294,6 @@ async function submitOrder() {
   const orderId = 'PW-' + Date.now();
   const total   = data.orders.reduce((s,o)=>s+o.price,0);
 
-  // 1. Upload screenshot to Firebase Storage
   let ssUrl = '';
   if (window.fbReady) {
     try {
@@ -303,7 +303,6 @@ async function submitOrder() {
     } catch(e) { console.warn('Screenshot upload failed:',e); ssUrl='(upload failed)'; }
   }
 
-  // 2. Save to Firestore
   btn.textContent='Saving order…';
   if (window.fbReady) {
     try {
@@ -313,11 +312,9 @@ async function submitOrder() {
         status:'pending_verification', deliveryStatus:'pending',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-      console.log("Order saved successfully:", orderId);
     } catch(e) { console.warn('Firestore save failed:',e); }
   }
 
-  // 3. Send both emails
   btn.textContent='Sending emails…';
   const orderLines = data.orders.map((o,i)=>`${i+1}. ${o.templateName} — For: ${o.bdayName} (${o.bdayDate}) — Needed by: ${o.neededBy}`).join('\n');
   const tplNames = data.orders.map(o=>o.templateName).join(', ');

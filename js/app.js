@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-//  POOKIE WISHES — app.js  (v6 — Final)
+//  POOKIE WISHES — app.js  (v7 — Updated Messaging)
 //  Dual EmailJS accounts · Firebase v9-compat
 //  Proper video player · Fixed auth flow
 // ═══════════════════════════════════════════════════════
@@ -78,7 +78,7 @@ function initFirebase() {
   try {
     if (!firebase.apps.length) firebase.initializeApp(cfg);
     fbReady = true;
-    window.fbReady = true;  // 🔥 EXPOSE GLOBALLY
+    window.fbReady = true;
     firebase.auth().onAuthStateChanged(async user => {
       currentUser = user;
       updateAuthUI(user);
@@ -87,7 +87,6 @@ function initFirebase() {
         if (PAGE === 'favorites') renderFavPage();
         else refreshFavBtns();
 
-        // 🔥 NEW: Admin button (if email is in admin list)
         const ADMIN_EMAILS = [
           "teamcipher.work@gmail.com",
           "nikhil2005114@gmail.com"
@@ -116,20 +115,10 @@ function initFirebase() {
 }
 
 // ── EmailJS init (dual accounts) ──────────────────────
-// Called once SITE is loaded — initialise both accounts
-function initEmailJS() {
-  const a1 = SITE?.emailjs?.account1;
-  const a2 = SITE?.emailjs?.account2;
-  // emailjs.init() takes a public key — we call it per-send for dual accounts
-  // No global init needed with emailjs.send() using account-specific keys
-}
-
-// Send via EmailJS — picks correct account automatically
 async function sendEmail(templateKey, params) {
   const ejs = SITE?.emailjs;
   if (!ejs) return;
 
-  // Map template key to account
   const account1Keys = ['templateId_user_ack', 'templateId_delivery'];
   const account2Keys = ['templateId_admin_verify', 'templateId_form_link'];
 
@@ -429,10 +418,6 @@ function renderCartDrawer() {
 function checkoutCart() {
   if (!cart.length) return;
   closeCart();
-  // 🔥 Note: The actual order submission happens on checkout.html.
-  // The `saveOrder` function below can be called from the checkout page.
-  // For example, after form submission, call:
-  // await saveOrder({ ...formData, screenshot: "URL" });
   window.location.href = (isPages ? '' : 'pages/') + 'checkout.html';
 }
 
@@ -474,7 +459,7 @@ function buildCard(t) {
         <div class="t-tagline">${t.tagline}</div>
         <div class="t-card-btns" onclick="event.stopPropagation()">
           <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">🛒 Add to Cart</button>
-          <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${t.id}',event); location.href='${ROOT}pages/checkout.html'">Buy Now 🎁</button>
+          <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${t.id}',event); location.href='${ROOT}pages/checkout.html'">Create Surprise 🎁</button>
         </div>
       </div>
     </div>`;
@@ -608,12 +593,12 @@ function renderDetailPage() {
           <div class="detail-tags">${tagsHTML}</div>
           <div class="price-row">
             <div class="price-amount">${t.currency||'₹'}${t.price}</div>
-            <div class="price-note">One-time · Personalised just for you<br>We contact you after order ✨</div>
+            <div class="price-note">One-time · Fully customised for your moment ✨<br>We'll reach out after you order.</div>
           </div>
           <div class="detail-actions">
             <button class="btn btn-primary btn-lg" style="flex:1"
               onclick="addToCart('${t.id}',event);setTimeout(()=>checkoutCart(),300)">
-              Buy Now 🎁
+              Create Surprise 🎁
             </button>
             <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}"
               onclick="toggleFav('${t.id}',event)" style="width:44px;height:44px;font-size:1.1rem">
@@ -712,7 +697,6 @@ function vidSeek(e) {
 function galShowVideo(el) {
   document.querySelectorAll('.gallery-thumb').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
-  // Rebuild video in player
   const player  = document.getElementById('media-player');
   const vid      = document.getElementById('detail-vid');
   const controls = document.getElementById('vid-controls');
@@ -739,7 +723,6 @@ function galShowImg(src, el) {
   const player   = document.getElementById('media-player');
   const controls = document.getElementById('vid-controls');
   if (!player) return;
-  // Pause video if playing
   const vid = document.getElementById('detail-vid');
   if (vid) vid.pause();
   player.innerHTML = `<img src="${src}" alt="gallery" style="width:100%;height:100%;object-fit:cover;display:block">`;
@@ -845,5 +828,5 @@ Object.assign(window, {
   vidTogglePlay, vidToggleMute, vidFullscreen, vidSeek,
   galShowVideo, galShowImg,
   sendEmail,
-  saveOrder  // <-- newly added
+  saveOrder
 });
