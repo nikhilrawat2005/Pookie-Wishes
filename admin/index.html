@@ -562,45 +562,92 @@ function previewQR(input) {
 async function deliver() {
   const o = orders.find(x => (x.orderId || x._docId) === curOrderId);
   if (!o) return;
-  const link = document.getElementById('del-link').value.trim();
-  if (!link) { toast('Enter the website link first', 'err'); return; }
-  const btn = document.getElementById('del-btn');
-  btn.disabled = true; btn.textContent = 'Sending…';
 
-  let qrUrl = o.qrImageUrl || '';
-  if (qrFile) {
-    try {
+  const link = document.getElementById('del-link').value.trim();
+  if (!link) {
+    toast('Enter the website link first', 'err');
+    return;
+  }
+
+  const btn = document.getElementById('del-btn');
+  btn.disabled = true;
+  btn.textContent = 'Sending…';
+
+  try {
+    let qrUrl = o.qrImageUrl || '';
+
+    // 🔥 QR upload
+    if (qrFile) {
       const ref = stor.ref(`qr-codes/${curOrderId}.png`);
       await ref.put(qrFile);
       qrUrl = await ref.getDownloadURL();
-    } catch(e) { console.warn('QR upload failed:', e); }
-  }
+    }
 
-  await db.collection('orders').doc(curOrderId).update({ deliveryLink: link, qrImageUrl: qrUrl });
-  if (o) { o.deliveryLink = link; o.qrImageUrl = qrUrl; }
-
-  const ejs1 = SITE.emailjs?.account1;
-  if (!ejs1?.serviceId || ejs1.serviceId.startsWith('YOUR')) {
-    toast('EmailJS account1 not configured', 'err');
-    btn.disabled = false; btn.textContent = '📧 Send Delivery Email'; return;
-  }
-
-  const orderSummary = (o.orders||[]).map(x => `${x.templateName} — for ${x.bdayName}`).join('\n');
-  try {
-    await emailjs.send(ejs1.serviceId, ejs1.templateId_delivery, {
-      to_name: o.buyerName, to_email: o.buyerEmail, order_id: curOrderId,
-      template_name: (o.orders||[]).map(x => x.templateName).join(', '),
-      bday_person_name: (o.orders||[]).map(x => x.bdayName).join(', '),
-      order_summary: orderSummary, website_link: link,
-      qr_image_url: qrUrl, from_name: 'Pookie Wishes'
-    }, ejs1.publicKey);
+    // 🔥 Firebase update (important wrap)
     await db.collection('orders').doc(curOrderId).update({
-      status: 'delivered', deliveryStatus: 'delivered',
+      deliveryLink: link,
+      qrImageUrl: qrUrl
+    });
+
+    // local update
+    o.deliveryLink = link;
+    o.qrImageUrl = qrUrl;
+
+    // 🔥 EmailJS config check
+    const ejs1 = SITE.emailjs?.account1;
+
+    if (!ejs1?.serviceId || ejs1.serviceId.startsWith('YOUR')) {
+      throw new Error('EmailJS not configured');
+    }
+
+    const orderSummary = (o.orders || [])
+      .map(x => `${x.templateName} — for ${x.bdayName}`)
+      .join('\n');
+
+    // 🔥 SEND EMAIL
+    await emailjs.send(
+      ejs1.serviceId,
+      ejs1.templateId_delivery,
+      {
+        to_name: o.buyerName,
+        to_email: o.buyerEmail,
+        order_id: curOrderId,
+        template_name: (o.orders || []).map(x => x.templateName).join(', '),
+        bday_person_name: (o.orders || []).map(x => x.bdayName).join(', '),
+        order_summary: orderSummary,
+        website_link: link,
+        qr_image_url: qrUrl,
+        from_name: 'Pookie Wishes'
+      },
+      ejs1.publicKey
+    );
+
+    // 🔥 final status update
+    await db.collection('orders').doc(curOrderId).update({
+      status: 'delivered',
+      deliveryStatus: 'delivered',
       deliveredAt: firebase.firestore.FieldValue.serverTimestamp()
     });
-    if (o) { o.status = 'delivered'; o.deliveryStatus = 'delivered'; }
-    updateStats(); renderTable(); toast('Delivery email sent! Order complete ✅', 'ok'); btn.textContent = '✅ Sent!';
-  } catch(e) { console.error(e); toast('Email failed', 'err'); btn.disabled = false; btn.textContent = '📧 Send Delivery Email'; }
+
+    o.status = 'delivered';
+    o.deliveryStatus = 'delivered';
+
+    updateStats();
+    renderTable();
+
+    // ✅ SUCCESS
+    toast('Delivery email sent! Order complete ✅', 'ok');
+    btn.textContent = '✅ Sent!';
+
+  } catch (e) {
+    console.error('DELIVERY ERROR:', e);
+
+    toast('Failed — check console ⚠️', 'err');
+
+    // 🔥 CRITICAL FIX (button reset)
+    btn.disabled = false;
+    btn.textContent = '📧 Send Delivery Email';
+  }
 }
 
 /* TOAST */
