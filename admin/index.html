@@ -243,12 +243,11 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
 const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
-let SITE=null, db=null, stor=null, orders=[], curFilter='all', curOrderId=null, qrFile=null;
+let SITE=null, db=null, orders=[], curFilter='all', curOrderId=null, qrFile=null;
 
 /* SIDEBAR MOBILE */
 function toggleSidebar() {
@@ -260,11 +259,34 @@ function closeSidebar() {
   document.getElementById('sb-overlay').classList.remove('on');
 }
 
+/* CLOUDINARY UPLOAD */
+async function uploadToCloudinary(file) {
+  const cloudName = "dktx4woql";
+  const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
+
+  const formData = new FormData();
+  formData.append("file", file);
+  formData.append("upload_preset", "unsigned_preset");
+
+  const res = await fetch(url, {
+    method: "POST",
+    body: formData
+  });
+
+  const data = await res.json();
+
+  if (!data.secure_url) {
+    throw new Error("Cloudinary upload failed");
+  }
+
+  return data.secure_url.replace("/upload/", "/upload/q_auto,f_auto/");
+}
+
 /* INIT */
 window.addEventListener('DOMContentLoaded', async () => {
   SITE = await fetch('../data/site.json').then(r => r.json());
   if (!firebase.apps.length) firebase.initializeApp(SITE.firebase);
-  db = firebase.firestore(); stor = firebase.storage();
+  db = firebase.firestore();
   firebase.auth().onAuthStateChanged(user => {
     if (user && ADMIN_EMAILS.includes(user.email)) {
       showAdmin(user);
@@ -576,24 +598,19 @@ async function deliver() {
   try {
     let qrUrl = o.qrImageUrl || '';
 
-    // 🔥 QR upload
+    // Cloudinary upload (replaces Firebase Storage)
     if (qrFile) {
-      const ref = stor.ref(`qr-codes/${curOrderId}.png`);
-      await ref.put(qrFile);
-      qrUrl = await ref.getDownloadURL();
+      qrUrl = await uploadToCloudinary(qrFile);
     }
 
-    // 🔥 Firebase update (important wrap)
     await db.collection('orders').doc(curOrderId).update({
       deliveryLink: link,
       qrImageUrl: qrUrl
     });
 
-    // local update
     o.deliveryLink = link;
     o.qrImageUrl = qrUrl;
 
-    // 🔥 EmailJS config check
     const ejs1 = SITE.emailjs?.account1;
 
     if (!ejs1?.serviceId || ejs1.serviceId.startsWith('YOUR')) {
@@ -604,7 +621,6 @@ async function deliver() {
       .map(x => `${x.templateName} — for ${x.bdayName}`)
       .join('\n');
 
-    // 🔥 SEND EMAIL
     await emailjs.send(
       ejs1.serviceId,
       ejs1.templateId_delivery,
@@ -622,7 +638,6 @@ async function deliver() {
       ejs1.publicKey
     );
 
-    // 🔥 final status update
     await db.collection('orders').doc(curOrderId).update({
       status: 'delivered',
       deliveryStatus: 'delivered',
@@ -635,16 +650,12 @@ async function deliver() {
     updateStats();
     renderTable();
 
-    // ✅ SUCCESS
     toast('Delivery email sent! Order complete ✅', 'ok');
     btn.textContent = '✅ Sent!';
 
   } catch (e) {
     console.error('DELIVERY ERROR:', e);
-
     toast('Failed — check console ⚠️', 'err');
-
-    // 🔥 CRITICAL FIX (button reset)
     btn.disabled = false;
     btn.textContent = '📧 Send Delivery Email';
   }

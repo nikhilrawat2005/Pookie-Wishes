@@ -53,7 +53,13 @@
       "currency": "₹",
       "currencyCode": "INR",
       "demoUrl": "https://hellokittybirthday.vercel.app/",
-      "tags": ["kawaii", "pink", "cute", "aesthetic", "romantic"],
+      "tags": [
+        "kawaii",
+        "pink",
+        "cute",
+        "aesthetic",
+        "romantic"
+      ],
       "shortDesc": "A full kawaii experience with interactive games, love letters, and surprises. Perfect for someone who adores cute, dreamy moments.",
       "longDesc": "Step into a world of soft pinks and kawaii charm. This surprise takes the recipient through an animated love letter, a virtual cake they cut, a candle wish moment, memory match game, flip cards with hidden messages, and a beautifully sealed final letter. Made with love for that special someone who deserves all the sweetness.",
       "vibe": "Romantic & Cute",
@@ -86,7 +92,13 @@
       "currency": "₹",
       "currencyCode": "INR",
       "demoUrl": "https://hp-template-tau.vercel.app/",
-      "tags": ["magic", "hogwarts", "wizard", "fantasy", "dark"],
+      "tags": [
+        "magic",
+        "hogwarts",
+        "wizard",
+        "fantasy",
+        "dark"
+      ],
       "shortDesc": "A magical Hogwarts-themed journey with puzzles, quizzes, and a letter by owl. For the one who believes in magic.",
       "longDesc": "Welcome to Hogwarts! This magical journey takes your special person through sideways story panels, flip memory cards, Wizard Word Hunt puzzle, Sorting Hat quiz, scratch-to-reveal wish, and a final letter delivered by owl. Pure enchantment for the wizard in your life.",
       "vibe": "Magical & Epic",
@@ -106,6 +118,40 @@
           "media/harry-potter/img2.jpg",
           "media/harry-potter/img3.jpg",
           "media/harry-potter/img4.jpg"
+        ]
+      }
+    },
+    {
+      "id": "love-trap",
+      "name": "Love Trap",
+      "price": 29,
+      "currency": "₹",
+      "emoji": "💘",
+      "tagline": "Catch them in a web of love",
+      "shortDesc": "A sneaky, romantic surprise that will make them fall all over again. Interactive love-themed games and sweet messages.",
+      "longDesc": "Set the perfect love trap with this playful yet heartfelt website. Includes romantic animations, a 'truth or dare' style game, and personalised love notes. Perfect for proposals, anniversaries, or just because.",
+      "vibe": "Romantic & Playful",
+      "badge": "New",
+      "features": [
+        "Personalised love letter",
+        "Interactive love trap game",
+        "Countdown to the big moment",
+        "Hidden surprises"
+      ],
+      "tags": [
+        "romance",
+        "love",
+        "proposal",
+        "anniversary",
+        "birthday"
+      ],
+      "media": {
+        "thumbnail": "media/love-trap/thumbnail.jpg",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774376488/Untitled_design_jdl9sl.mp4",
+        "gallery": [
+          "media/love-trap/1.jpg",
+          "media/love-trap/2.jpg",
+          "media/love-trap/3.jpg"
         ]
       }
     }
