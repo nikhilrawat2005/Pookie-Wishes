@@ -272,34 +272,38 @@ function validate() {
 }
 
 async function submitOrder() {
+  // Wait for Firebase with a 5-second timeout so button never hangs forever
   if (!window.fbReady) {
     await new Promise(resolve => {
       const t = setInterval(() => {
-        if (window.fbReady) {
-          clearInterval(t);
-          resolve();
-        }
+        if (window.fbReady) { clearInterval(t); resolve(); }
       }, 100);
+      setTimeout(() => { clearInterval(t); resolve(); }, 5000);
     });
   }
 
   const data = validate();
   if (!data) return;
   const btn = document.getElementById('submit-btn');
-  btn.disabled=true; btn.textContent='Uploading screenshot…';
+  btn.disabled = true;
   const orderId = 'PW-' + Date.now();
   const total   = data.orders.reduce((s,o)=>s+o.price,0);
 
   let ssUrl = '';
-  if (window.fbReady) {
+  if (window.fbReady && ssFile) {
+    btn.textContent = 'Uploading screenshot…';
     try {
       const ref = firebase.storage().ref(`payment-screenshots/${orderId}.jpg`);
       await ref.put(ssFile);
       ssUrl = await ref.getDownloadURL();
-    } catch(e) { console.warn('Screenshot upload failed:',e); ssUrl='(upload failed)'; }
+    } catch(e) {
+      console.warn('Screenshot upload failed:', e);
+      ssUrl = '(upload failed)';
+      // Don't block the order — continue even if screenshot upload fails
+    }
   }
 
-  btn.textContent='Saving order…';
+  btn.textContent = 'Saving order…';
   if (window.fbReady) {
     try {
       await firebase.firestore().collection('orders').doc(orderId).set({
@@ -308,7 +312,7 @@ async function submitOrder() {
         status:'pending_verification', deliveryStatus:'pending',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-    } catch(e) { console.warn('Firestore save failed:',e); }
+    } catch(e) { console.warn('Firestore save failed:', e); }
   }
 
   btn.textContent='Sending emails…';

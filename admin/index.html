@@ -6,32 +6,54 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
   <link rel="stylesheet" href="../css/style.css">
   <style>
-    body{background:var(--bg2)}
-    /* Login */
+    body{background:var(--bg2);margin:0}
+
+    /* LOGIN */
     .login-pg{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
     .login-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rx);padding:48px 40px;max-width:380px;width:100%;text-align:center;box-shadow:var(--sh-lg)}
     .login-ico{font-size:2.8rem;display:block;margin-bottom:14px}
     .login-title{font-family:var(--fd);font-size:1.6rem;font-weight:700;margin-bottom:6px}
     .login-sub{font-size:.84rem;color:var(--muted);margin-bottom:22px}
-    /* Layout */
+
+    /* LAYOUT */
     .admin-wrap{display:none;min-height:100vh}
     .admin-wrap.on{display:flex}
-    .sidebar{width:230px;background:var(--card);border-right:1px solid var(--bdr);padding:18px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:10}
-    .sb-logo{font-family:var(--fd);font-size:1.15rem;font-weight:700;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;padding:0 18px 16px;border-bottom:1px solid var(--bdr);margin-bottom:10px}
-    .sb-logo small{display:block;font-family:var(--fm);font-size:.58rem;-webkit-text-fill-color:var(--dim);margin-top:2px}
-    .sb-link{display:flex;align-items:center;gap:9px;padding:10px 18px;color:var(--muted);font-size:.86rem;cursor:pointer;transition:all .18s;border-left:2px solid transparent}
-    .sb-link:hover,.sb-link.on{background:var(--bg2);color:var(--text2);border-left-color:var(--pink)}
+
+    /* SIDEBAR */
+    .sidebar{width:230px;background:var(--card);border-right:1px solid var(--bdr);padding:18px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform .3s cubic-bezier(.4,0,.2,1)}
+    .sb-logo{font-family:var(--fd);font-size:1.1rem;font-weight:700;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;padding:0 18px 16px;border-bottom:1px solid var(--bdr);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+    .sb-logo-text small{display:block;font-family:var(--fm);font-size:.58rem;-webkit-text-fill-color:var(--dim);margin-top:2px}
+    .sb-close{display:none;width:28px;height:28px;border-radius:50%;background:var(--bg2);border:1px solid var(--bdr);cursor:pointer;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;color:var(--muted);-webkit-text-fill-color:var(--muted)}
+    .sb-link{display:flex;align-items:center;gap:9px;padding:10px 18px;color:var(--muted);-webkit-text-fill-color:var(--muted);font-size:.86rem;cursor:pointer;transition:all .18s;border-left:2px solid transparent}
+    .sb-link:hover,.sb-link.on{background:var(--bg2);color:var(--text2);-webkit-text-fill-color:var(--text2);border-left-color:var(--pink)}
+    .sb-back{display:flex;align-items:center;gap:7px;padding:9px 18px;color:var(--muted);-webkit-text-fill-color:var(--muted);font-size:.82rem;cursor:pointer;transition:all .18s;text-decoration:none;border-left:2px solid transparent}
+    .sb-back:hover{color:var(--text2);-webkit-text-fill-color:var(--text2);border-left-color:var(--bdr2)}
+    .sb-divider{height:1px;background:var(--bdr);margin:6px 14px}
     .sb-foot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--bdr)}
     .sb-user{font-size:.75rem;color:var(--dim);margin-bottom:10px;word-break:break-all}
-    .main{flex:1;margin-left:230px;padding:28px 32px;overflow-y:auto}
-    .main-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px}
+
+    /* MOBILE TOPBAR */
+    .topbar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:var(--card);border-bottom:1px solid var(--bdr);z-index:150;align-items:center;padding:0 14px;gap:10px;box-shadow:var(--sh)}
+    .topbar-menu{width:36px;height:36px;border-radius:var(--rs);background:var(--bg2);border:1px solid var(--bdr);color:var(--text);-webkit-text-fill-color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;flex-shrink:0}
+    .topbar-logo{font-family:var(--fd);font-size:.98rem;font-weight:700;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex:1}
+    .topbar-back{width:36px;height:36px;border-radius:var(--rs);background:var(--bg2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:.9rem;flex-shrink:0;color:var(--muted);-webkit-text-fill-color:var(--muted)}
+
+    /* OVERLAY */
+    .sb-overlay{display:none;position:fixed;inset:0;background:rgba(20,22,50,.45);z-index:190}
+    .sb-overlay.on{display:block}
+
+    /* MAIN */
+    .main{flex:1;margin-left:230px;padding:28px 32px;overflow-y:auto;min-height:100vh}
+    .main-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:10px;flex-wrap:wrap}
     .main-title{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:var(--text)}
-    /* Stats */
+
+    /* STATS */
     .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
     .stat-c{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);padding:18px;box-shadow:var(--sh)}
     .stat-n{font-family:var(--fd);font-size:1.8rem;font-weight:700;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
     .stat-l{font-size:.76rem;color:var(--muted);margin-top:3px}
-    /* Table */
+
+    /* TABLE */
     .tbl{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh)}
     .tbl-hd{display:grid;grid-template-columns:130px 1fr 130px 110px 100px 80px;gap:10px;padding:11px 16px;background:var(--bg2);border-bottom:1px solid var(--bdr);font-family:var(--fm);font-size:.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:.8px}
     .tbl-row{display:grid;grid-template-columns:130px 1fr 130px 110px 100px 80px;gap:10px;padding:13px 16px;border-bottom:1px solid var(--bdr);align-items:center;cursor:pointer;transition:background .18s}
@@ -45,11 +67,39 @@
     .pill-progress{background:rgba(168,158,232,.1);color:var(--lav);border:1px solid rgba(168,158,232,.2)}
     .pill-delivered{background:rgba(76,187,138,.1);color:var(--green);border:1px solid rgba(76,187,138,.2)}
     .empty{text-align:center;padding:48px;color:var(--dim);font-size:.9rem}
-    /* Filters */
-    .filters{display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap}
-    .fbtn{padding:5px 14px;border-radius:100px;font-size:.76rem;cursor:pointer;border:1px solid var(--bdr);background:var(--card);color:var(--muted);transition:all .18s}
-    .fbtn.on{background:var(--pink-s);border-color:var(--bdr-pink);color:var(--pink)}
-    /* Drawer */
+
+    /* MOBILE ORDER CARDS */
+    .order-cards{display:none;flex-direction:column;gap:10px}
+    .o-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);padding:14px 16px;cursor:pointer;transition:all .18s;box-shadow:var(--sh)}
+    .o-card:active{opacity:.85}
+    .o-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px}
+    .o-card-id{font-family:var(--fm);font-size:.68rem;color:var(--dim)}
+    .o-card-name{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:2px}
+    .o-card-email{font-size:.74rem;color:var(--muted)}
+    .o-card-row{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
+    .o-card-tpl{font-size:.78rem;color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+    .o-card-amt{font-family:var(--fm);font-size:.82rem;font-weight:700;color:var(--text);margin-left:auto}
+    .o-card-date{font-size:.72rem;color:var(--dim);white-space:nowrap}
+
+    /* RANKING */
+    .rank-intro{font-size:.84rem;color:var(--muted);margin-bottom:20px}
+    .rank-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+    .rank-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);padding:20px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform .18s}
+    .rank-card:hover{transform:translateY(-2px)}
+    .rank-card.rank-1{border-color:rgba(255,215,0,.45)}
+    .rank-card.rank-2{border-color:rgba(180,180,180,.4)}
+    .rank-card.rank-3{border-color:rgba(205,127,50,.35)}
+    .rank-badge{position:absolute;top:14px;right:14px;font-size:1.3rem;line-height:1}
+    .rank-emoji{font-size:2.2rem;margin-bottom:8px;display:block}
+    .rank-name{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px}
+    .rank-count{font-size:.82rem;color:var(--muted);margin-bottom:10px}
+    .rank-count strong{color:var(--text2);font-size:1rem}
+    .rank-rev{font-family:var(--fm);font-size:1.15rem;font-weight:700;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+    .rank-rev-lbl{font-size:.7rem;color:var(--dim);margin-top:1px}
+    .rank-bar-bg{height:5px;background:var(--bg3);border-radius:10px;margin-top:14px;overflow:hidden}
+    .rank-bar-fill{height:100%;border-radius:10px;background:var(--g-main)}
+
+    /* DRAWER */
     .drw-ov{position:fixed;inset:0;background:rgba(20,22,50,.35);z-index:400;display:none}
     .drw-ov.on{display:block}
     .drw{position:fixed;top:0;right:0;width:460px;height:100vh;background:var(--card);border-left:1px solid var(--bdr);z-index:500;overflow-y:auto;transform:translateX(100%);transition:transform .3s var(--ease)}
@@ -71,11 +121,33 @@
     .qr-up{border:2px dashed var(--bdr2);border-radius:var(--r);padding:14px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px}
     .qr-up:hover{border-color:var(--bdr-pink);background:var(--pink-s)}
     .qr-prev{max-width:120px;max-height:120px;border-radius:var(--rs);margin:8px auto;display:block}
+    .btn-soft-blue{background:var(--blue-s);color:var(--blue);border:1px solid rgba(122,174,232,.25)}
+    .btn-soft-blue:hover{background:rgba(122,174,232,.18)}
+
+    /* RESPONSIVE */
+    @media(max-width:900px){
+      .stats{grid-template-columns:repeat(2,1fr)}
+    }
+    @media(max-width:768px){
+      .topbar{display:flex}
+      .sidebar{transform:translateX(-100%)}
+      .sidebar.open{transform:translateX(0)}
+      .sb-close{display:flex}
+      .main{margin-left:0;padding:70px 12px 28px}
+      .main-title{font-size:1.1rem}
+      .stats{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
+      .stat-c{padding:12px}
+      .stat-n{font-size:1.35rem}
+      .tbl{display:none}
+      .order-cards{display:flex}
+      .drw{width:100vw;max-width:100vw;border-left:none}
+      .rank-grid{grid-template-columns:1fr}
+    }
   </style>
 </head>
 <body>
 
-<!-- Login -->
+<!-- LOGIN -->
 <div id="login-pg" class="login-pg">
   <div class="login-card">
     <span class="login-ico">🔐</span>
@@ -89,39 +161,74 @@
   </div>
 </div>
 
-<!-- Admin app -->
+<!-- MOBILE TOPBAR -->
+<div class="topbar" id="topbar">
+  <div class="topbar-menu" onclick="toggleSidebar()">☰</div>
+  <div class="topbar-logo">Pookie Admin ✨</div>
+  <a href="../index.html" class="topbar-back" title="Back to site">←</a>
+</div>
+
+<!-- SIDEBAR OVERLAY -->
+<div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
+
+<!-- ADMIN APP -->
 <div id="admin-wrap" class="admin-wrap">
-  <div class="sidebar">
-    <div class="sb-logo">Pookie Wishes<small>Admin Panel</small></div>
+  <div class="sidebar" id="sidebar">
+    <div class="sb-logo">
+      <div class="sb-logo-text">Pookie Wishes<small>Admin Panel</small></div>
+      <div class="sb-close" id="sb-close" onclick="closeSidebar()">✕</div>
+    </div>
+
+    <a href="../index.html" class="sb-back">← Back to Site</a>
+    <div class="sb-divider"></div>
+
     <div class="sb-link on" onclick="setTab('all',this)">📋 All Orders</div>
-    <div class="sb-link" onclick="setTab('pending_verification',this)">⏳ Pending Verification</div>
+    <div class="sb-link" onclick="setTab('pending_verification',this)">⏳ Pending</div>
     <div class="sb-link" onclick="setTab('verified',this)">✅ Verified</div>
     <div class="sb-link" onclick="setTab('in_progress',this)">🔧 In Progress</div>
     <div class="sb-link" onclick="setTab('delivered',this)">🎁 Delivered</div>
+    <div class="sb-divider"></div>
+    <div class="sb-link" onclick="setTab('ranking',this)">🏆 Rankings</div>
+
     <div class="sb-foot">
       <div class="sb-user" id="sb-email"></div>
       <button class="btn btn-ghost btn-full btn-sm" onclick="adminLogout()">Sign Out</button>
     </div>
   </div>
-  <div class="main">
+
+  <div class="main" id="main">
     <div class="main-hd">
       <div class="main-title" id="main-title">All Orders</div>
       <button class="btn btn-soft btn-sm" onclick="loadOrders()">↻ Refresh</button>
     </div>
+
     <div class="stats">
       <div class="stat-c"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total Orders</div></div>
       <div class="stat-c"><div class="stat-n" id="s-rev">₹0</div><div class="stat-l">Revenue</div></div>
       <div class="stat-c"><div class="stat-n" id="s-pend">0</div><div class="stat-l">Pending</div></div>
       <div class="stat-c"><div class="stat-n" id="s-done">0</div><div class="stat-l">Delivered</div></div>
     </div>
-    <div class="tbl">
+
+    <!-- Desktop table -->
+    <div class="tbl" id="orders-tbl">
       <div class="tbl-hd"><div>Order ID</div><div>Customer</div><div>Template</div><div>Amount</div><div>Status</div><div>Date</div></div>
       <div id="tbl-body"><div class="empty">Loading orders…</div></div>
+    </div>
+
+    <!-- Mobile cards -->
+    <div class="order-cards" id="order-cards">
+      <div class="empty">Loading orders…</div>
+    </div>
+
+    <!-- Rankings section -->
+    <div id="ranking-section" style="display:none">
+      <div class="rank-intro">Templates ranked by total orders — updates on refresh ↻</div>
+      <div class="rank-grid" id="rank-grid"></div>
     </div>
   </div>
 </div>
 
-<!-- Drawer -->
+<!-- DRAWER -->
 <div class="drw-ov" id="drw-ov" onclick="closeDrawer()"></div>
 <div class="drw" id="drw">
   <div class="drw-hd">
@@ -143,24 +250,28 @@
 const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
 let SITE=null, db=null, stor=null, orders=[], curFilter='all', curOrderId=null, qrFile=null;
 
+/* SIDEBAR MOBILE */
+function toggleSidebar() {
+  const open = document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sb-overlay').classList.toggle('on', open);
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sb-overlay').classList.remove('on');
+}
+
+/* INIT */
 window.addEventListener('DOMContentLoaded', async () => {
-  SITE = await fetch('../data/site.json').then(r=>r.json());
+  SITE = await fetch('../data/site.json').then(r => r.json());
   if (!firebase.apps.length) firebase.initializeApp(SITE.firebase);
   db = firebase.firestore(); stor = firebase.storage();
-  // EmailJS: no global init needed — per-send with publicKey param
   firebase.auth().onAuthStateChanged(user => {
-    // 🔥 NEW: Redirect non-admin users to home
     if (user && ADMIN_EMAILS.includes(user.email)) {
       showAdmin(user);
     } else if (user) {
-      // User is logged in but not an admin
-      firebase.auth().signOut().then(() => {
-        window.location.href = "/";
-      }).catch(() => {
-        window.location.href = "/";
-      });
+      firebase.auth().signOut().then(() => { window.location.href = '/'; }).catch(() => { window.location.href = '/'; });
     } else {
-      document.getElementById('login-pg').style.display='flex';
+      document.getElementById('login-pg').style.display = 'flex';
       document.getElementById('admin-wrap').classList.remove('on');
     }
   });
@@ -171,69 +282,164 @@ async function adminLogin() {
   catch(e) { if (e.code !== 'auth/popup-closed-by-user') showErr('Login failed.'); }
 }
 async function adminLogout() { await firebase.auth().signOut(); }
-function showErr(m) { const el=document.getElementById('login-err'); el.textContent=m; el.style.display='block'; }
+function showErr(m) { const el = document.getElementById('login-err'); el.textContent = m; el.style.display = 'block'; }
 function showAdmin(user) {
-  document.getElementById('login-pg').style.display='none';
+  document.getElementById('login-pg').style.display = 'none';
   document.getElementById('admin-wrap').classList.add('on');
   document.getElementById('sb-email').textContent = user.email;
   loadOrders();
 }
 
+/* LOAD ORDERS */
 async function loadOrders() {
   document.getElementById('tbl-body').innerHTML = '<div class="empty">Loading…</div>';
+  document.getElementById('order-cards').innerHTML = '<div class="empty">Loading…</div>';
   try {
-    const snap = await db.collection('orders').orderBy('createdAt','desc').get();
+    const snap = await db.collection('orders').orderBy('createdAt', 'desc').get();
     orders = snap.docs.map(d => ({ _docId: d.id, ...d.data() }));
-    updateStats(); renderTable();
-  } catch(e) { document.getElementById('tbl-body').innerHTML = `<div class="empty">Error: ${e.message}</div>`; }
+    updateStats();
+    renderTable();
+    if (curFilter === 'ranking') renderRanking();
+  } catch(e) {
+    const msg = `<div class="empty">Error: ${e.message}</div>`;
+    document.getElementById('tbl-body').innerHTML = msg;
+    document.getElementById('order-cards').innerHTML = msg;
+  }
 }
 
 function updateStats() {
   document.getElementById('s-total').textContent = orders.length;
-  document.getElementById('s-rev').textContent   = '₹' + orders.reduce((s,o)=>s+(o.totalAmount||0),0);
-  document.getElementById('s-pend').textContent  = orders.filter(o=>o.status==='pending_verification').length;
-  document.getElementById('s-done').textContent  = orders.filter(o=>o.deliveryStatus==='delivered').length;
+  document.getElementById('s-rev').textContent   = '₹' + orders.reduce((s, o) => s + (o.totalAmount || 0), 0);
+  document.getElementById('s-pend').textContent  = orders.filter(o => o.status === 'pending_verification').length;
+  document.getElementById('s-done').textContent  = orders.filter(o => o.deliveryStatus === 'delivered').length;
 }
 
+/* TABS */
 function setTab(filter, el) {
   curFilter = filter;
-  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('on'));
+  closeSidebar();
+  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('on'));
   el.classList.add('on');
-  const titles = {all:'All Orders',pending_verification:'⏳ Pending Verification',verified:'✅ Verified',in_progress:'🔧 In Progress',delivered:'🎁 Delivered'};
-  document.getElementById('main-title').textContent = titles[filter]||'Orders';
-  renderTable();
+  const titles = {
+    all: 'All Orders', pending_verification: '⏳ Pending Verification',
+    verified: '✅ Verified', in_progress: '🔧 In Progress',
+    delivered: '🎁 Delivered', ranking: '🏆 Template Rankings'
+  };
+  document.getElementById('main-title').textContent = titles[filter] || 'Orders';
+  const isRanking = filter === 'ranking';
+  document.getElementById('orders-tbl').style.display      = isRanking ? 'none' : '';
+  document.getElementById('order-cards').style.display     = isRanking ? 'none' : '';
+  document.getElementById('ranking-section').style.display = isRanking ? 'block' : 'none';
+  if (isRanking) renderRanking();
+  else renderTable();
 }
 
 const STATUS_MAP = {
-  pending_verification: { label:'Pending',    cls:'pill-pending'   },
-  verified:             { label:'Verified',   cls:'pill-verified'  },
-  in_progress:          { label:'In Progress',cls:'pill-progress'  },
-  delivered:            { label:'Delivered',  cls:'pill-delivered' }
+  pending_verification: { label: 'Pending',     cls: 'pill-pending'  },
+  verified:             { label: 'Verified',    cls: 'pill-verified' },
+  in_progress:          { label: 'In Progress', cls: 'pill-progress' },
+  delivered:            { label: 'Delivered',   cls: 'pill-delivered'}
 };
 
+/* RENDER TABLE + MOBILE CARDS */
 function renderTable() {
-  const list = curFilter==='all' ? orders : orders.filter(o=>o.status===curFilter||o.deliveryStatus===curFilter);
-  if (!list.length) { document.getElementById('tbl-body').innerHTML='<div class="empty">No orders here.</div>'; return; }
+  const list = curFilter === 'all' ? orders : orders.filter(o => o.status === curFilter || o.deliveryStatus === curFilter);
+
+  if (!list.length) {
+    const msg = '<div class="empty">No orders here.</div>';
+    document.getElementById('tbl-body').innerHTML = msg;
+    document.getElementById('order-cards').innerHTML = msg;
+    return;
+  }
+
+  // Desktop
   document.getElementById('tbl-body').innerHTML = list.map(o => {
-    const s   = STATUS_MAP[o.deliveryStatus==='delivered'?'delivered':o.status] || STATUS_MAP.pending_verification;
-    const dt  = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('en-IN',{day:'numeric',month:'short'}) : '—';
-    const tpl = (o.orders||[]).map(x=>x.templateName||x.emoji||'').join(', ') || '—';
+    const s   = STATUS_MAP[o.deliveryStatus === 'delivered' ? 'delivered' : o.status] || STATUS_MAP.pending_verification;
+    const dt  = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('en-IN', {day:'numeric',month:'short'}) : '—';
+    const tpl = (o.orders || []).map(x => x.templateName || x.emoji || '').join(', ') || '—';
     const oid = o.orderId || o._docId;
-    return `
-      <div class="tbl-row" onclick="openDrawer('${oid}')">
-        <div class="tc mono">${oid}</div>
-        <div class="tc">${o.buyerName||'—'}<br><span style="font-size:.72rem;color:var(--dim)">${o.buyerEmail||''}</span></div>
-        <div class="tc">${tpl}</div>
-        <div class="tc mono">₹${o.totalAmount||0}</div>
-        <div class="tc"><span class="pill ${s.cls}">${s.label}</span></div>
-        <div class="tc" style="font-size:.76rem;color:var(--dim)">${dt}</div>
-      </div>`;
+    return `<div class="tbl-row" onclick="openDrawer('${oid}')">
+      <div class="tc mono">${oid}</div>
+      <div class="tc">${o.buyerName||'—'}<br><span style="font-size:.72rem;color:var(--dim)">${o.buyerEmail||''}</span></div>
+      <div class="tc">${tpl}</div>
+      <div class="tc mono">₹${o.totalAmount||0}</div>
+      <div class="tc"><span class="pill ${s.cls}">${s.label}</span></div>
+      <div class="tc" style="font-size:.76rem;color:var(--dim)">${dt}</div>
+    </div>`;
+  }).join('');
+
+  // Mobile cards
+  document.getElementById('order-cards').innerHTML = list.map(o => {
+    const s   = STATUS_MAP[o.deliveryStatus === 'delivered' ? 'delivered' : o.status] || STATUS_MAP.pending_verification;
+    const dt  = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : '—';
+    const tpl = (o.orders || []).map(x => x.templateName || x.emoji || '').join(', ') || '—';
+    const oid = o.orderId || o._docId;
+    return `<div class="o-card" onclick="openDrawer('${oid}')">
+      <div class="o-card-top">
+        <span class="o-card-id">${oid}</span>
+        <span class="pill ${s.cls}">${s.label}</span>
+      </div>
+      <div class="o-card-name">${o.buyerName||'—'}</div>
+      <div class="o-card-email">${o.buyerEmail||''}</div>
+      <div class="o-card-row">
+        <span class="o-card-tpl">${tpl}</span>
+        <span class="o-card-amt">₹${o.totalAmount||0}</span>
+        <span class="o-card-date">${dt}</span>
+      </div>
+    </div>`;
   }).join('');
 }
 
+/* RANKINGS */
+function renderRanking() {
+  const map = {};
+  orders.forEach(o => {
+    (o.orders || []).forEach(item => {
+      const key  = item.templateId || 'unknown';
+      const name = item.templateName || item.templateId || 'Unknown';
+      if (!map[key]) map[key] = { id: key, name, emoji: '🎂', count: 0, revenue: 0 };
+      map[key].count++;
+      map[key].revenue += (item.price || 0);
+    });
+  });
+
+  // Enrich with site template data
+  (SITE?.templates || []).forEach(t => {
+    const fullName = `${t.emoji} ${t.name}`;
+    if (!map[t.id]) map[t.id] = { id: t.id, name: fullName, emoji: t.emoji, count: 0, revenue: 0 };
+    else { map[t.id].emoji = t.emoji; map[t.id].name = fullName; }
+  });
+
+  const sorted = Object.values(map).sort((a, b) => b.count - a.count || b.revenue - a.revenue);
+  const maxCount = sorted[0]?.count || 1;
+  const medals = ['🥇', '🥈', '🥉'];
+  const rankCls = ['rank-1', 'rank-2', 'rank-3'];
+
+  if (!sorted.length) {
+    document.getElementById('rank-grid').innerHTML = '<div class="empty">No orders yet — rankings will appear here once orders come in.</div>';
+    return;
+  }
+
+  document.getElementById('rank-grid').innerHTML = sorted.map((t, i) => {
+    const cls  = rankCls[i] || '';
+    const badge = medals[i] || `#${i+1}`;
+    const bar  = Math.max(4, Math.round((t.count / maxCount) * 100));
+    return `<div class="rank-card ${cls}">
+      <div class="rank-badge">${badge}</div>
+      <span class="rank-emoji">${t.emoji}</span>
+      <div class="rank-name">${t.name}</div>
+      <div class="rank-count"><strong>${t.count}</strong> order${t.count !== 1 ? 's' : ''}</div>
+      <div class="rank-rev">₹${t.revenue}</div>
+      <div class="rank-rev-lbl">Total Revenue</div>
+      <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${bar}%"></div></div>
+    </div>`;
+  }).join('');
+}
+
+/* DRAWER */
 function openDrawer(oid) {
   curOrderId = oid;
-  const o = orders.find(x=>(x.orderId||x._docId)===oid);
+  const o = orders.find(x => (x.orderId || x._docId) === oid);
   if (!o) return;
   qrFile = null;
   document.getElementById('drw-title').textContent = `Order ${oid}`;
@@ -241,14 +447,14 @@ function openDrawer(oid) {
   document.getElementById('drw').classList.add('on');
 
   const dt = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleString('en-IN') : '—';
-  const orderItems = (o.orders||[]).map(x=>`
+  const orderItems = (o.orders || []).map(x => `
     <div style="padding:8px 0;border-bottom:1px solid var(--bdr);font-size:.82rem">
-      <strong>${x.templateName||x.templateId}</strong><br>
+      <strong>${x.templateName || x.templateId}</strong><br>
       <span style="color:var(--muted)">For: ${x.bdayName} · Birthday: ${x.bdayDate} · Needed by: ${x.neededBy}</span>
     </div>`).join('');
 
-  const statusOpts = ['pending_verification','verified','in_progress','delivered'].map(s=>
-    `<option value="${s}" ${o.status===s?'selected':''}>${STATUS_MAP[s]?.label||s}</option>`
+  const statusOpts = ['pending_verification','verified','in_progress','delivered'].map(s =>
+    `<option value="${s}" ${o.status === s ? 'selected' : ''}>${STATUS_MAP[s]?.label || s}</option>`
   ).join('');
 
   document.getElementById('drw-body').innerHTML = `
@@ -264,7 +470,7 @@ function openDrawer(oid) {
     <div style="margin-bottom:16px">${orderItems}</div>
     <div class="inf-lbl">Payment Screenshot</div>
     <div style="margin-bottom:16px">
-      ${o.screenshotUrl && o.screenshotUrl!=='(upload failed)'
+      ${o.screenshotUrl && o.screenshotUrl !== '(upload failed)'
         ? `<a href="${o.screenshotUrl}" target="_blank" class="ss-link">📸 View Screenshot →</a>`
         : '<span style="color:var(--muted);font-size:.82rem">Not available</span>'}
     </div>
@@ -276,7 +482,7 @@ function openDrawer(oid) {
     <div class="inf-lbl">Send Google Form Link to Customer</div>
     <div style="margin-bottom:20px">
       <button class="btn btn-soft-blue btn-full" onclick="sendFormLink()">📋 Send Form Link Email</button>
-      <p style="font-size:.74rem;color:var(--dim);margin-top:6px">Sends email 3 (Google Form link) to ${o.buyerEmail}</p>
+      <p style="font-size:.74rem;color:var(--dim);margin-top:6px">Sends form link to ${o.buyerEmail}</p>
     </div>
     <div class="del-box">
       <div class="del-title">📤 Deliver Website</div>
@@ -300,45 +506,50 @@ function openDrawer(oid) {
     </div>`;
 }
 
-function closeDrawer() { document.getElementById('drw-ov').classList.remove('on'); document.getElementById('drw').classList.remove('on'); curOrderId=null; }
+function closeDrawer() {
+  document.getElementById('drw-ov').classList.remove('on');
+  document.getElementById('drw').classList.remove('on');
+  curOrderId = null;
+}
 
+/* UPDATE STATUS */
 async function updateStatus() {
   if (!curOrderId) return;
   const s = document.getElementById('status-sel').value;
   if (!s) return;
   try {
     await db.collection('orders').doc(curOrderId).update({ status: s });
-    const o = orders.find(x=>(x.orderId||x._docId)===curOrderId); if (o) o.status=s;
-    updateStats(); renderTable(); toast('Status updated ✅','ok');
-  } catch(e) { toast('Update failed','err'); }
+    const o = orders.find(x => (x.orderId || x._docId) === curOrderId);
+    if (o) o.status = s;
+    updateStats(); renderTable(); toast('Status updated ✅', 'ok');
+  } catch(e) { toast('Update failed', 'err'); }
 }
 
+/* SEND FORM LINK */
 async function sendFormLink() {
-  const o = orders.find(x=>(x.orderId||x._docId)===curOrderId);
+  const o = orders.find(x => (x.orderId || x._docId) === curOrderId);
   if (!o) return;
-  const ejs2   = SITE.emailjs?.account2;
-  if (!ejs2?.serviceId || ejs2.serviceId.startsWith('YOUR')) { toast('EmailJS account2 not configured','err'); return; }
+  const ejs2 = SITE.emailjs?.account2;
+  if (!ejs2?.serviceId || ejs2.serviceId.startsWith('YOUR')) { toast('EmailJS account2 not configured', 'err'); return; }
   const formUrl = SITE.googleForm?.formUrl || '#';
-  const orderLines = (o.orders||[]).map((x,i)=>`${i+1}. ${x.templateName} — For: ${x.bdayName} (${x.bdayDate}) — Needed by: ${x.neededBy}`).join('\n');
+  const orderLines = (o.orders || []).map((x, i) => `${i+1}. ${x.templateName} — For: ${x.bdayName} (${x.bdayDate}) — Needed by: ${x.neededBy}`).join('\n');
   try {
     await emailjs.send(ejs2.serviceId, ejs2.templateId_form_link, {
-      to_name:          o.buyerName,
-      to_email:         o.buyerEmail,
-      order_id:         curOrderId,
-      template_name:    (o.orders||[]).map(x=>x.templateName).join(', '),
-      bday_person_name: (o.orders||[]).map(x=>x.bdayName).join(', '),
-      bday_date:        (o.orders||[]).map(x=>x.bdayDate).join(', '),
-      needed_by:        (o.orders||[]).map(x=>x.neededBy).join(', '),
-      order_lines:      orderLines,
-      google_form_link: formUrl,
-      from_name:        'Pookie Wishes'
+      to_name: o.buyerName, to_email: o.buyerEmail, order_id: curOrderId,
+      template_name: (o.orders||[]).map(x => x.templateName).join(', '),
+      bday_person_name: (o.orders||[]).map(x => x.bdayName).join(', '),
+      bday_date: (o.orders||[]).map(x => x.bdayDate).join(', '),
+      needed_by: (o.orders||[]).map(x => x.neededBy).join(', '),
+      order_lines: orderLines, google_form_link: formUrl, from_name: 'Pookie Wishes'
     }, ejs2.publicKey);
-    await db.collection('orders').doc(curOrderId).update({ status:'verified', formLinkSentAt: firebase.firestore.FieldValue.serverTimestamp() });
-    const ord = orders.find(x=>(x.orderId||x._docId)===curOrderId); if (ord) ord.status='verified';
-    updateStats(); renderTable(); toast('Form link email sent! ✅','ok');
-  } catch(e) { console.error(e); toast('Email failed — check EmailJS config','err'); }
+    await db.collection('orders').doc(curOrderId).update({ status: 'verified', formLinkSentAt: firebase.firestore.FieldValue.serverTimestamp() });
+    const ord = orders.find(x => (x.orderId || x._docId) === curOrderId);
+    if (ord) ord.status = 'verified';
+    updateStats(); renderTable(); toast('Form link email sent! ✅', 'ok');
+  } catch(e) { console.error(e); toast('Email failed — check EmailJS config', 'err'); }
 }
 
+/* PREVIEW QR */
 function previewQR(input) {
   qrFile = input.files[0];
   if (!qrFile) return;
@@ -347,13 +558,14 @@ function previewQR(input) {
   r.readAsDataURL(qrFile);
 }
 
+/* DELIVER */
 async function deliver() {
-  const o = orders.find(x=>(x.orderId||x._docId)===curOrderId);
+  const o = orders.find(x => (x.orderId || x._docId) === curOrderId);
   if (!o) return;
   const link = document.getElementById('del-link').value.trim();
-  if (!link) { toast('Enter the website link first','err'); return; }
+  if (!link) { toast('Enter the website link first', 'err'); return; }
   const btn = document.getElementById('del-btn');
-  btn.disabled=true; btn.textContent='Sending…';
+  btn.disabled = true; btn.textContent = 'Sending…';
 
   let qrUrl = o.qrImageUrl || '';
   if (qrFile) {
@@ -364,36 +576,39 @@ async function deliver() {
     } catch(e) { console.warn('QR upload failed:', e); }
   }
 
-  await db.collection('orders').doc(curOrderId).update({ deliveryLink:link, qrImageUrl:qrUrl });
-  if (o) { o.deliveryLink=link; o.qrImageUrl=qrUrl; }
+  await db.collection('orders').doc(curOrderId).update({ deliveryLink: link, qrImageUrl: qrUrl });
+  if (o) { o.deliveryLink = link; o.qrImageUrl = qrUrl; }
 
   const ejs1 = SITE.emailjs?.account1;
-  if (!ejs1?.serviceId || ejs1.serviceId.startsWith('YOUR')) { toast('EmailJS account1 not configured','err'); btn.disabled=false; btn.textContent='📧 Send Delivery Email'; return; }
+  if (!ejs1?.serviceId || ejs1.serviceId.startsWith('YOUR')) {
+    toast('EmailJS account1 not configured', 'err');
+    btn.disabled = false; btn.textContent = '📧 Send Delivery Email'; return;
+  }
 
-  const orderSummary = (o.orders||[]).map(x=>`${x.templateName} — for ${x.bdayName}`).join('\n');
+  const orderSummary = (o.orders||[]).map(x => `${x.templateName} — for ${x.bdayName}`).join('\n');
   try {
     await emailjs.send(ejs1.serviceId, ejs1.templateId_delivery, {
-      to_name:       o.buyerName,
-      to_email:      o.buyerEmail,
-      order_id:      curOrderId,
-      template_name: (o.orders||[]).map(x=>x.templateName).join(', '),
-      bday_person_name:(o.orders||[]).map(x=>x.bdayName).join(', '),
-      order_summary: orderSummary,
-      website_link:  link,
-      qr_image_url:  qrUrl,
-      from_name:     'Pookie Wishes'
+      to_name: o.buyerName, to_email: o.buyerEmail, order_id: curOrderId,
+      template_name: (o.orders||[]).map(x => x.templateName).join(', '),
+      bday_person_name: (o.orders||[]).map(x => x.bdayName).join(', '),
+      order_summary: orderSummary, website_link: link,
+      qr_image_url: qrUrl, from_name: 'Pookie Wishes'
     }, ejs1.publicKey);
-    await db.collection('orders').doc(curOrderId).update({ status:'delivered', deliveryStatus:'delivered', deliveredAt: firebase.firestore.FieldValue.serverTimestamp() });
-    if (o) { o.status='delivered'; o.deliveryStatus='delivered'; }
-    updateStats(); renderTable(); toast('Delivery email sent! Order complete ✅','ok'); btn.textContent='✅ Sent!';
-  } catch(e) { console.error(e); toast('Email failed','err'); btn.disabled=false; btn.textContent='📧 Send Delivery Email'; }
+    await db.collection('orders').doc(curOrderId).update({
+      status: 'delivered', deliveryStatus: 'delivered',
+      deliveredAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    if (o) { o.status = 'delivered'; o.deliveryStatus = 'delivered'; }
+    updateStats(); renderTable(); toast('Delivery email sent! Order complete ✅', 'ok'); btn.textContent = '✅ Sent!';
+  } catch(e) { console.error(e); toast('Email failed', 'err'); btn.disabled = false; btn.textContent = '📧 Send Delivery Email'; }
 }
 
-function toast(msg,type='inf') {
-  const c=document.getElementById('toasts'),icons={ok:'✅',err:'❌',inf:'💬'};
-  const el=document.createElement('div'); el.className=`toast ${type}`;
-  el.innerHTML=`<span>${icons[type]}</span><span>${msg}</span>`; c.appendChild(el);
-  setTimeout(()=>{el.classList.add('out');setTimeout(()=>el.remove(),300);},3500);
+/* TOAST */
+function toast(msg, type = 'inf') {
+  const c = document.getElementById('toasts'), icons = { ok:'✅', err:'❌', inf:'💬' };
+  const el = document.createElement('div'); el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`; c.appendChild(el);
+  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 3500);
 }
 </script>
 </body>
