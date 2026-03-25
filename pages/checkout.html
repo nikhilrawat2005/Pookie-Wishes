@@ -119,7 +119,7 @@
       <div class="submit-note">
         After submitting — we'll verify your payment and email you a personalisation form to add your photos and message. We'll start building your surprise as soon as we receive it! 💖
       </div>
-      <button class="btn btn-primary btn-xl btn-full" id="submit-btn" onclick="submitOrder()">Submit Order ✨</button>
+      <button class="btn btn-primary btn-xl btn-full" id="co-submit-btn" onclick="checkoutSubmitOrder()">Submit Order ✨</button>
       <p style="text-align:center;font-size:.74rem;color:var(--dim);margin-top:10px">
         Questions? <a href="https://wa.me/918700113731" target="_blank" style="color:var(--pink)">WhatsApp us</a>
       </p>
@@ -234,7 +234,7 @@ async function handleSS(input) {
   // Show loading
   const loadingDiv = document.getElementById('upload-loading');
   loadingDiv.style.display = 'block';
-  document.getElementById('submit-btn').disabled = true;
+  document.getElementById('co-submit-btn').disabled = true;
 
   try {
     // Compress image
@@ -257,7 +257,7 @@ async function handleSS(input) {
       document.getElementById('ss-sub').textContent  = `${compressedFile.name} (${(compressedFile.size/1024).toFixed(1)} KB)`;
       document.getElementById('ss-retake').classList.add('on');
       loadingDiv.style.display = 'none';
-      document.getElementById('submit-btn').disabled = false;
+      document.getElementById('co-submit-btn').disabled = false;
     };
     reader.readAsDataURL(file);
   } catch (err) {
@@ -275,7 +275,7 @@ async function handleSS(input) {
       document.getElementById('ss-sub').textContent  = file.name;
       document.getElementById('ss-retake').classList.add('on');
       loadingDiv.style.display = 'none';
-      document.getElementById('submit-btn').disabled = false;
+      document.getElementById('co-submit-btn').disabled = false;
     };
     reader.readAsDataURL(file);
   }
@@ -313,8 +313,8 @@ function validate() {
   return { name, email, orders };
 }
 
-async function submitOrder() {
-  const btn = document.getElementById('submit-btn');
+async function checkoutSubmitOrder() {
+  const btn = document.getElementById('co-submit-btn');
   // Duplicate click protection
   if (btn.dataset.locked) return;
   btn.dataset.locked = "true";
