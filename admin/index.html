@@ -266,11 +266,9 @@
     <a href="../index.html" class="sb-back">← Back to Site</a>
     <div class="sb-divider"></div>
 
-    <div class="sb-link on" data-tab="all" onclick="setTab('all',this)">📋 All Orders</div>
-    <div class="sb-link" data-tab="pending_verification" onclick="setTab('pending_verification',this)">⏳ Pending</div>
-    <div class="sb-link" data-tab="verified" onclick="setTab('verified',this)">✅ Verified</div>
-    <div class="sb-link" data-tab="in_progress" onclick="setTab('in_progress',this)">🔧 In Progress</div>
+    <div class="sb-link on" data-tab="processing" onclick="setTab('processing',this)">⏳ Orders Processing</div>
     <div class="sb-link" data-tab="delivered" onclick="setTab('delivered',this)">🎁 Delivered</div>
+    <div class="sb-link" data-tab="all" onclick="setTab('all',this)">📋 All Orders</div>
     <div class="sb-divider"></div>
     <div class="sb-link" data-tab="ranking" onclick="setTab('ranking',this)">🏆 Rankings</div>
     <div class="sb-link" data-tab="templates" onclick="setTab('templates',this)">🎨 All Templates</div>
@@ -283,7 +281,7 @@
 
   <div class="main" id="main">
     <div class="main-hd">
-      <div class="main-title" id="main-title">All Orders</div>
+      <div class="main-title" id="main-title">Orders Processing</div>
       <button class="btn btn-soft btn-sm" onclick="loadOrders()">↻ Refresh</button>
     </div>
 
@@ -338,7 +336,7 @@
 
 <script>
 const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
-let SITE=null, db=null, orders=[], curFilter='all', curOrderId=null, qrFile=null;
+let SITE=null, db=null, orders=[], curFilter='processing', curOrderId=null;
 
 /* SIDEBAR MOBILE */
 function toggleSidebar() {
@@ -348,29 +346,6 @@ function toggleSidebar() {
 function closeSidebar() {
   document.getElementById('sidebar').classList.remove('open');
   document.getElementById('sb-overlay').classList.remove('on');
-}
-
-/* CLOUDINARY UPLOAD */
-async function uploadToCloudinary(file) {
-  const cloudName = "dktx4woql";
-  const url = `https://api.cloudinary.com/v1_1/${cloudName}/image/upload`;
-
-  const formData = new FormData();
-  formData.append("file", file);
-  formData.append("upload_preset", "unsigned_preset");
-
-  const res = await fetch(url, {
-    method: "POST",
-    body: formData
-  });
-
-  const data = await res.json();
-
-  if (!data.secure_url) {
-    throw new Error("Cloudinary upload failed");
-  }
-
-  return data.secure_url.replace("/upload/", "/upload/q_auto,f_auto/");
 }
 
 /* INIT */
@@ -435,10 +410,11 @@ function setTab(filter, el) {
   document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('on'));
   el.classList.add('on');
   const titles = {
-    all: 'All Orders', pending_verification: '⏳ Pending Verification',
-    verified: '✅ Verified', in_progress: '🔧 In Progress',
-    delivered: '🎁 Delivered', ranking: '🏆 Template Rankings',
-    templates: '🎨 All Templates'
+    processing: '⏳ Orders Processing',
+    delivered:  '🎁 Delivered',
+    all:         '📋 All Orders',
+    ranking:     '🏆 Template Rankings',
+    templates:   '🎨 All Templates'
   };
   document.getElementById('main-title').textContent = titles[filter] || 'Orders';
 
@@ -463,9 +439,16 @@ const STATUS_MAP = {
   delivered:            { label: 'Delivered',   cls: 'pill-delivered'}
 };
 
+function getOrdersForTab() {
+  if (curFilter === 'all') return orders;
+  if (curFilter === 'delivered') return orders.filter(o => o.deliveryStatus === 'delivered' || o.status === 'delivered');
+  if (curFilter === 'processing') return orders.filter(o => o.deliveryStatus !== 'delivered' && o.status !== 'delivered');
+  return orders;
+}
+
 /* RENDER TABLE + MOBILE CARDS */
 function renderTable() {
-  const list = curFilter === 'all' ? orders : orders.filter(o => o.status === curFilter || o.deliveryStatus === curFilter);
+  const list = getOrdersForTab();
 
   if (!list.length) {
     const msg = '<div class="empty">No orders here.</div>';
@@ -583,7 +566,6 @@ function openDrawer(oid) {
   curOrderId = oid;
   const o = orders.find(x => (x.orderId || x._docId) === oid);
   if (!o) return;
-  qrFile = null;
   document.getElementById('drw-title').textContent = `Order ${oid}`;
   document.getElementById('drw-ov').classList.add('on');
   document.getElementById('drw').classList.add('on');
@@ -611,7 +593,7 @@ function openDrawer(oid) {
     <div style="margin-bottom:16px">${orderItems}</div>
     <div class="inf-lbl">Payment Screenshot</div>
     <div style="margin-bottom:16px">
-      ${o.screenshotUrl && o.screenshotUrl !== '(upload failed)'
+      ${o.screenshotUrl && o.screenshotUrl !== 'not_uploaded' && o.screenshotUrl !== '(upload failed)'
         ? `<a href="${o.screenshotUrl}" target="_blank" class="ss-link">📸 View Screenshot →</a>`
         : '<span style="color:var(--muted);font-size:.82rem">Not available</span>'}
     </div>
@@ -625,25 +607,19 @@ function openDrawer(oid) {
       <button class="btn btn-soft-blue btn-full" onclick="sendFormLink()">📋 Send Form Link Email</button>
       <p style="font-size:.74rem;color:var(--dim);margin-top:6px">Sends form link to ${o.buyerEmail}</p>
     </div>
+    <div class="inf-lbl">Admin Actions</div>
+    <div style="margin-bottom:20px">
+      <button class="btn btn-soft btn-full" onclick="deleteOrder()">🗑️ Delete Order</button>
+      <p style="font-size:.74rem;color:var(--dim);margin-top:6px;text-align:center">Deletes this order record permanently.</p>
+    </div>
     <div class="del-box">
       <div class="del-title">📤 Deliver Website</div>
       <div class="f-group">
         <label class="f-label">WEBSITE LINK *</label>
         <input class="f-inp" id="del-link" type="url" placeholder="https://your-birthday-site.vercel.app" value="${o.deliveryLink||''}">
       </div>
-      <div class="f-group">
-        <label class="f-label">QR CODE IMAGE (optional)</label>
-        <div class="qr-up" onclick="document.getElementById('qr-inp').click()">
-          <div id="qr-prev-wrap">
-            ${o.qrImageUrl
-              ? `<img src="${o.qrImageUrl}" class="qr-prev" alt="QR">`
-              : '📱<br><span style="font-size:.78rem;color:var(--muted)">Click to upload QR image (optional)</span>'}
-          </div>
-        </div>
-        <input type="file" id="qr-inp" accept="image/*" style="display:none" onchange="previewQR(this)">
-      </div>
       <button class="btn btn-primary btn-full" id="del-btn" onclick="deliver()">📧 Send Delivery Email</button>
-      <p style="font-size:.74rem;color:var(--dim);margin-top:6px;text-align:center">Emails the website link to ${o.buyerEmail} (QR optional)</p>
+      <p style="font-size:.74rem;color:var(--dim);margin-top:6px;text-align:center">Emails the website link to ${o.buyerEmail}</p>
     </div>`;
 }
 
@@ -651,6 +627,31 @@ function closeDrawer() {
   document.getElementById('drw-ov').classList.remove('on');
   document.getElementById('drw').classList.remove('on');
   curOrderId = null;
+}
+
+/* DELETE ORDER */
+async function deleteOrder() {
+  const oid = curOrderId;
+  if (!oid) return;
+
+  const ok = confirm('Delete this order record permanently? This cannot be undone.');
+  if (!ok) return;
+
+  try {
+    await db.collection('orders').doc(oid).delete();
+    orders = orders.filter(x => (x.orderId || x._docId) !== oid);
+    closeDrawer();
+
+    updateStats();
+    if (curFilter === 'ranking') renderRanking();
+    else if (curFilter === 'templates') renderTemplates();
+    else renderTable();
+
+    toast('Order deleted ✅', 'ok');
+  } catch (e) {
+    console.error('DELETE ERROR:', e);
+    toast('Delete failed', 'err');
+  }
 }
 
 /* UPDATE STATUS */
@@ -690,16 +691,7 @@ async function sendFormLink() {
   } catch(e) { console.error(e); toast('Email failed — check EmailJS config', 'err'); }
 }
 
-/* PREVIEW QR */
-function previewQR(input) {
-  qrFile = input.files[0];
-  if (!qrFile) return;
-  const r = new FileReader();
-  r.onload = e => { document.getElementById('qr-prev-wrap').innerHTML = `<img src="${e.target.result}" class="qr-prev" alt="QR">`; };
-  r.readAsDataURL(qrFile);
-}
-
-/* DELIVER (without QR) */
+/* DELIVER (final link only) */
 async function deliver() {
   const o = orders.find(x => (x.orderId || x._docId) === curOrderId);
   if (!o) return;
@@ -715,20 +707,11 @@ async function deliver() {
   btn.textContent = 'Sending…';
 
   try {
-    let qrUrl = o.qrImageUrl || '';
-
-    // Optional QR upload if provided
-    if (qrFile) {
-      qrUrl = await uploadToCloudinary(qrFile);
-    }
-
     await db.collection('orders').doc(curOrderId).update({
-      deliveryLink: link,
-      qrImageUrl: qrUrl
+      deliveryLink: link
     });
 
     o.deliveryLink = link;
-    o.qrImageUrl = qrUrl;
 
     const ejs1 = SITE.emailjs?.account1;
 
@@ -740,7 +723,7 @@ async function deliver() {
       .map(x => `${x.templateName} — for ${x.bdayName}`)
       .join('\n');
 
-    // Send only website link (QR is optional, not sent in email)
+    // Send only website link (QR system removed from delivery email)
     await emailjs.send(
       ejs1.serviceId,
       ejs1.templateId_delivery,
@@ -752,7 +735,6 @@ async function deliver() {
         bday_person_name: (o.orders || []).map(x => x.bdayName).join(', '),
         order_summary: orderSummary,
         website_link: link,
-        qr_image_url: qrUrl, // still passed but not used in template if template doesn't include it
         from_name: 'Pookie Wishes'
       },
       ejs1.publicKey

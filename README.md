@@ -16,9 +16,9 @@ Email 3 → Customer: Google Form link + how to fill it  [Account 2, Template 3]
         ↓
 Customer fills Google Form → Sheet updates → You get notification email
         ↓
-You build website → Admin Panel → Enter link + QR → "Send Delivery"
+You build website → Admin Panel → Enter link → "Send Delivery"
         ↓
-Email 4 → Customer: website link + QR code  [Account 1, Template 4]
+Email 4 → Customer: website link only  [Account 1, Template 4]
 ```
 
 ---
@@ -109,7 +109,7 @@ Variables:
 {{bday_person_name}}
 {{order_summary}}
 {{website_link}}      → URL you enter in admin panel
-{{qr_image_url}}      → QR image URL from Firebase Storage
+// (QR removed from delivery email)
 ```
 
 ---
@@ -142,7 +142,7 @@ service cloud.firestore {
   match /databases/{database}/documents {
     match /orders/{orderId} {
       allow create: if true;
-      allow read, update: if request.auth != null
+      allow read, update, delete: if request.auth != null
         && (request.auth.token.email == 'teamcipher.work@gmail.com'
          || request.auth.token.email == 'nikhil2005114@gmail.com');
     }
@@ -158,7 +158,7 @@ service cloud.firestore {
 rules_version = '2';
 service firebase.storage {
   match /b/{bucket}/o {
-    match /payment-screenshots/{f} {
+    match /screenshots/{f} {
       allow write: if true;
       allow read:  if request.auth != null;
     }

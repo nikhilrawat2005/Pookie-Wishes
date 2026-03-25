@@ -221,15 +221,6 @@
       mobileMenu.classList.remove('open');
     });
   });
-  function checkoutCart() {
-    if (!cart.length) return;
-    if (cart.length === 1) { closeCart(); openOrderModal(cart[0].id); return; }
-    const lines = cart.map(i=>`• ${i.emoji} ${i.name} — ${i.currency}${i.price}`).join('\n');
-    const total = cart.reduce((s,i)=>s+i.price,0);
-    const text  = `🛒 *Pookie Wishes Cart Order*\n\n${lines}\n\n*Total: ₹${total}*\n\nPlease confirm and guide me for each template!`;
-    window.open(`https://wa.me/918700113731?text=${encodeURIComponent(text)}`, '_blank');
-    closeCart();
-  }
 </script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 // ═══════════════════════════════════════════════════════
-//  POOKIE WISHES — app.js  (v8 — Admin mobile menu + fixes)
+//  POOKIE WISHES — app.js  (v9 — Final Pro Version)
 //  Dual EmailJS accounts · Firebase v9-compat
 // ═══════════════════════════════════════════════════════
 
@@ -25,6 +25,13 @@ let favSet      = new Set();
 let cart        = [];
 let fbReady     = false;
 
+// ── Simple cache ──────────────────────────────────────
+const cache = {};
+function getCached(key, fn) {
+  if (cache[key]) return cache[key];
+  return (cache[key] = fn());
+}
+
 // ── Boot ─────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
   SITE = await loadData();
@@ -37,7 +44,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   if (PAGE === 'home')    { renderTemplateCards(); renderComingSoon(); }
   if (PAGE === 'detail')  { renderDetailPage(); }
-  if (PAGE === 'favorites') { /* rendered after auth */ }
+  if (PAGE === 'checkout') { initCheckout(); }
 });
 
 // ═══════════════════════════════════════════════════════
@@ -76,6 +83,9 @@ function initFirebase() {
   }
   try {
     if (!firebase.apps.length) firebase.initializeApp(cfg);
+    const storage = firebase.storage();
+    // Some older parts of the code expect `window.storage` (used by uploadScreenshot()).
+    window.storage = storage;
     fbReady = true;
     window.fbReady = true;
     firebase.auth().onAuthStateChanged(async user => {
@@ -245,11 +255,17 @@ function toggleDd() { document.getElementById('u-dd')?.classList.toggle('open');
 function closeDd()  { document.getElementById('u-dd')?.classList.remove('open'); }
 document.addEventListener('click', e => { if (!e.target.closest('#u-wrap')) closeDd(); });
 
+// ── Admin helper ─────────────────────────────────────
+function isAdmin() {
+  return currentUser && [
+    "teamcipher.work@gmail.com",
+    "nikhil2005114@gmail.com"
+  ].includes(currentUser.email);
+}
+
 // ── Add admin button to mobile menu ──────────────────
 function addAdminToMobileMenu() {
-  if (!currentUser) return;
-  const adminEmails = ["teamcipher.work@gmail.com", "nikhil2005114@gmail.com"];
-  if (!adminEmails.includes(currentUser.email)) return;
+  if (!isAdmin()) return;
 
   const mobileMenu = document.getElementById('mobile-menu');
   if (!mobileMenu) return;
@@ -350,7 +366,38 @@ function renderFavPage() {
 function loadLocalCart() {
   try { cart = JSON.parse(localStorage.getItem('pw_cart') || '[]'); }
   catch { cart = []; }
-  updateCartBadge(); refreshCartBtns();
+  syncCartWithSite();
+  updateCartBadge(); refreshCartBtns(); renderCartDrawer();
+}
+
+// Keep cart item prices in sync with the latest template prices in `data/site.json`.
+function syncCartWithSite() {
+  if (!SITE?.templates?.length || !Array.isArray(cart) || !cart.length) return false;
+  let changed = false;
+  cart = cart.map(item => {
+    const tpl = (SITE.templates || []).find(t => t.id === item.id);
+    if (!tpl) return item;
+
+    const next = {
+      ...item,
+      name: tpl.name ?? item.name,
+      emoji: tpl.emoji ?? item.emoji,
+      price: Number(tpl.price ?? item.price ?? 0),
+      currency: tpl.currency || item.currency || '₹'
+    };
+
+    if (
+      item.name !== next.name ||
+      item.emoji !== next.emoji ||
+      item.price !== next.price ||
+      item.currency !== next.currency
+    ) changed = true;
+
+    return next;
+  });
+
+  if (changed) localStorage.setItem('pw_cart', JSON.stringify(cart));
+  return changed;
 }
 
 function saveCart() {
@@ -363,7 +410,13 @@ function addToCart(id, e) {
   const tpl = (SITE?.templates || []).find(t => t.id === id);
   if (!tpl) return;
   if (cart.find(i => i.id === id)) { toast('Already in cart!', 'inf'); return; }
-  cart.push({ id, name: tpl.name, price: tpl.price, currency: tpl.currency || '₹', emoji: tpl.emoji });
+  cart.push({
+    id,
+    name: tpl.name,
+    price: Number(tpl.price),
+    currency: tpl.currency || '₹',
+    emoji: tpl.emoji
+  });
   saveCart();
   toast(`${tpl.emoji} Added to cart!`, 'ok');
 }
@@ -450,6 +503,7 @@ function buildCard(t) {
   const bg     = ph === 'hk' ? 'linear-gradient(135deg,#fff0f4,#f4eeff,#eef4ff)' : 'linear-gradient(135deg,#f5eee8,#f0ece0,#eaeaf5)';
   const search = [t.name, ...(t.tags||[]), t.vibe||''].join(' ').toLowerCase();
   const detailUrl = `${ROOT}pages/template.html?t=${t.id}`;
+  const addBtnLabel = inCart ? '🛒 In Cart' : '🛒 Add to Cart';
 
   const imgHTML = t.media?.thumbnail
     ? `<img class="t-thumb" src="${ROOT}${t.media.thumbnail}" alt="${t.name}" loading="lazy"
@@ -466,8 +520,6 @@ function buildCard(t) {
         <div class="t-card-actions" onclick="event.stopPropagation()">
           <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}"
             onclick="toggleFav('${t.id}',event)">${isFav?'💖':'🤍'}</button>
-          <button class="card-icon-btn cart-add ${inCart?'in':''}" data-cart-add="${t.id}"
-            onclick="addToCart('${t.id}',event)">${inCart?'🛒':'＋'}</button>
         </div>
       </div>
       <div class="t-body">
@@ -477,7 +529,7 @@ function buildCard(t) {
         </div>
         <div class="t-tagline">${t.tagline}</div>
         <div class="t-card-btns" onclick="event.stopPropagation()">
-          <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">🛒 Add to Cart</button>
+          <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">${addBtnLabel}</button>
           <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${t.id}',event); location.href='${ROOT}pages/checkout.html'">Create Surprise 🎁</button>
         </div>
       </div>
@@ -748,29 +800,104 @@ function galShowImg(src, el) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  ORDER SAVING
+//  ORDER SAVING & CHECKOUT (Pro version)
 // ═══════════════════════════════════════════════════════
-async function saveOrder(data) {
+
+// --- Loading feedback ---
+function setLoading(state) {
+  const btn = document.getElementById("submit-btn");
+  if (!btn) return;
+
+  if (state) {
+    btn.disabled = true;
+    btn.innerHTML = `<span class="loading-spinner"></span> Processing...`;
+  } else {
+    btn.disabled = false;
+    btn.innerText = "Submit Order ✨";
+  }
+}
+
+// --- Upload screenshot (clean version) ---
+async function uploadScreenshot(file) {
+  try {
+    if (!window.storage) throw new Error("Storage not ready");
+
+    // Compress before upload to save bandwidth and Firebase Storage costs.
+    const maxDim = 1200;      // Keep it sharp but smaller.
+    const maxMB = 0.6;       // Target size.
+    const fileToUpload = await compressImageToJpeg(file, { maxDim, maxMB });
+
+    const fileName = `ss_${Date.now()}.jpg`;
+    const ref = window.storage.ref("screenshots/" + fileName);
+    await ref.put(fileToUpload, { contentType: 'image/jpeg' });
+    return await ref.getDownloadURL();
+
+  } catch (err) {
+    console.error(err);
+    toast("Upload failed ❌", "err");
+    throw err;
+  }
+}
+
+// Generic client-side compression for screenshot uploads (no extra deps).
+async function compressImageToJpeg(file, { maxDim = 1200, maxMB = 0.6 } = {}) {
+  const maxBytes = maxMB * 1024 * 1024;
+
+  // If it's already small, still re-encode to JPG to normalize types.
+  const imgUrl = URL.createObjectURL(file);
+  try {
+    const img = await new Promise((resolve, reject) => {
+      const im = new Image();
+      im.onload = () => resolve(im);
+      im.onerror = reject;
+      im.src = imgUrl;
+    });
+
+    const w = img.naturalWidth || img.width;
+    const h = img.naturalHeight || img.height;
+    const scale = Math.min(1, maxDim / Math.max(w, h));
+    const canvas = document.createElement('canvas');
+    canvas.width = Math.max(1, Math.round(w * scale));
+    canvas.height = Math.max(1, Math.round(h * scale));
+    const ctx = canvas.getContext('2d');
+    if (!ctx) throw new Error('Canvas not supported');
+
+    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+
+    // Try with initial quality, then reduce until under size target.
+    let quality = 0.78;
+    let blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+    while (blob && blob.size > maxBytes && quality > 0.45) {
+      quality -= 0.08;
+      blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
+    }
+
+    // Fallback (if toBlob fails for any reason)
+    return blob || file;
+  } finally {
+    URL.revokeObjectURL(imgUrl);
+  }
+}
+
+// --- Save order (structured format) ---
+async function saveOrder(orderData) {
   if (!fbReady) {
     console.error("Firebase not ready");
     toast("Firebase not ready – order not saved", "err");
-    return;
+    throw new Error("Firebase not ready");
   }
 
   try {
     const db = firebase.firestore();
-
     const docRef = await db.collection("orders").add({
-      buyerName: data.name,
-      buyerEmail: data.email,
-      buyerPhone: data.phone,
-      templateName: data.template,
-      totalAmount: data.amount,
-      bdayPersonName: data.bdayName,
-      bdayDate: data.bdayDate,
-      neededBy: data.neededBy,
-      screenshotUrl: data.screenshot,
-      status: "pending_verification",
+      user: {
+        name: orderData.name,
+        email: orderData.email
+      },
+      items: orderData.items,
+      total: orderData.total,
+      screenshot: orderData.screenshot,
+      status: "pending",
       createdAt: firebase.firestore.FieldValue.serverTimestamp()
     });
 
@@ -780,6 +907,82 @@ async function saveOrder(data) {
   } catch (err) {
     console.error("Error saving order:", err);
     toast("Failed to save order: " + err.message, "err");
+    throw err;
+  }
+}
+
+// --- Main submit order (wrapped with safeAsync for error handling) ---
+const submitOrder = safeAsync(async () => {
+  // Validate required fields
+  const name  = getVal("f-name");
+  const email = getVal("f-email");
+  if (!name || !email) {
+    toast("Fill all required fields ❌", "err");
+    return;
+  }
+
+  // Validate cart
+  if (!cart.length) {
+    toast("Your cart is empty. Add a template first.", "err");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    // Upload screenshot if provided
+    const fileInput = document.getElementById("f-screenshot");
+    let screenshotURL = "";
+    if (fileInput?.files?.length) {
+      screenshotURL = await uploadScreenshot(fileInput.files[0]);
+    }
+
+    const total = cart.reduce((sum, i) => sum + i.price, 0);
+
+    const orderData = {
+      name,
+      email,
+      items: cart.map(item => ({
+        id: item.id,
+        name: item.name,
+        price: item.price,
+        currency: item.currency,
+        emoji: item.emoji
+      })),
+      total,
+      screenshot: screenshotURL
+    };
+
+    await saveOrder(orderData);
+
+    // Optional: send email asynchronously (don't wait)
+    if (window.emailjs && SITE?.emailjs) {
+      sendEmail("templateId_admin_verify", {
+        screenshot: screenshotURL,
+        email: email,
+        name: name,
+        total: total,
+        items: orderData.items.map(i => `${i.name} (₹${i.price})`).join(", ")
+      }).catch(e => console.warn("Email send failed", e));
+    }
+
+    // Redirect immediately – no waiting
+    window.location.href = ROOT + "pages/order-success.html";
+
+  } catch (err) {
+    console.error(err);
+    toast("Order failed ❌", "err");
+  } finally {
+    setLoading(false);
+  }
+});
+
+// --- Initialize checkout page ---
+function initCheckout() {
+  // Attach event listener to submit button if exists
+  const submitBtn = document.getElementById("submit-btn");
+  if (submitBtn) {
+    submitBtn.addEventListener("click", submitOrder);
   }
 }
 
@@ -835,6 +1038,18 @@ function toast(msg, type = 'inf') {
 // ── Utils ─────────────────────────────────────────────
 function getVal(id) { return (document.getElementById(id)?.value || '').trim(); }
 
+// --- Safe async wrapper (error handling) ---
+function safeAsync(fn) {
+  return async (...args) => {
+    try {
+      return await fn(...args);
+    } catch (e) {
+      console.error(e);
+      toast("Something went wrong ❌", "err");
+    }
+  };
+}
+
 // ═══════════════════════════════════════════════════════
 //  GLOBALS
 // ═══════════════════════════════════════════════════════
@@ -846,5 +1061,8 @@ Object.assign(window, {
   vidTogglePlay, vidToggleMute, vidFullscreen, vidSeek,
   galShowVideo, galShowImg,
   sendEmail,
-  saveOrder
+  saveOrder,
+  submitOrder,
+  isAdmin,
+  getCached
 });

@@ -6,8 +6,8 @@
   <title>Checkout — Pookie Wishes ✨</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
   <link rel="stylesheet" href="../css/style.css">
-  <!-- browser-image-compression CDN -->
-  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.min.js"></script>
+  <!-- browser-image-compression CDN (only one) -->
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
   <style>
     body { background:var(--bg); }
     .co-page { min-height:100vh; padding:88px 20px 60px; }
@@ -164,7 +164,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="../js/app.js"></script>
 
 <script>
@@ -307,10 +306,26 @@ function validate() {
     const fmt = d => new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
     orders.push({ templateId:items[i].id, templateName:`${items[i].emoji} ${items[i].name}`, price:items[i].price, bdayName:bdName, bdayDate:fmt(bdDate), neededBy:fmt(bdNeed) });
   }
+  if (orders.length === 0) {
+    toast("No items in order ❌", "err");
+    return null;
+  }
   return { name, email, orders };
 }
 
 async function submitOrder() {
+  const btn = document.getElementById('submit-btn');
+  // Duplicate click protection
+  if (btn.dataset.locked) return;
+  btn.dataset.locked = "true";
+
+  // Internet check
+  if (!navigator.onLine) {
+    toast("No internet connection ❌", "err");
+    btn.dataset.locked = "";
+    return;
+  }
+
   if (!window.fbReady) {
     await new Promise(resolve => {
       const t = setInterval(() => { if (window.fbReady) { clearInterval(t); resolve(); } }, 100);
@@ -319,33 +334,40 @@ async function submitOrder() {
   }
 
   const data = validate();
-  if (!data) return;
-  const btn = document.getElementById('submit-btn');
+  if (!data) {
+    btn.dataset.locked = "";
+    return;
+  }
+
+  // Disable button and show spinner
+  const originalHTML = btn.innerHTML;
+  btn.innerHTML = `<span class="loading-spinner"></span> Processing...`;
   btn.disabled = true;
-  const originalText = btn.textContent;
-  btn.textContent = 'Processing...';
+
   const orderId = 'PW-' + Date.now();
   const total   = data.orders.reduce((s,o)=>s+o.price,0);
 
   let ssUrl = '';
-  // Upload compressed file to Firebase Storage
+  // Upload compressed file to Firebase Storage (fail-safe)
   if (window.fbReady && compressedFile) {
     const loadingDiv = document.getElementById('upload-loading');
     loadingDiv.style.display = 'block';
-    btn.textContent = 'Uploading screenshot...';
+    btn.innerHTML = `<span class="loading-spinner"></span> Optimizing screenshot...`;
+    // Short delay for smooth UX
+    await new Promise(r => setTimeout(r, 300));
+
     try {
-      const ref = firebase.storage().ref(`payment-screenshots/${orderId}.jpg`);
+      const ref = firebase.storage().ref(`screenshots/${orderId}_${Date.now()}.jpg`);
       await ref.put(compressedFile);
       ssUrl = await ref.getDownloadURL();
-      loadingDiv.style.display = 'none';
     } catch(e) {
-      console.warn('Screenshot upload failed:', e);
-      ssUrl = '(upload failed)';
-      loadingDiv.style.display = 'none';
+      console.warn('Upload failed:', e);
+      ssUrl = 'not_uploaded';
     }
+    loadingDiv.style.display = 'none';
   }
 
-  btn.textContent = 'Saving order...';
+  btn.innerHTML = `<span class="loading-spinner"></span> Saving order...`;
   if (window.fbReady) {
     try {
       await firebase.firestore().collection('orders').doc(orderId).set({
@@ -365,6 +387,7 @@ async function submitOrder() {
   const needBys  = data.orders.map(o=>o.neededBy).join(', ');
 
   // Fire and forget - do not await
+  console.log("Emails triggered (async) 🚀");
   sendEmail('templateId_user_ack', {
     to_name:data.name, to_email:data.email, order_id:orderId,
     template_name:tplNames, total_amount:`₹${total}`,
@@ -381,9 +404,14 @@ async function submitOrder() {
     submitted_at: new Date().toLocaleString('en-IN')
   }).catch(e => console.warn('Admin email error:', e));
 
-  // Clear cart and redirect immediately
+  // Clear cart
   localStorage.removeItem('pw_cart');
-  window.location.href = `order-success.html?id=${orderId}&email=${encodeURIComponent(data.email)}`;
+
+  // Show success toast and redirect with slight delay
+  toast("Order placed successfully! 🎉", "ok");
+  setTimeout(() => {
+    window.location.href = `order-success.html?id=${orderId}&email=${encodeURIComponent(data.email)}`;
+  }, 300);
 }
 </script>
 </body>

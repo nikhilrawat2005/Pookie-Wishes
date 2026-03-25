@@ -85,6 +85,6 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 <script src="../js/app.js"></script>
-<script>window.PAGE='favorites'; function checkoutCart(){if(!cart.length)return;if(cart.length===1){closeCart();openOrderModal(cart[0].id);return;}const lines=cart.map(i=>`• ${i.emoji} ${i.name} — ${i.currency}${i.price}`).join('\n');window.open(`https://wa.me/918700113731?text=${encodeURIComponent('🛒 *Cart Order*\n\n'+lines)}`, '_blank');closeCart();}</script>
+<script>window.PAGE='favorites';</script>
 </body>
 </html>
