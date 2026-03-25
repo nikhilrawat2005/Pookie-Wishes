@@ -12,11 +12,11 @@
     },
 
     "2_admin_verify": {
-      "_when": "Sent to nikhil2005114@gmail.com immediately after customer submits",
+      "_when": "Sent to admin immediately after customer submits",
       "_to": "nikhil2005114@gmail.com",
       "_from": "Pookie Wishes System",
       "subject": "[NEW ORDER] Verify Payment — {{order_id}} — {{total_amount}}",
-      "body": "New order received! Please verify the UPI payment screenshot below.\n\n━━━━━━━━━━━━━━━━━━━━━\nORDER DETAILS\n━━━━━━━━━━━━━━━━━━━━━\nOrder ID:   {{order_id}}\nAmount:     {{total_amount}}\nDesign:     {{template_name}}\nSubmitted:  {{submitted_at}}\n\n━━━━━━━━━━━━━━━━━━━━━\nCUSTOMER\n━━━━━━━━━━━━━━━━━━━━━\nName:       {{buyer_name}}\nEmail:      {{buyer_email}}\nWhatsApp:   {{buyer_phone}}\n\n━━━━━━━━━━━━━━━━━━━━━\nFOR WHOM\n━━━━━━━━━━━━━━━━━━━━━\nName:       {{bday_person_name}}\nBirthday:   {{bday_date}}\nNeed by:    {{needed_by}}\n\n━━━━━━━━━━━━━━━━━━━━━\nPAYMENT SCREENSHOT\n━━━━━━━━━━━━━━━━━━━━━\n{{screenshot_url}}\n\n━━━━━━━━━━━━━━━━━━━━━\nACTION REQUIRED\n━━━━━━━━━━━━━━━━━━━━━\nIf payment is verified, reply to this email with just:\n\n  DONE\n\nThe system will then automatically send the personalisation form to the customer.\n\nAdmin Panel: https://pookie-wishes.vercel.app/admin/"
+      "body": "New order received! Please verify the UPI payment screenshot below.\n\n━━━━━━━━━━━━━━━━━━━━━\nORDER DETAILS\n━━━━━━━━━━━━━━━━━━━━━\nOrder ID:   {{order_id}}\nAmount:     {{total_amount}}\nDesign:     {{template_name}}\nSubmitted:  {{submitted_at}}\n\n━━━━━━━━━━━━━━━━━━━━━\nCUSTOMER\n━━━━━━━━━━━━━━━━━━━━━\nName:       {{buyer_name}}\nEmail:      {{buyer_email}}\n\n━━━━━━━━━━━━━━━━━━━━━\nFOR WHOM\n━━━━━━━━━━━━━━━━━━━━━\nName:       {{bday_person_name}}\nBirthday:   {{bday_date}}\nNeed by:    {{needed_by}}\n\n━━━━━━━━━━━━━━━━━━━━━\nPAYMENT SCREENSHOT\n━━━━━━━━━━━━━━━━━━━━━\n{{screenshot_url}}\n\n━━━━━━━━━━━━━━━━━━━━━\nACTION REQUIRED\n━━━━━━━━━━━━━━━━━━━━━\nIf payment is verified, reply to this email with just:\n\n  DONE\n\nThe system will then automatically send the personalisation form to the customer.\n\nAdmin Panel: https://pookie-wishes.vercel.app/admin/"
     },
 
     "3_google_form_link": {
@@ -29,21 +29,21 @@
     },
 
     "4_admin_form_submitted": {
-      "_when": "Sent to nikhil2005114@gmail.com when customer submits the Google Form",
+      "_when": "Sent to admin when customer submits the Google Form",
       "_trigger": "Google Form submit → Google Sheet update → Apps Script / Zapier sends this email",
       "_to": "nikhil2005114@gmail.com",
       "_from": "Pookie Wishes System",
       "subject": "[ACTION] Customer Form Submitted — {{order_id}} — Start Building Your Magic!",
-      "body": "A customer has submitted their personalisation form! Time to start building their surprise.\n\n━━━━━━━━━━━━━━━━━━━━━\nORDER\n━━━━━━━━━━━━━━━━━━━━━\nOrder ID:   {{order_id}}\nDesign:     {{template_name}}\nCustomer:   {{buyer_name}} ({{buyer_email}})\n\n━━━━━━━━━━━━━━━━━━━━━\nWHAT THEY SUBMITTED\n━━━━━━━━━━━━━━━━━━━━━\nWish Message:\n{{wish_message}}\n\nPhotos: (Check Google Sheet for uploaded files)\n{{google_sheet_link}}\n\nSpecial Requests:\n{{special_requests}}\n\n━━━━━━━━━━━━━━━━━━━━━\nNEXT STEP\n━━━━━━━━━━━━━━━━━━━━━\nBuild the website, then reply to this email with:\n\n  LINK: https://your-built-website.vercel.app\n  QR: https://your-qr-image-url.com/qr.png\n\nThe system will send the delivery email to the customer automatically.\n\nAdmin Panel: https://pookie-wishes.vercel.app/admin/"
+      "body": "A customer has submitted their personalisation form! Time to start building their surprise.\n\n━━━━━━━━━━━━━━━━━━━━━\nORDER\n━━━━━━━━━━━━━━━━━━━━━\nOrder ID:   {{order_id}}\nDesign:     {{template_name}}\nCustomer:   {{buyer_name}} ({{buyer_email}})\n\n━━━━━━━━━━━━━━━━━━━━━\nWHAT THEY SUBMITTED\n━━━━━━━━━━━━━━━━━━━━━\nWish Message:\n{{wish_message}}\n\nPhotos: (Check Google Sheet for uploaded files)\n{{google_sheet_link}}\n\nSpecial Requests:\n{{special_requests}}\n\n━━━━━━━━━━━━━━━━━━━━━\nNEXT STEP\n━━━━━━━━━━━━━━━━━━━━━\nBuild the website, then reply to this email with:\n\n  LINK: https://your-built-website.vercel.app\n\nThe system will send the delivery email to the customer automatically.\n\nAdmin Panel: https://pookie-wishes.vercel.app/admin/"
     },
 
     "5_delivery": {
-      "_when": "Sent to customer when you reply with LINK and QR to email_4",
-      "_trigger": "Admin replies with LINK + QR → EmailJS sends this to customer",
+      "_when": "Sent to customer when you reply with LINK to email_4",
+      "_trigger": "Admin replies with LINK → EmailJS sends this to customer",
       "_to": "{{buyer_email}}",
       "_from": "Pookie Wishes <teamcipher.work@gmail.com>",
       "subject": "Your Surprise is Ready! 🎁✨ — {{order_id}}",
-      "body": "Hi {{buyer_name}}! 🎉🎂\n\nWe're absolutely thrilled to deliver your personalised surprise for {{bday_person_name}}! We've poured so much love into making it special.\n\n🔗 YOUR WEBSITE LINK:\n{{website_link}}\n\n📱 QR CODE:\n{{qr_image_url}}\n(Save this image — they can scan it to open the website instantly!)\n\n━━━━━━━━━━━━━━━━━━━━━\nHOW TO SHARE IT\n━━━━━━━━━━━━━━━━━━━━━\n• Copy the link and send it via WhatsApp, Instagram DM, or SMS\n• Save the QR image and share it — they scan it to open the website\n• Post it on their special day — timing is everything! 🎊\n\n💡 TIP: The website works best on mobile. Ask them to open it somewhere private so they can experience the full surprise!\n\n━━━━━━━━━━━━━━━━━━━━━\nYOUR ORDER\n━━━━━━━━━━━━━━━━━━━━━\nOrder ID:   {{order_id}}\nDesign:     {{template_name}}\nFor:        {{bday_person_name}}\n\n━━━━━━━━━━━━━━━━━━━━━\nWe'd love to see their reaction! Tag us @pookiewish on Instagram 💖\n━━━━━━━━━━━━━━━━━━━━━\n\nThank you for choosing Pookie Wishes. Hope this makes their moment truly unforgettable! 🌸\n\nWith so much love,\nThe Pookie Wishes Team ✨\nhttps://pookie-wishes.vercel.app"
+      "body": "Hi {{buyer_name}}! 🎉🎂\n\nWe're absolutely thrilled to deliver your personalised surprise for {{bday_person_name}}! We've poured so much love into making it special.\n\n🔗 YOUR WEBSITE LINK:\n{{website_link}}\n\n━━━━━━━━━━━━━━━━━━━━━\nHOW TO SHARE IT\n━━━━━━━━━━━━━━━━━━━━━\n• Copy the link and send it via WhatsApp, Instagram DM, or SMS\n• Share it on their special day — timing is everything! 🎊\n\n💡 TIP: The website works best on mobile. Ask them to open it somewhere private so they can experience the full surprise!\n\n━━━━━━━━━━━━━━━━━━━━━\nYOUR ORDER\n━━━━━━━━━━━━━━━━━━━━━\nOrder ID:   {{order_id}}\nDesign:     {{template_name}}\nFor:        {{bday_person_name}}\n\n━━━━━━━━━━━━━━━━━━━━━\nWe'd love to see their reaction! Tag us @pookiewish on Instagram 💖\n━━━━━━━━━━━━━━━━━━━━━\n\nThank you for choosing Pookie Wishes. Hope this makes their moment truly unforgettable! 🌸\n\nWith so much love,\nThe Pookie Wishes Team ✨\nhttps://pookie-wishes.vercel.app"
     }
 
   },
@@ -52,7 +52,6 @@
     "order_id":          "Auto-generated — e.g. PW-1774123456",
     "buyer_name":        "From checkout form",
     "buyer_email":       "From checkout form",
-    "buyer_phone":       "From checkout form",
     "template_name":     "e.g. Hello Kitty 🎀 or Harry Potter ⚡",
     "total_amount":      "e.g. ₹180",
     "bday_person_name":  "From checkout form — who the website is for",
@@ -64,7 +63,6 @@
     "google_sheet_link": "Your linked Google Sheet URL",
     "wish_message":      "From Google Form submission",
     "special_requests":  "From Google Form submission",
-    "website_link":      "URL you provide in admin panel after building",
-    "qr_image_url":      "QR image URL you upload in admin panel"
+    "website_link":      "URL you provide in admin panel after building"
   }
 }

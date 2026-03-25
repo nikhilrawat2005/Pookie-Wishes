@@ -6,6 +6,8 @@
   <title>Checkout — Pookie Wishes ✨</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
   <link rel="stylesheet" href="../css/style.css">
+  <!-- browser-image-compression CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.min.js"></script>
   <style>
     body { background:var(--bg); }
     .co-page { min-height:100vh; padding:88px 20px 60px; }
@@ -51,6 +53,8 @@
     .qr-steps { text-align:left; margin-top:12px; display:flex; flex-direction:column; gap:5px; }
     .qr-step { display:flex; gap:7px; align-items:flex-start; font-size:.75rem; color:var(--muted); }
     .qr-step-n { width:16px; height:16px; border-radius:50%; background:var(--pink-s); color:var(--pink); font-size:.6rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+    .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     @media(max-width:768px) { .co-wrap{grid-template-columns:1fr} .co-sidebar{position:static;order:-1} .co-card{padding:22px 16px} }
   </style>
 </head>
@@ -87,10 +91,7 @@
             <input class="f-inp" id="f-email" type="email" placeholder="priya@gmail.com" autocomplete="email">
           </div>
         </div>
-        <div class="f-group">
-          <label class="f-label">YOUR WHATSAPP *</label>
-          <input class="f-inp" id="f-phone" type="tel" placeholder="+91 98765 43210">
-        </div>
+        <!-- PHONE FIELD REMOVED -->
       </div>
 
       <div class="co-sec">
@@ -105,11 +106,12 @@
         <div class="ss-zone" id="ss-zone" onclick="document.getElementById('ss-inp').click()">
           <span class="ss-ico" id="ss-ico">📸</span>
           <div class="ss-txt" id="ss-txt">Tap to upload your payment screenshot</div>
-          <div class="ss-sub" id="ss-sub">JPG or PNG · Max 10MB</div>
+          <div class="ss-sub" id="ss-sub">JPG or PNG · Max 10MB (will be compressed)</div>
           <img id="ss-prev" class="ss-prev" alt="screenshot">
         </div>
         <div class="ss-retake" id="ss-retake" onclick="document.getElementById('ss-inp').click()">↑ Change screenshot</div>
         <input type="file" id="ss-inp" accept="image/*" style="display:none" onchange="handleSS(this)">
+        <div id="upload-loading" style="display:none; margin-top:10px; text-align:center;"><span class="loading-spinner"></span> Compressing & uploading...</div>
       </div>
 
       <div class="divider"></div>
@@ -167,6 +169,7 @@
 
 <script>
 let ssFile = null;
+let compressedFile = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
   await waitForSite();
@@ -223,22 +226,60 @@ function renderBdayBlocks(items) {
     </div>`).join('');
 }
 
-function handleSS(input) {
+// Handle screenshot selection, compress & store compressed file
+async function handleSS(input) {
   const file = input.files[0];
   if (!file) return;
   if (file.size > 10*1024*1024) { toast('File must be under 10MB','err'); return; }
-  ssFile = file;
-  const reader = new FileReader();
-  reader.onload = e => {
-    document.getElementById('ss-prev').src = e.target.result;
-    document.getElementById('ss-prev').classList.add('on');
-    document.getElementById('ss-zone').classList.add('done');
-    document.getElementById('ss-ico').textContent  = '✅';
-    document.getElementById('ss-txt').textContent  = 'Screenshot added!';
-    document.getElementById('ss-sub').textContent  = file.name;
-    document.getElementById('ss-retake').classList.add('on');
-  };
-  reader.readAsDataURL(file);
+
+  // Show loading
+  const loadingDiv = document.getElementById('upload-loading');
+  loadingDiv.style.display = 'block';
+  document.getElementById('submit-btn').disabled = true;
+
+  try {
+    // Compress image
+    const options = {
+      maxSizeMB: 0.3,
+      maxWidthOrHeight: 800,
+      useWebWorker: true
+    };
+    compressedFile = await imageCompression(file, options);
+    ssFile = file; // keep original for preview? we'll use compressed for upload
+
+    // Preview using original file (fast)
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('ss-prev').src = e.target.result;
+      document.getElementById('ss-prev').classList.add('on');
+      document.getElementById('ss-zone').classList.add('done');
+      document.getElementById('ss-ico').textContent  = '✅';
+      document.getElementById('ss-txt').textContent  = 'Screenshot ready!';
+      document.getElementById('ss-sub').textContent  = `${compressedFile.name} (${(compressedFile.size/1024).toFixed(1)} KB)`;
+      document.getElementById('ss-retake').classList.add('on');
+      loadingDiv.style.display = 'none';
+      document.getElementById('submit-btn').disabled = false;
+    };
+    reader.readAsDataURL(file);
+  } catch (err) {
+    console.error('Compression error:', err);
+    toast('Compression failed, using original file.', 'err');
+    compressedFile = file;
+    // Still show preview
+    const reader = new FileReader();
+    reader.onload = e => {
+      document.getElementById('ss-prev').src = e.target.result;
+      document.getElementById('ss-prev').classList.add('on');
+      document.getElementById('ss-zone').classList.add('done');
+      document.getElementById('ss-ico').textContent  = '✅';
+      document.getElementById('ss-txt').textContent  = 'Screenshot ready!';
+      document.getElementById('ss-sub').textContent  = file.name;
+      document.getElementById('ss-retake').classList.add('on');
+      loadingDiv.style.display = 'none';
+      document.getElementById('submit-btn').disabled = false;
+    };
+    reader.readAsDataURL(file);
+  }
 }
 
 function copyUpi() {
@@ -253,12 +294,10 @@ function copyUpi() {
 function validate() {
   const name  = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
-  const phone = document.getElementById('f-phone').value.trim();
   const items = JSON.parse(localStorage.getItem('pw_cart')||'[]');
   if (!name)               { toast('Enter your name','err'); return null; }
   if (!email?.includes('@')){ toast('Enter a valid email','err'); return null; }
-  if (!phone)              { toast('Enter your WhatsApp number','err'); return null; }
-  if (!ssFile)             { toast('Please upload your payment screenshot','err'); return null; }
+  if (!compressedFile)     { toast('Please upload your payment screenshot','err'); return null; }
   const orders = [];
   for (let i=0; i<items.length; i++) {
     const bdName = document.getElementById(`bd-name-${i}`)?.value.trim();
@@ -268,16 +307,13 @@ function validate() {
     const fmt = d => new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
     orders.push({ templateId:items[i].id, templateName:`${items[i].emoji} ${items[i].name}`, price:items[i].price, bdayName:bdName, bdayDate:fmt(bdDate), neededBy:fmt(bdNeed) });
   }
-  return { name, email, phone, orders };
+  return { name, email, orders };
 }
 
 async function submitOrder() {
-  // Wait for Firebase with a 5-second timeout so button never hangs forever
   if (!window.fbReady) {
     await new Promise(resolve => {
-      const t = setInterval(() => {
-        if (window.fbReady) { clearInterval(t); resolve(); }
-      }, 100);
+      const t = setInterval(() => { if (window.fbReady) { clearInterval(t); resolve(); } }, 100);
       setTimeout(() => { clearInterval(t); resolve(); }, 5000);
     });
   }
@@ -286,28 +322,34 @@ async function submitOrder() {
   if (!data) return;
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
+  const originalText = btn.textContent;
+  btn.textContent = 'Processing...';
   const orderId = 'PW-' + Date.now();
   const total   = data.orders.reduce((s,o)=>s+o.price,0);
 
   let ssUrl = '';
-  if (window.fbReady && ssFile) {
-    btn.textContent = 'Uploading screenshot…';
+  // Upload compressed file to Firebase Storage
+  if (window.fbReady && compressedFile) {
+    const loadingDiv = document.getElementById('upload-loading');
+    loadingDiv.style.display = 'block';
+    btn.textContent = 'Uploading screenshot...';
     try {
       const ref = firebase.storage().ref(`payment-screenshots/${orderId}.jpg`);
-      await ref.put(ssFile);
+      await ref.put(compressedFile);
       ssUrl = await ref.getDownloadURL();
+      loadingDiv.style.display = 'none';
     } catch(e) {
       console.warn('Screenshot upload failed:', e);
       ssUrl = '(upload failed)';
-      // Don't block the order — continue even if screenshot upload fails
+      loadingDiv.style.display = 'none';
     }
   }
 
-  btn.textContent = 'Saving order…';
+  btn.textContent = 'Saving order...';
   if (window.fbReady) {
     try {
       await firebase.firestore().collection('orders').doc(orderId).set({
-        orderId, buyerName:data.name, buyerEmail:data.email, buyerPhone:data.phone,
+        orderId, buyerName:data.name, buyerEmail:data.email,
         orders:data.orders, totalAmount:total, screenshotUrl:ssUrl,
         status:'pending_verification', deliveryStatus:'pending',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -315,30 +357,31 @@ async function submitOrder() {
     } catch(e) { console.warn('Firestore save failed:', e); }
   }
 
-  btn.textContent='Sending emails…';
+  // Send emails in the background (non-blocking)
   const orderLines = data.orders.map((o,i)=>`${i+1}. ${o.templateName} — For: ${o.bdayName} (${o.bdayDate}) — Needed by: ${o.neededBy}`).join('\n');
   const tplNames = data.orders.map(o=>o.templateName).join(', ');
   const bdNames  = data.orders.map(o=>o.bdayName).join(', ');
   const bdDates  = data.orders.map(o=>o.bdayDate).join(', ');
   const needBys  = data.orders.map(o=>o.neededBy).join(', ');
 
-  await Promise.allSettled([
-    sendEmail('templateId_user_ack', {
-      to_name:data.name, to_email:data.email, order_id:orderId,
-      template_name:tplNames, total_amount:`₹${total}`,
-      bday_person_name:bdNames, bday_date:bdDates, needed_by:needBys,
-      order_lines:orderLines
-    }),
-    sendEmail('templateId_admin_verify', {
-      to_email: SITE.payment?.adminVerifyEmail || 'nikhil2005114@gmail.com',
-      order_id:orderId, buyer_name:data.name, buyer_email:data.email, buyer_phone:data.phone,
-      template_name:tplNames, total_amount:`₹${total}`,
-      bday_person_name:bdNames, bday_date:bdDates, needed_by:needBys,
-      order_lines:orderLines, screenshot_url:ssUrl,
-      submitted_at: new Date().toLocaleString('en-IN')
-    })
-  ]);
+  // Fire and forget - do not await
+  sendEmail('templateId_user_ack', {
+    to_name:data.name, to_email:data.email, order_id:orderId,
+    template_name:tplNames, total_amount:`₹${total}`,
+    bday_person_name:bdNames, bday_date:bdDates, needed_by:needBys,
+    order_lines:orderLines
+  }).catch(e => console.warn('User email error:', e));
 
+  sendEmail('templateId_admin_verify', {
+    to_email: SITE.payment?.adminVerifyEmail || 'nikhil2005114@gmail.com',
+    order_id:orderId, buyer_name:data.name, buyer_email:data.email,
+    template_name:tplNames, total_amount:`₹${total}`,
+    bday_person_name:bdNames, bday_date:bdDates, needed_by:needBys,
+    order_lines:orderLines, screenshot_url:ssUrl,
+    submitted_at: new Date().toLocaleString('en-IN')
+  }).catch(e => console.warn('Admin email error:', e));
+
+  // Clear cart and redirect immediately
   localStorage.removeItem('pw_cart');
   window.location.href = `order-success.html?id=${orderId}&email=${encodeURIComponent(data.email)}`;
 }

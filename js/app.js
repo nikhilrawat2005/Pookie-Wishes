@@ -1,7 +1,6 @@
 // ═══════════════════════════════════════════════════════
-//  POOKIE WISHES — app.js  (v7 — Updated Messaging)
+//  POOKIE WISHES — app.js  (v8 — Admin mobile menu + fixes)
 //  Dual EmailJS accounts · Firebase v9-compat
-//  Proper video player · Fixed auth flow
 // ═══════════════════════════════════════════════════════
 
 // ── Page detection ────────────────────────────────────
@@ -86,6 +85,7 @@ function initFirebase() {
         await syncFavs(user.uid);
         if (PAGE === 'favorites') renderFavPage();
         else refreshFavBtns();
+        addAdminToMobileMenu();   // Add admin link to mobile menu if admin
 
         const ADMIN_EMAILS = [
           "teamcipher.work@gmail.com",
@@ -244,6 +244,25 @@ function updateAuthUI(user) {
 function toggleDd() { document.getElementById('u-dd')?.classList.toggle('open'); }
 function closeDd()  { document.getElementById('u-dd')?.classList.remove('open'); }
 document.addEventListener('click', e => { if (!e.target.closest('#u-wrap')) closeDd(); });
+
+// ── Add admin button to mobile menu ──────────────────
+function addAdminToMobileMenu() {
+  if (!currentUser) return;
+  const adminEmails = ["teamcipher.work@gmail.com", "nikhil2005114@gmail.com"];
+  if (!adminEmails.includes(currentUser.email)) return;
+
+  const mobileMenu = document.getElementById('mobile-menu');
+  if (!mobileMenu) return;
+
+  // Avoid duplicates
+  if (mobileMenu.querySelector('.admin-mobile-link')) return;
+
+  const adminLink = document.createElement('a');
+  adminLink.href = ROOT + 'admin/index.html';
+  adminLink.className = 'btn btn-ghost admin-mobile-link';
+  adminLink.textContent = 'Admin Panel ⚙️';
+  mobileMenu.appendChild(adminLink);
+}
 
 // ═══════════════════════════════════════════════════════
 //  FAVOURITES

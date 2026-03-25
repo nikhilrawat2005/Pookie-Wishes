@@ -6,6 +6,7 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
   <link rel="stylesheet" href="../css/style.css">
   <style>
+    /* (keep all existing admin styles, plus add templates grid) */
     body{background:var(--bg2);margin:0}
 
     /* LOGIN */
@@ -99,6 +100,88 @@
     .rank-bar-bg{height:5px;background:var(--bg3);border-radius:10px;margin-top:14px;overflow:hidden}
     .rank-bar-fill{height:100%;border-radius:10px;background:var(--g-main)}
 
+    /* TEMPLATES GRID */
+    .templates-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+    .template-card {
+      background: var(--card);
+      border: 1px solid var(--bdr);
+      border-radius: var(--rl);
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      transition: all 0.2s;
+      box-shadow: var(--sh);
+    }
+    .template-card:hover {
+      transform: translateY(-3px);
+      border-color: var(--bdr-pink);
+      box-shadow: var(--sh-md);
+    }
+    .template-emoji {
+      font-size: 2rem;
+      background: var(--bg2);
+      width: 50px;
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--r);
+      margin-bottom: 6px;
+    }
+    .template-name {
+      font-family: var(--fd);
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+    .template-tagline {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .template-price {
+      font-family: var(--fm);
+      font-size: 0.85rem;
+      background: var(--g-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      font-weight: 600;
+      margin-top: 4px;
+    }
+    .template-badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      background: var(--pink-s);
+      color: var(--pink);
+      padding: 3px 8px;
+      border-radius: 100px;
+      width: fit-content;
+    }
+    .btn-visit {
+      margin-top: 8px;
+      background: var(--bg2);
+      border: 1px solid var(--bdr);
+      padding: 8px 12px;
+      border-radius: var(--rs);
+      text-align: center;
+      text-decoration: none;
+      color: var(--text2);
+      font-size: 0.8rem;
+      transition: all 0.2s;
+      display: inline-block;
+    }
+    .btn-visit:hover {
+      background: var(--pink-s);
+      border-color: var(--bdr-pink);
+      color: var(--pink);
+    }
+
     /* DRAWER */
     .drw-ov{position:fixed;inset:0;background:rgba(20,22,50,.35);z-index:400;display:none}
     .drw-ov.on{display:block}
@@ -142,6 +225,7 @@
       .order-cards{display:flex}
       .drw{width:100vw;max-width:100vw;border-left:none}
       .rank-grid{grid-template-columns:1fr}
+      .templates-grid{grid-template-columns:1fr}
     }
   </style>
 </head>
@@ -182,13 +266,14 @@
     <a href="../index.html" class="sb-back">← Back to Site</a>
     <div class="sb-divider"></div>
 
-    <div class="sb-link on" onclick="setTab('all',this)">📋 All Orders</div>
-    <div class="sb-link" onclick="setTab('pending_verification',this)">⏳ Pending</div>
-    <div class="sb-link" onclick="setTab('verified',this)">✅ Verified</div>
-    <div class="sb-link" onclick="setTab('in_progress',this)">🔧 In Progress</div>
-    <div class="sb-link" onclick="setTab('delivered',this)">🎁 Delivered</div>
+    <div class="sb-link on" data-tab="all" onclick="setTab('all',this)">📋 All Orders</div>
+    <div class="sb-link" data-tab="pending_verification" onclick="setTab('pending_verification',this)">⏳ Pending</div>
+    <div class="sb-link" data-tab="verified" onclick="setTab('verified',this)">✅ Verified</div>
+    <div class="sb-link" data-tab="in_progress" onclick="setTab('in_progress',this)">🔧 In Progress</div>
+    <div class="sb-link" data-tab="delivered" onclick="setTab('delivered',this)">🎁 Delivered</div>
     <div class="sb-divider"></div>
-    <div class="sb-link" onclick="setTab('ranking',this)">🏆 Rankings</div>
+    <div class="sb-link" data-tab="ranking" onclick="setTab('ranking',this)">🏆 Rankings</div>
+    <div class="sb-link" data-tab="templates" onclick="setTab('templates',this)">🎨 All Templates</div>
 
     <div class="sb-foot">
       <div class="sb-user" id="sb-email"></div>
@@ -202,7 +287,7 @@
       <button class="btn btn-soft btn-sm" onclick="loadOrders()">↻ Refresh</button>
     </div>
 
-    <div class="stats">
+    <div class="stats" id="stats-panel">
       <div class="stat-c"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total Orders</div></div>
       <div class="stat-c"><div class="stat-n" id="s-rev">₹0</div><div class="stat-l">Revenue</div></div>
       <div class="stat-c"><div class="stat-n" id="s-pend">0</div><div class="stat-l">Pending</div></div>
@@ -224,6 +309,12 @@
     <div id="ranking-section" style="display:none">
       <div class="rank-intro">Templates ranked by total orders — updates on refresh ↻</div>
       <div class="rank-grid" id="rank-grid"></div>
+    </div>
+
+    <!-- Templates section -->
+    <div id="templates-section" style="display:none">
+      <div class="rank-intro">All available templates – click "Visit" to see demo</div>
+      <div class="templates-grid" id="templates-grid"></div>
     </div>
   </div>
 </div>
@@ -322,6 +413,7 @@ async function loadOrders() {
     updateStats();
     renderTable();
     if (curFilter === 'ranking') renderRanking();
+    if (curFilter === 'templates') renderTemplates();
   } catch(e) {
     const msg = `<div class="empty">Error: ${e.message}</div>`;
     document.getElementById('tbl-body').innerHTML = msg;
@@ -345,14 +437,22 @@ function setTab(filter, el) {
   const titles = {
     all: 'All Orders', pending_verification: '⏳ Pending Verification',
     verified: '✅ Verified', in_progress: '🔧 In Progress',
-    delivered: '🎁 Delivered', ranking: '🏆 Template Rankings'
+    delivered: '🎁 Delivered', ranking: '🏆 Template Rankings',
+    templates: '🎨 All Templates'
   };
   document.getElementById('main-title').textContent = titles[filter] || 'Orders';
+
   const isRanking = filter === 'ranking';
-  document.getElementById('orders-tbl').style.display      = isRanking ? 'none' : '';
-  document.getElementById('order-cards').style.display     = isRanking ? 'none' : '';
+  const isTemplates = filter === 'templates';
+
+  document.getElementById('orders-tbl').style.display      = (isRanking || isTemplates) ? 'none' : '';
+  document.getElementById('order-cards').style.display     = (isRanking || isTemplates) ? 'none' : '';
   document.getElementById('ranking-section').style.display = isRanking ? 'block' : 'none';
+  document.getElementById('templates-section').style.display = isTemplates ? 'block' : 'none';
+  document.getElementById('stats-panel').style.display     = (isRanking || isTemplates) ? 'none' : '';
+
   if (isRanking) renderRanking();
+  else if (isTemplates) renderTemplates();
   else renderTable();
 }
 
@@ -458,6 +558,26 @@ function renderRanking() {
   }).join('');
 }
 
+/* RENDER TEMPLATES (NEW) */
+function renderTemplates() {
+  const templates = SITE?.templates || [];
+  if (!templates.length) {
+    document.getElementById('templates-grid').innerHTML = '<div class="empty">No templates found.</div>';
+    return;
+  }
+
+  document.getElementById('templates-grid').innerHTML = templates.map(t => `
+    <div class="template-card">
+      <div class="template-emoji">${t.emoji}</div>
+      <div class="template-name">${t.name}</div>
+      <div class="template-tagline">${t.tagline}</div>
+      <div class="template-price">${t.currency || '₹'}${t.price}</div>
+      ${t.badge ? `<div class="template-badge">${t.badge}</div>` : ''}
+      <a href="${t.demoUrl || '#'}" target="_blank" class="btn-visit" style="text-align:center; margin-top:8px;">🔗 Visit Demo</a>
+    </div>
+  `).join('');
+}
+
 /* DRAWER */
 function openDrawer(oid) {
   curOrderId = oid;
@@ -484,7 +604,6 @@ function openDrawer(oid) {
     <div class="inf-row">
       <div class="inf-item"><span class="inf-k">Name</span><span class="inf-v">${o.buyerName||'—'}</span></div>
       <div class="inf-item"><span class="inf-k">Email</span><span class="inf-v">${o.buyerEmail||'—'}</span></div>
-      <div class="inf-item"><span class="inf-k">WhatsApp</span><span class="inf-v"><a href="https://wa.me/${(o.buyerPhone||'').replace(/\D/g,'')}" target="_blank" style="color:var(--pink)">${o.buyerPhone||'—'}</a></span></div>
       <div class="inf-item"><span class="inf-k">Submitted</span><span class="inf-v">${dt}</span></div>
       <div class="inf-item"><span class="inf-k">Amount</span><span class="inf-v" style="font-weight:700">₹${o.totalAmount||0}</span></div>
     </div>
@@ -513,18 +632,18 @@ function openDrawer(oid) {
         <input class="f-inp" id="del-link" type="url" placeholder="https://your-birthday-site.vercel.app" value="${o.deliveryLink||''}">
       </div>
       <div class="f-group">
-        <label class="f-label">QR CODE IMAGE</label>
+        <label class="f-label">QR CODE IMAGE (optional)</label>
         <div class="qr-up" onclick="document.getElementById('qr-inp').click()">
           <div id="qr-prev-wrap">
             ${o.qrImageUrl
               ? `<img src="${o.qrImageUrl}" class="qr-prev" alt="QR">`
-              : '📱<br><span style="font-size:.78rem;color:var(--muted)">Click to upload QR image</span>'}
+              : '📱<br><span style="font-size:.78rem;color:var(--muted)">Click to upload QR image (optional)</span>'}
           </div>
         </div>
         <input type="file" id="qr-inp" accept="image/*" style="display:none" onchange="previewQR(this)">
       </div>
       <button class="btn btn-primary btn-full" id="del-btn" onclick="deliver()">📧 Send Delivery Email</button>
-      <p style="font-size:.74rem;color:var(--dim);margin-top:6px;text-align:center">Emails the website link + QR to ${o.buyerEmail}</p>
+      <p style="font-size:.74rem;color:var(--dim);margin-top:6px;text-align:center">Emails the website link to ${o.buyerEmail} (QR optional)</p>
     </div>`;
 }
 
@@ -580,7 +699,7 @@ function previewQR(input) {
   r.readAsDataURL(qrFile);
 }
 
-/* DELIVER */
+/* DELIVER (without QR) */
 async function deliver() {
   const o = orders.find(x => (x.orderId || x._docId) === curOrderId);
   if (!o) return;
@@ -598,7 +717,7 @@ async function deliver() {
   try {
     let qrUrl = o.qrImageUrl || '';
 
-    // Cloudinary upload (replaces Firebase Storage)
+    // Optional QR upload if provided
     if (qrFile) {
       qrUrl = await uploadToCloudinary(qrFile);
     }
@@ -621,6 +740,7 @@ async function deliver() {
       .map(x => `${x.templateName} — for ${x.bdayName}`)
       .join('\n');
 
+    // Send only website link (QR is optional, not sent in email)
     await emailjs.send(
       ejs1.serviceId,
       ejs1.templateId_delivery,
@@ -632,7 +752,7 @@ async function deliver() {
         bday_person_name: (o.orders || []).map(x => x.bdayName).join(', '),
         order_summary: orderSummary,
         website_link: link,
-        qr_image_url: qrUrl,
+        qr_image_url: qrUrl, // still passed but not used in template if template doesn't include it
         from_name: 'Pookie Wishes'
       },
       ejs1.publicKey
