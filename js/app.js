@@ -482,7 +482,7 @@ function buildCard(t) {
     <div class="t-card" data-id="${t.id}" data-search="${search}" onclick="location.href='${detailUrl}'">
       <div class="t-media">
         ${imgHTML}${phHTML}
-        ${t.badge ? `<span class="t-badge">${t.badge}</span>` : ''}
+        ${t.badge ? `<span class="t-badge ${t.badge.includes('New') ? 'new' : ''}">${t.badge}</span>` : ''}
         <div class="t-card-actions" onclick="event.stopPropagation()">
           <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}"
             onclick="toggleFav('${t.id}',event)">${isFav?'💖':'🤍'}</button>
