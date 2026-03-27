@@ -1,223 +1,122 @@
-# 🎂 Pookie Wishes — Setup Guide
+# Pookie Wishes 🎀
+
+> Personalised digital surprises — birthdays, proposals, anniversaries & more. Starting at ₹29.
 
 ---
 
-## The Full Flow
+## ✨ Features
 
-```
-Customer submits order + payment screenshot
-        ↓
-Email 1 → Customer: "Order received, verifying in 1-2 hrs"  [Account 1, Template 1]
-Email 2 → You (nikhil2005114@gmail.com): "Verify this payment" [Account 2, Template 2]
-        ↓
-You verify payment → Admin Panel → "Send Form Link" button
-        ↓
-Email 3 → Customer: Google Form link + how to fill it  [Account 2, Template 3]
-        ↓
-Customer fills Google Form → Sheet updates → You get notification email
-        ↓
-You build website → Admin Panel → Enter link → "Send Delivery"
-        ↓
-Email 4 → Customer: website link only  [Account 1, Template 4]
-```
+- **Static Frontend**: Blazing fast HTML/CSS/JS architecture with zero backend maintenance.
+- **Firebase Integration**: User authentication (Google/Email) and order saving via Firebase Firestore.
+- **Cashfree Payments**: Secure and seamless payment checkout using the Cashfree Serverless wrapper.
+- **Automated Personalisation Collection**: Directly on the site post-payment. Photos are securely uploaded to **Cloudinary**, and text details directly map to Firebase.
+- **EmailJS Integration**: Automated admin notifications for new orders and one-click delivery emails from the Admin Panel.
 
 ---
 
-## ⭐ ONLY THING REMAINING — Add EmailJS Public Keys
+## 🏗️ Project Structure
 
-You've set up everything already! Just add the **Public Keys** for both EmailJS accounts to `data/site.json`.
-
-### Where to find Public Keys:
-- EmailJS Dashboard → Account → **General** → **Public Key** (it looks like `user_xxxxxxxxxx`)
-
-### Update `data/site.json`:
-
-```json
-"emailjs": {
-  "account1": {
-    "publicKey": "PASTE_ACCOUNT1_PUBLIC_KEY_HERE",
-    "serviceId": "service_xzo6x1l",
-    "templateId_user_ack": "template_1aqnbiw",
-    "templateId_delivery": "template_grv7vrj"
-  },
-  "account2": {
-    "publicKey": "PASTE_ACCOUNT2_PUBLIC_KEY_HERE",
-    "serviceId": "service_vbt862s",
-    "templateId_admin_verify": "template_5msdu99",
-    "templateId_form_link":    "template_5y8tzru"
-  }
-}
+```
+pookie-v3/
+├── css/                ← Stylesheets
+├── data/
+│   └── site.json       ← Main configuration (Firebase config, templates, EmailJS keys)
+├── js/
+│   └── app.js          ← Frontend JS (Firebase auth, cart, UI logic)
+├── pages/
+│   ├── checkout.html   ← Checkout form (Pre-Payment - Name & Email)
+│   ├── order-success.html ← Post-Payment form (recipient name, text, and Cloudinary photo upload)
+│   └── ...other pages
+├── admin/              ← Comprehensive order management Admin Panel
+├── api/                ← Vercel serverless Python backend for Cashfree session generation
+└── media/              ← Images and videos
 ```
 
 ---
 
-## Template Variables Reference
+## 🚀 Setup Guide
 
-### Template 1 (Account 1 — `template_1aqnbiw`) — User Acknowledgement
-Variables to add in EmailJS template:
-```
-{{to_name}}           → Customer's name
-{{to_email}}          → Customer's email
-{{order_id}}          → e.g. PW-1774123456
-{{template_name}}     → e.g. 🎀 Hello Kitty
-{{total_amount}}      → e.g. ₹99
-{{bday_person_name}}  → Birthday person's name
-{{bday_date}}         → Birthday date
-{{needed_by}}         → Needed by date
-{{order_lines}}       → Full order summary
-```
-
-### Template 2 (Account 2 — `template_5msdu99`) — Admin Verify
-Variables:
-```
-{{to_email}}          → nikhil2005114@gmail.com (hardcoded)
-{{order_id}}
-{{buyer_name}}
-{{buyer_email}}
-{{buyer_phone}}
-{{template_name}}
-{{total_amount}}
-{{bday_person_name}}
-{{bday_date}}
-{{needed_by}}
-{{order_lines}}
-{{screenshot_url}}    → Link to payment screenshot in Firebase Storage
-{{submitted_at}}      → Timestamp
-```
-
-### Template 3 (Account 2 — `template_5y8tzru`) — Google Form Link
-Variables:
-```
-{{to_name}}
-{{to_email}}
-{{order_id}}
-{{template_name}}
-{{bday_person_name}}
-{{bday_date}}
-{{needed_by}}
-{{order_lines}}
-{{google_form_link}}  → https://forms.gle/F2t9kw5QoGVhVxwr5
-```
-
-### Template 4 (Account 1 — `template_grv7vrj`) — Delivery
-Variables:
-```
-{{to_name}}
-{{to_email}}
-{{order_id}}
-{{template_name}}
-{{bday_person_name}}
-{{order_summary}}
-{{website_link}}      → URL you enter in admin panel
-// (QR removed from delivery email)
-```
-
----
-
-## Firebase Setup
-
-### Already configured in site.json:
-```json
-"firebase": {
-  "apiKey": "AIzaSyDSwNeLEDIuSOMeT-8vnPYifxax9NKj484",
-  "authDomain": "pookie-wish.firebaseapp.com",
-  "projectId": "pookie-wish",
-  "storageBucket": "pookie-wish.firebasestorage.app",
-  "messagingSenderId": "741136764035",
-  "appId": "1:741136764035:web:ee7453e7b0dd2b489a9fb6"
-}
-```
-
-### Enable in Firebase Console:
-1. **Authentication** → Sign-in method → Enable: Google + Email/Password
-2. **Firestore Database** → Create (test mode)
-3. **Storage** → Enable (for screenshots + QR uploads)
-4. **Authentication → Settings → Authorized domains** → Add:
-   `pookie-wishes.vercel.app`
-
-### Firestore Rules:
-```
-rules_version = '2';
-service cloud.firestore {
-  match /databases/{database}/documents {
-    match /orders/{orderId} {
-      allow create: if true;
-      allow read, update, delete: if request.auth != null
-        && (request.auth.token.email == 'teamcipher.work@gmail.com'
-         || request.auth.token.email == 'nikhil2005114@gmail.com');
-    }
-    match /users/{userId} {
-      allow read, write: if request.auth != null && request.auth.uid == userId;
-    }
-  }
-}
-```
-
-### Storage Rules:
-```
-rules_version = '2';
-service firebase.storage {
-  match /b/{bucket}/o {
-    match /screenshots/{f} {
-      allow write: if true;
-      allow read:  if request.auth != null;
-    }
-    match /qr-codes/{f} {
-      allow read:  if true;
-      allow write: if request.auth != null;
-    }
-  }
-}
-```
-
----
-
-## Google Form + Sheet
-
-Already set in `site.json`:
-- Form: `https://forms.gle/F2t9kw5QoGVhVxwr5`
-- Sheet: `https://docs.google.com/spreadsheets/d/1txBWJqKVMilNRIUJitL2wiIYpZCOoCOLuSFOS91JonM`
-
-**Enable email notifications on the form:**
-Form → Responses tab → 3 dots → "Get email notifications for new responses" ✅
-
----
-
-## Admin Panel
-
-URL: `/admin/`
-
-Authorised emails (set in `admin/index.html`):
-- `teamcipher.work@gmail.com`
-- `nikhil2005114@gmail.com`
-
-**Workflow:**
-1. New order → you get Email 2
-2. Verify screenshot → Admin Panel → find order → **"Send Form Link Email"**
-3. Customer fills form → you get Google Form notification
-4. Build website → Admin Panel → enter link + upload QR → **"Send Delivery Email"**
-
----
-
-## Deploy
+### Step 1 — Clone the repo
 
 ```bash
-# Option 1: Firebase Hosting
-firebase deploy
-
-# Option 2: Vercel (drag & drop)
-# Go to vercel.com/new → drag the pookie-wishes folder
+git clone https://github.com/nikhilrawat2005/Pookie-Wishes.git
+cd pookie-v3
 ```
-
-After deploy, add your domain to Firebase Authorized Domains.
 
 ---
 
-## Adding New Templates
+### Step 2 — Firebase Setup (Auth & Database)
 
-1. Upload video to Cloudinary → copy URL
-2. Edit `data/site.json` → add to `"templates"` array
-3. Add thumbnail to `media/your-template/thumbnail.jpg`
-4. Redeploy
+> **Required for**: User authentication and saving complete order details, photos, and status tracking.
 
-Made with 💖 — Pookie Wishes
+1. Go to: https://console.firebase.google.com
+2. Create a project.
+3. Enable **Authentication** (Google + Email/Password).
+4. Enable **Firestore Database** (Start in test mode).
+5. Go to **Project Settings → Your Apps → Web App**, copy the `firebaseConfig`.
+6. Open `data/site.json` and paste your Firebase keys under the `"firebase"` section.
+
+---
+
+### Step 3 — Cloudinary Setup (For User Photo Uploads)
+
+> **Required for**: Storing user-submitted photos directly from the frontend securely without needing a backend server.
+
+1. Create a free account at [Cloudinary](https://cloudinary.com/).
+2. Copy your **Cloud Name** from the dashboard.
+3. Open `pages/order-success.html`, scroll to the bottom, and replace `"YOUR_CLOUD_NAME"` with your actual Cloud Name.
+4. Go to **Settings (Gear Icon) → Upload** in Cloudinary.
+5. Scroll down to **Upload presets** and click **Add upload preset**.
+6. Set the Name to `pookie_unsigned` and switch the Signing Mode to **Unsigned**.
+7. Save the preset.
+
+---
+
+### Step 4 — EmailJS Setup (For Notifications & Delivery)
+
+> **Required for**: Sending Team Cipher notification emails and customer delivery emails natively.
+
+1. Create an account at [EmailJS](https://www.emailjs.com/).
+2. Add an Email Service (e.g., Gmail) and name it `service_pookie`.
+3. In `data/site.json`, under `"emailjs" : { "account1": { ... } }` fill in:
+   - `"publicKey"`: Your EmailJS Public Key.
+   - `"serviceId"`: Your Service ID (e.g. `service_pookie`).
+
+**Template 1: Team Notification (New Order)**
+1. Create a template named `template_new_order`.
+2. Ensure the "To Email" is set to Team Cipher's email.
+3. Include these variables in the template body: `{{order_id}}`, `{{customer_email}}`, `{{recipient_name}}`, `{{admin_link}}`.
+4. Open `pages/order-success.html` and replace `"YOUR_EMAILJS_PUBLIC_KEY"` with your EmailJS Public Key. Ensure the service name matches.
+
+**Template 2: Delivery Email (Admin Panel to Customer)**
+1. Create a template for finalizing the order.
+2. In `data/site.json`, set the `"templateId_delivery"` field under `emailjs.account1` to this Template's ID.
+3. Use these variables in the template: `{{to_name}}`, `{{to_email}}`, `{{order_id}}`, `{{template_name}}`, `{{bday_person_name}}`, `{{order_summary}}`, `{{website_link}}`.
+
+---
+
+### Step 5 — Cashfree Payment Setup (Vercel Serverless)
+
+> **Required for**: Accepting dynamic payments seamlessly.
+
+1. Go to your Cashfree Merchant Dashboard and get your **App ID** and **Secret Key**.
+2. When deploying to **Vercel**, add these Environment Variables:
+   - `CASHFREE_APP_ID`: Your App ID
+   - `CASHFREE_SECRET_KEY`: Your Secret Key
+   - `CASHFREE_ENVIRONMENT`: Set to `sandbox` for testing, or `production` when live.
+
+---
+
+## 🌐 Deploy to Production
+
+Deploy the repo to **Vercel** with the above environment variables. Vercel automatically deploys the `api/` folder as a serverless backend for Cashfree, ensuring seamless API integrations.
+
+---
+
+## 🐛 Troubleshooting
+
+| Problem | Solution |
+|---|---|
+| Photos not uploading to Cloudinary | Ensure the Upload Preset is strictly named `pookie_unsigned` and is set to **Unsigned** mode in Cloudinary Settings. |
+| Firebase auth not working | Check Firebase console → Authentication is enabled and web app credentials are in `data/site.json` |
+| Email notifications not firing | Check your EmailJS Dashboard logs. Verify that the correct Public Key and Service IDs match the scripts in `order-success.html` and `site.json`. |

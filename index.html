@@ -39,9 +39,9 @@
   <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="dots-bg"></div>
   <div class="hero-inner">
     <div class="hero-chip"><span class="chip-dot"></span>Personalised digital surprises · Starting at ₹29</div>
-    <h1>Create a Surprise<br>They'll <em>Never Forget</em></h1>
-    <p class="hero-sub">Interactive websites for birthdays, proposals, anniversaries, apologies, or any special moment. Fully customised, beautifully designed, and made just for them.</p>
-    <div class="search-wrap">
+    <h1 class="reveal">Create a Surprise<br>They'll <em>Never Forget</em></h1>
+    <p class="hero-sub reveal">Interactive websites for birthdays, proposals, anniversaries, apologies, or any special moment. Fully customised, beautifully designed, and made just for them.</p>
+    <div class="search-wrap reveal">
       <span class="search-ico">🔍</span>
       <input class="search-inp" id="search-inp" type="text" placeholder="Search by moment — birthday, proposal, anniversary...">
       <button class="search-clear hidden" id="search-clear" onclick="clearSearch()">✕</button>
@@ -55,12 +55,12 @@
     <span class="filter-count" id="filter-count"></span>
   </div>
   <div class="hero-sub" style="margin-bottom:24px; font-size:0.9rem;">Choose a design that fits their vibe. Each comes with interactive games, personalised messages, and hidden surprises.</div>
-  <div class="t-grid" id="tpl-grid">
+  <div class="t-grid stagger-in" id="tpl-grid">
     <div class="load-msg"><span style="font-size:1.8rem">🌸</span>Loading templates…</div>
   </div>
-  <section class="cs-wrap">
+  <section class="cs-wrap reveal">
     <h2 class="cs-title">More <em>Themes</em> Dropping Soon</h2>
-    <div class="cs-grid" id="cs-grid"></div>
+    <div class="cs-grid stagger-in" id="cs-grid"></div>
   </section>
 </main>
 
@@ -90,7 +90,12 @@
     </div>
     <div class="f-bottom">
       <span>© 2026 <span data-site-name>Pookie Wishes</span> — made with <span class="f-heart">💖</span></span>
-      <span>Starting at ₹29 ✨</span>
+      <div style="display:flex; gap:15px; margin-top:8px; flex-wrap:wrap; justify-content:center;">
+        <a href="pages/about.html" style="color:var(--dim)">About Us</a>
+        <a href="pages/terms.html" style="color:var(--dim)">Terms</a>
+        <a href="pages/refund-policy.html" style="color:var(--dim)">Refund Policy</a>
+        <a href="pages/privacy-policy.html" style="color:var(--dim)">Privacy Policy</a>
+      </div>
     </div>
   </div>
 </footer>
@@ -107,7 +112,7 @@
       <span class="cart-total-label">Total</span>
       <span class="cart-total-amount" id="cart-total">₹0</span>
     </div>
-    <button class="btn btn-primary btn-full btn-lg" onclick="checkoutCart()">Checkout 🎁</button>
+    <button class="btn btn-primary btn-full btn-lg btn-shimmer" onclick="checkoutCart()">Checkout 🎁</button>
   </div>
 </div>
 
@@ -160,16 +165,7 @@
         <div class="f-group"><label class="f-label">BIRTHDAY DATE *</label><input class="f-inp" id="ord-bdate" type="date"></div>
       </div>
       <div class="f-group"><label class="f-label">YOUR MESSAGE 💌 <span style="color:var(--dim)">(optional)</span></label><textarea class="f-inp" id="ord-msg" rows="3" placeholder="Write something from the heart…"></textarea></div>
-      <div class="f-group">
-        <label class="f-label">UPLOAD PHOTOS <span style="color:var(--dim)">(max 4, 100MB each)</span></label>
-        <div class="upload-area" id="upload-area">
-          <span class="upload-ico">📸</span>
-          <div class="upload-label">Drag & drop photos here, or click to select</div>
-          <div class="upload-sub">Up to 4 photos · JPG, PNG, WEBP</div>
-        </div>
-        <input type="file" id="file-input" accept="image/*" multiple style="display:none">
-        <div class="upload-previews" id="upload-previews"></div>
-      </div>
+
       <button class="btn btn-primary btn-full btn-lg" onclick="proceedToReview()">Review Order →</button>
     </div>
 
@@ -196,17 +192,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
-<script>
-  window.addEventListener('load', () => {
-    fetch('data/site.json').then(r=>r.json()).then(d => {
-      if (d.emailjs?.publicKey && !d.emailjs.publicKey.startsWith('YOUR')) {
-        emailjs.init(d.emailjs.publicKey);
-      }
-    }).catch(()=>{});
-  });
-</script>
+
 <script src="js/app.js"></script>
 <script>
   const hamburger = document.getElementById('hamburger');

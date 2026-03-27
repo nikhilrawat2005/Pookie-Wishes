@@ -10,29 +10,15 @@
     "copyright": "© 2026 Pookie Wishes"
   },
   "payment": {
-    "method": "upi_qr",
     "upiId": "8700113731@fam",
-    "qrImage": "media/payment-qr.png",
     "adminVerifyEmail": "nikhil2005114@gmail.com"
   },
   "emailjs": {
-    "_note": "Two separate EmailJS accounts — account1 handles templates 1+4, account2 handles templates 2+3",
     "account1": {
       "publicKey": "d8GpzMV2apHzv3Uk5",
-      "serviceId": "service_xzo6x1l",
-      "templateId_user_ack": "template_1aqnbiw",
+      "serviceId": "service_pookie",
       "templateId_delivery": "template_grv7vrj"
-    },
-    "account2": {
-      "publicKey": "OO_vJ4EZwi-kVknfS",
-      "serviceId": "service_vbt862s",
-      "templateId_admin_verify": "template_5msdu99",
-      "templateId_form_link": "template_5y8tzru"
     }
-  },
-  "googleForm": {
-    "formUrl": "https://forms.gle/F2t9kw5QoGVhVxwr5",
-    "sheetUrl": "https://docs.google.com/spreadsheets/d/1txBWJqKVMilNRIUJitL2wiIYpZCOoCOLuSFOS91JonM"
   },
   "firebase": {
     "apiKey": "AIzaSyDSwNeLEDIuSOMeT-8vnPYifxax9NKj484",

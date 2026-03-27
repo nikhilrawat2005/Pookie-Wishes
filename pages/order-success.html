@@ -2,56 +2,284 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Order Submitted! — Pookie Wishes ✨</title>
+  <title>Payment Successful! — Pookie Wishes ✨</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
   <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
-    .pg { min-height:100vh; display:flex; align-items:center; justify-content:center; padding:80px 20px; background:var(--g-hero); }
-    .card { background:var(--card); border:1px solid var(--bdr); border-radius:var(--rx); padding:52px 44px; max-width:540px; width:100%; text-align:center; box-shadow:var(--sh-lg); }
-    .big-ico { font-size:3.5rem; display:block; margin-bottom:16px; animation:bob 2.5s ease-in-out infinite; }
-    .ttl { font-family:var(--fd); font-size:1.9rem; font-weight:700; color:var(--text); margin-bottom:8px; }
-    .sub { color:var(--muted); font-size:.9rem; line-height:1.8; margin-bottom:22px; }
-    .order-pill { background:var(--pink-s); border:1px solid var(--bdr-pink); border-radius:var(--r); padding:11px 16px; font-family:var(--fm); font-size:.78rem; color:var(--text2); margin-bottom:22px; }
-    .steps { text-align:left; background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r); padding:16px 18px; margin-bottom:24px; }
-    .step { display:flex; gap:10px; padding:8px 0; border-bottom:1px solid var(--bdr); font-size:.85rem; color:var(--text2); }
-    .step:last-child { border:none; }
-    .sn { width:22px; height:22px; border-radius:50%; background:var(--g-main); color:white; font-size:.65rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px; }
+    body { background:var(--bg); }
+    .pg { min-height:100vh; padding:80px 20px; display:flex; justify-content:center; }
+    .card { background:var(--card); border:1px solid var(--bdr); border-radius:var(--rx); padding:42px 36px; max-width:600px; width:100%; box-shadow:var(--sh-lg); }
+    .big-ico { font-size:3.5rem; display:block; margin-bottom:16px; text-align:center; animation:bob 2.5s ease-in-out infinite; }
+    .ttl { font-family:var(--fd); font-size:1.9rem; font-weight:700; color:var(--text); margin-bottom:8px; text-align:center; }
+    .sub { color:var(--muted); font-size:.9rem; line-height:1.6; margin-bottom:22px; text-align:center; }
+    .order-pill { background:var(--pink-s); border:1px solid var(--bdr-pink); border-radius:var(--r); padding:11px 16px; font-family:var(--fm); font-size:.78rem; color:var(--text2); margin-bottom:32px; text-align:center; }
+    
+    .f-row { margin-bottom:18px; }
+    .f-group { margin-bottom: 20px; }
+    .f-label.opt { color:var(--dim); font-size:0.65rem; }
+    .img-note { font-size: 0.75rem; color: var(--pink); background: var(--pink-s); padding: 10px; border-radius: var(--r); margin-bottom:15px; border: 1px solid var(--bdr-pink); }
+    
+    .upload-zone { border: 2px dashed var(--bdr2); padding: 16px; border-radius: var(--r); text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom:10px; background:var(--bg2);}
+    .upload-zone:hover { border-color: var(--pink); }
+    .upload-zone input[type="file"] { display: none; }
+    .file-list { font-size: 0.8rem; color: var(--dim); min-height: 20px; margin-bottom:10px;}
+    
     @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
   </style>
 </head>
 <body>
 <nav class="navbar"><a href="../index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a></nav>
 
 <div class="pg">
-  <div class="card">
+  <div class="card reveal">
     <span class="big-ico">🎉✨</span>
-    <div class="ttl">Your Surprise Is Officially in Motion!</div>
-    <p class="sub">We've received your order and payment screenshot. Our team will verify your payment and email you the personalisation form within 1–2 hours. Get ready to add your photos and message — we're about to build something magical. 💖</p>
+    <div class="ttl">Payment Successful!</div>
+    <p class="sub">Thank you for your order! 💖 Complete your surprise by filling out the details below.</p>
+    
     <div class="order-pill">
       Order ID: <strong id="show-id">—</strong><br>
-      Confirmation sent to: <strong id="show-email">—</strong>
+      Email: <strong id="show-email">—</strong>
     </div>
-    <div class="steps">
-      <div class="step"><div class="sn">1</div><span>We verify your UPI payment — usually within 1–2 hours.</span></div>
-      <div class="step"><div class="sn">2</div><span>Once confirmed, we email you a personalisation form to add your photos, wish message, and any special requests.</span></div>
-      <div class="step"><div class="sn">3</div><span>We build your personalised interactive website and email you the final link + QR code.</span></div>
+
+    <!-- Personalisation Form -->
+    <div id="post-payment-form">
+      <div class="f-group">
+        <label class="f-label">Recipient's Name *</label>
+        <input class="f-inp" id="f-recip" type="text" placeholder="Who is this surprise for?">
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">Wish Message / Letter *</label>
+        <textarea class="f-inp" id="f-msg" rows="3" placeholder="Write your heartfelt message here..."></textarea>
+      </div>
+
+      <div class="f-row" style="display:flex; gap:16px;">
+        <div class="f-group" style="flex:1;">
+          <label class="f-label">Date <span class="opt">(Optional)</span></label>
+          <input class="f-inp" id="f-date" type="date">
+        </div>
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">Any Extra Instructions? <span class="opt">(Optional)</span></label>
+        <textarea class="f-inp" id="f-extra" rows="2" placeholder="Specific colors, vibe, etc."></textarea>
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">Photos (Max 3) <span class="opt">(Optional)</span></label>
+        <div class="img-note">
+          If you are purchasing a Birthday Template, you can provide photos. If you don't provide photos, we will use cute stickers instead! ✨
+        </div>
+        <label class="upload-zone">
+          <div style="font-size:1.5rem;margin-bottom:5px;">📸</div>
+          <div style="font-size:0.85rem;color:var(--text);">Click to select up to 3 photos</div>
+          <input type="file" id="f-photos" multiple accept="image/*" onchange="updateFileList(this)">
+        </label>
+        <div class="file-list" id="file-list-display">No files selected</div>
+      </div>
+
+      <button class="btn btn-primary btn-xl btn-full btn-shimmer" id="submit-details-btn" onclick="submitPersonalisation()">Complete Order 🚀</button>
     </div>
-    <div style="display:flex;flex-direction:column;gap:10px">
-      <a href="../index.html" class="btn btn-soft btn-lg">Explore More Designs</a>
-      <a href="#" id="wa-link" class="btn btn-ghost btn-lg" target="_blank">Need Help? WhatsApp Us 💬</a>
+
+    <!-- Success Message (Hidden Initally) -->
+    <div id="success-msg" style="display:none; text-align:center; padding: 20px 0;">
+      <div style="font-size:3rem; margin-bottom:15px;">💌</div>
+      <h3 style="font-family:var(--fd); color:var(--text); margin-bottom:10px;">Order Completely Received!</h3>
+      <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
+        Our team will now start working on your surprise. It will be ready in 24-36 hours. Check your email for updates!
+      </p>
+      <a href="../index.html" class="btn btn-soft">Go to Home</a>
     </div>
+
+    <p style="text-align:center;font-size:.74rem;color:var(--dim);margin-top:24px">
+      Questions? <a href="#" id="wa-link" target="_blank" style="color:var(--pink)">WhatsApp us</a>
+    </p>
+
   </div>
 </div>
 
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="f-bottom">
+      <span>© 2026 Pookie Wishes — made with 💖</span>
+      <div style="display:flex; gap:15px; margin-top:8px; flex-wrap:wrap; justify-content:center;">
+        <a href="about.html" style="color:var(--dim)">About Us</a>
+        <a href="terms.html" style="color:var(--dim)">Terms</a>
+        <a href="refund-policy.html" style="color:var(--dim)">Refund Policy</a>
+        <a href="privacy-policy.html" style="color:var(--dim)">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toasts"></div>
+
+<!-- Firebase & EmailJS & Cloudinary Logic -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<script src="../js/app.js"></script>
+
 <script>
+  emailjs.init("d8GpzMV2apHzv3Uk5"); // Will update this
+  const CLOUDINARY_UPLOAD_PRESET = "pookie_unsigned"; 
+  const CLOUDINARY_CLOUD_NAME = "dktx4woql";
+
   const p = new URLSearchParams(location.search);
-  document.getElementById('show-id').textContent    = p.get('id')    || '—';
-  document.getElementById('show-email').textContent = decodeURIComponent(p.get('email') || '—');
-  fetch('../data/site.json').then(r=>r.json()).then(d=>{
-    const wa   = (d.site?.whatsapp||'918700113731').replace(/\D/g,'');
-    const text = encodeURIComponent(`Hi! I need help with my Pookie Wishes order. Order ID: ${p.get('id')||'—'}`);
+  const ORDER_ID = p.get('id') || '—';
+  const CUSTOMER_EMAIL = decodeURIComponent(p.get('email') || '—');
+
+  document.getElementById('show-id').textContent = ORDER_ID;
+  document.getElementById('show-email').textContent = CUSTOMER_EMAIL;
+
+  let selectedFiles = [];
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    await waitForSite();
+    const wa = (SITE.site?.whatsapp||'918700113731').replace(/\D/g,'');
+    const text = encodeURIComponent(`Hi! I need help with my Pookie Wishes order. Order ID: ${ORDER_ID}`);
     document.getElementById('wa-link').href = `https://wa.me/${wa}?text=${text}`;
+
+    // Mark order as paid if it's currently pending_payment
+    if(window.fbReady && ORDER_ID !== '—') {
+      try {
+        await firebase.firestore().collection('orders').doc(ORDER_ID).update({
+          status: 'paid',
+          paymentConfirmedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch(e) { console.warn("Could not mark order as paid", e); }
+    }
   });
+
+  function waitForSite() {
+    return new Promise(resolve => {
+      const t = setInterval(() => { if (window.SITE) { clearInterval(t); resolve(); } }, 50);
+      setTimeout(() => { clearInterval(t); resolve(); }, 3000);
+    });
+  }
+
+  function updateFileList(input) {
+    if (input.files.length > 3) {
+      toast("You can only select up to 3 photos", "err");
+      input.value = ""; // reset
+      selectedFiles = [];
+      document.getElementById('file-list-display').textContent = "No files selected";
+      return;
+    }
+    selectedFiles = Array.from(input.files);
+    if(selectedFiles.length === 0) {
+      document.getElementById('file-list-display').textContent = "No files selected";
+    } else {
+      document.getElementById('file-list-display').textContent = selectedFiles.map(f => f.name).join(', ');
+    }
+  }
+
+  async function uploadToCloudinary(file, index) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    formData.append("folder", `orders/${ORDER_ID}`);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    return data.secure_url;
+  }
+
+  async function submitPersonalisation() {
+    const recip = document.getElementById('f-recip').value.trim();
+    const msg = document.getElementById('f-msg').value.trim();
+    const date = document.getElementById('f-date').value;
+    const extra = document.getElementById('f-extra').value.trim();
+
+    if (!recip || !msg) {
+      toast("Recipient Name and Wish Message are required!", "err");
+      return;
+    }
+
+    const btn = document.getElementById('submit-details-btn');
+    if (btn.dataset.locked) return;
+    btn.dataset.locked = "true";
+    btn.innerHTML = `<span class="loading-spinner"></span> Processing...`;
+    btn.disabled = true;
+
+    try {
+      toast("Uploading photos...", "inf");
+      let photoLinks = [];
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const url = await uploadToCloudinary(selectedFiles[i], i);
+        photoLinks.push(url);
+      }
+
+      toast("Saving details...", "inf");
+      
+      const updateData = {
+        recipientName: recip,
+        wishMessage: msg,
+        eventDate: date || null,
+        extraInstructions: extra || null,
+        photos: photoLinks,
+        detailsSubmitted: true,
+        deliveryStatus: 'pending'
+      };
+
+      if (window.fbReady && ORDER_ID !== '—') {
+        await firebase.firestore().collection('orders').doc(ORDER_ID).update(updateData);
+      }
+
+      toast("Sending notification to Team Cipher...", "inf");
+      try {
+        const adminUrl = window.location.origin + window.location.pathname.replace('order-success.html', '../admin/index.html');
+        // We will call EmailJS here
+        await emailjs.send("service_pookie", "template_new_order", {
+          order_id: ORDER_ID,
+          customer_email: CUSTOMER_EMAIL,
+          recipient_name: recip,
+          admin_link: adminUrl
+        });
+      } catch(e) {
+        console.warn("Email notification failed to send", e);
+      }
+
+      document.getElementById('post-payment-form').style.display = 'none';
+      document.getElementById('success-msg').style.display = 'block';
+
+      confetti({
+        particleCount: 150,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#e8829a', '#a89ee8', '#7aaee8']
+      });
+
+      toast("Success! Order fully submitted 🎉", "ok");
+
+    } catch (err) {
+      console.error(err);
+      toast("An error occurred. Please try again or contact WhatsApp.", "err");
+      btn.dataset.locked = "";
+      btn.innerHTML = `Complete Order 🚀`;
+      btn.disabled = false;
+    }
+  }
+
+  function toast(msg, type='inf') {
+    const tc = document.getElementById('toasts');
+    if(!tc) return;
+    const t = document.createElement('div');
+    t.className = `toast toast-${type}`;
+    const ic = type==='err'?'❌':type==='ok'?'✅':'ℹ️';
+    t.innerHTML = `<div class="t-ic">${ic}</div><div class="t-tx">${msg}</div>`;
+    tc.appendChild(t);
+    setTimeout(()=>t.classList.add('hide'), 3000);
+    setTimeout(()=>t.remove(), 3300);
+  }
 </script>
 </body>
 </html>

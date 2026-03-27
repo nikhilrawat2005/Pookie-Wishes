@@ -1,6 +1,6 @@
 // ═══════════════════════════════════════════════════════
-//  POOKIE WISHES — app.js  (v9 — Final Pro Version)
-//  Dual EmailJS accounts · Firebase v9-compat
+//  POOKIE WISHES — app.js  (v10 — Custom Backend)
+//  Custom email/upload backend · Firebase v9-compat
 // ═══════════════════════════════════════════════════════
 
 // ── Page detection ────────────────────────────────────
@@ -45,6 +45,8 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (PAGE === 'home')    { renderTemplateCards(); renderComingSoon(); }
   if (PAGE === 'detail')  { renderDetailPage(); }
   if (PAGE === 'checkout') { initCheckout(); }
+
+  initReveals();
 });
 
 // ═══════════════════════════════════════════════════════
@@ -54,7 +56,7 @@ async function loadData() {
   try {
     const r = await fetch(DATA_URL);
     return await r.json();
-  } catch { return { site:{}, templates:[], comingSoon:[], firebase:{}, emailjs:{}, googleForm:{} }; }
+  } catch { return { site:{}, templates:[], comingSoon:[], firebase:{}, googleForm:{} }; }
 }
 
 function injectSiteText() {
@@ -83,9 +85,6 @@ function initFirebase() {
   }
   try {
     if (!firebase.apps.length) firebase.initializeApp(cfg);
-    const storage = firebase.storage();
-    // Some older parts of the code expect `window.storage` (used by uploadScreenshot()).
-    window.storage = storage;
     fbReady = true;
     window.fbReady = true;
     firebase.auth().onAuthStateChanged(async user => {
@@ -124,39 +123,6 @@ function initFirebase() {
   }
 }
 
-// ── EmailJS init (dual accounts) ──────────────────────
-async function sendEmail(templateKey, params) {
-  const ejs = SITE?.emailjs;
-  if (!ejs) return;
-
-  const account1Keys = ['templateId_user_ack', 'templateId_delivery'];
-  const account2Keys = ['templateId_admin_verify', 'templateId_form_link'];
-
-  let account, templateId;
-  if (account1Keys.includes(templateKey)) {
-    account    = ejs.account1;
-    templateId = ejs.account1?.[templateKey];
-  } else if (account2Keys.includes(templateKey)) {
-    account    = ejs.account2;
-    templateId = ejs.account2?.[templateKey];
-  }
-
-  if (!account?.publicKey || account.publicKey.startsWith('YOUR')) {
-    console.warn('[PW] EmailJS account not configured for:', templateKey);
-    return;
-  }
-  if (!templateId || templateId.startsWith('YOUR')) {
-    console.warn('[PW] Template ID missing for:', templateKey);
-    return;
-  }
-
-  try {
-    await emailjs.send(account.serviceId, templateId, params, account.publicKey);
-    console.log('[PW] Email sent:', templateKey);
-  } catch (e) {
-    console.warn('[PW] EmailJS error:', templateKey, e?.text || e);
-  }
-}
 
 // ═══════════════════════════════════════════════════════
 //  AUTH
@@ -817,67 +783,6 @@ function setLoading(state) {
   }
 }
 
-// --- Upload screenshot (clean version) ---
-async function uploadScreenshot(file) {
-  try {
-    if (!window.storage) throw new Error("Storage not ready");
-
-    // Compress before upload to save bandwidth and Firebase Storage costs.
-    const maxDim = 1200;      // Keep it sharp but smaller.
-    const maxMB = 0.6;       // Target size.
-    const fileToUpload = await compressImageToJpeg(file, { maxDim, maxMB });
-
-    const fileName = `ss_${Date.now()}.jpg`;
-    const ref = window.storage.ref("screenshots/" + fileName);
-    await ref.put(fileToUpload, { contentType: 'image/jpeg' });
-    return await ref.getDownloadURL();
-
-  } catch (err) {
-    console.error(err);
-    toast("Upload failed ❌", "err");
-    throw err;
-  }
-}
-
-// Generic client-side compression for screenshot uploads (no extra deps).
-async function compressImageToJpeg(file, { maxDim = 1200, maxMB = 0.6 } = {}) {
-  const maxBytes = maxMB * 1024 * 1024;
-
-  // If it's already small, still re-encode to JPG to normalize types.
-  const imgUrl = URL.createObjectURL(file);
-  try {
-    const img = await new Promise((resolve, reject) => {
-      const im = new Image();
-      im.onload = () => resolve(im);
-      im.onerror = reject;
-      im.src = imgUrl;
-    });
-
-    const w = img.naturalWidth || img.width;
-    const h = img.naturalHeight || img.height;
-    const scale = Math.min(1, maxDim / Math.max(w, h));
-    const canvas = document.createElement('canvas');
-    canvas.width = Math.max(1, Math.round(w * scale));
-    canvas.height = Math.max(1, Math.round(h * scale));
-    const ctx = canvas.getContext('2d');
-    if (!ctx) throw new Error('Canvas not supported');
-
-    ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
-
-    // Try with initial quality, then reduce until under size target.
-    let quality = 0.78;
-    let blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
-    while (blob && blob.size > maxBytes && quality > 0.45) {
-      quality -= 0.08;
-      blob = await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', quality));
-    }
-
-    // Fallback (if toBlob fails for any reason)
-    return blob || file;
-  } finally {
-    URL.revokeObjectURL(imgUrl);
-  }
-}
 
 // --- Save order (structured format) ---
 async function saveOrder(orderData) {
@@ -911,7 +816,7 @@ async function saveOrder(orderData) {
   }
 }
 
-// --- Main submit order (wrapped with safeAsync for error handling) ---
+// --- Main submit order (with progress updates) ---
 const submitOrder = safeAsync(async () => {
   // Validate required fields
   const name  = getVal("f-name");
@@ -928,61 +833,64 @@ const submitOrder = safeAsync(async () => {
   }
 
   setLoading(true);
+  const btn = document.getElementById("submit-btn");
 
-  try {
-    // Upload screenshot if provided
-    const fileInput = document.getElementById("f-screenshot");
-    let screenshotURL = "";
-    if (fileInput?.files?.length) {
-      screenshotURL = await uploadScreenshot(fileInput.files[0]);
-    }
+  let screenshotURL = "";
 
-    const total = cart.reduce((sum, i) => sum + i.price, 0);
+  // Update button to show saving status
+  if (btn) btn.innerHTML = `<span class="loading-spinner"></span> Saving order...`;
 
-    const orderData = {
-      name,
-      email,
-      items: cart.map(item => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        currency: item.currency,
-        emoji: item.emoji
-      })),
-      total,
-      screenshot: screenshotURL
-    };
+  const total = cart.reduce((sum, i) => sum + i.price, 0);
+  const orderData = {
+    name,
+    email,
+    items: cart.map(item => ({
+      id: item.id,
+      name: item.name,
+      price: item.price,
+      currency: item.currency,
+      emoji: item.emoji
+    })),
+    total,
+    screenshot: screenshotURL
+  };
 
-    await saveOrder(orderData);
+  await saveOrder(orderData);
 
-    // Optional: send email asynchronously (don't wait)
-    if (window.emailjs && SITE?.emailjs) {
-      sendEmail("templateId_admin_verify", {
-        screenshot: screenshotURL,
-        email: email,
-        name: name,
-        total: total,
-        items: orderData.items.map(i => `${i.name} (₹${i.price})`).join(", ")
-      }).catch(e => console.warn("Email send failed", e));
-    }
 
-    // Redirect immediately – no waiting
-    window.location.href = ROOT + "pages/order-success.html";
-
-  } catch (err) {
-    console.error(err);
-    toast("Order failed ❌", "err");
-  } finally {
-    setLoading(false);
-  }
+  // Redirect immediately – no waiting
+  window.location.href = ROOT + "pages/order-success.html";
 });
 
-// --- Initialize checkout page ---
+// --- Initialize checkout page (adds preview & submit listener)---
 function initCheckout() {
   // Attach event listener to submit button if exists
   const submitBtn = document.getElementById("submit-btn");
   if (submitBtn) {
     submitBtn.addEventListener("click", submitOrder);
+  }
+
+  // Instant screenshot preview using URL.createObjectURL
+  const screenshotInput = document.getElementById("f-screenshot");
+  const previewImg = document.getElementById("ss-prev");
+  if (screenshotInput && previewImg) {
+    screenshotInput.addEventListener("change", (e) => {
+      if (e.target.files && e.target.files[0]) {
+        const url = URL.createObjectURL(e.target.files[0]);
+        previewImg.src = url;
+        // Optional: store previous URL to revoke later
+        if (screenshotInput.dataset.prevUrl) {
+          URL.revokeObjectURL(screenshotInput.dataset.prevUrl);
+        }
+        screenshotInput.dataset.prevUrl = url;
+      } else {
+        previewImg.src = "";
+        if (screenshotInput.dataset.prevUrl) {
+          URL.revokeObjectURL(screenshotInput.dataset.prevUrl);
+          delete screenshotInput.dataset.prevUrl;
+        }
+      }
+    });
   }
 }
 
@@ -1051,6 +959,26 @@ function safeAsync(fn) {
 }
 
 // ═══════════════════════════════════════════════════════
+//  ANIMATIONS & REVEALS
+// ═══════════════════════════════════════════════════════
+function initReveals() {
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('on');
+        if (entry.target.classList.contains('stagger-in')) {
+          Array.from(entry.target.children).forEach((child, i) => {
+            setTimeout(() => child.classList.add('on'), i * 100);
+          });
+        }
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.reveal, .stagger-in').forEach(el => observer.observe(el));
+}
+
+// ═══════════════════════════════════════════════════════
 //  GLOBALS
 // ═══════════════════════════════════════════════════════
 Object.assign(window, {
@@ -1060,9 +988,10 @@ Object.assign(window, {
   handleSearch, clearSearch,
   vidTogglePlay, vidToggleMute, vidFullscreen, vidSeek,
   galShowVideo, galShowImg,
-  sendEmail,
+
   saveOrder,
   submitOrder,
   isAdmin,
-  getCached
+  getCached,
+  initReveals
 });

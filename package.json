@@ -1,0 +1,11 @@
+{
+  "name": "pookie-wishes",
+  "version": "1.0.0",
+  "description": "Pookie Wishes — frontend + serverless backend",
+  "dependencies": {
+    "cloudinary": "^2.5.1",
+    "dotenv": "^16.4.5",
+    "formidable": "^3.5.1",
+    "nodemailer": "^6.9.14"
+  }
+}

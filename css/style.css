@@ -175,7 +175,6 @@ a{text-decoration:none;color:inherit}
 .gallery-ph.hk{background:linear-gradient(135deg,#fff0f4,#f4eeff)}
 .gallery-ph.hp{background:linear-gradient(135deg,#f5eee8,#f0ece0)}
 
-.detail-info{}
 .detail-badge{display:inline-block;font-family:var(--fm);font-size:.63rem;color:white;background:var(--g-main);border-radius:100px;padding:4px 12px;margin-bottom:12px;box-shadow:var(--sh-pink)}
 .detail-name{font-family:var(--fd);font-size:clamp(1.8rem,4vw,2.6rem);font-weight:700;letter-spacing:-.5px;line-height:1.1;margin-bottom:8px;color:var(--text)}
 .detail-tagline{font-size:1rem;color:var(--muted);margin-bottom:6px}
@@ -338,7 +337,22 @@ textarea.f-inp{resize:vertical;min-height:82px;line-height:1.6}
 .f-bottom{display:flex;align-items:center;justify-content:space-between;padding-top:16px;border-top:1px solid var(--bdr);color:var(--dim);font-size:.72rem;font-family:var(--fm)}
 .f-heart{color:var(--pink);animation:pulse 2s infinite}
 
-@keyframes up{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes up{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+
+/* ─── REVEAL CLASSES ─── */
+.reveal{opacity:0;transform:translateY(30px);transition:all .8s var(--ease);pointer-events:none}
+.reveal.on{opacity:1;transform:translateY(0);pointer-events:auto}
+.stagger-in > *{opacity:0;transform:translateY(20px);transition:all .6s var(--ease)}
+.stagger-in > *.on{opacity:1;transform:translateY(0)}
+
+/* ─── BUTTON ENHANCEMENT ─── */
+.btn-shimmer{position:relative;overflow:hidden}
+.btn-shimmer::after{content:'';position:absolute;top:0;left:-100%;width:50%;height:100%;background:linear-gradient(90deg,transparent,rgba(255,255,255,.2),transparent);transition:none;animation:shimmer 3s infinite}
+
+/* ─── GLASS ENHANCEMENT ─── */
+.glass{background:rgba(255,255,255,0.7) !important;backdrop-filter:blur(12px) !important;border:1px solid rgba(255,255,255,0.3) !important}
 
 /* ─── MOBILE NAVBAR MENU ─── */
 .hamburger {

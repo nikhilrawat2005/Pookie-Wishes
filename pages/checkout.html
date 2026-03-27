@@ -6,8 +6,7 @@
   <title>Checkout — Pookie Wishes ✨</title>
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
   <link rel="stylesheet" href="../css/style.css">
-  <!-- browser-image-compression CDN (only one) -->
-  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.2/dist/browser-image-compression.js"></script>
+
   <style>
     body { background:var(--bg); }
     .co-page { min-height:100vh; padding:88px 20px 60px; }
@@ -65,15 +64,11 @@
   <div class="co-wrap">
 
     <!-- FORM -->
-    <div class="co-card">
+    <div class="co-card reveal">
       <div class="steps" style="margin-bottom:24px;">
         <div class="stp active"><div class="stp-dot">1</div><span>Fill Details</span></div>
         <div class="stp-line"></div>
-        <div class="stp"><div class="stp-dot">2</div><span>Pay via UPI</span></div>
-        <div class="stp-line"></div>
-        <div class="stp"><div class="stp-dot">3</div><span>Upload Screenshot</span></div>
-        <div class="stp-line"></div>
-        <div class="stp"><div class="stp-dot">4</div><span>We Verify & Start</span></div>
+        <div class="stp"><div class="stp-dot">2</div><span>Pay via Cashfree</span></div>
       </div>
 
       <div class="co-title">Place Your Order 💖</div>
@@ -94,32 +89,19 @@
         <!-- PHONE FIELD REMOVED -->
       </div>
 
-      <div class="co-sec">
-        <div class="co-sec-lbl">Birthday Details</div>
-        <div id="bday-blocks"></div>
-      </div>
-
       <div class="divider"></div>
 
-      <div class="co-sec" style="margin-bottom:0">
-        <div class="co-sec-lbl">Payment Screenshot</div>
-        <div class="ss-zone" id="ss-zone" onclick="document.getElementById('ss-inp').click()">
-          <span class="ss-ico" id="ss-ico">📸</span>
-          <div class="ss-txt" id="ss-txt">Tap to upload your payment screenshot</div>
-          <div class="ss-sub" id="ss-sub">JPG or PNG · Max 10MB (will be compressed)</div>
-          <img id="ss-prev" class="ss-prev" alt="screenshot">
-        </div>
-        <div class="ss-retake" id="ss-retake" onclick="document.getElementById('ss-inp').click()">↑ Change screenshot</div>
-        <input type="file" id="ss-inp" accept="image/*" style="display:none" onchange="handleSS(this)">
-        <div id="upload-loading" style="display:none; margin-top:10px; text-align:center;"><span class="loading-spinner"></span> Compressing & uploading...</div>
-      </div>
+      <div class="divider"></div>
 
       <div class="divider"></div>
 
       <div class="submit-note">
-        After submitting — we'll verify your payment and email you a personalisation form to add your photos and message. We'll start building your surprise as soon as we receive it! 💖
+        After submitting — you will be redirected to Cashfree to pay securely. Once payment is successful, you will receive a link to our personalisation form to add your photos and message. 💖
       </div>
-      <button class="btn btn-primary btn-xl btn-full" id="co-submit-btn" onclick="checkoutSubmitOrder()">Submit Order ✨</button>
+      <button class="btn btn-primary btn-xl btn-full btn-shimmer" id="co-submit-btn" onclick="checkoutSubmitOrder()">Proceed to Payment 💳</button>
+      <p style="text-align:center; font-size:0.75rem; color:var(--dim); margin-top:12px;">
+        By placing an order, you agree to our <a href="terms.html" style="color:var(--pink)">Terms</a>, <a href="refund-policy.html" style="color:var(--pink)">Refund Policy</a>, and <a href="privacy-policy.html" style="color:var(--pink)">Privacy Policy</a>.
+      </p>
       <p style="text-align:center;font-size:.74rem;color:var(--dim);margin-top:10px">
         Questions? <a href="https://wa.me/918700113731" target="_blank" style="color:var(--pink)">WhatsApp us</a>
       </p>
@@ -127,7 +109,7 @@
 
     <!-- SIDEBAR -->
     <div class="co-sidebar">
-      <div class="sc">
+      <div class="sc reveal" style="transition-delay:0.1s">
         <div class="sc-title">Order Summary 🛒</div>
         <div id="sc-items"></div>
         <div class="sc-total">
@@ -135,22 +117,13 @@
           <span class="sc-total-a">₹<span id="sc-total">0</span></span>
         </div>
       </div>
-      <div class="sc" style="text-align:center">
-        <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:3px">Pay securely via UPI 💳</div>
-        <div style="font-size:.75rem;color:var(--muted);margin-bottom:12px">Scan QR or enter UPI ID below</div>
-        <div class="qr-img-wrap">
-          <img src="../media/payment-qr.png" id="qr-img" alt="UPI QR"
-               onerror="this.parentElement.innerHTML='<div style=padding:20px;font-size:.8rem;color:var(--muted)>QR not found.<br>Add: media/payment-qr.png</div>'">
-        </div>
-        <div class="upi-lbl">UPI ID — tap to copy</div>
-        <div class="upi-pill" id="upi-pill" onclick="copyUpi()">8700113731@fam</div>
-        <div class="copy-ok" id="copy-ok">✅ Copied!</div>
+      <div class="sc reveal" style="transition-delay:0.2s; text-align:center">
+        <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:3px">Pay securely via Cashfree 💳</div>
+        <div style="font-size:.75rem;color:var(--muted);margin-bottom:12px">India's most trusted payment gateway</div>
         <div class="qr-steps">
-          <div class="qr-step"><div class="qr-step-n">1</div>Open GPay / PhonePe / Paytm</div>
-          <div class="qr-step"><div class="qr-step-n">2</div>Scan QR or enter UPI ID</div>
-          <div class="qr-step"><div class="qr-step-n">3</div>Pay ₹<span id="qr-amt">0</span></div>
-          <div class="qr-step"><div class="qr-step-n">4</div>Screenshot the success screen</div>
-          <div class="qr-step"><div class="qr-step-n">5</div>Upload screenshot in the form ←</div>
+          <div class="qr-step"><div class="qr-step-n">1</div>Click Proceed to Payment</div>
+          <div class="qr-step"><div class="qr-step-n">2</div>Pay ₹<span id="qr-amt">0</span> via UPI/Cards on Cashfree</div>
+          <div class="qr-step"><div class="qr-step-n">3</div>Get redirected to filling the personalisation form</div>
         </div>
       </div>
     </div>
@@ -158,12 +131,27 @@
   </div>
 </div>
 
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="f-bottom">
+      <span>© 2026 Pookie Wishes — made with 💖</span>
+      <div style="display:flex; gap:15px; margin-top:8px; flex-wrap:wrap; justify-content:center;">
+        <a href="about.html" style="color:var(--dim)">About Us</a>
+        <a href="terms.html" style="color:var(--dim)">Terms</a>
+        <a href="refund-policy.html" style="color:var(--dim)">Refund Policy</a>
+        <a href="privacy-policy.html" style="color:var(--dim)">Privacy Policy</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
 <div id="toasts"></div>
 
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+<!-- Firebase Storage removed — screenshots now uploaded via backend to Cloudinary -->
+<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
 <script src="../js/app.js"></script>
 
 <script>
@@ -180,7 +168,7 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (!cartItems.length) { window.location.href = '../index.html'; return; }
 
   renderSummary(cartItems);
-  renderBdayBlocks(cartItems);
+  renderSummary(cartItems);
 });
 
 function waitForSite() {
@@ -209,86 +197,7 @@ function renderSummary(items) {
   }).join('');
 }
 
-function renderBdayBlocks(items) {
-  const today = new Date().toISOString().split('T')[0];
-  document.getElementById('bday-blocks').innerHTML = items.map((item,i) => `
-    <div class="bday-block">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px">
-        <span style="font-family:var(--fd);font-weight:700;font-size:.9rem">${item.emoji} ${item.name}</span>
-        <span style="font-family:var(--fm);font-size:.63rem;background:var(--g-main);color:white;padding:3px 10px;border-radius:100px">${item.currency||'₹'}${item.price}</span>
-      </div>
-      <div class="f-row">
-        <div class="f-group"><label class="f-label">BIRTHDAY PERSON'S NAME *</label><input class="f-inp" id="bd-name-${i}" type="text" placeholder="e.g. Rahul"></div>
-        <div class="f-group"><label class="f-label">THEIR BIRTHDAY DATE *</label><input class="f-inp" id="bd-date-${i}" type="date"></div>
-      </div>
-      <div class="f-group"><label class="f-label">WHEN DO YOU NEED IT BY? *</label><input class="f-inp" id="bd-need-${i}" type="date" min="${today}"></div>
-    </div>`).join('');
-}
 
-// Handle screenshot selection, compress & store compressed file
-async function handleSS(input) {
-  const file = input.files[0];
-  if (!file) return;
-  if (file.size > 10*1024*1024) { toast('File must be under 10MB','err'); return; }
-
-  // Show loading
-  const loadingDiv = document.getElementById('upload-loading');
-  loadingDiv.style.display = 'block';
-  document.getElementById('co-submit-btn').disabled = true;
-
-  try {
-    // Compress image
-    const options = {
-      maxSizeMB: 0.3,
-      maxWidthOrHeight: 800,
-      useWebWorker: true
-    };
-    compressedFile = await imageCompression(file, options);
-    ssFile = file; // keep original for preview? we'll use compressed for upload
-
-    // Preview using original file (fast)
-    const reader = new FileReader();
-    reader.onload = e => {
-      document.getElementById('ss-prev').src = e.target.result;
-      document.getElementById('ss-prev').classList.add('on');
-      document.getElementById('ss-zone').classList.add('done');
-      document.getElementById('ss-ico').textContent  = '✅';
-      document.getElementById('ss-txt').textContent  = 'Screenshot ready!';
-      document.getElementById('ss-sub').textContent  = `${compressedFile.name} (${(compressedFile.size/1024).toFixed(1)} KB)`;
-      document.getElementById('ss-retake').classList.add('on');
-      loadingDiv.style.display = 'none';
-      document.getElementById('co-submit-btn').disabled = false;
-    };
-    reader.readAsDataURL(file);
-  } catch (err) {
-    console.error('Compression error:', err);
-    toast('Compression failed, using original file.', 'err');
-    compressedFile = file;
-    // Still show preview
-    const reader = new FileReader();
-    reader.onload = e => {
-      document.getElementById('ss-prev').src = e.target.result;
-      document.getElementById('ss-prev').classList.add('on');
-      document.getElementById('ss-zone').classList.add('done');
-      document.getElementById('ss-ico').textContent  = '✅';
-      document.getElementById('ss-txt').textContent  = 'Screenshot ready!';
-      document.getElementById('ss-sub').textContent  = file.name;
-      document.getElementById('ss-retake').classList.add('on');
-      loadingDiv.style.display = 'none';
-      document.getElementById('co-submit-btn').disabled = false;
-    };
-    reader.readAsDataURL(file);
-  }
-}
-
-function copyUpi() {
-  const id = document.getElementById('upi-pill').textContent.trim();
-  navigator.clipboard?.writeText(id).then(() => {
-    const el = document.getElementById('copy-ok');
-    el.style.display='block';
-    setTimeout(()=>el.style.display='none', 2500);
-  });
-}
 
 function validate() {
   const name  = document.getElementById('f-name').value.trim();
@@ -296,16 +205,7 @@ function validate() {
   const items = JSON.parse(localStorage.getItem('pw_cart')||'[]');
   if (!name)               { toast('Enter your name','err'); return null; }
   if (!email?.includes('@')){ toast('Enter a valid email','err'); return null; }
-  if (!compressedFile)     { toast('Please upload your payment screenshot','err'); return null; }
-  const orders = [];
-  for (let i=0; i<items.length; i++) {
-    const bdName = document.getElementById(`bd-name-${i}`)?.value.trim();
-    const bdDate = document.getElementById(`bd-date-${i}`)?.value;
-    const bdNeed = document.getElementById(`bd-need-${i}`)?.value;
-    if (!bdName||!bdDate||!bdNeed) { toast(`Fill all birthday details for ${items[i].name}`,'err'); return null; }
-    const fmt = d => new Date(d+'T00:00:00').toLocaleDateString('en-IN',{day:'numeric',month:'long',year:'numeric'});
-    orders.push({ templateId:items[i].id, templateName:`${items[i].emoji} ${items[i].name}`, price:items[i].price, bdayName:bdName, bdayDate:fmt(bdDate), neededBy:fmt(bdNeed) });
-  }
+  const orders = items.map(i => ({ templateId:i.id, templateName:`${i.emoji} ${i.name}`, price:i.price }));
   if (orders.length === 0) {
     toast("No items in order ❌", "err");
     return null;
@@ -341,77 +241,65 @@ async function checkoutSubmitOrder() {
 
   // Disable button and show spinner
   const originalHTML = btn.innerHTML;
-  btn.innerHTML = `<span class="loading-spinner"></span> Processing...`;
+  btn.innerHTML = `<span class="loading-spinner"></span> Redirecting...`;
   btn.disabled = true;
-
   const orderId = 'PW-' + Date.now();
   const total   = data.orders.reduce((s,o)=>s+o.price,0);
 
-  let ssUrl = '';
-  // Upload compressed file to Firebase Storage (fail-safe)
-  if (window.fbReady && compressedFile) {
-    const loadingDiv = document.getElementById('upload-loading');
-    loadingDiv.style.display = 'block';
-    btn.innerHTML = `<span class="loading-spinner"></span> Optimizing screenshot...`;
-    // Short delay for smooth UX
-    await new Promise(r => setTimeout(r, 300));
-
-    try {
-      const ref = firebase.storage().ref(`screenshots/${orderId}_${Date.now()}.jpg`);
-      await ref.put(compressedFile);
-      ssUrl = await ref.getDownloadURL();
-    } catch(e) {
-      console.warn('Upload failed:', e);
-      ssUrl = 'not_uploaded';
+  // 1. Call Python API to get session
+  let sessionId = '';
+  let env = 'sandbox';
+  let finalOrderId = orderId;
+  try {
+    const returnUrl = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${orderId}&email=${encodeURIComponent(data.email)}`;
+    const res = await fetch('/api/create-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        order_amount: total,
+        customer_email: data.email,
+        customer_name: data.name,
+        return_url: returnUrl
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+      sessionId = result.payment_session_id;
+      env = result.environment;
+      if (result.order_id) finalOrderId = result.order_id;
+    } else {
+      throw new Error(result.error || 'Failed to generate payment session');
     }
-    loadingDiv.style.display = 'none';
+  } catch (err) {
+    console.error("Payment Init Error:", err);
+    toast("Payment connection failed. Check API keys.", "err");
+    btn.innerHTML = `Proceed to Payment 💳`;
+    btn.disabled = false;
+    btn.dataset.locked = "";
+    return;
   }
 
-  btn.innerHTML = `<span class="loading-spinner"></span> Saving order...`;
+  // 2. Save order to Firebase
   if (window.fbReady) {
     try {
-      await firebase.firestore().collection('orders').doc(orderId).set({
-        orderId, buyerName:data.name, buyerEmail:data.email,
-        orders:data.orders, totalAmount:total, screenshotUrl:ssUrl,
-        status:'pending_verification', deliveryStatus:'pending',
+      await firebase.firestore().collection('orders').doc(finalOrderId).set({
+        orderId: finalOrderId, buyerName:data.name, buyerEmail:data.email,
+        orders:data.orders, totalAmount:total,
+        status:'pending_payment', deliveryStatus:'pending',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     } catch(e) { console.warn('Firestore save failed:', e); }
   }
 
-  // Send emails in the background (non-blocking)
-  const orderLines = data.orders.map((o,i)=>`${i+1}. ${o.templateName} — For: ${o.bdayName} (${o.bdayDate}) — Needed by: ${o.neededBy}`).join('\n');
-  const tplNames = data.orders.map(o=>o.templateName).join(', ');
-  const bdNames  = data.orders.map(o=>o.bdayName).join(', ');
-  const bdDates  = data.orders.map(o=>o.bdayDate).join(', ');
-  const needBys  = data.orders.map(o=>o.neededBy).join(', ');
-
-  // Fire and forget - do not await
-  console.log("Emails triggered (async) 🚀");
-  sendEmail('templateId_user_ack', {
-    to_name:data.name, to_email:data.email, order_id:orderId,
-    template_name:tplNames, total_amount:`₹${total}`,
-    bday_person_name:bdNames, bday_date:bdDates, needed_by:needBys,
-    order_lines:orderLines
-  }).catch(e => console.warn('User email error:', e));
-
-  sendEmail('templateId_admin_verify', {
-    to_email: SITE.payment?.adminVerifyEmail || 'nikhil2005114@gmail.com',
-    order_id:orderId, buyer_name:data.name, buyer_email:data.email,
-    template_name:tplNames, total_amount:`₹${total}`,
-    bday_person_name:bdNames, bday_date:bdDates, needed_by:needBys,
-    order_lines:orderLines, screenshot_url:ssUrl,
-    submitted_at: new Date().toLocaleString('en-IN')
-  }).catch(e => console.warn('Admin email error:', e));
-
   // Clear cart
   localStorage.removeItem('pw_cart');
 
-  // Show success toast and redirect with slight delay
-  toast("Order placed successfully! 🎉", "ok");
-  setTimeout(() => {
-    window.location.href = `order-success.html?id=${orderId}&email=${encodeURIComponent(data.email)}`;
-  }, 300);
+  // 3. Open Cashfree Drop-in Checkout
+  toast("Opening secure gateway...", "inf");
+  const cashfree = Cashfree({ mode: env });
+  cashfree.checkout({
+    paymentSessionId: sessionId
+  });
 }
 </script>
 </body>

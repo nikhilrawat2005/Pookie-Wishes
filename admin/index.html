@@ -266,7 +266,7 @@
     <a href="../index.html" class="sb-back">← Back to Site</a>
     <div class="sb-divider"></div>
 
-    <div class="sb-link on" data-tab="processing" onclick="setTab('processing',this)">⏳ Orders Processing</div>
+    <div class="sb-link on" data-tab="incoming" onclick="setTab('incoming',this)">📥 Incoming Orders</div>
     <div class="sb-link" data-tab="delivered" onclick="setTab('delivered',this)">🎁 Delivered</div>
     <div class="sb-link" data-tab="all" onclick="setTab('all',this)">📋 All Orders</div>
     <div class="sb-divider"></div>
@@ -281,11 +281,11 @@
 
   <div class="main" id="main">
     <div class="main-hd">
-      <div class="main-title" id="main-title">Orders Processing</div>
+      <div class="main-title" id="main-title">Incoming Orders</div>
       <button class="btn btn-soft btn-sm" onclick="loadOrders()">↻ Refresh</button>
     </div>
 
-    <div class="stats" id="stats-panel">
+    <div class="stats stagger-in" id="stats-panel">
       <div class="stat-c"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total Orders</div></div>
       <div class="stat-c"><div class="stat-n" id="s-rev">₹0</div><div class="stat-l">Revenue</div></div>
       <div class="stat-c"><div class="stat-n" id="s-pend">0</div><div class="stat-l">Pending</div></div>
@@ -293,9 +293,9 @@
     </div>
 
     <!-- Desktop table -->
-    <div class="tbl" id="orders-tbl">
+    <div class="tbl reveal" id="orders-tbl">
       <div class="tbl-hd"><div>Order ID</div><div>Customer</div><div>Template</div><div>Amount</div><div>Status</div><div>Date</div></div>
-      <div id="tbl-body"><div class="empty">Loading orders…</div></div>
+      <div id="tbl-body" class="stagger-in"><div class="empty">Loading orders…</div></div>
     </div>
 
     <!-- Mobile cards -->
@@ -324,7 +324,7 @@
     <div class="drw-title" id="drw-title">Order Details</div>
     <div class="drw-x" onclick="closeDrawer()">✕</div>
   </div>
-  <div class="drw-body" id="drw-body"></div>
+  <div class="drw-body reveal" id="drw-body"></div>
 </div>
 
 <div id="toasts"></div>
@@ -336,7 +336,7 @@
 
 <script>
 const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
-let SITE=null, db=null, orders=[], curFilter='processing', curOrderId=null;
+let SITE=null, db=null, orders=[], curFilter='incoming', curOrderId=null;
 
 /* SIDEBAR MOBILE */
 function toggleSidebar() {
@@ -410,7 +410,7 @@ function setTab(filter, el) {
   document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('on'));
   el.classList.add('on');
   const titles = {
-    processing: '⏳ Orders Processing',
+    incoming: '📥 Incoming Orders',
     delivered:  '🎁 Delivered',
     all:         '📋 All Orders',
     ranking:     '🏆 Template Rankings',
@@ -442,7 +442,7 @@ const STATUS_MAP = {
 function getOrdersForTab() {
   if (curFilter === 'all') return orders;
   if (curFilter === 'delivered') return orders.filter(o => o.deliveryStatus === 'delivered' || o.status === 'delivered');
-  if (curFilter === 'processing') return orders.filter(o => o.deliveryStatus !== 'delivered' && o.status !== 'delivered');
+  if (curFilter === 'incoming') return orders.filter(o => o.deliveryStatus !== 'delivered' && o.status !== 'delivered');
   return orders;
 }
 
@@ -574,12 +574,22 @@ function openDrawer(oid) {
   const orderItems = (o.orders || []).map(x => `
     <div style="padding:8px 0;border-bottom:1px solid var(--bdr);font-size:.82rem">
       <strong>${x.templateName || x.templateId}</strong><br>
-      <span style="color:var(--muted)">For: ${x.bdayName} · Birthday: ${x.bdayDate} · Needed by: ${x.neededBy}</span>
     </div>`).join('');
 
   const statusOpts = ['pending_verification','verified','in_progress','delivered'].map(s =>
     `<option value="${s}" ${o.status === s ? 'selected' : ''}>${STATUS_MAP[s]?.label || s}</option>`
   ).join('');
+
+  const customDetails = `
+    <div class="inf-item"><span class="inf-k">Recipient Name</span><span class="inf-v">${o.recipientName || '—'}</span></div>
+    <div class="inf-item"><span class="inf-k">Wish Message</span><span class="inf-v" style="white-space:pre-wrap;">${o.wishMessage || '—'}</span></div>
+    <div class="inf-item"><span class="inf-k">Event Date</span><span class="inf-v">${o.eventDate || '—'}</span></div>
+    <div class="inf-item"><span class="inf-k">Instructions</span><span class="inf-v" style="white-space:pre-wrap;">${o.extraInstructions || '—'}</span></div>
+  `;
+
+  const photosList = (o.photos && o.photos.length) 
+    ? o.photos.map((p,i) => `<a href="${p}" target="_blank" class="ss-link">📸 View Photo ${i+1}</a>`).join('<br>')
+    : '<span style="color:var(--muted);font-size:.82rem">No photos provided</span>';
 
   document.getElementById('drw-body').innerHTML = `
     <div class="inf-lbl">Customer</div>
@@ -589,23 +599,20 @@ function openDrawer(oid) {
       <div class="inf-item"><span class="inf-k">Submitted</span><span class="inf-v">${dt}</span></div>
       <div class="inf-item"><span class="inf-k">Amount</span><span class="inf-v" style="font-weight:700">₹${o.totalAmount||0}</span></div>
     </div>
+    <div class="inf-lbl">Order Details</div>
+    <div class="inf-row" style="background:var(--pink-s); padding:10px; border-radius:var(--r); margin-bottom:16px;">
+      ${o.detailsSubmitted ? customDetails : '<span style="color:var(--dim)">Details pending (User hasn\'t submitted form)</span>'}
+    </div>
+    <div class="inf-lbl">Photos Uploaded</div>
+    <div style="margin-bottom:16px">
+      ${photosList}
+    </div>
     <div class="inf-lbl">Templates (${(o.orders||[]).length})</div>
     <div style="margin-bottom:16px">${orderItems}</div>
-    <div class="inf-lbl">Payment Screenshot</div>
-    <div style="margin-bottom:16px">
-      ${o.screenshotUrl && o.screenshotUrl !== 'not_uploaded' && o.screenshotUrl !== '(upload failed)'
-        ? `<a href="${o.screenshotUrl}" target="_blank" class="ss-link">📸 View Screenshot →</a>`
-        : '<span style="color:var(--muted);font-size:.82rem">Not available</span>'}
-    </div>
     <div class="inf-lbl">Update Status</div>
     <div style="display:flex;gap:8px;margin-bottom:20px">
       <select class="f-inp" id="status-sel" style="flex:1"><option value="">— select —</option>${statusOpts}</select>
       <button class="btn btn-soft btn-sm" onclick="updateStatus()">Save</button>
-    </div>
-    <div class="inf-lbl">Send Google Form Link to Customer</div>
-    <div style="margin-bottom:20px">
-      <button class="btn btn-soft-blue btn-full" onclick="sendFormLink()">📋 Send Form Link Email</button>
-      <p style="font-size:.74rem;color:var(--dim);margin-top:6px">Sends form link to ${o.buyerEmail}</p>
     </div>
     <div class="inf-lbl">Admin Actions</div>
     <div style="margin-bottom:20px">
@@ -667,29 +674,7 @@ async function updateStatus() {
   } catch(e) { toast('Update failed', 'err'); }
 }
 
-/* SEND FORM LINK */
-async function sendFormLink() {
-  const o = orders.find(x => (x.orderId || x._docId) === curOrderId);
-  if (!o) return;
-  const ejs2 = SITE.emailjs?.account2;
-  if (!ejs2?.serviceId || ejs2.serviceId.startsWith('YOUR')) { toast('EmailJS account2 not configured', 'err'); return; }
-  const formUrl = SITE.googleForm?.formUrl || '#';
-  const orderLines = (o.orders || []).map((x, i) => `${i+1}. ${x.templateName} — For: ${x.bdayName} (${x.bdayDate}) — Needed by: ${x.neededBy}`).join('\n');
-  try {
-    await emailjs.send(ejs2.serviceId, ejs2.templateId_form_link, {
-      to_name: o.buyerName, to_email: o.buyerEmail, order_id: curOrderId,
-      template_name: (o.orders||[]).map(x => x.templateName).join(', '),
-      bday_person_name: (o.orders||[]).map(x => x.bdayName).join(', '),
-      bday_date: (o.orders||[]).map(x => x.bdayDate).join(', '),
-      needed_by: (o.orders||[]).map(x => x.neededBy).join(', '),
-      order_lines: orderLines, google_form_link: formUrl, from_name: 'Pookie Wishes'
-    }, ejs2.publicKey);
-    await db.collection('orders').doc(curOrderId).update({ status: 'verified', formLinkSentAt: firebase.firestore.FieldValue.serverTimestamp() });
-    const ord = orders.find(x => (x.orderId || x._docId) === curOrderId);
-    if (ord) ord.status = 'verified';
-    updateStats(); renderTable(); toast('Form link email sent! ✅', 'ok');
-  } catch(e) { console.error(e); toast('Email failed — check EmailJS config', 'err'); }
-}
+
 
 /* DELIVER (final link only) */
 async function deliver() {
@@ -720,7 +705,7 @@ async function deliver() {
     }
 
     const orderSummary = (o.orders || [])
-      .map(x => `${x.templateName} — for ${x.bdayName}`)
+      .map(x => `${x.templateName}`)
       .join('\n');
 
     // Send only website link (QR system removed from delivery email)
@@ -732,7 +717,7 @@ async function deliver() {
         to_email: o.buyerEmail,
         order_id: curOrderId,
         template_name: (o.orders || []).map(x => x.templateName).join(', '),
-        bday_person_name: (o.orders || []).map(x => x.bdayName).join(', '),
+        bday_person_name: o.recipientName || 'there',
         order_summary: orderSummary,
         website_link: link,
         from_name: 'Pookie Wishes'
