@@ -110,7 +110,7 @@
     {
       "id": "love-trap",
       "name": "Love Trap",
-      "price": 29,
+      "price": 39,
       "currency": "₹",
       "emoji": "💘",
       "tagline": "Catch them in a web of love",
@@ -140,6 +140,43 @@
           "media/love-trap/3.jpg"
         ]
       }
+    },
+    {
+      "id": "celestial-space",
+      "name": "Celestial Universe",
+      "tagline": "Interstellar Birthday Journey ✨",
+      "badge": "Premium",
+      "emoji": "🌌",
+      "price": 29,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "demoUrl": "https://celestialbirthday-omega.vercel.app/",
+      "tags": [
+        "space",
+        "aesthetic",
+        "galaxy",
+        "interstellar",
+        "romantic"
+      ],
+      "shortDesc": "A cosmic journey through the stars with interactive games, floating planets, and an interstellar music player.",
+      "longDesc": "Embark on an out-of-this-world adventure. This celestial surprise features an interactive star-tracing game to unlock your message, rotating 3D planets, a smooth typewriter reveal of your heartfelt notes, and a dedicated memory orbit for your photos. Accompanied by a curated interstellar music player for the perfect vibe.",
+      "vibe": "Cosmic & Immersive",
+      "features": [
+        "✨ Interactive Star Tracing game",
+        "🪐 3D Rotating Planets & Galaxy background",
+        "🎵 Interstellar Music Player with playlist",
+        "✒️ Smooth typewriter message reveal",
+        "🌠 Memory Orbit photo gallery",
+        "🚀 Celebrate again replay button"
+      ],
+      "media": {
+        "thumbnail": "media/celestial/thumbnail.jpg",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774623999/gallexy_rvnjkc.mov",
+        "gallery": [
+          "media/celestial/img1.jpg",
+          "media/celestial/img2.jpg"
+        ]
+      }
     }
   ],
   "comingSoon": [
@@ -166,12 +203,6 @@
       "name": "Bollywood",
       "emoji": "🎬",
       "tagline": "Filmy Birthday Wala Feel!"
-    },
-    {
-      "id": "space",
-      "name": "Space Aesthetic",
-      "emoji": "🌌",
-      "tagline": "Out of This World!"
     },
     {
       "id": "among-us",

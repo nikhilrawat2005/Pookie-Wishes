@@ -68,7 +68,7 @@
       <div class="steps" style="margin-bottom:24px;">
         <div class="stp active"><div class="stp-dot">1</div><span>Fill Details</span></div>
         <div class="stp-line"></div>
-        <div class="stp"><div class="stp-dot">2</div><span>Pay via Cashfree</span></div>
+        <div class="stp"><div class="stp-dot">2</div><span>Pay via Razorpay</span></div>
       </div>
 
       <div class="co-title">Place Your Order 💖</div>
@@ -96,7 +96,7 @@
       <div class="divider"></div>
 
       <div class="submit-note">
-        After submitting — you will be redirected to Cashfree to pay securely. Once payment is successful, you will receive a link to our personalisation form to add your photos and message. 💖
+        After submitting — you will be redirected to Razorpay to pay securely. Once payment is successful, you will receive a link to our personalisation form to add your photos and message. 💖
       </div>
       <button class="btn btn-primary btn-xl btn-full btn-shimmer" id="co-submit-btn" onclick="checkoutSubmitOrder()">Proceed to Payment 💳</button>
       <p style="text-align:center; font-size:0.75rem; color:var(--dim); margin-top:12px;">
@@ -118,11 +118,11 @@
         </div>
       </div>
       <div class="sc reveal" style="transition-delay:0.2s; text-align:center">
-        <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:3px">Pay securely via Cashfree 💳</div>
+        <div style="font-family:var(--fd);font-size:.95rem;font-weight:700;color:var(--text);margin-bottom:3px">Pay securely via Razorpay 💳</div>
         <div style="font-size:.75rem;color:var(--muted);margin-bottom:12px">India's most trusted payment gateway</div>
         <div class="qr-steps">
           <div class="qr-step"><div class="qr-step-n">1</div>Click Proceed to Payment</div>
-          <div class="qr-step"><div class="qr-step-n">2</div>Pay ₹<span id="qr-amt">0</span> via UPI/Cards on Cashfree</div>
+          <div class="qr-step"><div class="qr-step-n">2</div>Pay ₹<span id="qr-amt">0</span> via UPI/Cards on Razorpay</div>
           <div class="qr-step"><div class="qr-step-n">3</div>Get redirected to filling the personalisation form</div>
         </div>
       </div>
@@ -135,14 +135,15 @@
   <div class="footer-inner">
     <div class="f-bottom">
       <span>© 2026 Pookie Wishes — Personalized Digital Greeting Service 💖</span>
-      <div style="display:flex; gap:15px; margin-top:8px; flex-wrap:wrap; justify-content:center;">
+      <div style="display:flex; gap:15px; margin-top:12px; flex-wrap:wrap; justify-content:center;">
         <a href="about.html" style="color:var(--dim)">About Us</a>
         <a href="terms.html" style="color:var(--dim)">Terms</a>
         <a href="refund-policy.html" style="color:var(--dim)">Refund Policy</a>
         <a href="privacy-policy.html" style="color:var(--dim)">Privacy Policy</a>
       </div>
-      <div style="margin-top:15px; font-size:0.75rem; color:var(--dim); max-width:650px; margin-left:auto; margin-right:auto; line-height:1.6;">
-        <p><strong>Compliance & Safety:</strong> We do not allow any illegal, copyrighted, adult, or harmful content. All submissions are reviewed before processing. This is a digital service. No physical products are sold or shipped.</p>
+      <div style="margin-top:20px; font-size:0.75rem; color:var(--dim); max-width:650px; margin-left:auto; margin-right:auto; line-height:1.6; border-top:1px solid rgba(0,0,0,0.05); padding-top:15px;">
+        <p><strong>Compliance & Safety:</strong> We strictly prohibit any illegal, copyrighted, adult, or harmful content. All submissions are manually reviewed before processing. This is a digital service. No physical products are sold or shipped.</p>
+        <p style="margin-top:8px; font-weight:700; color:var(--text2);">Support Email: support@pookiewishes.com</p>
       </div>
     </div>
   </div>
@@ -154,7 +155,7 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
 <!-- Firebase Storage removed — screenshots now uploaded via backend to Cloudinary -->
-<script src="https://sdk.cashfree.com/js/v3/cashfree.js"></script>
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="../js/app.js"></script>
 
 <script>
@@ -249,27 +250,23 @@ async function checkoutSubmitOrder() {
   const orderId = 'PW-' + Date.now();
   const total   = data.orders.reduce((s,o)=>s+o.price,0);
 
-  // 1. Call Python API to get session
-  let sessionId = '';
-  let env = 'sandbox';
-  let finalOrderId = orderId;
+  // 1. Call Python API to get Razorpay order_id
+  let razorOrderId = '';
+  let razorKey = '';
   try {
-    const returnUrl = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${orderId}&email=${encodeURIComponent(data.email)}`;
-    const res = await fetch('/api/create-order', {
+    const res = await fetch('/api/razorpay-order', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         order_amount: total,
         customer_email: data.email,
-        customer_name: data.name,
-        return_url: returnUrl
+        customer_name: data.name
       })
     });
     const result = await res.json();
     if (result.success) {
-      sessionId = result.payment_session_id;
-      env = result.environment;
-      if (result.order_id) finalOrderId = result.order_id;
+      razorOrderId = result.order_id;
+      razorKey = result.key_id;
     } else {
       throw new Error(result.error || 'Failed to generate payment session');
     }
@@ -282,27 +279,58 @@ async function checkoutSubmitOrder() {
     return;
   }
 
-  // 2. Save order to Firebase
+  // 2. Save order to Firebase as pending
   if (window.fbReady) {
     try {
-      await firebase.firestore().collection('orders').doc(finalOrderId).set({
-        orderId: finalOrderId, buyerName:data.name, buyerEmail:data.email,
+      await firebase.firestore().collection('orders').doc(razorOrderId).set({
+        orderId: razorOrderId, buyerName:data.name, buyerEmail:data.email,
         orders:data.orders, totalAmount:total,
         status:'pending_payment', deliveryStatus:'pending',
+        gateway: 'razorpay',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
     } catch(e) { console.warn('Firestore save failed:', e); }
   }
 
-  // Clear cart
-  localStorage.removeItem('pw_cart');
+  // 3. Open Razorpay Checkout
+  const options = {
+    "key": razorKey,
+    "amount": total * 100,
+    "currency": "INR",
+    "name": "Pookie Wishes",
+    "description": "Personalised Digital Greeting Service",
+    "order_id": razorOrderId,
+    "handler": function (response) {
+      // Clear cart
+      localStorage.removeItem('pw_cart');
+      toast("Payment Successful! 🎉", "ok");
+      
+      // Update status in Firestore (optional but recommended)
+      if (window.fbReady) {
+        firebase.firestore().collection('orders').doc(razorOrderId).update({
+          status: 'paid',
+          razorpay_payment_id: response.razorpay_payment_id
+        }).catch(e => console.warn('Firestore update failed:', e));
+      }
 
-  // 3. Open Cashfree Drop-in Checkout
-  toast("Opening secure gateway...", "inf");
-  const cashfree = Cashfree({ mode: env });
-  cashfree.checkout({
-    paymentSessionId: sessionId
+      // Redirect to success form
+      window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${razorOrderId}&email=${encodeURIComponent(data.email)}`;
+    },
+    "prefill": {
+      "name": data.name,
+      "email": data.email
+    },
+    "theme": { "color": "#ff7eb3" }
+  };
+  
+  const rzp = new Razorpay(options);
+  rzp.on('payment.failed', function (response){
+    toast("Payment Failed: " + response.error.description, "err");
+    btn.innerHTML = `Proceed to Payment 💳`;
+    btn.disabled = false;
+    btn.dataset.locked = "";
   });
+  rzp.open();
 }
 </script>
 </body>

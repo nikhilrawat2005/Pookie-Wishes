@@ -8,9 +8,20 @@
 
 - **Static Frontend**: Blazing fast HTML/CSS/JS architecture with zero backend maintenance.
 - **Firebase Integration**: User authentication (Google/Email) and order saving via Firebase Firestore.
-- **Cashfree Payments**: Secure and seamless payment checkout using the Cashfree Serverless wrapper.
+- **Razorpay Payments**: Secure and seamless payment checkout using the Razorpay Integration.
 - **Automated Personalisation Collection**: Directly on the site post-payment. Photos are securely uploaded to **Cloudinary**, and text details directly map to Firebase.
 - **EmailJS Integration**: Automated admin notifications for new orders and one-click delivery emails from the Admin Panel.
+
+---
+
+## 🎨 Template Gallery
+
+| Template Name | Preview Image | Video Demo | Price |
+|---|---|---|---|
+| **Celestial Universe** ✨ | ![Celestial Placeholder](https://placehold.co/600x400/0b0b2e/white?text=Celestial+Universe+Preview) | [Watch Demo](https://res.cloudinary.com/dktx4woql/video/upload/v1774623999/gallexy_rvnjkc.mov) | ₹29 |
+| **Love Trap** 💘 | ![Love Trap Placeholder](https://placehold.co/600x400/ff7eb3/white?text=Love+Trap+Preview) | [Watch Demo](https://res.cloudinary.com/dktx4woql/video/upload/v1774376488/Untitled_design_jdl9sl.mp4) | ₹39 |
+| **Hello Kitty** 🎀 | ![Hello Kitty Placeholder](https://placehold.co/600x400/fff0f4/black?text=Hello+Kitty+Preview) | [Watch Demo](https://res.cloudinary.com/dktx4woql/video/upload/v1774022269/preview_z3mcd8.mp4) | ₹69 |
+| **Harry Potter** ⚡ | ![Harry Potter Placeholder](https://placehold.co/600x400/1a1a1a/white?text=Harry+Potter+Preview) | [Watch Demo](https://res.cloudinary.com/dktx4woql/video/upload/v1774022365/preview_yvsyhy.mp4) | ₹69 |
 
 ---
 
@@ -28,7 +39,7 @@ pookie-v3/
 │   ├── order-success.html ← Post-Payment form (recipient name, text, and Cloudinary photo upload)
 │   └── ...other pages
 ├── admin/              ← Comprehensive order management Admin Panel
-├── api/                ← Vercel serverless Python backend for Cashfree session generation
+├── api/                ← Vercel serverless Python backend for Razorpay order generation
 └── media/              ← Images and videos
 ```
 
@@ -95,21 +106,18 @@ cd pookie-v3
 
 ---
 
-### Step 5 — Cashfree Payment Setup (Vercel Serverless)
+### Step 5 — Razorpay Payment Setup (Vercel Serverless)
 
-> **Required for**: Accepting dynamic payments seamlessly.
-
-1. Go to your Cashfree Merchant Dashboard and get your **App ID** and **Secret Key**.
-2. When deploying to **Vercel**, add these Environment Variables:
-   - `CASHFREE_APP_ID`: Your App ID
-   - `CASHFREE_SECRET_KEY`: Your Secret Key
-   - `CASHFREE_ENVIRONMENT`: Set to `sandbox` for testing, or `production` when live.
+1. Go to your Razorpay Dashboard and get your **Key ID** and **Key Secret**.
+2. Add these to your Vercel Environment Variables:
+   - `RAZORPAY_KEY_ID`: Your Key ID
+   - `RAZORPAY_KEY_SECRET`: Your Key Secret
 
 ---
 
 ## 🌐 Deploy to Production
 
-Deploy the repo to **Vercel** with the above environment variables. Vercel automatically deploys the `api/` folder as a serverless backend for Cashfree, ensuring seamless API integrations.
+Deploy the repo to **Vercel** with the above environment variables. Vercel automatically deploys the `api/` folder as a serverless backend for Razorpay, ensuring seamless API integrations.
 
 ---
 

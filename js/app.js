@@ -629,10 +629,10 @@ function renderDetailPage() {
           </div>
           <div class="detail-tags">${tagsHTML}</div>
           <div class="service-specs">
-            <div class="spec-item"><strong>Type:</strong> Digital Service</div>
-            <div class="spec-item"><strong>Delivery:</strong> Private link</div>
-            <div class="spec-item"><strong>Time:</strong> 24–72 hours</div>
-            <div class="spec-item"><strong>Customization:</strong> Optional photos & message</div>
+            <div class="spec-item"><strong>Output:</strong> Personalized digital webpage</div>
+            <div class="spec-item"><strong>Delivery:</strong> Private shareable link</div>
+            <div class="spec-item"><strong>Access:</strong> Mobile & desktop access</div>
+            <div class="spec-item"><strong>Time:</strong> Delivery within 24–72 hours</div>
           </div>
           <div class="price-row">
             <div class="price-amount">${t.currency||'₹'}${t.price}</div>
