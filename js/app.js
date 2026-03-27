@@ -628,9 +628,15 @@ function renderDetailPage() {
             <div class="feat-list">${featsHTML}</div>
           </div>
           <div class="detail-tags">${tagsHTML}</div>
+          <div class="service-specs">
+            <div class="spec-item"><strong>Type:</strong> Personalised Digital Greeting Service</div>
+            <div class="spec-item"><strong>Delivery:</strong> Via Secure Private Link</div>
+            <div class="spec-item"><strong>Timeline:</strong> 24–72 Hours after personalisation</div>
+            <div class="spec-item"><strong>Requirement:</strong> Photos & Messages (via form)</div>
+          </div>
           <div class="price-row">
             <div class="price-amount">${t.currency||'₹'}${t.price}</div>
-            <div class="price-note">One-time · Fully customised for your moment ✨<br>We'll reach out after you order.</div>
+            <div class="price-note">One-time · Fully customised for your moment ✨<br>Delivery via private link in 24-72 hours.</div>
           </div>
           <div class="detail-actions">
             <button class="btn btn-primary btn-lg" style="flex:1"
