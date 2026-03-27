@@ -75,7 +75,7 @@
       <div class="stp" id="ord-stp3"><div class="stp-dot">3</div><span>Done</span></div>
     </div>
     <div id="order-step1">
-      <div class="order-note">Fill in the details. After submitting, we'll reach out on WhatsApp to collect photos and confirm everything before you pay.</div>
+      <div class="order-note">Fill in your contact details to proceed to secure checkout. You will be able to add your personalized photos and messages immediately after the payment is completed.</div>
       <div class="f-row">
         <div class="f-group"><label class="f-label">YOUR NAME *</label><input class="f-inp" id="ord-myname" type="text" placeholder="Priya Sharma"></div>
         <div class="f-group"><label class="f-label">YOUR WHATSAPP *</label><input class="f-inp" id="ord-myphone" type="tel" placeholder="+91 98765 43210"></div>
@@ -94,12 +94,12 @@
       <button class="btn btn-primary btn-full btn-lg" onclick="proceedToReview()">Review Order →</button>
     </div>
     <div id="order-step2" style="display:none">
-      <div class="order-note" style="background:rgba(122,201,184,.08);border-color:rgba(122,201,184,.25)">✅ Looks good? We'll open WhatsApp with your order details.</div>
+      <div class="order-note" style="background:rgba(122,201,184,.08);border-color:rgba(122,201,184,.25)">✅ Ready to proceed? Click below to go to our secure payment gateway.</div>
       <span class="wa-label">Your order summary</span>
       <div class="wa-preview-box" id="ord-preview"></div>
       <div style="display:flex;gap:8px">
         <button class="btn btn-ghost btn-lg" style="flex:0 0 auto" onclick="goBackToStep1()">← Edit</button>
-        <button class="btn btn-primary btn-lg" style="flex:1" id="submit-btn" onclick="submitOrder()">Submit & Open WhatsApp 💬</button>
+        <button class="btn btn-primary btn-lg" style="flex:1" id="submit-btn" onclick="submitOrder()">Proceed to Payment 🎁</button>
       </div>
     </div>
     <div class="success-box" id="order-step3">
@@ -121,8 +121,8 @@
         <a href="refund-policy.html" style="color:var(--dim)">Refund Policy</a>
         <a href="privacy-policy.html" style="color:var(--dim)">Privacy Policy</a>
       </div>
-      <div style="margin-top:15px; font-size:0.75rem; color:var(--dim); max-width:600px; margin-left:auto; margin-right:auto;">
-        <p><strong>Disclaimer:</strong> This is a digital service. No physical products are sold or shipped. We do not accept or process any illegal, adult, or prohibited content. All submissions are reviewed before delivery.</p>
+      <div style="margin-top:15px; font-size:0.75rem; color:var(--dim); max-width:650px; margin-left:auto; margin-right:auto; line-height:1.6;">
+        <p><strong>Compliance & Safety:</strong> We do not allow any illegal, copyrighted, adult, or harmful content. All submissions are reviewed before processing. This is a digital service. No physical products are sold or shipped.</p>
       </div>
     </div>
   </div>

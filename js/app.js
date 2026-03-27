@@ -629,10 +629,10 @@ function renderDetailPage() {
           </div>
           <div class="detail-tags">${tagsHTML}</div>
           <div class="service-specs">
-            <div class="spec-item"><strong>Type:</strong> Personalised Digital Greeting Service</div>
-            <div class="spec-item"><strong>Delivery:</strong> Via Secure Private Link</div>
-            <div class="spec-item"><strong>Timeline:</strong> 24–72 Hours after personalisation</div>
-            <div class="spec-item"><strong>Requirement:</strong> Photos & Messages (via form)</div>
+            <div class="spec-item"><strong>Type:</strong> Digital Service</div>
+            <div class="spec-item"><strong>Delivery:</strong> Private link</div>
+            <div class="spec-item"><strong>Time:</strong> 24–72 hours</div>
+            <div class="spec-item"><strong>Customization:</strong> Optional photos & message</div>
           </div>
           <div class="price-row">
             <div class="price-amount">${t.currency||'₹'}${t.price}</div>
