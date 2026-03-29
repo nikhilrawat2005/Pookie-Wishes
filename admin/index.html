@@ -435,9 +435,9 @@ async function resendZeroTouch(oid, link) {
   try {
     const ejs = SITE.emailjs.account1;
     await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
+      to_email: o.buyerEmail,
+      recipient_name: o.buyerName || 'Awesome Customer',
       gift_link: link,
-      customer_email: o.buyerEmail,
-      recipient_name: o.recipientName || 'there',
       order_id: oid
     });
     toast('Email Resent Successfully ✨','ok');
@@ -453,9 +453,10 @@ async function sendManual(oid) {
   try {
     const ejs = SITE.emailjs.account1;
     await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
-      to_name: o.buyerName, to_email: o.buyerEmail,
-      order_id: oid, bday_person_name: o.recipientName||'there',
-      website_link: lnk, from_name: 'Pookie Wishes'
+      to_email: o.buyerEmail,
+      recipient_name: o.buyerName || 'Awesome Customer',
+      gift_link: lnk,
+      order_id: oid
     });
     
     await db.collection('orders').doc(oid).update({ status: 'delivered', deliveryStatus: 'delivered', deliveryLink: lnk });

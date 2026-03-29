@@ -285,9 +285,9 @@
         if (isZeroTouch && ejs?.templateId_delivery) {
           try {
              await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
+                to_email: CUSTOMER_EMAIL,
+                recipient_name: 'Awesome Customer',
                 gift_link: giftLink,
-                customer_email: CUSTOMER_EMAIL,
-                recipient_name: recip,
                 order_id: ORDER_ID
              }, ejs.publicKey);
           } catch(e) { console.warn("Auto delivery email failed", e); }
