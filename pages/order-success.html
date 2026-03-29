@@ -229,6 +229,19 @@
 
       toast("Saving details...", "inf");
       
+      let tId = 'sorry';
+      let currentOrder = null;
+      if (window.fbReady && ORDER_ID !== '—') {
+        const dReq = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
+        currentOrder = dReq.data() || {};
+        tId = currentOrder.templateId || 'sorry-template';
+      }
+
+      // Templates that fully support zero-touch Level 3 deployment locally
+      const autoDeliverTemplates = ['sorry-template'];
+      const isZeroTouch = autoDeliverTemplates.includes(tId);
+      const giftLink = window.location.origin + '/templates/' + tId + '/index.html?id=' + ORDER_ID;
+      
       const updateData = {
         recipientName: recip,
         wishMessage: msg,
@@ -236,7 +249,8 @@
         extraInstructions: extra || null,
         photos: photoLinks,
         detailsSubmitted: true,
-        deliveryStatus: 'pending'
+        deliveryLink: isZeroTouch ? giftLink : null,
+        deliveryStatus: isZeroTouch ? 'delivered' : 'pending' // Zero-Touch Auto-Delivery Magic ✨
       };
 
       if (window.fbReady && ORDER_ID !== '—') {
@@ -265,16 +279,52 @@
           extra_instructions: extra || 'None',
           photo_links: photoLinksStr,
           admin_link: adminUrl
-        }, ejs.publicKey); 
+        }, ejs.publicKey);
+        
+        // Provide the Auto-Delivery Email to the Customer if Zero-Touch
+        if (isZeroTouch && ejs?.templateId_delivery) {
+          try {
+             await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
+                gift_link: giftLink,
+                customer_email: CUSTOMER_EMAIL,
+                recipient_name: recip,
+                order_id: ORDER_ID
+             }, ejs.publicKey);
+          } catch(e) { console.warn("Auto delivery email failed", e); }
+        }
+
       } catch(e) {
         console.error("EmailJS Error:", e);
-        // Show a more helpful error to the user
         const errDetail = e.text || e.message || 'Check EmailJS Setup';
         toast(`Admin Notification Failed: ${errDetail}`, "err");
         alert(`ADMIN NOTIFICATION ERROR: ${errDetail}\n\nPlease check your EmailJS Template and Public Key in site.json.`);
       }
 
       document.getElementById('post-payment-form').style.display = 'none';
+      
+      // Zero-Touch UI Replacement vs Manual Notification UI
+      if (isZeroTouch) {
+          document.getElementById('success-msg').innerHTML = `
+            <div style="font-size:3.5rem; margin-bottom:10px;">🎁✨</div>
+            <h3 style="font-family:var(--fd); color:var(--text); margin-bottom:10px; font-size:1.6rem;">Your Surprise is Ready!</h3>
+            <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
+              Because you chose a **Premium Zero-Touch Template**, your surprise was generated instantly. Here is the secret link to share with ${recip} 🩷
+            </p>
+            
+            <div style="background:var(--bg2); padding:18px; border-radius:var(--r); border:2px dashed var(--bdr-pink); margin-bottom:20px; word-break:break-all;">
+                <span style="font-family:var(--fm); font-size:0.85rem; color:var(--text2); user-select:all;">${giftLink}</span>
+            </div>
+            
+            <div style="display:flex; gap:12px; justify-content:center; margin-bottom:20px; flex-wrap:wrap;">
+                <button class="btn btn-soft" style="font-weight:600;" onclick="navigator.clipboard.writeText('${giftLink}');toast('Link Copied! 📋','ok')">📋 Copy Link</button>
+                <a href="${giftLink}" target="_blank" class="btn btn-primary" style="font-weight:700;">Visit Surprise ✨</a>
+            </div>
+            <p style="font-size:0.75rem; color:var(--dim); font-style:italic;">
+              We have also securely emailed this link to <strong>${CUSTOMER_EMAIL}</strong>. It will automatically expire after 30 days.
+            </p>
+          `;
+      }
+      
       document.getElementById('success-msg').style.display = 'block';
 
       confetti({
