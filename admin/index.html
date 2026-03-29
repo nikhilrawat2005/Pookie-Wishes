@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — Pookie Zenith</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'></text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚀</text></svg>">
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -328,14 +328,14 @@ function renderTable() {
     const dt = o.createdAt?.toDate?.().toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) || '—';
     const tpl = o.templateId || (o.orders?.[0]?.templateName) || 'Unknown';
 
-    return \<div class="tbl-row" onclick="openDrawer('\')">
-      <div class="tc mono">\</div>
-      <div class="tc">\<div class="tc-sub">\</div></div>
-      <div class="tc">\ \</div>
-      <div class="tc mono" style="font-weight:600;">₹\</div>
-      <div><span class="badge \">\</span></div>
-      <div class="tc tc-sub">\</div>
-    </div>\;
+    return `<div class="tbl-row" onclick="openDrawer('${oid}')">
+      <div class="tc mono">${oid}</div>
+      <div class="tc">${o.buyerName||'—'}<div class="tc-sub">${o.buyerEmail||''}</div></div>
+      <div class="tc">${tpl} ${isZT ? '<span class="badge badge-zt"><i data-lucide="zap" style="width:10px;"></i> Zero-Touch</span>' : ''}</div>
+      <div class="tc mono" style="font-weight:600;">₹${o.totalAmount||0}</div>
+      <div><span class="badge ${sCls}">${sLabel}</span></div>
+      <div class="tc tc-sub">${dt}</div>
+    </div>`;
   }).join('');
   lucide.createIcons();
 }
@@ -359,20 +359,19 @@ function openDrawer(oid) {
   let deliveryBlock = '';
   if (isZT) {
     const linkObj = o.deliveryLink || (window.location.origin + '/templates/' + (o.templateId || o.orders?.[0]?.templateId) + '/index.html?id=' + oid);
-    deliveryBlock = \
+    deliveryBlock = `
       <div class="zt-box">
          <i data-lucide="zap" class="zt-ico"></i>
          <div class="zt-title">Zero-Touch Executed</div>
          <p class="zt-sub">This order was completely automated. Link was generated securely.</p>
-         <div class="zt-link">\</div>
+         <div class="zt-link">${linkObj}</div>
          <div style="display:flex;gap:10px;">
-             <button class="btn btn-soft" style="flex:1" onclick="copy('\')">Copy Link</button>
-             <button class="btn btn-primary" style="flex:2" onclick="resendZeroTouch('\', '\')">Resend Delivery Email</button>
+             <button class="btn btn-soft" style="flex:1" onclick="copy('${linkObj}')">Copy Link</button>
+             <button class="btn btn-primary" style="flex:2" onclick="resendZeroTouch('${oid}', '${linkObj}')">Resend Delivery Email</button>
          </div>
       </div>
-    \;
+    `;
   } else {
-    deliveryBlock = \
     deliveryBlock = `
       <div class="inf-box">
          <div class="sec-title"><i data-lucide="send"></i> Manual Delivery</div>
@@ -441,7 +440,7 @@ async function resendZeroTouch(oid, link) {
       recipient_name: o.recipientName || 'there',
       order_id: oid
     });
-    toast('Email Resent Successfully ','ok');
+    toast('Email Resent Successfully ✨','ok');
   } catch(e) { toast('Error sending email','err'); console.error(e); }
 }
 
@@ -482,7 +481,7 @@ function toast(m, t) {
   const c = document.getElementById('toasts');
   const d = document.createElement('div');
   d.className = 'toast ' + (t==='err'?'err':'ok');
-  d.innerHTML = \<i data-lucide="\"></i> <span>\</span>\;
+  d.innerHTML = `<i data-lucide="${t==='err'?'alert-circle':'check-circle'}"></i> <span>${m}</span>`;
   c.appendChild(d);
   lucide.createIcons();
   setTimeout(()=>d.remove(), 3000);
