@@ -2,350 +2,236 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin — Pookie Wishes</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎂</text></svg>">
+  <title>Admin Dashboard — Pookie Zenith</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'></text></svg>">
   <link rel="stylesheet" href="../css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
   <style>
-    /* (keep all existing admin styles, plus add templates grid) */
-    body{background:var(--bg2);margin:0}
-
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;900&display=swap');
+    
+    :root {
+      --bg: #09090b;
+      --bg2: #0f0f13;
+      --bg3: #18181b;
+      --card: rgba(24, 24, 27, 0.6);
+      --bdr: rgba(255, 255, 255, 0.08);
+      --bdr2: rgba(255, 255, 255, 0.15);
+      --text: #ffffff;
+      --text2: #e4e4e7;
+      --muted: #a1a1aa;
+      --dim: #71717a;
+      --pink: #ff2a85;
+      --pink-s: rgba(255, 42, 133, 0.15);
+      --bdr-pink: rgba(255, 42, 133, 0.3);
+      --mint: #10b981;
+      --g-main: linear-gradient(135deg, #ff2a85 0%, #ff7ea5 100%);
+      --fd: 'Outfit', sans-serif;
+      --fm: 'Inter', monospace;
+      --rx: 16px;
+      --rl: 12px;
+      --r: 8px;
+      --rs: 6px;
+      --sh: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    
+    * { box-sizing: border-box; }
+    body { background: var(--bg); margin: 0; font-family: var(--fm); color: var(--text); -webkit-font-smoothing: antialiased; }
+    
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+    
     /* LOGIN */
-    .login-pg{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:20px}
-    .login-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rx);padding:48px 40px;max-width:380px;width:100%;text-align:center;box-shadow:var(--sh-lg)}
-    .login-ico{font-size:2.8rem;display:block;margin-bottom:14px}
-    .login-title{font-family:var(--fd);font-size:1.6rem;font-weight:700;margin-bottom:6px}
-    .login-sub{font-size:.84rem;color:var(--muted);margin-bottom:22px}
-
+    .login-pg { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; background: radial-gradient(circle at top, #1a1014 0%, var(--bg) 60%); }
+    .login-card { background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--bdr); border-radius: var(--rx); padding: 48px 40px; max-width: 400px; width: 100%; text-align: center; box-shadow: var(--sh); position: relative; overflow: hidden; }
+    .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--g-main); }
+    .login-title { font-family: var(--fd); font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; margin-top: 16px; }
+    .login-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; line-height: 1.5; }
+    
+    .btn { cursor: pointer; border: none; font-family: var(--fm); font-size: 0.85rem; font-weight: 600; padding: 10px 18px; border-radius: var(--r); transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; outline: none; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(1px); }
+    .btn-full { width: 100%; }
+    .btn-primary { background: var(--pink); color: #fff; box-shadow: 0 0 15px rgba(255,42,133,0.3); }
+    .btn-primary:hover { border: none; box-shadow: 0 0 25px rgba(255,42,133,0.5); }
+    .btn-google { background: #fff; color: #000; }
+    .btn-soft { background: var(--bg3); color: var(--text2); border: 1px solid var(--bdr); }
+    .btn-soft:hover { background: #27272a; border-color: var(--bdr2); }
+    .btn-ghost { background: transparent; color: var(--muted); }
+    .btn-ghost:hover { background: var(--bg3); color: var(--text); }
+    
     /* LAYOUT */
-    .admin-wrap{display:none;min-height:100vh}
-    .admin-wrap.on{display:flex}
-
+    .admin-wrap { display: none; min-height: 100vh; }
+    .admin-wrap.on { display: flex; }
+    
     /* SIDEBAR */
-    .sidebar{width:230px;background:var(--card);border-right:1px solid var(--bdr);padding:18px 0;display:flex;flex-direction:column;position:fixed;top:0;left:0;height:100vh;z-index:200;transition:transform .3s cubic-bezier(.4,0,.2,1)}
-    .sb-logo{font-family:var(--fd);font-size:1.1rem;font-weight:700;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;padding:0 18px 16px;border-bottom:1px solid var(--bdr);margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
-    .sb-logo-text small{display:block;font-family:var(--fm);font-size:.58rem;-webkit-text-fill-color:var(--dim);margin-top:2px}
-    .sb-close{display:none;width:28px;height:28px;border-radius:50%;background:var(--bg2);border:1px solid var(--bdr);cursor:pointer;align-items:center;justify-content:center;font-size:.9rem;flex-shrink:0;color:var(--muted);-webkit-text-fill-color:var(--muted)}
-    .sb-link{display:flex;align-items:center;gap:9px;padding:10px 18px;color:var(--muted);-webkit-text-fill-color:var(--muted);font-size:.86rem;cursor:pointer;transition:all .18s;border-left:2px solid transparent}
-    .sb-link:hover,.sb-link.on{background:var(--bg2);color:var(--text2);-webkit-text-fill-color:var(--text2);border-left-color:var(--pink)}
-    .sb-back{display:flex;align-items:center;gap:7px;padding:9px 18px;color:var(--muted);-webkit-text-fill-color:var(--muted);font-size:.82rem;cursor:pointer;transition:all .18s;text-decoration:none;border-left:2px solid transparent}
-    .sb-back:hover{color:var(--text2);-webkit-text-fill-color:var(--text2);border-left-color:var(--bdr2)}
-    .sb-divider{height:1px;background:var(--bdr);margin:6px 14px}
-    .sb-foot{margin-top:auto;padding:14px 18px;border-top:1px solid var(--bdr)}
-    .sb-user{font-size:.75rem;color:var(--dim);margin-bottom:10px;word-break:break-all}
-
-    /* MOBILE TOPBAR */
-    .topbar{display:none;position:fixed;top:0;left:0;right:0;height:54px;background:var(--card);border-bottom:1px solid var(--bdr);z-index:150;align-items:center;padding:0 14px;gap:10px;box-shadow:var(--sh)}
-    .topbar-menu{width:36px;height:36px;border-radius:var(--rs);background:var(--bg2);border:1px solid var(--bdr);color:var(--text);-webkit-text-fill-color:var(--text);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1.1rem;flex-shrink:0}
-    .topbar-logo{font-family:var(--fd);font-size:.98rem;font-weight:700;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex:1}
-    .topbar-back{width:36px;height:36px;border-radius:var(--rs);background:var(--bg2);border:1px solid var(--bdr);display:flex;align-items:center;justify-content:center;text-decoration:none;font-size:.9rem;flex-shrink:0;color:var(--muted);-webkit-text-fill-color:var(--muted)}
-
-    /* OVERLAY */
-    .sb-overlay{display:none;position:fixed;inset:0;background:rgba(20,22,50,.45);z-index:190}
-    .sb-overlay.on{display:block}
-
+    .sidebar { width: 250px; background: var(--card); backdrop-filter: blur(20px); border-right: 1px solid var(--bdr); padding: 24px 0; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; transition: transform 0.3s; }
+    .sb-logo { font-family: var(--fd); font-size: 1.3rem; font-weight: 900; padding: 0 24px 20px; border-bottom: 1px solid var(--bdr); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .sb-logo i { color: var(--pink); }
+    .sb-link { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: var(--muted); font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: all 0.2s; border-right: 3px solid transparent; }
+    .sb-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .sb-link.on { color: var(--pink); background: var(--pink-s); border-right-color: var(--pink); }
+    .sb-link i { width: 18px; height: 18px; }
+    .sb-divider { height: 1px; background: var(--bdr); margin: 12px 24px; }
+    .sb-foot { margin-top: auto; padding: 20px 24px; border-top: 1px solid var(--bdr); display: flex; flex-direction: column; gap: 10px; }
+    .sb-user { font-size: 0.75rem; color: var(--dim); word-break: break-all; display: flex; align-items: center; gap: 8px; }
+    
     /* MAIN */
-    .main{flex:1;margin-left:230px;padding:28px 32px;overflow-y:auto;min-height:100vh}
-    .main-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;gap:10px;flex-wrap:wrap}
-    .main-title{font-family:var(--fd);font-size:1.5rem;font-weight:700;color:var(--text)}
-
+    .main { flex: 1; margin-left: 250px; padding: 32px 40px; overflow-y: auto; height: 100vh; background: radial-gradient(circle at top right, #1a1014 0%, var(--bg) 40%); }
+    .main-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+    .main-title { font-family: var(--fd); font-size: 1.8rem; font-weight: 700; color: var(--text); }
+    
     /* STATS */
-    .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:26px}
-    .stat-c{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);padding:18px;box-shadow:var(--sh)}
-    .stat-n{font-family:var(--fd);font-size:1.8rem;font-weight:700;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .stat-l{font-size:.76rem;color:var(--muted);margin-top:3px}
-
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-c { background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--bdr); border-radius: var(--rl); padding: 20px; box-shadow: var(--sh); position: relative; overflow: hidden; }
+    .stat-c i { position: absolute; top: 20px; right: 20px; color: var(--dim); opacity: 0.3; width: 24px; height: 24px; }
+    .stat-n { font-family: var(--fd); font-size: 2.2rem; font-weight: 700; margin-bottom: 4px; }
+    .stat-n.grd { background: var(--g-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-l { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    
     /* TABLE */
-    .tbl{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);overflow:hidden;box-shadow:var(--sh)}
-    .tbl-hd{display:grid;grid-template-columns:130px 1fr 130px 110px 100px 80px;gap:10px;padding:11px 16px;background:var(--bg2);border-bottom:1px solid var(--bdr);font-family:var(--fm);font-size:.65rem;color:var(--dim);text-transform:uppercase;letter-spacing:.8px}
-    .tbl-row{display:grid;grid-template-columns:130px 1fr 130px 110px 100px 80px;gap:10px;padding:13px 16px;border-bottom:1px solid var(--bdr);align-items:center;cursor:pointer;transition:background .18s}
-    .tbl-row:last-child{border:none}
-    .tbl-row:hover{background:var(--bg2)}
-    .tc{font-size:.82rem;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .tc.mono{font-family:var(--fm);font-size:.74rem}
-    .pill{display:inline-block;font-family:var(--fm);font-size:.62rem;padding:3px 9px;border-radius:100px;white-space:nowrap}
-    .pill-pending{background:rgba(255,224,110,.1);color:#c8a600;border:1px solid rgba(255,224,110,.25)}
-    .pill-verified{background:rgba(122,174,232,.1);color:var(--blue);border:1px solid rgba(122,174,232,.2)}
-    .pill-progress{background:rgba(168,158,232,.1);color:var(--lav);border:1px solid rgba(168,158,232,.2)}
-    .pill-delivered{background:rgba(76,187,138,.1);color:var(--green);border:1px solid rgba(76,187,138,.2)}
-    .empty{text-align:center;padding:48px;color:var(--dim);font-size:.9rem}
-
-    /* MOBILE ORDER CARDS */
-    .order-cards{display:none;flex-direction:column;gap:10px}
-    .o-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);padding:14px 16px;cursor:pointer;transition:all .18s;box-shadow:var(--sh)}
-    .o-card:active{opacity:.85}
-    .o-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;gap:8px}
-    .o-card-id{font-family:var(--fm);font-size:.68rem;color:var(--dim)}
-    .o-card-name{font-size:.9rem;font-weight:600;color:var(--text);margin-bottom:2px}
-    .o-card-email{font-size:.74rem;color:var(--muted)}
-    .o-card-row{display:flex;align-items:center;gap:8px;margin-top:10px;flex-wrap:wrap}
-    .o-card-tpl{font-size:.78rem;color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-    .o-card-amt{font-family:var(--fm);font-size:.82rem;font-weight:700;color:var(--text);margin-left:auto}
-    .o-card-date{font-size:.72rem;color:var(--dim);white-space:nowrap}
-
-    /* RANKING */
-    .rank-intro{font-size:.84rem;color:var(--muted);margin-bottom:20px}
-    .rank-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
-    .rank-card{background:var(--card);border:1px solid var(--bdr);border-radius:var(--rl);padding:20px;box-shadow:var(--sh);position:relative;overflow:hidden;transition:transform .18s}
-    .rank-card:hover{transform:translateY(-2px)}
-    .rank-card.rank-1{border-color:rgba(255,215,0,.45)}
-    .rank-card.rank-2{border-color:rgba(180,180,180,.4)}
-    .rank-card.rank-3{border-color:rgba(205,127,50,.35)}
-    .rank-badge{position:absolute;top:14px;right:14px;font-size:1.3rem;line-height:1}
-    .rank-emoji{font-size:2.2rem;margin-bottom:8px;display:block}
-    .rank-name{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--text);margin-bottom:6px}
-    .rank-count{font-size:.82rem;color:var(--muted);margin-bottom:10px}
-    .rank-count strong{color:var(--text2);font-size:1rem}
-    .rank-rev{font-family:var(--fm);font-size:1.15rem;font-weight:700;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
-    .rank-rev-lbl{font-size:.7rem;color:var(--dim);margin-top:1px}
-    .rank-bar-bg{height:5px;background:var(--bg3);border-radius:10px;margin-top:14px;overflow:hidden}
-    .rank-bar-fill{height:100%;border-radius:10px;background:var(--g-main)}
-
-    /* TEMPLATES GRID */
-    .templates-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 20px;
-      margin-top: 20px;
-    }
-    .template-card {
-      background: var(--card);
-      border: 1px solid var(--bdr);
-      border-radius: var(--rl);
-      padding: 18px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      transition: all 0.2s;
-      box-shadow: var(--sh);
-    }
-    .template-card:hover {
-      transform: translateY(-3px);
-      border-color: var(--bdr-pink);
-      box-shadow: var(--sh-md);
-    }
-    .template-emoji {
-      font-size: 2rem;
-      background: var(--bg2);
-      width: 50px;
-      height: 50px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--r);
-      margin-bottom: 6px;
-    }
-    .template-name {
-      font-family: var(--fd);
-      font-size: 1.1rem;
-      font-weight: 700;
-      color: var(--text);
-    }
-    .template-tagline {
-      font-size: 0.8rem;
-      color: var(--muted);
-    }
-    .template-price {
-      font-family: var(--fm);
-      font-size: 0.85rem;
-      background: var(--g-main);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      background-clip: text;
-      font-weight: 600;
-      margin-top: 4px;
-    }
-    .template-badge {
-      display: inline-block;
-      font-size: 0.65rem;
-      background: var(--pink-s);
-      color: var(--pink);
-      padding: 3px 8px;
-      border-radius: 100px;
-      width: fit-content;
-    }
-    .btn-visit {
-      margin-top: 8px;
-      background: var(--bg2);
-      border: 1px solid var(--bdr);
-      padding: 8px 12px;
-      border-radius: var(--rs);
-      text-align: center;
-      text-decoration: none;
-      color: var(--text2);
-      font-size: 0.8rem;
-      transition: all 0.2s;
-      display: inline-block;
-    }
-    .btn-visit:hover {
-      background: var(--pink-s);
-      border-color: var(--bdr-pink);
-      color: var(--pink);
-    }
-
+    .tbl { background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--bdr); border-radius: var(--rl); box-shadow: var(--sh); }
+    .tbl-hd { display: grid; grid-template-columns: 140px 1fr 150px 120px 120px 100px; gap: 16px; padding: 14px 24px; border-bottom: 1px solid var(--bdr); font-size: 0.7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .tbl-row { display: grid; grid-template-columns: 140px 1fr 150px 120px 120px 100px; gap: 16px; padding: 16px 24px; border-bottom: 1px solid var(--bdr); align-items: center; cursor: pointer; transition: background 0.2s; }
+    .tbl-row:hover { background: rgba(255,255,255,0.02); }
+    .tbl-row:last-child { border: none; }
+    
+    .tc { font-size: 0.85rem; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tc.mono { font-family: var(--fm); font-size: 0.8rem; color: var(--muted); }
+    .tc-sub { font-size: 0.75rem; color: var(--dim); margin-top: 3px; }
+    
+    /* BADGES */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-pending { background: rgba(245, 158, 11, 0.1); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.2); }
+    .badge-verified { background: rgba(59, 130, 246, 0.1); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.2); }
+    .badge-delivered { background: rgba(16, 185, 129, 0.1); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.2); }
+    
+    .badge-zt { background: var(--pink-s); color: var(--pink); border: 1px solid var(--bdr-pink); margin-left: 6px; }
+    
+    .empty { padding: 60px; text-align: center; color: var(--dim); font-size: 0.9rem; }
+    
     /* DRAWER */
-    .drw-ov{position:fixed;inset:0;background:rgba(20,22,50,.35);z-index:400;display:none}
-    .drw-ov.on{display:block}
-    .drw{position:fixed;top:0;right:0;width:460px;height:100vh;background:var(--card);border-left:1px solid var(--bdr);z-index:500;overflow-y:auto;transform:translateX(100%);transition:transform .3s var(--ease)}
-    .drw.on{transform:translateX(0)}
-    .drw-hd{padding:18px 22px 14px;border-bottom:1px solid var(--bdr);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:var(--card);z-index:1}
-    .drw-title{font-family:var(--fd);font-size:1rem;font-weight:700;color:var(--text)}
-    .drw-x{width:27px;height:27px;border-radius:50%;background:var(--bg2);border:1px solid var(--bdr);color:var(--muted);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:.9rem;transition:all .18s}
-    .drw-x:hover{background:#ffecec;color:#e05a5a}
-    .drw-body{padding:18px 22px}
-    .inf-lbl{font-family:var(--fm);font-size:.63rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
-    .inf-row{display:flex;flex-direction:column;gap:5px;margin-bottom:18px}
-    .inf-item{display:flex;gap:8px;font-size:.84rem}
-    .inf-v{color:var(--text2);font-weight:500;word-break:break-all;flex:1}
-    .c-btn{border:none;background:var(--bg3);color:var(--muted);width:24px;height:24px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;transition:all .15s}
-    .c-btn:hover{background:var(--pink-s);color:var(--pink)}
-    .ss-link{color:var(--pink);text-decoration:none;font-size:.82rem;display:flex;align-items:center;gap:4px}
-    .ss-link:hover{text-decoration:underline}
-    .del-box{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:14px}
-    .del-title{font-family:var(--fd);font-weight:700;font-size:.9rem;margin-bottom:12px;color:var(--text)}
-    .qr-up{border:2px dashed var(--bdr2);border-radius:var(--r);padding:14px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:10px}
-    .qr-up:hover{border-color:var(--bdr-pink);background:var(--pink-s)}
-    .qr-prev{max-width:120px;max-height:120px;border-radius:var(--rs);margin:8px auto;display:block}
-    .btn-soft-blue{background:var(--blue-s);color:var(--blue);border:1px solid rgba(122,174,232,.25)}
-    .btn-soft-blue:hover{background:rgba(122,174,232,.18)}
-
-    /* RESPONSIVE */
-    @media(max-width:900px){
-      .stats{grid-template-columns:repeat(2,1fr)}
-    }
-    @media(max-width:768px){
-      .topbar{display:flex}
-      .sidebar{transform:translateX(-100%)}
-      .sidebar.open{transform:translateX(0)}
-      .sb-close{display:flex}
-      .main{margin-left:0;padding:70px 12px 28px}
-      .main-title{font-size:1.1rem}
-      .stats{grid-template-columns:repeat(2,1fr);gap:10px;margin-bottom:16px}
-      .stat-c{padding:12px}
-      .stat-n{font-size:1.35rem}
-      .tbl{display:none}
-      .order-cards{display:flex}
-      .drw{width:100vw;max-width:100vw;border-left:none}
-      .rank-grid{grid-template-columns:1fr}
-      .templates-grid{grid-template-columns:1fr}
-    }
+    .drw-ov { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 400; display: none; }
+    .drw-ov.on { display: block; }
+    .drw { position: fixed; top: 0; right: 0; width: 500px; max-width: 100vw; height: 100vh; background: var(--bg2); border-left: 1px solid var(--bdr); z-index: 500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+    .drw.on { transform: translateX(0); }
+    .drw-hd { padding: 24px; border-bottom: 1px solid var(--bdr); display: flex; align-items: center; justify-content: space-between; background: var(--card); }
+    .drw-title { font-family: var(--fd); font-size: 1.2rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .drw-x { border: none; background: transparent; color: var(--muted); cursor: pointer; transition: color 0.2s; }
+    .drw-x:hover { color: var(--pink); }
+    
+    .drw-body { flex: 1; overflow-y: auto; padding: 24px; }
+    
+    /* SECTIONS */
+    .sec-title { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px; }
+    .sec-title i { width: 14px; height: 14px; }
+    .sec-title:first-child { margin-top: 0; }
+    
+    .inf-box { background: var(--card); border: 1px solid var(--bdr); border-radius: var(--r); padding: 16px; margin-bottom: 16px; }
+    .inf-row { display: flex; margin-bottom: 10px; font-size: 0.85rem; }
+    .inf-row:last-child { margin-bottom: 0; }
+    .inf-k { width: 130px; color: var(--muted); }
+    .inf-v { flex: 1; color: var(--text2); font-weight: 500; word-break: break-all; }
+    
+    .copy-btn { border: none; background: transparent; color: var(--muted); cursor: pointer; margin-left: 6px; padding: 2px; }
+    .copy-btn:hover { color: var(--pink); }
+    
+    .f-inp { width: 100%; background: var(--bg); border: 1px solid var(--bdr); padding: 10px 14px; border-radius: var(--rs); color: var(--text); font-family: var(--fm); font-size: 0.85rem; outline: none; transition: border 0.2s; }
+    .f-inp:focus { border-color: var(--pink); box-shadow: 0 0 0 2px var(--pink-s); }
+    
+    /* ZERO TOUCH BOX */
+    .zt-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--r); padding: 20px; text-align: center; margin-bottom: 20px; }
+    .zt-ico { color: #10b981; font-size: 2rem; margin-bottom: 10px; }
+    .zt-title { font-family: var(--fd); font-size: 1.1rem; font-weight: 700; color: #6ee7b7; margin-bottom: 4px; }
+    .zt-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 16px; }
+    .zt-link { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: var(--rs); word-break: break-all; font-family: monospace; font-size: 0.75rem; margin-bottom: 16px; user-select: all; text-align: left; color: #a5eed0; }
+    
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--bdr); padding: 12px 20px; border-radius: var(--r); box-shadow: var(--sh); display: flex; align-items: center; gap: 10px; font-size: 0.85rem; z-index: 1000; animation: slideUp 0.3s; }
+    .toast.err { border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; }
+    .toast.ok { border-color: rgba(16, 185, 129, 0.3); color: #6ee7b7; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   </style>
 </head>
 <body>
 
-<!-- LOGIN -->
 <div id="login-pg" class="login-pg">
   <div class="login-card">
-    <span class="login-ico">🔐</span>
-    <div class="login-title">Admin Panel</div>
-    <p class="login-sub">Sign in with your authorised Google account.</p>
-    <button class="btn btn-google btn-full btn-lg" onclick="adminLogin()">
+    <i data-lucide="shield-check" style="width: 48px; height: 48px; color: var(--pink); margin-bottom: 16px; margin-inline:auto;"></i>
+    <div class="login-title">Pookie Zenith</div>
+    <p class="login-sub">Secure Admin Matrix<br>Authenticate to access live instances.</p>
+    <button class="btn btn-google btn-full" style="padding: 12px;" onclick="adminLogin()">
       <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.14z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="#FBBC05" d="M10.53 28.59c-.49-1.47-.76-3.04-.76-4.59s.27-3.12.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.55 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/></svg>
       Sign in with Google
     </button>
-    <p id="login-err" style="color:#e05a5a;font-size:.78rem;margin-top:10px;display:none"></p>
   </div>
 </div>
 
-<!-- NOT AUTHORIZED SCREEN -->
-<div id="unauth-pg" class="login-pg" style="display:none">
-  <div class="login-card">
-    <span class="login-ico">🚫</span>
-    <div class="login-title">Access Denied</div>
-    <p class="login-sub">You are logged in as:</p>
-    <div id="unauth-email" style="font-weight:700; color:var(--text); margin-bottom:20px; word-break:break-all;"></div>
-    <p class="login-sub" style="font-size:0.75rem;">This email is not in the system's authorized list. Please contact the administrator or switch accounts.</p>
-    <button class="btn btn-ghost btn-full btn-sm" onclick="adminLogout()">Sign Out & Try Again</button>
-  </div>
-</div>
-
-<!-- MOBILE TOPBAR -->
-<div class="topbar" id="topbar">
-  <div class="topbar-menu" onclick="toggleSidebar()">☰</div>
-  <div class="topbar-logo">Pookie Admin ✨</div>
-  <a href="../index.html" class="topbar-back" title="Back to site">←</a>
-</div>
-
-<!-- SIDEBAR OVERLAY -->
-<div class="sb-overlay" id="sb-overlay" onclick="closeSidebar()"></div>
-
-<!-- ADMIN APP -->
 <div id="admin-wrap" class="admin-wrap">
-  <div class="sidebar" id="sidebar">
+  <div class="sidebar">
     <div class="sb-logo">
-      <div class="sb-logo-text">Pookie Wishes<small>Admin Panel</small></div>
-      <div class="sb-close" id="sb-close" onclick="closeSidebar()">✕</div>
+      <i data-lucide="rocket"></i> Zenith
     </div>
-
-    <a href="../index.html" class="sb-back">← Back to Site</a>
+    
+    <a href="../index.html" class="sb-link" style="color:var(--dim);"><i data-lucide="external-link"></i> Back to Site</a>
     <div class="sb-divider"></div>
-
-    <div class="sb-link" data-tab="incoming" onclick="setTab('incoming',this)">📥 Incoming Orders</div>
-    <div class="sb-link" data-tab="delivered" onclick="setTab('delivered',this)">🎁 Delivered</div>
-    <div class="sb-link on" data-tab="all" onclick="setTab('all',this)">📋 All Orders</div>
+    
+    <div class="sb-link on" data-tab="all" onclick="setTab('all',this)"><i data-lucide="layers"></i> All Orders</div>
+    <div class="sb-link" data-tab="incoming" onclick="setTab('incoming',this)"><i data-lucide="inbox"></i> Incoming</div>
+    <div class="sb-link" data-tab="delivered" onclick="setTab('delivered',this)"><i data-lucide="check-circle"></i> Delivered</div>
     <div class="sb-divider"></div>
-    <div class="sb-link" data-tab="ranking" onclick="setTab('ranking',this)">🏆 Rankings</div>
-    <div class="sb-link" data-tab="templates" onclick="setTab('templates',this)">🎨 All Templates</div>
-
+    <div class="sb-link" data-tab="ranking" onclick="setTab('ranking',this)"><i data-lucide="bar-chart-2"></i> Analytics</div>
+    
     <div class="sb-foot">
-      <div class="sb-user" id="sb-email"></div>
-      <button class="btn btn-ghost btn-full btn-sm" onclick="adminLogout()">Sign Out</button>
+      <div class="sb-user"><i data-lucide="user"></i> <span id="sb-email"></span></div>
+      <button class="btn btn-soft btn-full" onclick="adminLogout()">Sign Out</button>
     </div>
   </div>
 
-  <div class="main" id="main">
+  <div class="main">
     <div class="main-hd">
-      <div class="main-title" id="main-title">Incoming Orders</div>
-      <button class="btn btn-soft btn-sm" onclick="loadOrders()">↻ Refresh</button>
-    </div>
-
-    <!-- DIAGNOSTIC BANNER — shows connection info to debug empty panel -->
-    <div id="debug-banner" style="background:rgba(255,200,0,0.1);border:1px solid rgba(255,200,0,0.4);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:0.78rem;font-family:monospace;">
-      <div style="font-weight:700;margin-bottom:8px;color:var(--text);">🔍 Connection Diagnostics</div>
-      <div>Firebase Project: <span id="dbg-proj" style="color:var(--pink);">loading...</span></div>
-      <div>Logged in as: <span id="dbg-user" style="color:var(--pink);">loading...</span></div>
-      <div>Orders fetched: <span id="dbg-count" style="color:var(--pink);">loading...</span></div>
-      <div>Last error: <span id="dbg-err" style="color:#e05a5a;">none</span></div>
-      <button onclick="runDiagnostic()" style="margin-top:10px;padding:5px 12px;background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;cursor:pointer;font-size:0.75rem;">Run Full Diagnostic</button>
+      <div class="main-title" id="main-title">Dashboard Overview</div>
+      <button class="btn btn-soft" onclick="loadOrders()"><i data-lucide="refresh-cw" style="width:16px;"></i> Refresh Data</button>
     </div>
 
     <div class="stats" id="stats-panel">
-      <div class="stat-c"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total Orders</div></div>
-      <div class="stat-c"><div class="stat-n" id="s-rev">₹0</div><div class="stat-l">Revenue</div></div>
-      <div class="stat-c"><div class="stat-n" id="s-pend">0</div><div class="stat-l">Pending</div></div>
-      <div class="stat-c"><div class="stat-n" id="s-done">0</div><div class="stat-l">Delivered</div></div>
+      <div class="stat-c">
+        <i data-lucide="hash"></i>
+        <div class="stat-n" id="s-total">0</div>
+        <div class="stat-l">Total Processes</div>
+      </div>
+      <div class="stat-c">
+        <i data-lucide="indian-rupee"></i>
+        <div class="stat-n grd" id="s-rev">₹0</div>
+        <div class="stat-l">Total Revenue</div>
+      </div>
+      <div class="stat-c">
+        <i data-lucide="clock"></i>
+        <div class="stat-n" id="s-pend" style="color:#fcd34d;">0</div>
+        <div class="stat-l">Awaiting Manual</div>
+      </div>
+      <div class="stat-c">
+        <i data-lucide="zap"></i>
+        <div class="stat-n" id="s-done" style="color:#6ee7b7;">0</div>
+        <div class="stat-l">Zero-Touch & Delivered</div>
+      </div>
     </div>
 
-    <!-- Desktop table -->
     <div class="tbl" id="orders-tbl">
-      <div class="tbl-hd"><div>Order ID</div><div>Customer</div><div>Template</div><div>Amount</div><div>Status</div><div>Date</div></div>
-      <div id="tbl-body"><div class="empty">Loading orders…</div></div>
+      <div class="tbl-hd">
+        <div>Order ID</div><div>Customer</div><div>Template / Type</div><div>Revenue</div><div>Status</div><div>Timeline</div>
+      </div>
+      <div id="tbl-body"><div class="empty"><i data-lucide="loader" class="spin"></i> Loading...</div></div>
     </div>
 
-    <!-- Mobile cards -->
-    <div class="order-cards" id="order-cards">
-      <div class="empty">Loading orders…</div>
-    </div>
-
-    <!-- Rankings section -->
-    <div id="ranking-section" style="display:none">
-      <div class="rank-intro">Templates ranked by total orders — updates on refresh ↻</div>
-      <div class="rank-grid" id="rank-grid"></div>
-    </div>
-
-    <!-- Templates section -->
-    <div id="templates-section" style="display:none">
-      <div class="rank-intro">All available templates – click "Visit" to see demo</div>
-      <div class="templates-grid" id="templates-grid"></div>
-    </div>
   </div>
 </div>
 
-<!-- DRAWER -->
 <div class="drw-ov" id="drw-ov" onclick="closeDrawer()"></div>
 <div class="drw" id="drw">
   <div class="drw-hd">
-    <div class="drw-title" id="drw-title">Order Details</div>
-    <div class="drw-x" onclick="closeDrawer()">✕</div>
+    <div class="drw-title"><i data-lucide="file-text"></i> Order Details</div>
+    <button class="drw-x" onclick="closeDrawer()"><i data-lucide="x"></i></button>
   </div>
   <div class="drw-body" id="drw-body"></div>
 </div>
@@ -358,549 +244,248 @@
 <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
 <script>
+lucide.createIcons();
 const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
 let SITE=null, db=null, orders=[], curFilter='all', curOrderId=null;
 
-/* SIDEBAR MOBILE */
-function toggleSidebar() {
-  const open = document.getElementById('sidebar').classList.toggle('open');
-  document.getElementById('sb-overlay').classList.toggle('on', open);
-}
-function closeSidebar() {
-  document.getElementById('sidebar').classList.remove('open');
-  document.getElementById('sb-overlay').classList.remove('on');
-}
-
-/* INIT */
 window.addEventListener('DOMContentLoaded', async () => {
   try {
     const res = await fetch('../data/site.json');
-    if (!res.ok) throw new Error('Could not load site.json');
     SITE = await res.json();
     if (!firebase.apps.length) firebase.initializeApp(SITE.firebase);
     db = firebase.firestore();
   } catch (e) {
-    console.error('INIT ERROR:', e);
-    alert('CRITICAL ERROR: Failed to load site configuration. Please check your data/site.json file.');
+    alert('CRITICAL ERROR: Failed to load site.json');
     return;
   }
+  
   firebase.auth().onAuthStateChanged(user => {
     if (user && ADMIN_EMAILS.includes(user.email)) {
-      showAdmin(user);
-    } else if (user) {
-      // Show "Not Authorized" screen instead of immediate sign out
       document.getElementById('login-pg').style.display = 'none';
-      document.getElementById('admin-wrap').classList.remove('on');
-      document.getElementById('unauth-pg').style.display = 'flex';
-      document.getElementById('unauth-email').textContent = user.email;
+      document.getElementById('admin-wrap').classList.add('on');
+      document.getElementById('sb-email').textContent = user.email.split('@')[0];
+      if (SITE?.emailjs?.account1?.publicKey) emailjs.init(SITE.emailjs.account1.publicKey);
+      loadOrders();
     } else {
       document.getElementById('login-pg').style.display = 'flex';
-      document.getElementById('unauth-pg').style.display = 'none';
       document.getElementById('admin-wrap').classList.remove('on');
     }
   });
 });
 
 async function adminLogin() {
-  try { await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); }
-  catch(e) { if (e.code !== 'auth/popup-closed-by-user') showErr('Login failed.'); }
+  try { await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch(e) {}
 }
 async function adminLogout() { await firebase.auth().signOut(); }
-function showErr(m) { const el = document.getElementById('login-err'); el.textContent = m; el.style.display = 'block'; }
-function showAdmin(user) {
-  document.getElementById('login-pg').style.display = 'none';
-  document.getElementById('admin-wrap').classList.add('on');
-  document.getElementById('sb-email').textContent = user.email;
-  // Fill debug banner
-  document.getElementById('dbg-user').textContent = user.email;
-  document.getElementById('dbg-proj').textContent = SITE?.firebase?.projectId || 'UNKNOWN — site.json may not have loaded';
-  loadOrders();
-}
 
-/* LOAD ORDERS */
 async function loadOrders() {
-  document.getElementById('tbl-body').innerHTML = '<div class="empty">Loading…</div>';
-  document.getElementById('order-cards').innerHTML = '<div class="empty">Loading…</div>';
-  document.getElementById('dbg-count').textContent = 'querying...';
-  document.getElementById('dbg-err').textContent = 'none';
+  document.getElementById('tbl-body').innerHTML = '<div class="empty">Loading...</div>';
   try {
-    // Fetch ALL orders without orderBy — orderBy silently skips docs missing 'createdAt'
     const snap = await db.collection('orders').get();
     orders = snap.docs.map(d => ({ _docId: d.id, ...d.data() }));
-
-    // Sort client-side: newest first, docs missing createdAt go to bottom
-    orders.sort((a, b) => {
-      const ta = a.createdAt?.toDate?.() || new Date(0);
-      const tb = b.createdAt?.toDate?.() || new Date(0);
-      return tb - ta;
-    });
-
-    document.getElementById('dbg-count').textContent = `${orders.length} orders found`;
-    console.log(`✅ Loaded ${orders.length} orders from Firestore`);
-
-    // Make sure the table sections are visible (in case they were hidden by a previous tab)
-    document.getElementById('orders-tbl').style.display = '';
-    document.getElementById('order-cards').style.display = '';
-    document.getElementById('stats-panel').style.display = '';
-    document.getElementById('ranking-section').style.display = 'none';
-    document.getElementById('templates-section').style.display = 'none';
-
+    orders.sort((a,b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    
     updateStats();
-    try { renderTable(); } catch(err) {
-      console.error('❌ renderTable crashed:', err);
-      document.getElementById('tbl-body').innerHTML = `<div class="empty" style="color:#e05a5a">Render Error: ${err.message}</div>`;
-    }
-    if (curFilter === 'ranking') renderRanking();
-    if (curFilter === 'templates') renderTemplates();
+    renderTable();
   } catch(e) {
-    console.error("LOAD ORDERS ERROR:", e);
-    document.getElementById('dbg-count').textContent = '0 (query failed)';
-    document.getElementById('dbg-err').textContent = `${e.code || 'unknown'}: ${e.message}`;
-    let errorMsg = e.message;
-    if (e.code === 'permission-denied') {
-      errorMsg = "Permission Denied — Go to Firebase Console → Firestore → Rules and allow read access for admin emails.";
-    }
-    const msg = `<div class="empty" style="color:#e05a5a">
-      <div style="font-size:2rem;margin-bottom:10px;">⚠️</div>
-      <strong>Failed to load orders</strong><br>
-      <span style="font-size:0.8rem; opacity:0.8;">${errorMsg}</span><br>
-      <button class="btn btn-soft btn-sm" style="margin-top:15px" onclick="loadOrders()">↻ Retry</button>
-    </div>`;
-    document.getElementById('tbl-body').innerHTML = msg;
-    document.getElementById('order-cards').innerHTML = msg;
+    document.getElementById('tbl-body').innerHTML = '<div class="empty">Permission Denied or Error. Check Rules.</div>';
   }
-}
-
-async function runDiagnostic() {
-  let msg = '=== POOKIE ADMIN DIAGNOSTIC ===\n\n';
-  msg += `Firebase Project ID: ${SITE?.firebase?.projectId || 'NOT FOUND'}\n`;
-  msg += `Logged-in User: ${firebase.auth().currentUser?.email || 'NOT LOGGED IN'}\n`;
-  msg += `db ready: ${!!db}\n\n`;
-  try {
-    const snap = await firebase.firestore().collection('orders').get();
-    msg += `Raw orders query result: ${snap.docs.length} documents\n`;
-    snap.docs.slice(0, 3).forEach(d => { msg += `  - Doc ID: ${d.id}\n`; });
-  } catch(e) {
-    msg += `Raw orders query FAILED: ${e.code} — ${e.message}\n`;
-  }
-  try {
-    const snap2 = await firebase.firestore().collection('counters').get();
-    msg += `\nCounters collection: ${snap2.docs.length} documents\n`;
-  } catch(e) {
-    msg += `\nCounters query FAILED: ${e.code} — ${e.message}\n`;
-  }
-  alert(msg);
 }
 
 function updateStats() {
   document.getElementById('s-total').textContent = orders.length;
-  document.getElementById('s-rev').textContent   = '₹' + orders.reduce((s, o) => s + (o.totalAmount || 0), 0);
-  document.getElementById('s-pend').textContent  = orders.filter(o => o.status === 'pending_verification').length;
-  document.getElementById('s-done').textContent  = orders.filter(o => o.deliveryStatus === 'delivered').length;
+  document.getElementById('s-rev').textContent   = '₹' + orders.reduce((s,o)=>s+(o.totalAmount||0),0);
+  document.getElementById('s-pend').textContent  = orders.filter(o=>o.status==='pending_verification').length;
+  document.getElementById('s-done').textContent  = orders.filter(o=>o.deliveryStatus==='delivered').length;
 }
 
-/* TABS */
 function setTab(filter, el) {
   curFilter = filter;
-  closeSidebar();
-  document.querySelectorAll('.sb-link').forEach(l => l.classList.remove('on'));
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('on'));
   el.classList.add('on');
-  const titles = {
-    incoming: '📥 Incoming Orders',
-    delivered:  '🎁 Delivered',
-    all:         '📋 All Orders',
-    ranking:     '🏆 Template Rankings',
-    templates:   '🎨 All Templates'
-  };
-  document.getElementById('main-title').textContent = titles[filter] || 'Orders';
-
-  const isRanking = filter === 'ranking';
-  const isTemplates = filter === 'templates';
-
-  document.getElementById('orders-tbl').style.display      = (isRanking || isTemplates) ? 'none' : '';
-  document.getElementById('order-cards').style.display     = (isRanking || isTemplates) ? 'none' : '';
-  document.getElementById('ranking-section').style.display = isRanking ? 'block' : 'none';
-  document.getElementById('templates-section').style.display = isTemplates ? 'block' : 'none';
-  document.getElementById('stats-panel').style.display     = (isRanking || isTemplates) ? 'none' : '';
-
-  if (isRanking) renderRanking();
-  else if (isTemplates) renderTemplates();
-  else renderTable();
+  renderTable();
 }
 
-const STATUS_MAP = {
-  pending_verification: { label: 'Pending',     cls: 'pill-pending'  },
-  verified:             { label: 'Verified',    cls: 'pill-verified' },
-  in_progress:          { label: 'In Progress', cls: 'pill-progress' },
-  delivered:            { label: 'Delivered',   cls: 'pill-delivered'}
-};
-
-function getOrdersForTab() {
-  if (curFilter === 'all') return orders;
-  if (curFilter === 'delivered') return orders.filter(o => o.deliveryStatus === 'delivered' || o.status === 'delivered');
-  if (curFilter === 'incoming') return orders.filter(o => o.deliveryStatus !== 'delivered' && o.status !== 'delivered');
-  return orders;
-}
-
-/* RENDER TABLE + MOBILE CARDS */
 function renderTable() {
-  const list = getOrdersForTab();
-
-  if (!list.length) {
-    const msg = '<div class="empty">No orders here.</div>';
-    document.getElementById('tbl-body').innerHTML = msg;
-    document.getElementById('order-cards').innerHTML = msg;
+  let list = orders;
+  if(curFilter==='delivered') list = orders.filter(o=>o.deliveryStatus==='delivered' || o.status==='delivered');
+  if(curFilter==='incoming')  list = orders.filter(o=>o.status==='pending_verification' || o.status==='paid');
+  
+  if(!list.length) {
+    document.getElementById('tbl-body').innerHTML = '<div class="empty">No orders found.</div>';
     return;
   }
+  
+  const ztTemplates = ['sorry-template'];
 
-  // Desktop
   document.getElementById('tbl-body').innerHTML = list.map(o => {
-    const s   = STATUS_MAP[o.deliveryStatus === 'delivered' ? 'delivered' : o.status] || STATUS_MAP.pending_verification;
-    const dt  = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('en-IN', {day:'numeric',month:'short'}) : '—';
-    const tpl = (o.orders || []).map(x => x.templateName || x.emoji || '').join(', ') || '—';
     const oid = o.orderId || o._docId;
-    return `<div class="tbl-row" onclick="openDrawer('${oid}')">
-      <div class="tc mono">${oid}</div>
-      <div class="tc">${o.buyerName||'—'}<br><span style="font-size:.72rem;color:var(--dim)">${o.buyerEmail||''}</span></div>
-      <div class="tc">${tpl}</div>
-      <div class="tc mono">₹${o.totalAmount||0}</div>
-      <div class="tc"><span class="pill ${s.cls}">${s.label}</span></div>
-      <div class="tc" style="font-size:.76rem;color:var(--dim)">${dt}</div>
-    </div>`;
-  }).join('');
+    const isZT = ztTemplates.includes(o.templateId || (o.orders?.[0]?.templateId));
+    let sLabel = o.status, sCls = 'badge-pending';
+    if(o.deliveryStatus==='delivered') { sLabel='Delivered'; sCls='badge-delivered'; }
+    else if(o.status==='paid') { sLabel='Paid / Info Req'; sCls='badge-verified'; }
+    
+    const dt = o.createdAt?.toDate?.().toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) || '—';
+    const tpl = o.templateId || (o.orders?.[0]?.templateName) || 'Unknown';
 
-  // Mobile cards
-  document.getElementById('order-cards').innerHTML = list.map(o => {
-    const s   = STATUS_MAP[o.deliveryStatus === 'delivered' ? 'delivered' : o.status] || STATUS_MAP.pending_verification;
-    const dt  = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleDateString('en-IN', {day:'numeric',month:'short',year:'numeric'}) : '—';
-    const tpl = (o.orders || []).map(x => x.templateName || x.emoji || '').join(', ') || '—';
-    const oid = o.orderId || o._docId;
-    return `<div class="o-card" onclick="openDrawer('${oid}')">
-      <div class="o-card-top">
-        <span class="o-card-id">${oid}</span>
-        <span class="pill ${s.cls}">${s.label}</span>
-      </div>
-      <div class="o-card-name">${o.buyerName||'—'}</div>
-      <div class="o-card-email">${o.buyerEmail||''}</div>
-      <div class="o-card-row">
-        <span class="o-card-tpl">${tpl}</span>
-        <span class="o-card-amt">₹${o.totalAmount||0}</span>
-        <span class="o-card-date">${dt}</span>
-      </div>
-    </div>`;
+    return \<div class="tbl-row" onclick="openDrawer('\')">
+      <div class="tc mono">\</div>
+      <div class="tc">\<div class="tc-sub">\</div></div>
+      <div class="tc">\ \</div>
+      <div class="tc mono" style="font-weight:600;">₹\</div>
+      <div><span class="badge \">\</span></div>
+      <div class="tc tc-sub">\</div>
+    </div>\;
   }).join('');
+  lucide.createIcons();
 }
 
-/* RANKINGS */
-function renderRanking() {
-  const map = {};
-  orders.forEach(o => {
-    (o.orders || []).forEach(item => {
-      const key  = item.templateId || 'unknown';
-      const name = item.templateName || item.templateId || 'Unknown';
-      if (!map[key]) map[key] = { id: key, name, emoji: '🎂', count: 0, revenue: 0 };
-      map[key].count++;
-      map[key].revenue += (item.price || 0);
-    });
-  });
-
-  // Enrich with site template data
-  (SITE?.templates || []).forEach(t => {
-    const fullName = `${t.emoji} ${t.name}`;
-    if (!map[t.id]) map[t.id] = { id: t.id, name: fullName, emoji: t.emoji, count: 0, revenue: 0 };
-    else { map[t.id].emoji = t.emoji; map[t.id].name = fullName; }
-  });
-
-  const sorted = Object.values(map).sort((a, b) => b.count - a.count || b.revenue - a.revenue);
-  const maxCount = sorted[0]?.count || 1;
-  const medals = ['🥇', '🥈', '🥉'];
-  const rankCls = ['rank-1', 'rank-2', 'rank-3'];
-
-  if (!sorted.length) {
-    document.getElementById('rank-grid').innerHTML = '<div class="empty">No orders yet — rankings will appear here once orders come in.</div>';
-    return;
-  }
-
-  document.getElementById('rank-grid').innerHTML = sorted.map((t, i) => {
-    const cls  = rankCls[i] || '';
-    const badge = medals[i] || `#${i+1}`;
-    const bar  = Math.max(4, Math.round((t.count / maxCount) * 100));
-    return `<div class="rank-card ${cls}">
-      <div class="rank-badge">${badge}</div>
-      <span class="rank-emoji">${t.emoji}</span>
-      <div class="rank-name">${t.name}</div>
-      <div class="rank-count"><strong>${t.count}</strong> order${t.count !== 1 ? 's' : ''}</div>
-      <div class="rank-rev">₹${t.revenue}</div>
-      <div class="rank-rev-lbl">Total Revenue</div>
-      <div class="rank-bar-bg"><div class="rank-bar-fill" style="width:${bar}%"></div></div>
-    </div>`;
-  }).join('');
+function copy(txt) {
+  navigator.clipboard.writeText(txt);
+  toast('Copied!','ok');
 }
 
-/* RENDER TEMPLATES (NEW) */
-function renderTemplates() {
-  const templates = SITE?.templates || [];
-  if (!templates.length) {
-    document.getElementById('templates-grid').innerHTML = '<div class="empty">No templates found.</div>';
-    return;
-  }
-
-  document.getElementById('templates-grid').innerHTML = templates.map(t => `
-    <div class="template-card">
-      <div class="template-emoji">${t.emoji}</div>
-      <div class="template-name">${t.name}</div>
-      <div class="template-tagline">${t.tagline}</div>
-      <div class="template-price">${t.currency || '₹'}${t.price}</div>
-      ${t.badge ? `<div class="template-badge">${t.badge}</div>` : ''}
-      <a href="${t.demoUrl || '#'}" target="_blank" class="btn-visit" style="text-align:center; margin-top:8px;">🔗 Visit Demo</a>
-    </div>
-  `).join('');
-}
-
-/* DRAWER */
 function openDrawer(oid) {
   curOrderId = oid;
   const o = orders.find(x => (x.orderId || x._docId) === oid);
-  if (!o) return;
-  document.getElementById('drw-title').textContent = `Order ${oid}`;
+  if(!o) return;
+  
+  const ztTemplates = ['sorry-template'];
+  const isZT = ztTemplates.includes(o.templateId || (o.orders?.[0]?.templateId));
+  
   document.getElementById('drw-ov').classList.add('on');
   document.getElementById('drw').classList.add('on');
-
-  const dt = o.createdAt?.toDate ? o.createdAt.toDate().toLocaleString('en-IN') : '—';
-  const orderItems = (o.orders || []).map(x => `
-    <div style="padding:8px 0;border-bottom:1px solid var(--bdr);font-size:.82rem">
-      <strong>${x.templateName || x.templateId}</strong><br>
-    </div>`).join('');
-
-  const statusOpts = ['pending_verification','verified','in_progress','delivered'].map(s =>
-    `<option value="${s}" ${o.status === s ? 'selected' : ''}>${STATUS_MAP[s]?.label || s}</option>`
-  ).join('');
-
-  const copyBtn = (txt) => `<button class="c-btn" onclick="copyToClipboard(\`${txt.replace(/'/g,"\\'").replace(/"/g,'\\"')}\`)" title="Copy to clipboard">📋</button>`;
-
-  const customDetails = `
-    <div style="background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r); padding:15px; margin-top:5px;">
-      <div class="inf-item" style="margin-bottom:12px; align-items:center;">
-        <span class="inf-k" style="width:120px; font-weight:600;">Recipient Name:</span>
-        <span class="inf-v" style="font-size:0.9rem; color:var(--text);">${o.recipientName || '—'}</span>
-        ${o.recipientName ? copyBtn(o.recipientName) : ''}
+  
+  let deliveryBlock = '';
+  if (isZT) {
+    const linkObj = o.deliveryLink || (window.location.origin + '/templates/' + (o.templateId || o.orders?.[0]?.templateId) + '/index.html?id=' + oid);
+    deliveryBlock = \
+      <div class="zt-box">
+         <i data-lucide="zap" class="zt-ico"></i>
+         <div class="zt-title">Zero-Touch Executed</div>
+         <p class="zt-sub">This order was completely automated. Link was generated securely.</p>
+         <div class="zt-link">\</div>
+         <div style="display:flex;gap:10px;">
+             <button class="btn btn-soft" style="flex:1" onclick="copy('\')">Copy Link</button>
+             <button class="btn btn-primary" style="flex:2" onclick="resendZeroTouch('\', '\')">Resend Delivery Email</button>
+         </div>
       </div>
-      <div class="inf-item" style="margin-bottom:12px; align-items:flex-start;">
-        <span class="inf-k" style="width:120px; font-weight:600;">Wish Message:</span>
-        <div class="inf-v" style="position:relative;">
-          <div style="white-space:pre-wrap; font-size:0.85rem; line-height:1.5; color:var(--text2); background:var(--card); padding:10px; border-radius:var(--rs); border:1px solid var(--bdr);">${o.wishMessage || '—'}</div>
-          ${o.wishMessage ? `<div style="position:absolute; top:6px; right:6px;">${copyBtn(o.wishMessage)}</div>` : ''}
+    \;
+  } else {
+    deliveryBlock = \
+    deliveryBlock = `
+      <div class="inf-box">
+         <div class="sec-title"><i data-lucide="send"></i> Manual Delivery</div>
+         <input type="url" class="f-inp" id="manual-link" placeholder="Enter Vercel URL..." style="margin-bottom:10px;" value="${o.deliveryLink||''}">
+         <button class="btn btn-primary btn-full" onclick="sendManual('${oid}')">Send Delivery Email & Complete</button>
+      </div>
+    `;
+  }
+
+  const pData = o.detailsSubmitted ? `
+    <div class="inf-row"><div class="inf-k">Recipient</div><div class="inf-v">${o.recipientName||'—'} <button class="copy-btn" onclick="copy('${o.recipientName}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+    <div class="inf-row"><div class="inf-k">Date Event</div><div class="inf-v">${o.eventDate||'—'}</div></div>
+    <div class="inf-row"><div class="inf-k">Message</div><div class="inf-v" style="background:var(--bg3);padding:10px;border-radius:var(--rs);margin-top:4px;">${o.wishMessage||'—'}</div></div>
+  ` : '<div class="tc-sub" style="color:var(--pink);">User has not submitted form details yet.</div>';
+
+  const photosList = (o.photos && o.photos.length) ? `
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      ${o.photos.map((p,i) => `
+        <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--rs);padding:10px;text-align:center;">
+          <div style="font-size:0.75rem;color:var(--dim);margin-bottom:6px;">Photo ${i+1}</div>
+          <a href="${p}" target="_blank" class="btn btn-soft" style="font-size:0.7rem;padding:4px 8px;">View Image</a>
         </div>
-      </div>
-      <div class="inf-item" style="margin-bottom:12px;"><span class="inf-k" style="width:120px; font-weight:600;">Event Date:</span><span class="inf-v" style="color:var(--pink); font-weight:700;">${o.eventDate || '—'}</span></div>
-      <div class="inf-item" style="align-items:center;">
-        <span class="inf-k" style="width:120px; font-weight:600;">Extra Notes:</span>
-        <span class="inf-v" style="font-style:italic; font-size:0.8rem;">${o.extraInstructions || 'None'}</span>
-        ${o.extraInstructions ? copyBtn(o.extraInstructions) : ''}
-      </div>
+      `).join('')}
     </div>
-  `;
-
-  const photosList = (o.photos && o.photos.length) 
-    ? o.photos.map((p,i) => `
-        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg2); padding:8px 12px; border-radius:var(--rs); margin-bottom:6px; border:1px solid var(--bdr);">
-          <span style="font-size:0.75rem; color:var(--muted);">Photo ${i+1}</span>
-          <div style="display:flex; gap:10px;">
-            <a href="${p}" target="_blank" class="ss-link">👁️ View</a>
-            <a href="${p}" download="Pookie_Photo_${oid}_${i+1}" target="_blank" class="ss-link" style="color:var(--mint); font-weight:600;">⏬ Download</a>
-          </div>
-        </div>
-      `).join('')
-    : '<div style="text-align:center; padding:15px; background:var(--bg2); border-radius:var(--rs); color:var(--dim); font-size:0.75rem;">No photos provided (Stickers will be used)</div>';
+  ` : '<div class="tc-sub" style="margin-top:10px;">No photos provided (Stickers used).</div>';
 
   document.getElementById('drw-body').innerHTML = `
-    <div class="inf-lbl" style="display:flex; justify-content:space-between; align-items:center;">
-      <span>Customer Information</span>
-      <div style="display:flex; gap:5px;">${copyBtn(oid)}</div>
+    ${deliveryBlock}
+    
+    <div class="sec-title"><i data-lucide="user"></i> Core Info</div>
+    <div class="inf-box">
+      <div class="inf-row"><div class="inf-k">Order ID</div><div class="inf-v mono">${oid} <button class="copy-btn" onclick="copy('${oid}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+      <div class="inf-row"><div class="inf-k">Customer</div><div class="inf-v">${o.buyerEmail||'—'} <button class="copy-btn" onclick="copy('${o.buyerEmail}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+      <div class="inf-row"><div class="inf-k">Revenue</div><div class="inf-v" style="color:var(--mint);">₹${o.totalAmount||0}</div></div>
     </div>
-    <div class="inf-row">
-      <div class="inf-item" style="align-items:center;"><span class="inf-k" style="width:100px;">Order ID</span><span class="inf-v mono">${oid}</span></div>
-      <div class="inf-item" style="align-items:center;"><span class="inf-k">Buyer Email</span><span class="inf-v">${o.buyerEmail||'—'}</span>${o.buyerEmail ? copyBtn(o.buyerEmail) : ''}</div>
-      <div class="inf-item"><span class="inf-k">Submitted At</span><span class="inf-v">${dt}</span></div>
-      <div class="inf-item"><span class="inf-k">Payment Total</span><span class="inf-v" style="font-weight:700; color:var(--text);">₹${o.totalAmount||0}</span></div>
-    </div>
+    
+    <div class="sec-title"><i data-lucide="message-square"></i> Personalisation</div>
+    <div class="inf-box">${pData}</div>
+    
+    <div class="sec-title"><i data-lucide="image"></i> Uploaded Media</div>
+    <div class="inf-box">${photosList}</div>
 
-    <div class="inf-lbl" style="color:var(--pink); font-weight:800;">✨ Personalised Responses (Form)</div>
-    <div style="margin-bottom:20px;">
-      ${o.detailsSubmitted ? customDetails : '<div style="background:var(--pink-s); color:var(--pink); padding:12px; border-radius:var(--r); text-align:center; font-size:0.8rem; border:1px solid var(--bdr-pink);">⏳ User hasn\'t submitted the form yet.</div>'}
+    <div class="sec-title"><i data-lucide="settings"></i> Danger Zone</div>
+    <div class="inf-box" style="border-color: rgba(239, 68, 68, 0.3);">
+      <button class="btn btn-soft btn-full" style="color:#fca5a5;" onclick="deleteOrder('${oid}')"><i data-lucide="trash-2"></i> Permanently Delete Order</button>
     </div>
-
-    <div class="inf-lbl" style="display:flex; justify-content:space-between; align-items:center;">
-      <span>Uploaded Media (${o.photos ? o.photos.length : 0})</span>
-      ${(o.photos && o.photos.length > 0) ? `<button class="btn btn-ghost" style="font-size:0.65rem; border:1px solid var(--bdr); padding:4px 8px; border-radius:var(--rs); height:auto;" onclick="downloadAll('${o.photos.join(',')}')">⏬ Download All</button>` : ''}
-    </div>
-    <div style="margin-bottom:20px">
-      ${photosList}
-    </div>
-
-    <div class="inf-lbl">Order Overview</div>
-    <div style="margin-bottom:20px; background:var(--bg2); padding:10px; border-radius:var(--r);">${orderItems}</div>
-
-    <div class="inf-lbl">Update Status</div>
-    <div style="display:flex;gap:8px;margin-bottom:20px">
-      <select class="f-inp" id="status-sel" style="flex:1"><option value="">— select —</option>${statusOpts}</select>
-      <button class="btn btn-soft btn-sm" onclick="updateStatus()">Save</button>
-    </div>
-    <div class="inf-lbl">Admin Actions</div>
-    <div style="margin-bottom:20px">
-      <button class="btn btn-soft btn-full" onclick="deleteOrder()">🗑️ Delete Order</button>
-      <p style="font-size:.74rem;color:var(--dim);margin-top:6px;text-align:center">Deletes this order record permanently.</p>
-    </div>
-    <div class="del-box">
-      <div class="del-title">📤 Deliver Website</div>
-      <div class="f-group">
-        <label class="f-label">WEBSITE LINK *</label>
-        <input class="f-inp" id="del-link" type="url" placeholder="https://your-birthday-site.vercel.app" value="${o.deliveryLink||''}">
-      </div>
-      <button class="btn btn-primary btn-full" id="del-btn" onclick="deliver()">📧 Send Delivery Email</button>
-      <p style="font-size:.74rem;color:var(--dim);margin-top:6px;text-align:center">Emails the website link to ${o.buyerEmail}</p>
-    </div>`;
-}
-
-async function copyToClipboard(text) {
-  try {
-    await navigator.clipboard.writeText(text);
-    toast('Copied to clipboard! 📋', 'ok');
-  } catch (err) {
-    toast('Copy failed ❌', 'err');
-  }
-}
-
-function downloadAll(linksStr) {
-  const links = linksStr.split(',');
-  links.forEach(l => window.open(l, '_blank'));
-  toast('Opening all photos in new tabs...', 'inf');
+  `;
+  lucide.createIcons();
 }
 
 function closeDrawer() {
   document.getElementById('drw-ov').classList.remove('on');
   document.getElementById('drw').classList.remove('on');
-  curOrderId = null;
 }
 
-/* DELETE ORDER */
-async function deleteOrder() {
-  const oid = curOrderId;
-  if (!oid) return;
+async function resendZeroTouch(oid, link) {
+  const o = orders.find(x => (x.orderId || x._docId) === oid);
+  if(!o || !SITE?.emailjs?.account1) return toast('Config missing','err');
+  
+  toast('Re-sending Zero-Touch Email...', 'inf');
+  try {
+    const ejs = SITE.emailjs.account1;
+    await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
+      gift_link: link,
+      customer_email: o.buyerEmail,
+      recipient_name: o.recipientName || 'there',
+      order_id: oid
+    });
+    toast('Email Resent Successfully ','ok');
+  } catch(e) { toast('Error sending email','err'); console.error(e); }
+}
 
-  const ok = confirm('Delete this order record permanently? This cannot be undone.');
-  if (!ok) return;
+async function sendManual(oid) {
+  const o = orders.find(x => (x.orderId || x._docId) === oid);
+  const lnk = document.getElementById('manual-link').value.trim();
+  if(!lnk || !o) return toast('Input link','err');
+  
+  toast('Sending Delivery...', 'inf');
+  try {
+    const ejs = SITE.emailjs.account1;
+    await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
+      to_name: o.buyerName, to_email: o.buyerEmail,
+      order_id: oid, bday_person_name: o.recipientName||'there',
+      website_link: lnk, from_name: 'Pookie Wishes'
+    });
+    
+    await db.collection('orders').doc(oid).update({ status: 'delivered', deliveryStatus: 'delivered', deliveryLink: lnk });
+    o.status = 'delivered'; o.deliveryStatus = 'delivered'; o.deliveryLink = lnk;
+    
+    closeDrawer(); renderTable(); updateStats();
+    toast('Delivered!','ok');
+  } catch(e) { toast('Error delivering','err'); }
+}
 
+async function deleteOrder(oid) {
+  if (!confirm('Permanently delete this order? This cannot be undone.')) return;
+  toast('Deleting order...', 'inf');
   try {
     await db.collection('orders').doc(oid).delete();
     orders = orders.filter(x => (x.orderId || x._docId) !== oid);
-    closeDrawer();
-
-    updateStats();
-    if (curFilter === 'ranking') renderRanking();
-    else if (curFilter === 'templates') renderTemplates();
-    else renderTable();
-
-    toast('Order deleted ✅', 'ok');
-  } catch (e) {
-    console.error('DELETE ERROR:', e);
-    toast('Delete failed', 'err');
-  }
+    closeDrawer(); renderTable(); updateStats();
+    toast('Order Deleted ✅', 'ok');
+  } catch(e) { toast('Failed to delete order', 'err'); console.error(e); }
 }
 
-/* UPDATE STATUS */
-async function updateStatus() {
-  if (!curOrderId) return;
-  const s = document.getElementById('status-sel').value;
-  if (!s) return;
-  try {
-    await db.collection('orders').doc(curOrderId).update({ status: s });
-    const o = orders.find(x => (x.orderId || x._docId) === curOrderId);
-    if (o) o.status = s;
-    updateStats(); renderTable(); toast('Status updated ✅', 'ok');
-  } catch(e) { toast('Update failed', 'err'); }
-}
-
-
-
-/* DELIVER (final link only) */
-async function deliver() {
-  const o = orders.find(x => (x.orderId || x._docId) === curOrderId);
-  if (!o) return;
-
-  const link = document.getElementById('del-link').value.trim();
-  if (!link) {
-    toast('Enter the website link first', 'err');
-    return;
-  }
-
-  const btn = document.getElementById('del-btn');
-  btn.disabled = true;
-  btn.textContent = 'Sending…';
-
-  try {
-    await db.collection('orders').doc(curOrderId).update({
-      deliveryLink: link
-    });
-
-    o.deliveryLink = link;
-
-    const ejs1 = SITE.emailjs?.account1;
-
-    if (!ejs1?.serviceId || ejs1.serviceId.startsWith('YOUR')) {
-      throw new Error('EmailJS not configured');
-    }
-
-    const orderSummary = (o.orders || [])
-      .map(x => `${x.templateName}`)
-      .join('\n');
-
-    // Send only website link (QR system removed from delivery email)
-    await emailjs.send(
-      ejs1.serviceId,
-      ejs1.templateId_delivery,
-      {
-        to_name: o.buyerName,
-        to_email: o.buyerEmail,
-        order_id: curOrderId,
-        template_name: (o.orders || []).map(x => x.templateName).join(', '),
-        bday_person_name: o.recipientName || 'there',
-        order_summary: orderSummary,
-        website_link: link,
-        from_name: 'Pookie Wishes'
-      },
-      ejs1.publicKey
-    );
-
-    await db.collection('orders').doc(curOrderId).update({
-      status: 'delivered',
-      deliveryStatus: 'delivered',
-      deliveredAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    o.status = 'delivered';
-    o.deliveryStatus = 'delivered';
-
-    updateStats();
-    renderTable();
-
-    toast('Delivery email sent! Order complete ✅', 'ok');
-    btn.textContent = '✅ Sent!';
-
-  } catch (e) {
-    console.error('DELIVERY ERROR:', e);
-    toast('Failed — check console ⚠️', 'err');
-    btn.disabled = false;
-    btn.textContent = '📧 Send Delivery Email';
-  }
-}
-
-/* TOAST */
-function toast(msg, type = 'inf') {
-  const c = document.getElementById('toasts'), icons = { ok:'✅', err:'❌', inf:'💬' };
-  const el = document.createElement('div'); el.className = `toast ${type}`;
-  el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`; c.appendChild(el);
-  setTimeout(() => { el.classList.add('out'); setTimeout(() => el.remove(), 300); }, 3500);
+function toast(m, t) {
+  const c = document.getElementById('toasts');
+  const d = document.createElement('div');
+  d.className = 'toast ' + (t==='err'?'err':'ok');
+  d.innerHTML = \<i data-lucide="\"></i> <span>\</span>\;
+  c.appendChild(d);
+  lucide.createIcons();
+  setTimeout(()=>d.remove(), 3000);
 }
 </script>
 </body>
