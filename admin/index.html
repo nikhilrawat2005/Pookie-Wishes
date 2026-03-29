@@ -246,6 +246,18 @@
   </div>
 </div>
 
+<!-- NOT AUTHORIZED SCREEN -->
+<div id="unauth-pg" class="login-pg" style="display:none">
+  <div class="login-card">
+    <span class="login-ico">🚫</span>
+    <div class="login-title">Access Denied</div>
+    <p class="login-sub">You are logged in as:</p>
+    <div id="unauth-email" style="font-weight:700; color:var(--text); margin-bottom:20px; word-break:break-all;"></div>
+    <p class="login-sub" style="font-size:0.75rem;">This email is not in the system's authorized list. Please contact the administrator or switch accounts.</p>
+    <button class="btn btn-ghost btn-full btn-sm" onclick="adminLogout()">Sign Out & Try Again</button>
+  </div>
+</div>
+
 <!-- MOBILE TOPBAR -->
 <div class="topbar" id="topbar">
   <div class="topbar-menu" onclick="toggleSidebar()">☰</div>
@@ -366,9 +378,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (user && ADMIN_EMAILS.includes(user.email)) {
       showAdmin(user);
     } else if (user) {
-      firebase.auth().signOut().then(() => { window.location.href = '/'; }).catch(() => { window.location.href = '/'; });
+      // Show "Not Authorized" screen instead of immediate sign out
+      document.getElementById('login-pg').style.display = 'none';
+      document.getElementById('admin-wrap').classList.remove('on');
+      document.getElementById('unauth-pg').style.display = 'flex';
+      document.getElementById('unauth-email').textContent = user.email;
     } else {
       document.getElementById('login-pg').style.display = 'flex';
+      document.getElementById('unauth-pg').style.display = 'none';
       document.getElementById('admin-wrap').classList.remove('on');
     }
   });
@@ -399,7 +416,17 @@ async function loadOrders() {
     if (curFilter === 'ranking') renderRanking();
     if (curFilter === 'templates') renderTemplates();
   } catch(e) {
-    const msg = `<div class="empty">Error: ${e.message}</div>`;
+    console.error("LOAD ORDERS ERROR:", e);
+    let errorMsg = e.message;
+    if (e.code === 'permission-denied') {
+      errorMsg = "Permission Denied: Ensure your Firestore Security Rules allow read access for your email.";
+    }
+    const msg = `<div class="empty" style="color:#e05a5a">
+      <div style="font-size:2rem;margin-bottom:10px;">⚠️</div>
+      <strong>Failed to load orders</strong><br>
+      <span style="font-size:0.8rem; opacity:0.8;">${errorMsg}</span><br>
+      <button class="btn btn-soft btn-sm" style="margin-top:15px" onclick="loadOrders()">Retry</button>
+    </div>`;
     document.getElementById('tbl-body').innerHTML = msg;
     document.getElementById('order-cards').innerHTML = msg;
   }

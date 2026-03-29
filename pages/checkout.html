@@ -278,22 +278,45 @@ async function checkoutSubmitOrder() {
   // --- 0-PRICE BYPASS (For Testing) ---
   if (total === 0) {
     btn.innerHTML = `<span class="loading-spinner"></span> Processing Free Order...`;
-    const testOrderId = 'TEST-' + Date.now();
+    
+    let sequentialId = '';
     if (window.fbReady) {
       try {
-        await firebase.firestore().collection('orders').doc(testOrderId).set({
-          orderId: testOrderId, buyerName:data.name, buyerEmail:data.email,
+        await firebase.firestore().runTransaction(async (transaction) => {
+          const statRef = firebase.firestore().collection('counters').doc('stats');
+          const doc = await transaction.get(statRef);
+          let count = 1;
+          if (doc.exists) count = (doc.data().totalOrders || 0) + 1;
+          transaction.set(statRef, { totalOrders: count }, { merge: true });
+          sequentialId = 'order' + count;
+
+          transaction.set(firebase.firestore().collection('orders').doc(sequentialId), {
+            orderId: sequentialId, buyerName:data.name, buyerEmail:data.email,
+            orders:data.orders, totalAmount:0,
+            status:'paid', deliveryStatus:'pending',
+            gateway: 'none_free',
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+        });
+      } catch(e) { 
+        console.warn('Sequential Order ID generation failed, falling back to timestamp:', e);
+        sequentialId = 'TEST-' + Date.now();
+        await firebase.firestore().collection('orders').doc(sequentialId).set({
+          orderId: sequentialId, buyerName:data.name, buyerEmail:data.email,
           orders:data.orders, totalAmount:0,
           status:'paid', deliveryStatus:'pending',
           gateway: 'none_free',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
-      } catch(e) { console.warn('Firestore save failed:', e); }
+      }
+    } else {
+      sequentialId = 'LOCAL-' + Date.now(); // Should not happen
     }
+
     localStorage.removeItem('pw_cart');
     toast("Free Order Placed! 🎉", "ok");
     setTimeout(() => {
-      window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${testOrderId}&email=${encodeURIComponent(data.email)}`;
+      window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${sequentialId}&email=${encodeURIComponent(data.email)}`;
     }, 1500);
     return;
   }
@@ -327,9 +350,31 @@ async function checkoutSubmitOrder() {
     return;
   }
 
-  // 2. Save order to Firebase as pending
+  // 2. Save order to Firebase as pending with Sequential ID
+  let sequentialId = razorOrderId; // Default to Razorpay order ID as backup
   if (window.fbReady) {
     try {
+      await firebase.firestore().runTransaction(async (transaction) => {
+        const statRef = firebase.firestore().collection('counters').doc('stats');
+        const doc = await transaction.get(statRef);
+        let count = 1;
+        if (doc.exists) count = (doc.data().totalOrders || 0) + 1;
+        transaction.set(statRef, { totalOrders: count }, { merge: true });
+        sequentialId = 'order' + count;
+
+        transaction.set(firebase.firestore().collection('orders').doc(sequentialId), {
+          orderId: sequentialId,
+          razorpayOrderId: razorOrderId, // Store original if needed
+          buyerName:data.name, buyerEmail:data.email,
+          orders:data.orders, totalAmount:total,
+          status:'pending_payment', deliveryStatus:'pending',
+          gateway: 'razorpay',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      });
+    } catch(e) { 
+      console.warn('Sequential ID failed for paid order, using Razorpay ID:', e);
+      // Fallback to Razorpay order ID
       await firebase.firestore().collection('orders').doc(razorOrderId).set({
         orderId: razorOrderId, buyerName:data.name, buyerEmail:data.email,
         orders:data.orders, totalAmount:total,
@@ -337,7 +382,7 @@ async function checkoutSubmitOrder() {
         gateway: 'razorpay',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
-    } catch(e) { console.warn('Firestore save failed:', e); }
+    }
   }
 
   // 3. Open Razorpay Checkout
