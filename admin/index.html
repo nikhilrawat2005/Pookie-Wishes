@@ -195,9 +195,10 @@
     .inf-lbl{font-family:var(--fm);font-size:.63rem;color:var(--dim);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
     .inf-row{display:flex;flex-direction:column;gap:5px;margin-bottom:18px}
     .inf-item{display:flex;gap:8px;font-size:.84rem}
-    .inf-k{color:var(--muted);min-width:86px;flex-shrink:0}
-    .inf-v{color:var(--text2);font-weight:500;word-break:break-all}
-    .ss-link{color:var(--pink);text-decoration:none;font-size:.82rem}
+    .inf-v{color:var(--text2);font-weight:500;word-break:break-all;flex:1}
+    .c-btn{border:none;background:var(--bg3);color:var(--muted);width:24px;height:24px;border-radius:6px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:0.7rem;transition:all .15s}
+    .c-btn:hover{background:var(--pink-s);color:var(--pink)}
+    .ss-link{color:var(--pink);text-decoration:none;font-size:.82rem;display:flex;align-items:center;gap:4px}
     .ss-link:hover{text-decoration:underline}
     .del-box{background:var(--bg2);border:1px solid var(--bdr);border-radius:var(--r);padding:16px;margin-bottom:14px}
     .del-title{font-family:var(--fd);font-weight:700;font-size:.9rem;margin-bottom:12px;color:var(--text)}
@@ -580,35 +581,64 @@ function openDrawer(oid) {
     `<option value="${s}" ${o.status === s ? 'selected' : ''}>${STATUS_MAP[s]?.label || s}</option>`
   ).join('');
 
+  const copyBtn = (txt) => `<button class="c-btn" onclick="copyToClipboard(\`${txt.replace(/'/g,"\\'").replace(/"/g,'\\"')}\`)" title="Copy to clipboard">📋</button>`;
+
   const customDetails = `
-    <div class="inf-item"><span class="inf-k">Recipient Name</span><span class="inf-v">${o.recipientName || '—'}</span></div>
-    <div class="inf-item"><span class="inf-k">Wish Message</span><span class="inf-v" style="white-space:pre-wrap;">${o.wishMessage || '—'}</span></div>
-    <div class="inf-item"><span class="inf-k">Event Date</span><span class="inf-v">${o.eventDate || '—'}</span></div>
-    <div class="inf-item"><span class="inf-k">Instructions</span><span class="inf-v" style="white-space:pre-wrap;">${o.extraInstructions || '—'}</span></div>
+    <div style="background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r); padding:15px; margin-top:5px;">
+      <div class="inf-item" style="margin-bottom:12px; align-items:center;">
+        <span class="inf-k" style="width:120px; font-weight:600;">Recipient Name:</span>
+        <span class="inf-v" style="font-size:0.9rem; color:var(--text);">${o.recipientName || '—'}</span>
+        ${o.recipientName ? copyBtn(o.recipientName) : ''}
+      </div>
+      <div class="inf-item" style="margin-bottom:12px; align-items:flex-start;">
+        <span class="inf-k" style="width:120px; font-weight:600;">Wish Message:</span>
+        <div class="inf-v" style="position:relative;">
+          <div style="white-space:pre-wrap; font-size:0.85rem; line-height:1.5; color:var(--text2); background:var(--card); padding:10px; border-radius:var(--rs); border:1px solid var(--bdr);">${o.wishMessage || '—'}</div>
+          ${o.wishMessage ? `<div style="position:absolute; top:6px; right:6px;">${copyBtn(o.wishMessage)}</div>` : ''}
+        </div>
+      </div>
+      <div class="inf-item" style="margin-bottom:12px;"><span class="inf-k" style="width:120px; font-weight:600;">Event Date:</span><span class="inf-v" style="color:var(--pink); font-weight:700;">${o.eventDate || '—'}</span></div>
+      <div class="inf-item"><span class="inf-k" style="width:120px; font-weight:600;">Extra Notes:</span><span class="inf-v" style="font-style:italic; font-size:0.8rem;">${o.extraInstructions || 'None'}</span></div>
+    </div>
   `;
 
   const photosList = (o.photos && o.photos.length) 
-    ? o.photos.map((p,i) => `<a href="${p}" target="_blank" class="ss-link">📸 View Photo ${i+1}</a>`).join('<br>')
-    : '<span style="color:var(--muted);font-size:.82rem">No photos provided</span>';
+    ? o.photos.map((p,i) => `
+        <div style="display:flex; align-items:center; justify-content:space-between; background:var(--bg2); padding:8px 12px; border-radius:var(--rs); margin-bottom:6px; border:1px solid var(--bdr);">
+          <span style="font-size:0.75rem; color:var(--muted);">Photo ${i+1}</span>
+          <div style="display:flex; gap:10px;">
+            <a href="${p}" target="_blank" class="ss-link">👁️ View</a>
+            <a href="${p}" download="Pookie_Photo_${oid}_${i+1}" target="_blank" class="ss-link" style="color:var(--mint); font-weight:600;">⏬ Download</a>
+          </div>
+        </div>
+      `).join('')
+    : '<div style="text-align:center; padding:15px; background:var(--bg2); border-radius:var(--rs); color:var(--dim); font-size:0.75rem;">No photos provided (Stickers will be used)</div>';
 
   document.getElementById('drw-body').innerHTML = `
-    <div class="inf-lbl">Customer</div>
+    <div class="inf-lbl">Customer Information</div>
     <div class="inf-row">
-      <div class="inf-item"><span class="inf-k">Name</span><span class="inf-v">${o.buyerName||'—'}</span></div>
-      <div class="inf-item"><span class="inf-k">Email</span><span class="inf-v">${o.buyerEmail||'—'}</span></div>
-      <div class="inf-item"><span class="inf-k">Submitted</span><span class="inf-v">${dt}</span></div>
-      <div class="inf-item"><span class="inf-k">Amount</span><span class="inf-v" style="font-weight:700">₹${o.totalAmount||0}</span></div>
+      <div class="inf-item" style="align-items:center;"><span class="inf-k">Buyer Name</span><span class="inf-v">${o.buyerName||'—'}</span></div>
+      <div class="inf-item" style="align-items:center;"><span class="inf-k">Buyer Email</span><span class="inf-v">${o.buyerEmail||'—'}</span>${o.buyerEmail ? copyBtn(o.buyerEmail) : ''}</div>
+      <div class="inf-item"><span class="inf-k">Submitted At</span><span class="inf-v">${dt}</span></div>
+      <div class="inf-item"><span class="inf-k">Payment Total</span><span class="inf-v" style="font-weight:700; color:var(--text);">₹${o.totalAmount||0}</span></div>
     </div>
-    <div class="inf-lbl">Order Details</div>
-    <div class="inf-row" style="background:var(--pink-s); padding:10px; border-radius:var(--r); margin-bottom:16px;">
-      ${o.detailsSubmitted ? customDetails : '<span style="color:var(--dim)">Details pending (User hasn\'t submitted form)</span>'}
+
+    <div class="inf-lbl" style="color:var(--pink); font-weight:800;">✨ Personalised Responses (Form)</div>
+    <div style="margin-bottom:20px;">
+      ${o.detailsSubmitted ? customDetails : '<div style="background:var(--pink-s); color:var(--pink); padding:12px; border-radius:var(--r); text-align:center; font-size:0.8rem; border:1px solid var(--bdr-pink);">⏳ User hasn\'t submitted the form yet.</div>'}
     </div>
-    <div class="inf-lbl">Photos Uploaded</div>
-    <div style="margin-bottom:16px">
+
+    <div class="inf-lbl" style="display:flex; justify-content:space-between; align-items:center;">
+      <span>Uploaded Media (${o.photos ? o.photos.length : 0})</span>
+      ${(o.photos && o.photos.length > 0) ? `<button class="btn btn-ghost" style="font-size:0.65rem; border:1px solid var(--bdr); padding:4px 8px; border-radius:var(--rs); height:auto;" onclick="downloadAll('${o.photos.join(',')}')">⏬ Download All</button>` : ''}
+    </div>
+    <div style="margin-bottom:20px">
       ${photosList}
     </div>
-    <div class="inf-lbl">Templates (${(o.orders||[]).length})</div>
-    <div style="margin-bottom:16px">${orderItems}</div>
+
+    <div class="inf-lbl">Order Overview</div>
+    <div style="margin-bottom:20px; background:var(--bg2); padding:10px; border-radius:var(--r);">${orderItems}</div>
+
     <div class="inf-lbl">Update Status</div>
     <div style="display:flex;gap:8px;margin-bottom:20px">
       <select class="f-inp" id="status-sel" style="flex:1"><option value="">— select —</option>${statusOpts}</select>
@@ -628,6 +658,21 @@ function openDrawer(oid) {
       <button class="btn btn-primary btn-full" id="del-btn" onclick="deliver()">📧 Send Delivery Email</button>
       <p style="font-size:.74rem;color:var(--dim);margin-top:6px;text-align:center">Emails the website link to ${o.buyerEmail}</p>
     </div>`;
+}
+
+async function copyToClipboard(text) {
+  try {
+    await navigator.clipboard.writeText(text);
+    toast('Copied to clipboard! 📋', 'ok');
+  } catch (err) {
+    toast('Copy failed ❌', 'err');
+  }
+}
+
+function downloadAll(linksStr) {
+  const links = linksStr.split(',');
+  links.forEach(l => window.open(l, '_blank'));
+  toast('Opening all photos in new tabs...', 'inf');
 }
 
 function closeDrawer() {
