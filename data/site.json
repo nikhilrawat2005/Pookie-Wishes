@@ -118,7 +118,6 @@
       "shortDesc": "A sneaky, romantic surprise that will make them fall all over again. Interactive love-themed games and sweet messages.",
       "longDesc": "Set the perfect love trap with this playful yet heartfelt website. Includes romantic animations, a 'truth or dare' style game, and personalised love notes. Perfect for proposals, anniversaries, or just because.",
       "vibe": "Romantic & Playful",
-      "badge": "New",
       "features": [
         "Personalised love letter",
         "Interactive love trap game",
@@ -146,7 +145,6 @@
       "id": "celestial-space",
       "name": "Celestial Universe",
       "tagline": "Interstellar Birthday Journey ✨",
-      "badge": "New ✨",
       "emoji": "🌌",
       "price": 29,
       "currency": "₹",
@@ -177,6 +175,70 @@
           "media/celestial/img1.jpg",
           "media/celestial/img2.jpg"
         ]
+      }
+    },
+    {
+      "id": "among-us",
+      "name": "Among Us",
+      "tagline": "You're Kinda Sus... But I Love You 🚀",
+      "badge": "New ✨",
+      "emoji": "🚀",
+      "price": 79,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "demoUrl": "https://amongus-mu-coral.vercel.app",
+      "tags": [
+        "amongus",
+        "gaming",
+        "funny",
+        "cute",
+        "sus"
+      ],
+      "shortDesc": "A hilarious and cute Among Us themed surprise. Eject your love to them!",
+      "longDesc": "For the gamers and the sus ones! This template features cute Among Us animations, a task-completion mini-game, an emergency meeting for your special message, and a final ejection of love. Perfect for anniversaries, birthdays, or just to say 'I love you'.",
+      "vibe": "Funny & Gaming",
+      "features": [
+        "🚀 Cute Among Us character animations",
+        "🔪 Interactive 'Complete Tasks' game",
+        "🚨 Emergency meeting message reveal",
+        "🌌 Ejected into space romantic ending"
+      ],
+      "media": {
+        "thumbnail": "media/among us/thumbnail.jpg",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774800517/WhatsApp_Video_2026-03-29_at_8.58.24_PM_pvtd7x.mp4",
+        "gallery": []
+      }
+    },
+    {
+      "id": "sorry-template",
+      "name": "I'm Sorry",
+      "tagline": "Please forgive me? 🥺",
+      "badge": "New ✨",
+      "emoji": "🥺",
+      "price": 49,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "demoUrl": "https://sorry-rho-nine.vercel.app/",
+      "tags": [
+        "apology",
+        "sorry",
+        "cute",
+        "forgive",
+        "love"
+      ],
+      "shortDesc": "Messed up? Say sorry in the cutest way possible with interactive apologies and sad cute animations.",
+      "longDesc": "When words aren't enough, let this cute interactive template do the talking. Features adorable sad faces, an interactive apology scale, a heartfelt digital letter, and a final plea for forgiveness. Guaranteed to melt their heart.",
+      "vibe": "Apologetic & Cute",
+      "features": [
+        "🥺 Adorable sad character animations",
+        "✉️ Heartfelt digital apology letter",
+        "🎵 Sad background music that turns happy",
+        "💖 Interactive forgiveness button"
+      ],
+      "media": {
+        "thumbnail": "media/sorry/thumbnail.jpg",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774800515/WhatsApp_Video_2026-03-29_at_8.58.24_PM_1_vzc6xw.mp4",
+        "gallery": []
       }
     },
     {
@@ -234,12 +296,6 @@
       "name": "Bollywood",
       "emoji": "🎬",
       "tagline": "Filmy Birthday Wala Feel!"
-    },
-    {
-      "id": "among-us",
-      "name": "Among Us",
-      "emoji": "🚀",
-      "tagline": "Sus Birthday Activated"
     }
   ]
 }
