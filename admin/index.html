@@ -351,9 +351,17 @@ function closeSidebar() {
 
 /* INIT */
 window.addEventListener('DOMContentLoaded', async () => {
-  SITE = await fetch('../data/site.json').then(r => r.json());
-  if (!firebase.apps.length) firebase.initializeApp(SITE.firebase);
-  db = firebase.firestore();
+  try {
+    const res = await fetch('../data/site.json');
+    if (!res.ok) throw new Error('Could not load site.json');
+    SITE = await res.json();
+    if (!firebase.apps.length) firebase.initializeApp(SITE.firebase);
+    db = firebase.firestore();
+  } catch (e) {
+    console.error('INIT ERROR:', e);
+    alert('CRITICAL ERROR: Failed to load site configuration. Please check your data/site.json file.');
+    return;
+  }
   firebase.auth().onAuthStateChanged(user => {
     if (user && ADMIN_EMAILS.includes(user.email)) {
       showAdmin(user);
@@ -598,7 +606,11 @@ function openDrawer(oid) {
         </div>
       </div>
       <div class="inf-item" style="margin-bottom:12px;"><span class="inf-k" style="width:120px; font-weight:600;">Event Date:</span><span class="inf-v" style="color:var(--pink); font-weight:700;">${o.eventDate || '—'}</span></div>
-      <div class="inf-item"><span class="inf-k" style="width:120px; font-weight:600;">Extra Notes:</span><span class="inf-v" style="font-style:italic; font-size:0.8rem;">${o.extraInstructions || 'None'}</span></div>
+      <div class="inf-item" style="align-items:center;">
+        <span class="inf-k" style="width:120px; font-weight:600;">Extra Notes:</span>
+        <span class="inf-v" style="font-style:italic; font-size:0.8rem;">${o.extraInstructions || 'None'}</span>
+        ${o.extraInstructions ? copyBtn(o.extraInstructions) : ''}
+      </div>
     </div>
   `;
 
@@ -615,9 +627,12 @@ function openDrawer(oid) {
     : '<div style="text-align:center; padding:15px; background:var(--bg2); border-radius:var(--rs); color:var(--dim); font-size:0.75rem;">No photos provided (Stickers will be used)</div>';
 
   document.getElementById('drw-body').innerHTML = `
-    <div class="inf-lbl">Customer Information</div>
+    <div class="inf-lbl" style="display:flex; justify-content:space-between; align-items:center;">
+      <span>Customer Information</span>
+      <div style="display:flex; gap:5px;">${copyBtn(oid)}</div>
+    </div>
     <div class="inf-row">
-      <div class="inf-item" style="align-items:center;"><span class="inf-k">Buyer Name</span><span class="inf-v">${o.buyerName||'—'}</span></div>
+      <div class="inf-item" style="align-items:center;"><span class="inf-k" style="width:100px;">Order ID</span><span class="inf-v mono">${oid}</span></div>
       <div class="inf-item" style="align-items:center;"><span class="inf-k">Buyer Email</span><span class="inf-v">${o.buyerEmail||'—'}</span>${o.buyerEmail ? copyBtn(o.buyerEmail) : ''}</div>
       <div class="inf-item"><span class="inf-k">Submitted At</span><span class="inf-v">${dt}</span></div>
       <div class="inf-item"><span class="inf-k">Payment Total</span><span class="inf-v" style="font-weight:700; color:var(--text);">₹${o.totalAmount||0}</span></div>

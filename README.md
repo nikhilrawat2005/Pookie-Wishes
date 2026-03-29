@@ -1,130 +1,122 @@
-# Pookie Wishes 🎀
+# Pookie Wishes 🎀 — Complete Setup Guide
 
-> Personalised digital surprises — birthdays, proposals, anniversaries & more. Starting at ₹29.
+> Personalised digital surprises — birthdays, proposals, anniversaries & more. 
 
----
-
-## ✨ Features
-
-- **Static Frontend**: Blazing fast HTML/CSS/JS architecture with zero backend maintenance.
-- **Firebase Integration**: User authentication (Google/Email) and order saving via Firebase Firestore.
-- **Razorpay Payments**: Secure and seamless payment checkout using the Razorpay Integration.
-- **Automated Personalisation Collection**: Directly on the site post-payment. Photos are securely uploaded to **Cloudinary**, and text details directly map to Firebase.
-- **EmailJS Integration**: Automated admin notifications for new orders and one-click delivery emails from the Admin Panel.
+This guide contains the **complete** steps to set up your Firestore, Cloudinary, and EmailJS accounts to ensure the platform works perfectly.
 
 ---
 
-## 🎨 Template Gallery
+## 🛠️ 1. Google Firebase Setup (Auth & Database)
 
-| Template Name | Preview Image | Video Demo | Price |
-|---|---|---|---|
-| **Celestial Universe** ✨ | ![Celestial Placeholder](https://placehold.co/600x400/0b0b2e/white?text=Celestial+Universe+Preview) | [Watch Demo](https://res.cloudinary.com/dktx4woql/video/upload/v1774623999/gallexy_rvnjkc.mov) | ₹29 |
-| **Love Trap** 💘 | ![Love Trap Placeholder](https://placehold.co/600x400/ff7eb3/white?text=Love+Trap+Preview) | [Watch Demo](https://res.cloudinary.com/dktx4woql/video/upload/v1774376488/Untitled_design_jdl9sl.mp4) | ₹39 |
-| **Hello Kitty** 🎀 | ![Hello Kitty Placeholder](https://placehold.co/600x400/fff0f4/black?text=Hello+Kitty+Preview) | [Watch Demo](https://res.cloudinary.com/dktx4woql/video/upload/v1774022269/preview_z3mcd8.mp4) | ₹69 |
-| **Harry Potter** ⚡ | ![Harry Potter Placeholder](https://placehold.co/600x400/1a1a1a/white?text=Harry+Potter+Preview) | [Watch Demo](https://res.cloudinary.com/dktx4woql/video/upload/v1774022365/preview_yvsyhy.mp4) | ₹69 |
+Firebase handles your user logins and stores all order data.
 
----
+### **A. Project Initialization**
+1. Go to [Firebase Console](https://console.firebase.google.com/).
+2. Create a new project named `Pookie Wishes`.
+3. Enable **Authentication**: Go to *Build > Authentication > Get Started*. Enable **Google** and **Email/Password**.
+4. Enable **Firestore Database**: Go to *Build > Firestore Database > Create Database*. Start in **Test Mode** (you will update rules later).
 
-## 🏗️ Project Structure
+### **B. Configuration**
+1. Go to **Project Settings** (Gear icon) > **Your Apps** > **Web App** (</> icon).
+2. Register the app and copy the `firebaseConfig` object.
+3. Open `data/site.json` in your code and paste these values into the `"firebase"` section.
 
-```
-pookie-v3/
-├── css/                ← Stylesheets
-├── data/
-│   └── site.json       ← Main configuration (Firebase config, templates, EmailJS keys)
-├── js/
-│   └── app.js          ← Frontend JS (Firebase auth, cart, UI logic)
-├── pages/
-│   ├── checkout.html   ← Checkout form (Pre-Payment - Name & Email)
-│   ├── order-success.html ← Post-Payment form (recipient name, text, and Cloudinary photo upload)
-│   └── ...other pages
-├── admin/              ← Comprehensive order management Admin Panel
-├── api/                ← Vercel serverless Python backend for Razorpay order generation
-└── media/              ← Images and videos
+### **C. Security Rules (CRITICAL)**
+Go to the **Rules** tab in Firestore and paste these rules. These allow you to see orders in the Admin Panel:
+```javascript
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /orders/{orderId} {
+      // Allow anybody to create an order or update it (for the personalization form)
+      allow create, update: if true;
+      // ONLY allow Admins to read or delete orders
+      allow read, delete: if request.auth != null && 
+        request.auth.token.email in ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
+    }
+  }
+}
 ```
 
 ---
 
-## 🚀 Setup Guide
+## 📸 2. Cloudinary Setup (Photo Uploads)
 
-### Step 1 — Clone the repo
-
-```bash
-git clone https://github.com/nikhilrawat2005/Pookie-Wishes.git
-cd pookie-v3
-```
-
----
-
-### Step 2 — Firebase Setup (Auth & Database)
-
-> **Required for**: User authentication and saving complete order details, photos, and status tracking.
-
-1. Go to: https://console.firebase.google.com
-2. Create a project.
-3. Enable **Authentication** (Google + Email/Password).
-4. Enable **Firestore Database** (Start in test mode).
-5. Go to **Project Settings → Your Apps → Web App**, copy the `firebaseConfig`.
-6. Open `data/site.json` and paste your Firebase keys under the `"firebase"` section.
-
----
-
-### Step 3 — Cloudinary Setup (For User Photo Uploads)
-
-> **Required for**: Storing user-submitted photos directly from the frontend securely without needing a backend server.
+Cloudinary stores the photos your customers upload.
 
 1. Create a free account at [Cloudinary](https://cloudinary.com/).
 2. Copy your **Cloud Name** from the dashboard.
-3. Open `pages/order-success.html`, scroll to the bottom, and replace `"YOUR_CLOUD_NAME"` with your actual Cloud Name.
-4. Go to **Settings (Gear Icon) → Upload** in Cloudinary.
-5. Scroll down to **Upload presets** and click **Add upload preset**.
-6. Set the Name to `pookie_unsigned` and switch the Signing Mode to **Unsigned**.
-7. Save the preset.
+3. Open `pages/order-success.html`, find `CLOUDINARY_CLOUD_NAME` and paste your name.
+4. **Create Unsigned Preset**:
+   - Go to **Settings** (Gear icon) > **Upload**.
+   - Scroll to **Upload presets** > **Add upload preset**.
+   - Name: `pookie_unsigned` (Must be exactly this).
+   - Signing Mode: **Unsigned**.
+   - Folder: `orders` (Optional but recommended).
+   - Click **Save**.
 
 ---
 
-### Step 4 — EmailJS Setup (For Notifications & Delivery)
+## 📧 3. EmailJS Setup (Notifications & Delivery)
 
-> **Required for**: Sending Team Cipher notification emails and customer delivery emails natively.
+EmailJS sends the emails when a new order arrives and when you deliver the site.
 
+### **A. Configuration**
 1. Create an account at [EmailJS](https://www.emailjs.com/).
-2. Add an Email Service (e.g., Gmail) and name it `service_pookie`.
-3. In `data/site.json`, under `"emailjs" : { "account1": { ... } }` fill in:
-   - `"publicKey"`: Your EmailJS Public Key.
-   - `"serviceId"`: Your Service ID (e.g. `service_pookie`).
+2. Add a **Service** (GMAIL) and call it `service_pookie`.
+3. In `data/site.json`, fill in the `emailjs` section:
+   - `publicKey`: Found in *Account > API Keys*.
+   - `serviceId`: Found in *Email Services* (e.g., `service_pookie`).
 
-**Template 1: Team Notification (New Order)**
-1. Create a template named `template_new_order`.
-2. Ensure the "To Email" is set to Team Cipher's email.
-3. Include these variables in the template body: `{{order_id}}`, `{{customer_email}}`, `{{recipient_name}}`, `{{admin_link}}`.
-4. Open `pages/order-success.html` and replace `"YOUR_EMAILJS_PUBLIC_KEY"` with your EmailJS Public Key. Ensure the service name matches.
+### **B. Admin Notification Template (`template_new_order`)**
+1. Create a "New Order" template.
+2. In `site.json`, set `templateId_admin` to this ID.
+3. **Variables** you must use in the email body:
+   - `{{order_id}}`
+   - `{{customer_email}}`
+   - `{{recipient_name}}`
+   - `{{wish_message}}`
+   - `{{event_date}}`
+   - `{{extra_instructions}}`
+   - `{{photo_links}}`
+   - `{{admin_link}}`
 
-**Template 2: Delivery Email (Admin Panel to Customer)**
-1. Create a template for finalizing the order.
-2. In `data/site.json`, set the `"templateId_delivery"` field under `emailjs.account1` to this Template's ID.
-3. Use these variables in the template: `{{to_name}}`, `{{to_email}}`, `{{order_id}}`, `{{template_name}}`, `{{bday_person_name}}`, `{{order_summary}}`, `{{website_link}}`.
-
----
-
-### Step 5 — Razorpay Payment Setup (Vercel Serverless)
-
-1. Go to your Razorpay Dashboard and get your **Key ID** and **Key Secret**.
-2. Add these to your Vercel Environment Variables:
-   - `RAZORPAY_KEY_ID`: Your Key ID
-   - `RAZORPAY_KEY_SECRET`: Your Key Secret
+### **C. Customer Delivery Template**
+1. Create a "Delivery" template.
+2. In `site.json`, set `templateId_delivery` to this ID.
+3. **Variables**: `{{to_name}}`, `{{to_email}}`, `{{website_link}}`.
 
 ---
 
-## 🌐 Deploy to Production
+## ⚙️ 4. Admin Panel Access
 
-Deploy the repo to **Vercel** with the above environment variables. Vercel automatically deploys the `api/` folder as a serverless backend for Razorpay, ensuring seamless API integrations.
+The Admin Panel is protected. Only specific emails can see the orders.
+
+1. Open `admin/index.html` and `js/app.js`.
+2. Find the constant `ADMIN_EMAILS`.
+3. Ensure **your Google Email** is included in this list:
+   ```javascript
+   const ADMIN_EMAILS = ['your-email@gmail.com', 'teamcipher.work@gmail.com'];
+   ```
+
+---
+
+## 🧪 5. How to Test (Step-by-Step)
+
+1. Open your site and add the **Testing Pookie** (₹0) to your cart.
+2. Go to Checkout, enter your details, and click "Submit".
+3. You will go straight to the **Success Page**.
+4. Fill out the personalization form (Message, Date, Photos) and click "Complete Order".
+5. **Check Admin Panel**: Go to `/admin/index.html` and login with your Admin Email. The order should appear!
+6. **Check Email**: You should receive a notification email immediately.
 
 ---
 
 ## 🐛 Troubleshooting
 
-| Problem | Solution |
+| Issue | Solution |
 |---|---|
-| Photos not uploading to Cloudinary | Ensure the Upload Preset is strictly named `pookie_unsigned` and is set to **Unsigned** mode in Cloudinary Settings. |
-| Firebase auth not working | Check Firebase console → Authentication is enabled and web app credentials are in `data/site.json` |
-| Email notifications not firing | Check your EmailJS Dashboard logs. Verify that the correct Public Key and Service IDs match the scripts in `order-success.html` and `site.json`. |
+| **Admin Panel is Empty** | 1. Check if you are logged in with the *exact* email listed in `ADMIN_EMAILS`. 2. Check Firestore Rules (Step 1-C). |
+| **No Admin Email Received** | 1. Check `site.json` for correct `serviceId` and `publicKey`. 2. Ensure your EmailJS Template ID matches `templateId_admin`. 3. Check your EmailJS "Email History" for errors. |
+| **Photos Not Showing** | Ensure the Cloudinary preset is named `pookie_unsigned` and set to **Unsigned**. |
+| **Price shows ₹0 wrongly** | This happens if `site.json` takes long to load. Wait 1 second before clicking "Checkout". |

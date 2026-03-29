@@ -130,7 +130,7 @@
 <script src="../js/app.js"></script>
 
 <script>
-  emailjs.init("d8GpzMV2apHzv3Uk5"); // Will update this
+  // EmailJS will be initialized after SITE is loaded
   const CLOUDINARY_UPLOAD_PRESET = "pookie_unsigned"; 
   const CLOUDINARY_CLOUD_NAME = "dktx4woql";
 
@@ -145,6 +145,11 @@
 
   window.addEventListener('DOMContentLoaded', async () => {
     await waitForSite();
+    
+    // Initialize EmailJS with Public Key from site.json
+    if (window.SITE?.emailjs?.account1?.publicKey) {
+      emailjs.init(window.SITE.emailjs.account1.publicKey);
+    }
     const wa = (SITE.site?.whatsapp||'918700113731').replace(/\D/g,'');
     const text = encodeURIComponent(`Hi! I need help with my Pookie Wishes order. Order ID: ${ORDER_ID}`);
     document.getElementById('wa-link').href = `https://wa.me/${wa}?text=${text}`;
@@ -240,13 +245,18 @@
 
       toast("Sending notification to Team Cipher...", "inf");
       try {
+        const ejs = SITE.emailjs?.account1;
+        if (!ejs?.serviceId || !ejs?.templateId_admin || !ejs?.publicKey) {
+          throw new Error("EmailJS missing configuration in site.json. Check serviceId, templateId_admin, and publicKey.");
+        }
+
         const adminUrl = window.location.origin + window.location.pathname.replace('order-success.html', 'admin/index.html');
         
         // Prepare photo links string for email
         const photoLinksStr = photoLinks.length > 0 ? photoLinks.join('\n') : 'No photos provided';
 
         // Send comprehensive notification to Admin
-        await emailjs.send("service_pookie", "template_new_order", {
+        await emailjs.send(ejs.serviceId, ejs.templateId_admin, {
           order_id: ORDER_ID,
           customer_email: CUSTOMER_EMAIL,
           recipient_name: recip,
@@ -255,9 +265,13 @@
           extra_instructions: extra || 'None',
           photo_links: photoLinksStr,
           admin_link: adminUrl
-        });
+        }, ejs.publicKey); 
       } catch(e) {
-        console.warn("Email notification failed to send", e);
+        console.error("EmailJS Error:", e);
+        // Show a more helpful error to the user
+        const errDetail = e.text || e.message || 'Check EmailJS Setup';
+        toast(`Admin Notification Failed: ${errDetail}`, "err");
+        alert(`ADMIN NOTIFICATION ERROR: ${errDetail}\n\nPlease check your EmailJS Template and Public Key in site.json.`);
       }
 
       document.getElementById('post-payment-form').style.display = 'none';
