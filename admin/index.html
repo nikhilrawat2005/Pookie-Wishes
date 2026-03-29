@@ -298,6 +298,16 @@
       <button class="btn btn-soft btn-sm" onclick="loadOrders()">↻ Refresh</button>
     </div>
 
+    <!-- DIAGNOSTIC BANNER — shows connection info to debug empty panel -->
+    <div id="debug-banner" style="background:rgba(255,200,0,0.1);border:1px solid rgba(255,200,0,0.4);border-radius:10px;padding:14px 18px;margin-bottom:18px;font-size:0.78rem;font-family:monospace;">
+      <div style="font-weight:700;margin-bottom:8px;color:var(--text);">🔍 Connection Diagnostics</div>
+      <div>Firebase Project: <span id="dbg-proj" style="color:var(--pink);">loading...</span></div>
+      <div>Logged in as: <span id="dbg-user" style="color:var(--pink);">loading...</span></div>
+      <div>Orders fetched: <span id="dbg-count" style="color:var(--pink);">loading...</span></div>
+      <div>Last error: <span id="dbg-err" style="color:#e05a5a;">none</span></div>
+      <button onclick="runDiagnostic()" style="margin-top:10px;padding:5px 12px;background:var(--bg3);border:1px solid var(--bdr);border-radius:6px;cursor:pointer;font-size:0.75rem;">Run Full Diagnostic</button>
+    </div>
+
     <div class="stats stagger-in" id="stats-panel">
       <div class="stat-c"><div class="stat-n" id="s-total">0</div><div class="stat-l">Total Orders</div></div>
       <div class="stat-c"><div class="stat-n" id="s-rev">₹0</div><div class="stat-l">Revenue</div></div>
@@ -401,6 +411,9 @@ function showAdmin(user) {
   document.getElementById('login-pg').style.display = 'none';
   document.getElementById('admin-wrap').classList.add('on');
   document.getElementById('sb-email').textContent = user.email;
+  // Fill debug banner
+  document.getElementById('dbg-user').textContent = user.email;
+  document.getElementById('dbg-proj').textContent = SITE?.firebase?.projectId || 'UNKNOWN — site.json may not have loaded';
   loadOrders();
 }
 
@@ -408,6 +421,8 @@ function showAdmin(user) {
 async function loadOrders() {
   document.getElementById('tbl-body').innerHTML = '<div class="empty">Loading…</div>';
   document.getElementById('order-cards').innerHTML = '<div class="empty">Loading…</div>';
+  document.getElementById('dbg-count').textContent = 'querying...';
+  document.getElementById('dbg-err').textContent = 'none';
   try {
     // Fetch ALL orders without orderBy — orderBy silently skips docs missing 'createdAt'
     const snap = await db.collection('orders').get();
@@ -420,6 +435,7 @@ async function loadOrders() {
       return tb - ta;
     });
 
+    document.getElementById('dbg-count').textContent = `${orders.length} orders found`;
     console.log(`✅ Loaded ${orders.length} orders from Firestore`);
     updateStats();
     renderTable();
@@ -427,6 +443,8 @@ async function loadOrders() {
     if (curFilter === 'templates') renderTemplates();
   } catch(e) {
     console.error("LOAD ORDERS ERROR:", e);
+    document.getElementById('dbg-count').textContent = '0 (query failed)';
+    document.getElementById('dbg-err').textContent = `${e.code || 'unknown'}: ${e.message}`;
     let errorMsg = e.message;
     if (e.code === 'permission-denied') {
       errorMsg = "Permission Denied — Go to Firebase Console → Firestore → Rules and allow read access for admin emails.";
@@ -440,6 +458,27 @@ async function loadOrders() {
     document.getElementById('tbl-body').innerHTML = msg;
     document.getElementById('order-cards').innerHTML = msg;
   }
+}
+
+async function runDiagnostic() {
+  let msg = '=== POOKIE ADMIN DIAGNOSTIC ===\n\n';
+  msg += `Firebase Project ID: ${SITE?.firebase?.projectId || 'NOT FOUND'}\n`;
+  msg += `Logged-in User: ${firebase.auth().currentUser?.email || 'NOT LOGGED IN'}\n`;
+  msg += `db ready: ${!!db}\n\n`;
+  try {
+    const snap = await firebase.firestore().collection('orders').get();
+    msg += `Raw orders query result: ${snap.docs.length} documents\n`;
+    snap.docs.slice(0, 3).forEach(d => { msg += `  - Doc ID: ${d.id}\n`; });
+  } catch(e) {
+    msg += `Raw orders query FAILED: ${e.code} — ${e.message}\n`;
+  }
+  try {
+    const snap2 = await firebase.firestore().collection('counters').get();
+    msg += `\nCounters collection: ${snap2.docs.length} documents\n`;
+  } catch(e) {
+    msg += `\nCounters query FAILED: ${e.code} — ${e.message}\n`;
+  }
+  alert(msg);
 }
 
 function updateStats() {
