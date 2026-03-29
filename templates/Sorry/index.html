@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Kuchupuchu 🩷</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Quicksand:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Pookie Wishes Zero-Touch Engine Setup -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="../../js/template-loader.js"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#FFB7C5',
+                        secondary: '#FF6B81',
+                        accent: '#FFD1DC',
+                        dark: '#4A1C24',
+                    },
+                    fontFamily: {
+                        cursive: ['Pacifico', 'cursive'],
+                        sans: ['Quicksand', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-[#FFF5F7] overflow-hidden select-none">
+    <div id="particle-container" class="fixed inset-0 pointer-events-none z-0"></div>
+    <div id="custom-cursor" class="fixed w-6 h-6 bg-secondary rounded-full opacity-50 pointer-events-none z-[100] transform -translate-x-1/2 -translate-y-1/2 mix-blend-multiply hidden md:block"></div>
+    <main id="app" class="relative z-10 w-full h-screen flex items-center justify-center p-4">
+        <div id="scene-wrapper" class="w-full max-w-2xl bg-white/40 backdrop-blur-md rounded-3xl shadow-2xl border border-white/50 overflow-hidden relative min-h-[600px] flex flex-col items-center justify-center">
+            <div id="progress-container" class="absolute top-0 left-0 w-full h-1.5 bg-white/20 z-30">
+                <div id="progress-bar-el" class="h-full bg-secondary w-0 transition-all duration-700 ease-out shadow-[0_0_10px_#FF6B81]"></div>
+            </div>
+            <div id="loading" class="absolute inset-0 z-50 bg-accent flex flex-col items-center justify-center transition-opacity duration-1000">
+                <div class="animate-bounce mb-4 text-secondary"><i data-lucide="heart" class="w-12 h-12 fill-current"></i></div>
+                <p class="font-cursive text-2xl text-dark">Making it special...</p>
+            </div>
+            <div id="scene-container" class="w-full h-full flex flex-col items-center justify-center text-center pb-24 md:pb-0"></div>
+            <nav id="global-nav" class="fixed bottom-0 left-0 w-full p-8 md:p-12 flex items-center justify-between z-50 opacity-0 pointer-events-none">
+                <button id="btn-back" class="bg-white/80 backdrop-blur-xl p-4 md:p-5 rounded-[25px] hover:bg-white transition-all text-dark shadow-2xl border border-white/40 hover:scale-110 active:scale-90 outline-none"><i data-lucide="arrow-left" class="w-6 h-6"></i></button>
+                <button id="btn-next" class="bg-secondary text-white px-10 py-5 rounded-[25px] flex items-center gap-3 font-black shadow-[0_15px_40px_rgba(255,107,129,0.4)] hover:scale-110 active:scale-95 transition-all outline-none group border-2 border-white/20">
+                    <span class="tracking-tighter text-lg uppercase">Next</span>
+                    <i data-lucide="arrow-right" class="w-6 h-6 group-hover:translate-x-1 transition-transform"></i>
+                </button>
+            </nav>
+        </div>
+    </main>
+    <script src="script.js"></script>
+</body>
+</html>

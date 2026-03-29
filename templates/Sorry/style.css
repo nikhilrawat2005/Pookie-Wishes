@@ -1,0 +1,202 @@
+/* Custom Cursor Smoothing */
+#custom-cursor {
+    transition: width 0.3s, height 0.3s, background-color 0.3s;
+}
+body:hover #custom-cursor {
+    opacity: 0.6;
+}
+.glass {
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+}
+#global-nav {
+    pointer-events: none;
+}
+#global-nav button {
+    pointer-events: auto;
+}
+:root {
+    --card-scale: 1;
+}
+@media (max-width: 640px) {
+    :root { --card-scale: 0.85; }
+    h1 { font-size: 3rem !important; }
+    .envelope-wrapper { max-width: 320px; height: 220px; }
+    .envelope-flap { border-left-width: 160px; border-right-width: 160px; border-top-width: 110px; }
+}
+@media (max-height: 700px) {
+    #scene-wrapper { min-height: 500px; padding: 1rem; }
+    .animate-float { animation-duration: 3s; }
+}
+@keyframes float {
+    0%, 100% { transform: translateY(0px) rotate(0deg); }
+    50% { transform: translateY(-20px) rotate(5deg); }
+}
+.animate-float {
+    animation: float 4s ease-in-out infinite;
+}
+.scene-enter {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+}
+.scene-exit {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+}
+.game-cell {
+    transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.heart-glow {
+    filter: drop-shadow(0 0 8px rgba(255, 107, 129, 0.8));
+    animation: heart-pulse 1.5s ease-in-out infinite;
+}
+@keyframes heart-pulse {
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255, 107, 129, 0.8)); }
+    50% { transform: scale(1.15); filter: drop-shadow(0 0 20px rgba(255, 107, 129, 1)); }
+}
+.game-cell:active {
+    transform: scale(0.9);
+}
+.heart-particle {
+    position: absolute;
+    color: #FF6B81;
+    pointer-events: none;
+    z-index: 0;
+    opacity: 0.6;
+}
+#progress-bar::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 14px;
+    height: 14px;
+    background: #FF6B81;
+    cursor: pointer;
+    border-radius: 50%;
+    border: 3px solid white;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+.envelope-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 420px;
+    height: 260px;
+    background: #FFD1DC;
+    border-radius: 20px;
+    overflow: hidden;
+    cursor: pointer;
+}
+.envelope-flap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-left: 210px solid transparent;
+    border-right: 210px solid transparent;
+    border-top: 130px solid #FFB7C5;
+    z-index: 10;
+    transition: transform 0.6s ease;
+    transform-origin: top;
+}
+.envelope-wrapper.open .envelope-flap {
+    transform: rotateX(180deg);
+    z-index: 0;
+}
+.envelope-letter {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: white;
+    transform: translateY(100%);
+    transition: transform 0.6s ease;
+    z-index: 5;
+    border-radius: 20px;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+}
+.envelope-wrapper.open .envelope-letter {
+    transform: translateY(0%);
+}
+.letter-paper {
+    background: #fff;
+    background-image: linear-gradient(#f0f0f0 1.1px, transparent 1.1px);
+    background-size: 100% 2.2rem;
+    line-height: 2.2rem;
+    padding: 0;
+    box-shadow: none;
+    width: 100%;
+    height: auto;
+    min-height: 100%;
+}
+.visualizer {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 40px;
+}
+.v-bar {
+    width: 4px;
+    background: #FF6B81;
+    border-radius: 2px;
+    animation: bounce-visualizer 0.8s ease-in-out infinite;
+    height: 10px;
+}
+@keyframes bounce-visualizer {
+    0%, 100% { height: 10px; }
+    50% { height: 35px; }
+}
+.confetti-heart {
+    position: absolute;
+    color: #FF6B81;
+    pointer-events: none;
+    z-index: 40;
+}
+/* Voucher Check Styles */
+.voucher-check {
+    background: #fff;
+    border: 8px solid #FFD1DC;
+    border-radius: 40px;
+    padding: 30px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.1);
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    max-width: 480px;
+    margin: 0 auto;
+}
+.voucher-check::before {
+    content: '';
+    position: absolute;
+    top: 5px; left: 5px; right: 5px; bottom: 5px;
+    border: 2px dashed #FF6B81;
+    border-radius: 35px;
+    pointer-events: none;
+}
+.voucher-verified-stamp {
+    position: absolute;
+    right: 20px;
+    bottom: 20px;
+    transform: rotate(-15deg);
+    border: 4px double #FF6B81;
+    color: #FF6B81;
+    padding: 10px;
+    border-radius: 10px;
+    font-weight: 900;
+    text-transform: uppercase;
+    font-size: 10px;
+    opacity: 0;
+    scale: 2;
+    pointer-events: none;
+}
+.handwriting {
+    font-family: 'Quicksand', sans-serif;
+    font-weight: 500;
+}
