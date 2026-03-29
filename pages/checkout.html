@@ -278,43 +278,49 @@ async function checkoutSubmitOrder() {
   // --- 0-PRICE BYPASS (For Testing) ---
   if (total === 0) {
     btn.innerHTML = `<span class="loading-spinner"></span> Processing Free Order...`;
-    
-    let sequentialId = '';
+
+    let sequentialId = 'TEST-' + Date.now(); // safe default
     if (window.fbReady) {
       try {
-        await firebase.firestore().runTransaction(async (transaction) => {
-          const statRef = firebase.firestore().collection('counters').doc('stats');
-          const doc = await transaction.get(statRef);
-          let count = 1;
-          if (doc.exists) count = (doc.data().totalOrders || 0) + 1;
-          transaction.set(statRef, { totalOrders: count }, { merge: true });
-          sequentialId = 'order' + count;
+        // Step 1: Try to get a sequential ID (may fail if counters collection is blocked)
+        const statRef = firebase.firestore().collection('counters').doc('stats');
+        const statDoc = await statRef.get();
+        const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
+        await statRef.set({ totalOrders: count }, { merge: true });
+        sequentialId = 'order' + count;
+      } catch(e) {
+        console.warn('Counter update failed (rules?), using timestamp ID:', e.message);
+        // sequentialId stays as 'TEST-' + timestamp — still valid
+      }
 
-          transaction.set(firebase.firestore().collection('orders').doc(sequentialId), {
-            orderId: sequentialId, buyerName:data.name, buyerEmail:data.email,
-            orders:data.orders, totalAmount:0,
-            status:'paid', deliveryStatus:'pending',
-            gateway: 'none_free',
-            createdAt: firebase.firestore.FieldValue.serverTimestamp()
-          });
-        });
-      } catch(e) { 
-        console.warn('Sequential Order ID generation failed, falling back to timestamp:', e);
-        sequentialId = 'TEST-' + Date.now();
+      // Step 2: ALWAYS save the order — this is the critical part
+      try {
         await firebase.firestore().collection('orders').doc(sequentialId).set({
-          orderId: sequentialId, buyerName:data.name, buyerEmail:data.email,
-          orders:data.orders, totalAmount:0,
-          status:'paid', deliveryStatus:'pending',
+          orderId: sequentialId, buyerName: data.name, buyerEmail: data.email,
+          orders: data.orders, totalAmount: 0,
+          status: 'paid', deliveryStatus: 'pending',
           gateway: 'none_free',
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
         });
+        console.log('✅ Order saved to Firestore:', sequentialId);
+      } catch(e) {
+        console.error('❌ CRITICAL: Order save failed!', e);
+        alert('Order could not be saved to database: ' + e.message + '\n\nCheck your Firestore Security Rules.');
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        btn.dataset.locked = '';
+        return;
       }
     } else {
-      sequentialId = 'LOCAL-' + Date.now(); // Should not happen
+      alert('Firebase not ready. Order cannot be placed.');
+      btn.innerHTML = originalHTML;
+      btn.disabled = false;
+      btn.dataset.locked = '';
+      return;
     }
 
     localStorage.removeItem('pw_cart');
-    toast("Free Order Placed! 🎉", "ok");
+    toast('Free Order Placed! 🎉', 'ok');
     setTimeout(() => {
       window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${sequentialId}&email=${encodeURIComponent(data.email)}`;
     }, 1500);
@@ -350,38 +356,33 @@ async function checkoutSubmitOrder() {
     return;
   }
 
-  // 2. Save order to Firebase as pending with Sequential ID
-  let sequentialId = razorOrderId; // Default to Razorpay order ID as backup
+  // 2. Save order to Firebase as pending
+  let sequentialId = 'PW-' + Date.now(); // safe default
   if (window.fbReady) {
     try {
-      await firebase.firestore().runTransaction(async (transaction) => {
-        const statRef = firebase.firestore().collection('counters').doc('stats');
-        const doc = await transaction.get(statRef);
-        let count = 1;
-        if (doc.exists) count = (doc.data().totalOrders || 0) + 1;
-        transaction.set(statRef, { totalOrders: count }, { merge: true });
-        sequentialId = 'order' + count;
+      const statRef = firebase.firestore().collection('counters').doc('stats');
+      const statDoc = await statRef.get();
+      const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
+      await statRef.set({ totalOrders: count }, { merge: true });
+      sequentialId = 'order' + count;
+    } catch(e) {
+      console.warn('Counter update failed, using timestamp ID:', e.message);
+    }
 
-        transaction.set(firebase.firestore().collection('orders').doc(sequentialId), {
-          orderId: sequentialId,
-          razorpayOrderId: razorOrderId, // Store original if needed
-          buyerName:data.name, buyerEmail:data.email,
-          orders:data.orders, totalAmount:total,
-          status:'pending_payment', deliveryStatus:'pending',
-          gateway: 'razorpay',
-          createdAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      });
-    } catch(e) { 
-      console.warn('Sequential ID failed for paid order, using Razorpay ID:', e);
-      // Fallback to Razorpay order ID
-      await firebase.firestore().collection('orders').doc(razorOrderId).set({
-        orderId: razorOrderId, buyerName:data.name, buyerEmail:data.email,
-        orders:data.orders, totalAmount:total,
-        status:'pending_payment', deliveryStatus:'pending',
+    // Always save the order regardless of counter success
+    try {
+      await firebase.firestore().collection('orders').doc(sequentialId).set({
+        orderId: sequentialId,
+        razorpayOrderId: razorOrderId,
+        buyerName: data.name, buyerEmail: data.email,
+        orders: data.orders, totalAmount: total,
+        status: 'pending_payment', deliveryStatus: 'pending',
         gateway: 'razorpay',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()
       });
+      console.log('✅ Order saved to Firestore:', sequentialId);
+    } catch(e) {
+      console.error('❌ Order save failed:', e);
     }
   }
 

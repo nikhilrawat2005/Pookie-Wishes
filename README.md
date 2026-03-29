@@ -1,122 +1,142 @@
 # Pookie Wishes 🎀 — Complete Setup Guide
 
-> Personalised digital surprises — birthdays, proposals, anniversaries & more. 
-
-This guide contains the **complete** steps to set up your Firestore, Cloudinary, and EmailJS accounts to ensure the platform works perfectly.
+> Personalised digital surprises — birthdays, proposals, anniversaries & more.
 
 ---
 
-## 🛠️ 1. Google Firebase Setup (Auth & Database)
+## 🚨 Action Required (External Steps You Must Do)
 
-Firebase handles your user logins and stores all order data.
+These are things that **cannot be done from code**. You must do these yourself on the external dashboards.
 
-### **A. Project Initialization**
-1. Go to [Firebase Console](https://console.firebase.google.com/).
-2. Create a new project named `Pookie Wishes`.
-3. Enable **Authentication**: Go to *Build > Authentication > Get Started*. Enable **Google** and **Email/Password**.
-4. Enable **Firestore Database**: Go to *Build > Firestore Database > Create Database*. Start in **Test Mode** (you will update rules later).
+### ✅ Step A — Firestore Security Rules (MOST IMPORTANT)
 
-### **B. Configuration**
-1. Go to **Project Settings** (Gear icon) > **Your Apps** > **Web App** (</> icon).
-2. Register the app and copy the `firebaseConfig` object.
-3. Open `data/site.json` in your code and paste these values into the `"firebase"` section.
+> **Why?** Without this, the Admin Panel cannot read orders even if they are saved in Firebase.
 
-### **C. Security Rules (CRITICAL)**
-Go to the **Rules** tab in Firestore and paste these rules. These allow you to see orders in the Admin Panel:
+1. Go to **[Firebase Console](https://console.firebase.google.com/)** → Your Project
+2. Click **Firestore Database** in the left sidebar
+3. Click the **Rules** tab at the top
+4. **Delete everything** and paste this exactly:
+
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Orders: anyone can create/update (for checkout & personalization form)
+    // Only admins can read/delete
     match /orders/{orderId} {
-      // Allow anybody to create an order or update it (for the personalization form)
       allow create, update: if true;
-      // ONLY allow Admins to read or delete orders
-      allow read, delete: if request.auth != null && 
+      allow read, delete: if request.auth != null &&
         request.auth.token.email in ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
+    }
+
+    // Counters: public read/write needed for sequential order IDs (order1, order2...)
+    match /counters/{doc} {
+      allow read, write: if true;
     }
   }
 }
 ```
 
----
+5. Click **Publish**
 
-## 📸 2. Cloudinary Setup (Photo Uploads)
-
-Cloudinary stores the photos your customers upload.
-
-1. Create a free account at [Cloudinary](https://cloudinary.com/).
-2. Copy your **Cloud Name** from the dashboard.
-3. Open `pages/order-success.html`, find `CLOUDINARY_CLOUD_NAME` and paste your name.
-4. **Create Unsigned Preset**:
-   - Go to **Settings** (Gear icon) > **Upload**.
-   - Scroll to **Upload presets** > **Add upload preset**.
-   - Name: `pookie_unsigned` (Must be exactly this).
-   - Signing Mode: **Unsigned**.
-   - Folder: `orders` (Optional but recommended).
-   - Click **Save**.
+> ⚠️ If you skip this step, the Admin Panel will show blank even if orders exist in Firestore.
 
 ---
 
-## 📧 3. EmailJS Setup (Notifications & Delivery)
+### ✅ Step B — Cloudinary Unsigned Upload Preset
 
-EmailJS sends the emails when a new order arrives and when you deliver the site.
+> **Why?** Without this, photo uploads will silently fail.
 
-### **A. Configuration**
-1. Create an account at [EmailJS](https://www.emailjs.com/).
-2. Add a **Service** (GMAIL) and call it `service_pookie`.
-3. In `data/site.json`, fill in the `emailjs` section:
-   - `publicKey`: Found in *Account > API Keys*.
-   - `serviceId`: Found in *Email Services* (e.g., `service_pookie`).
-
-### **B. Admin Notification Template (`template_new_order`)**
-1. Create a "New Order" template.
-2. In `site.json`, set `templateId_admin` to this ID.
-3. **Variables** you must use in the email body:
-   - `{{order_id}}`
-   - `{{customer_email}}`
-   - `{{recipient_name}}`
-   - `{{wish_message}}`
-   - `{{event_date}}`
-   - `{{extra_instructions}}`
-   - `{{photo_links}}`
-   - `{{admin_link}}`
-
-### **C. Customer Delivery Template**
-1. Create a "Delivery" template.
-2. In `site.json`, set `templateId_delivery` to this ID.
-3. **Variables**: `{{to_name}}`, `{{to_email}}`, `{{website_link}}`.
+1. Go to **[Cloudinary Console](https://console.cloudinary.com/)**
+2. Click **Settings** (gear icon) → **Upload** tab
+3. Scroll to **Upload Presets** → Click **Add upload preset**
+4. Set:
+   - **Preset name**: `pookie_unsigned` ← must be exactly this
+   - **Signing Mode**: `Unsigned`
+   - **Folder**: `orders` (optional but recommended)
+5. Click **Save**
 
 ---
 
-## ⚙️ 4. Admin Panel Access
+### ✅ Step C — EmailJS Template Variables
 
-The Admin Panel is protected. Only specific emails can see the orders.
+> **Why?** Admin notification emails won't send if template variables don't match.
 
-1. Open `admin/index.html` and `js/app.js`.
-2. Find the constant `ADMIN_EMAILS`.
-3. Ensure **your Google Email** is included in this list:
-   ```javascript
-   const ADMIN_EMAILS = ['your-email@gmail.com', 'teamcipher.work@gmail.com'];
-   ```
+1. Go to **[EmailJS Dashboard](https://www.emailjs.com/)** → **Email Templates**
+2. Open your admin notification template (ID is in `site.json` → `templateId_admin`)
+3. Make sure **all these variables** are used somewhere in the template body:
+
+| Variable | What it contains |
+|---|---|
+| `{{order_id}}` | The order ID (e.g. `order1`) |
+| `{{customer_email}}` | Buyer's email |
+| `{{recipient_name}}` | Who the surprise is for |
+| `{{wish_message}}` | The heartfelt message |
+| `{{event_date}}` | Date of the event |
+| `{{extra_instructions}}` | Any special notes |
+| `{{photo_links}}` | Links to uploaded photos |
+| `{{admin_link}}` | Direct link to Admin Panel |
+
+4. Set **To Email** field to your admin email address
+5. Click **Save**
 
 ---
 
-## 🧪 5. How to Test (Step-by-Step)
+### ✅ Step D — Verify `data/site.json` Keys
 
-1. Open your site and add the **Testing Pookie** (₹0) to your cart.
-2. Go to Checkout, enter your details, and click "Submit".
-3. You will go straight to the **Success Page**.
-4. Fill out the personalization form (Message, Date, Photos) and click "Complete Order".
-5. **Check Admin Panel**: Go to `/admin/index.html` and login with your Admin Email. The order should appear!
-6. **Check Email**: You should receive a notification email immediately.
+Open `data/site.json` and confirm all fields are filled:
+
+```json
+"emailjs": {
+  "account1": {
+    "publicKey": "YOUR_EMAILJS_PUBLIC_KEY",
+    "serviceId": "YOUR_SERVICE_ID",
+    "templateId_delivery": "YOUR_DELIVERY_TEMPLATE_ID",
+    "templateId_admin": "YOUR_ADMIN_NOTIFICATION_TEMPLATE_ID"
+  }
+},
+"firebase": {
+  "apiKey": "...",
+  "authDomain": "...",
+  "projectId": "...",
+  ...
+}
+```
+
+---
+
+## 🧪 How to Test (After All Steps Above)
+
+1. Open your site → Add **Testing Pookie (₹0)** to cart
+2. Go to Checkout → Enter name & email → Click **Submit**
+3. You will land on the **Success Page** — fill recipient details + upload photos
+4. Click **Complete Order**
+5. **Admin Panel check**: Go to `/admin/index.html` → Login with `nikhil2005114@gmail.com`
+   - Orders must appear in the table ✅
+6. **Email check**: You should receive a notification email within seconds ✅
+
+---
+
+## ⚙️ Admin Panel Access
+
+The Admin Panel only works for specific emails. They are hardcoded in `admin/index.html`:
+
+```javascript
+const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
+```
+
+If you need to add another email, add it to this array **and also** to the Firestore Rules in Step A.
 
 ---
 
 ## 🐛 Troubleshooting
 
-| Issue | Solution |
-|---|---|
-| **Admin Panel is Empty** | 1. Check if you are logged in with the *exact* email listed in `ADMIN_EMAILS`. 2. Check Firestore Rules (Step 1-C). |
-| **No Admin Email Received** | 1. Check `site.json` for correct `serviceId` and `publicKey`. 2. Ensure your EmailJS Template ID matches `templateId_admin`. 3. Check your EmailJS "Email History" for errors. |
-| **Photos Not Showing** | Ensure the Cloudinary preset is named `pookie_unsigned` and set to **Unsigned**. |
-| **Price shows ₹0 wrongly** | This happens if `site.json` takes long to load. Wait 1 second before clicking "Checkout". |
+| Problem | Most Likely Cause | Fix |
+|---|---|---|
+| **Admin Panel is blank/empty** | Firestore Rules not updated | Do **Step A** above — paste the new rules and publish |
+| **Orders not saving** | Firestore Rules blocking writes | Check browser Console (F12) for red errors |
+| **No admin email received** | Wrong template ID or missing variables | Do **Step C** — verify all `{{variables}}` in your template |
+| **Photos not uploading** | Cloudinary preset wrong/missing | Do **Step B** — preset must be named `pookie_unsigned` and Unsigned |
+| **"Access Denied" in Admin Panel** | Logged in with wrong Google account | Sign out and sign in with `nikhil2005114@gmail.com` |
+| **Price shows ₹0 at checkout** | `site.json` loaded slowly | Refresh the page and try again |

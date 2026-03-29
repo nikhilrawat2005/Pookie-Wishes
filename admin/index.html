@@ -409,8 +409,18 @@ async function loadOrders() {
   document.getElementById('tbl-body').innerHTML = '<div class="empty">Loading…</div>';
   document.getElementById('order-cards').innerHTML = '<div class="empty">Loading…</div>';
   try {
-    const snap = await db.collection('orders').orderBy('createdAt', 'desc').get();
+    // Fetch ALL orders without orderBy — orderBy silently skips docs missing 'createdAt'
+    const snap = await db.collection('orders').get();
     orders = snap.docs.map(d => ({ _docId: d.id, ...d.data() }));
+
+    // Sort client-side: newest first, docs missing createdAt go to bottom
+    orders.sort((a, b) => {
+      const ta = a.createdAt?.toDate?.() || new Date(0);
+      const tb = b.createdAt?.toDate?.() || new Date(0);
+      return tb - ta;
+    });
+
+    console.log(`✅ Loaded ${orders.length} orders from Firestore`);
     updateStats();
     renderTable();
     if (curFilter === 'ranking') renderRanking();
@@ -419,13 +429,13 @@ async function loadOrders() {
     console.error("LOAD ORDERS ERROR:", e);
     let errorMsg = e.message;
     if (e.code === 'permission-denied') {
-      errorMsg = "Permission Denied: Ensure your Firestore Security Rules allow read access for your email.";
+      errorMsg = "Permission Denied — Go to Firebase Console → Firestore → Rules and allow read access for admin emails.";
     }
     const msg = `<div class="empty" style="color:#e05a5a">
       <div style="font-size:2rem;margin-bottom:10px;">⚠️</div>
       <strong>Failed to load orders</strong><br>
       <span style="font-size:0.8rem; opacity:0.8;">${errorMsg}</span><br>
-      <button class="btn btn-soft btn-sm" style="margin-top:15px" onclick="loadOrders()">Retry</button>
+      <button class="btn btn-soft btn-sm" style="margin-top:15px" onclick="loadOrders()">↻ Retry</button>
     </div>`;
     document.getElementById('tbl-body').innerHTML = msg;
     document.getElementById('order-cards').innerHTML = msg;
