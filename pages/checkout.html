@@ -172,14 +172,33 @@ window.addEventListener('DOMContentLoaded', async () => {
   await waitForSite();
 
   const upiId = SITE.payment?.upiId || '8700113731@fam';
-  document.getElementById('upi-pill').textContent = upiId;
+  const upiPill = document.getElementById('upi-pill');
+  if (upiPill) upiPill.textContent = upiId;
+
+  // Sync cart prices with latest SITE data to avoid 0-price display bugs
+  syncCheckoutCart();
 
   const cartItems = JSON.parse(localStorage.getItem('pw_cart') || '[]');
   if (!cartItems.length) { window.location.href = '../index.html'; return; }
 
   renderSummary(cartItems);
-  renderSummary(cartItems);
 });
+
+function syncCheckoutCart() {
+  const items = JSON.parse(localStorage.getItem('pw_cart') || '[]');
+  if (!items.length || !SITE?.templates) return;
+  
+  const updated = items.map(item => {
+    const tpl = SITE.templates.find(t => t.id === item.id);
+    if (tpl) {
+      item.price = Number(tpl.price);
+      item.name = tpl.name;
+      item.emoji = tpl.emoji;
+    }
+    return item;
+  });
+  localStorage.setItem('pw_cart', JSON.stringify(updated));
+}
 
 function waitForSite() {
   return new Promise(resolve => {
@@ -255,6 +274,29 @@ async function checkoutSubmitOrder() {
   btn.disabled = true;
   const orderId = 'PW-' + Date.now();
   const total   = data.orders.reduce((s,o)=>s+o.price,0);
+
+  // --- 0-PRICE BYPASS (For Testing) ---
+  if (total === 0) {
+    btn.innerHTML = `<span class="loading-spinner"></span> Processing Free Order...`;
+    const testOrderId = 'TEST-' + Date.now();
+    if (window.fbReady) {
+      try {
+        await firebase.firestore().collection('orders').doc(testOrderId).set({
+          orderId: testOrderId, buyerName:data.name, buyerEmail:data.email,
+          orders:data.orders, totalAmount:0,
+          status:'paid', deliveryStatus:'pending',
+          gateway: 'none_free',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch(e) { console.warn('Firestore save failed:', e); }
+    }
+    localStorage.removeItem('pw_cart');
+    toast("Free Order Placed! 🎉", "ok");
+    setTimeout(() => {
+      window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${testOrderId}&email=${encodeURIComponent(data.email)}`;
+    }, 1500);
+    return;
+  }
 
   // 1. Call Python API to get Razorpay order_id
   let razorOrderId = '';

@@ -240,12 +240,20 @@
 
       toast("Sending notification to Team Cipher...", "inf");
       try {
-        const adminUrl = window.location.origin + window.location.pathname.replace('order-success.html', '../admin/index.html');
-        // We will call EmailJS here
+        const adminUrl = window.location.origin + window.location.pathname.replace('order-success.html', 'admin/index.html');
+        
+        // Prepare photo links string for email
+        const photoLinksStr = photoLinks.length > 0 ? photoLinks.join('\n') : 'No photos provided';
+
+        // Send comprehensive notification to Admin
         await emailjs.send("service_pookie", "template_new_order", {
           order_id: ORDER_ID,
           customer_email: CUSTOMER_EMAIL,
           recipient_name: recip,
+          wish_message: msg,
+          event_date: date || 'N/A',
+          extra_instructions: extra || 'None',
+          photo_links: photoLinksStr,
           admin_link: adminUrl
         });
       } catch(e) {
