@@ -279,9 +279,9 @@
     <a href="../index.html" class="sb-back">← Back to Site</a>
     <div class="sb-divider"></div>
 
-    <div class="sb-link on" data-tab="incoming" onclick="setTab('incoming',this)">📥 Incoming Orders</div>
+    <div class="sb-link" data-tab="incoming" onclick="setTab('incoming',this)">📥 Incoming Orders</div>
     <div class="sb-link" data-tab="delivered" onclick="setTab('delivered',this)">🎁 Delivered</div>
-    <div class="sb-link" data-tab="all" onclick="setTab('all',this)">📋 All Orders</div>
+    <div class="sb-link on" data-tab="all" onclick="setTab('all',this)">📋 All Orders</div>
     <div class="sb-divider"></div>
     <div class="sb-link" data-tab="ranking" onclick="setTab('ranking',this)">🏆 Rankings</div>
     <div class="sb-link" data-tab="templates" onclick="setTab('templates',this)">🎨 All Templates</div>
@@ -359,7 +359,7 @@
 
 <script>
 const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
-let SITE=null, db=null, orders=[], curFilter='incoming', curOrderId=null;
+let SITE=null, db=null, orders=[], curFilter='all', curOrderId=null;
 
 /* SIDEBAR MOBILE */
 function toggleSidebar() {
@@ -437,8 +437,19 @@ async function loadOrders() {
 
     document.getElementById('dbg-count').textContent = `${orders.length} orders found`;
     console.log(`✅ Loaded ${orders.length} orders from Firestore`);
+
+    // Make sure the table sections are visible (in case they were hidden by a previous tab)
+    document.getElementById('orders-tbl').style.display = '';
+    document.getElementById('order-cards').style.display = '';
+    document.getElementById('stats-panel').style.display = '';
+    document.getElementById('ranking-section').style.display = 'none';
+    document.getElementById('templates-section').style.display = 'none';
+
     updateStats();
-    renderTable();
+    try { renderTable(); } catch(err) {
+      console.error('❌ renderTable crashed:', err);
+      document.getElementById('tbl-body').innerHTML = `<div class="empty" style="color:#e05a5a">Render Error: ${err.message}</div>`;
+    }
     if (curFilter === 'ranking') renderRanking();
     if (curFilter === 'templates') renderTemplates();
   } catch(e) {
