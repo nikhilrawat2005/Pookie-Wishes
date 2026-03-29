@@ -74,7 +74,9 @@ window.getPookieData = async function(templateId) {
 
     } catch (err) {
         console.error("Loader Error:", err);
-        return null; 
+        // Do not fail silently if they explicitly provided an ID but an error happened!
+        showErrorSplash("Access Denied or Error 🚨", "We hit a snag loading your surprise. Please check your data connection or ensure the link hasn't expired. <br><br><small style='opacity:0.6'>" + err.message + "</small>");
+        throw err; // Stop execution
     }
 };
 
