@@ -1,9 +1,6 @@
-let currentSceneIndex = 1;
-const totalScenes = 7;
-let voteInterval = null;
-
-// We will inject the names dynamically after fetching data.json
-let targetName = 'Crewmate';
+// Configuration and State
+let userData      = null;
+let targetName    = 'Crewmate';
 
 function initSetup() {
     const loaderBar = document.querySelector('.loader-bar');
@@ -155,39 +152,43 @@ function shareUrl() {
 
 let setupInitialized = false;
 
-async function loadDataAndInitialize() {
+async function init() {
     if (setupInitialized) return;
     setupInitialized = true;
     
     try {
         if (window.getPookieData) {
-            const pData = await window.getPookieData('among-us');
-            if (pData && pData.targetName) {
-                targetName = pData.targetName;
-                document.querySelectorAll('.inject-name').forEach(el => el.textContent = targetName);
-                initSetup();
-                return;
+            userData = await window.getPookieData('among-us');
+        }
+        
+        // Fallback for local dev
+        if (!userData) {
+            const res = await fetch('user.json'); // Standardized fallback name
+            if (!res.ok) {
+                // Secondary fallback for legacy compatibility
+                const resOld = await fetch('data.json');
+                if (resOld.ok) userData = await resOld.json();
+            } else {
+                userData = await res.json();
             }
         }
         
-        // Fallback: local data.json
-        const response = await fetch('data.json');
-        if (response.ok) {
-            const data = await response.json();
-            targetName = data.targetName || 'Crewmate';
+        if (userData && userData.targetName) {
+            targetName = userData.targetName;
         }
-    } catch (err) {
-        console.error('Data load error:', err);
-    } finally {
+
         document.querySelectorAll('.inject-name').forEach(el => el.textContent = targetName);
         initSetup();
+    } catch (err) {
+        console.error('Initialization failed:', err);
+        initSetup(); // Try to start anyway
     }
 }
 
-document.addEventListener("DOMContentLoaded", loadDataAndInitialize);
+document.addEventListener("DOMContentLoaded", init);
 if (document.readyState === "complete" || document.readyState === "interactive") {
     setTimeout(() => {
-        if (!setupInitialized && currentSceneIndex === 1) { loadDataAndInitialize(); }
+        if (!setupInitialized) { init(); }
     }, 100);
 }
 

@@ -16,7 +16,7 @@ const cursor = document.getElementById('custom-cursor');
 async function init() {
     try {
         if (window.getPookieData) {
-            userData = await window.getPookieData('sorry-template');
+            userData = await window.getPookieData('sorry');
         }
         
         // Fallback or if no ?id provided

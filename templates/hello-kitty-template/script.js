@@ -22,52 +22,44 @@
 /* ──────────────────────────────────────────────────────
    § 1  GLOBALS
 ────────────────────────────────────────────────────── */
+let userData      = null;
 let currentPage      = 1;
-let cakeDrawing      = false;
-let cakeCtx          = null;
-let cakeStartX       = 0, cakeStartY = 0;
-let cakeCut          = false;
-let flippedCards     = new Set();
-let wishSlideTimer   = null;
-let bgMusic          = null;
-let siteContent      = {};
 
-/* ──────────────────────────────────────────────────────
-   § 2  INIT
-────────────────────────────────────────────────────── */
-document.addEventListener('DOMContentLoaded', async () => {
-  await loadContent();       // must be first
-  spawnBgElements();
-  initCakeCanvas();
-  updateWishesProgress();
-  initMemoryGame();
-  bgMusic = document.getElementById('bgMusic');
-});
+// --- Init ---
+async function init() {
+    try {
+        if (window.getPookieData) {
+            userData = await window.getPookieData('hello-kitty');
+        }
+        
+        // Fallback for local dev
+        if (!userData) {
+            const res = await fetch('user.json');
+            if (res.ok) userData = await res.json();
+        }
 
-/* ──────────────────────────────────────────────────────
-   § 3  CONTENT LOADER
-   Fetches content.json → injects name, letters, wishes
-────────────────────────────────────────────────────── */
-async function loadContent() {
-  try {
-    if (window.getPookieData) {
-      const pookieData = await window.getPookieData('hello-kitty');
-      if (pookieData) {
-        siteContent = pookieData;
-        applyContent(siteContent);
-        return;
-      }
+        if (userData) applyContent(userData);
+
+        spawnBgElements();
+        initCakeCanvas();
+        updateWishesProgress();
+        initMemoryGame();
+        bgMusic = document.getElementById('bgMusic');
+
+        // Optional: Hide loading splash if present
+        const loader = document.getElementById('loading');
+        if (loader) {
+            loader.style.opacity = '0';
+            setTimeout(() => loader.remove(), 800);
+        }
+    } catch (e) {
+        console.error("Initialization failed:", e);
     }
-    
-    // Fallback: fetch content.json for local/preview
-    const res = await fetch('content.json');
-    if (!res.ok) throw new Error('Not found');
-    siteContent = await res.json();
-    applyContent(siteContent);
-  } catch (e) {
-    console.warn('[content.json] Not loaded — using HTML defaults.', e);
-  }
 }
+
+document.addEventListener('DOMContentLoaded', init);
+
+// (Removed old loadContent as it is replaced by init)
 
 function applyContent(c) {
   const name = c.name || 'Beautiful';
@@ -477,7 +469,7 @@ function flipCard(idx) {
 }
 
 function injectReveal(idx, panel) {
-  const wish    = (siteContent.wishes || [])[idx] || {};
+  const wish    = (userData.wishes || [])[idx] || {};
   const msg     = wish.message || '💕 Happy Birthday! 💕';
   const sticker = wish.sticker || 'assets/hello-kitty-i-love-you.gif';
   const memSrc  = wish.memory  || `assets/memory${idx + 1}.jpg`;

@@ -204,15 +204,7 @@
 
     let currentTemplateId = 'sorry-template';
     
-    // Mapping between Template IDs and actual folder names
-    const TEMPLATE_PATHS = {
-      'hello-kitty': 'hello_kitty_birthday_responsive',
-      'harry-potter': 'harry_potter_birthday_responsive',
-      'love-trap': 'love_trap_project',
-      'celestial-space': 'Celestial',
-      'among-us': 'Among Us',
-      'sorry-template': 'sorry-template'
-    };
+    // Note: Template folders have been standardized to [id]-template
 
     // --- Form Adaptation ---
     async function adaptForm() {
@@ -305,8 +297,8 @@
       }
 
       const isZeroTouch = autoDeliverTemplates.includes(tId);
-      const folder = TEMPLATE_PATHS[tId] || tId;
-      const giftLink = window.location.origin + '/templates/' + encodeURIComponent(folder) + '/index.html?id=' + ORDER_ID;
+      const folder = (tId === 'sorry-template') ? tId : tId + '-template';
+      const giftLink = window.location.origin + '/templates/' + folder + '/index.html?id=' + ORDER_ID;
       
       const updateData = {
         recipientName: recip,

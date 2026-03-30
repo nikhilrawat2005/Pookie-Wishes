@@ -40,12 +40,12 @@ let C = {
 /* ═══════════════════════════════
    LOAD CONFIG — DYNAMIC OR LOCAL
 ═══════════════════════════════ */
-async function loadConfig() {
+async function init() {
   try {
     if (window.getPookieData) {
-      const pData = await window.getPookieData('harry-potter');
-      if (pData) {
-        applyDataToConfig(pData);
+      userData = await window.getPookieData('harry-potter');
+      if (userData) {
+        applyDataToConfig(userData);
         boot();
         return;
       }
@@ -82,7 +82,7 @@ function applyDataToConfig(d) {
   if (d.letter) C.letter = { ...C.letter, ...d.letter };
 }
 
-loadConfig();
+document.addEventListener('DOMContentLoaded', init);
 
 /* ═══════════════════════════════
    BOOT — apply name & build sections

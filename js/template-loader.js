@@ -55,7 +55,7 @@ window.getPookieData = async function(templateId) {
         const photos = order.photos || [];
         const message = order.wishMessage || "Wishing you the best!";
 
-        if (template === 'sorry-template') {
+        if (template === 'sorry') {
             return {
                 recipientName: recipient,
                 senderName: sender,
@@ -129,7 +129,7 @@ window.getPookieData = async function(templateId) {
             };
         }
 
-        if (template === 'celestial-space') {
+        if (template === 'celestial') {
             return {
                 recipientName: recipient.toUpperCase(),
                 senderName: sender,

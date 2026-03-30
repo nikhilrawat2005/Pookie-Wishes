@@ -1189,17 +1189,19 @@
       { cover: 'assets/memory3.jpg', src: 'user_uploads/photo3.jpg' },
     ];
 
-    async function loadData() {
+    let userData = null;
+
+    async function init() {
       if (window.getPookieData) {
         try {
-          const pData = await window.getPookieData('love-trap');
-          if (pData) {
-            if (pData.questions) CFG.questions = pData.questions;
-            if (pData.letter_lines) CFG.letter = pData.letter_lines;
-            if (pData.no_button_messages) CFG.noMsgs = pData.no_button_messages;
-            if (pData.photos) {
-               CFG.photos = pData.photos;
-               PHOTO_DATA = pData.photos.map((url, i) => ({
+          userData = await window.getPookieData('love-trap');
+          if (userData) {
+            if (userData.questions) CFG.questions = userData.questions;
+            if (userData.letter_lines) CFG.letter = userData.letter_lines;
+            if (userData.no_button_messages) CFG.noMsgs = userData.no_button_messages;
+            if (userData.photos) {
+               CFG.photos = userData.photos;
+               PHOTO_DATA = userData.photos.map((url, i) => ({
                  cover: `assets/memory${i+1}.jpg`,
                  src: url
                }));
@@ -1211,8 +1213,7 @@
       }
     }
 
-    // Call loadData immediately
-    loadData();
+    document.addEventListener('DOMContentLoaded', init);
 
     /* ── ASSETS (paths — no base64!) ────────────────────── */
     const A = {
