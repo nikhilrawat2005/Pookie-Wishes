@@ -46,6 +46,10 @@
 
     <!-- Personalisation Form -->
     <div id="post-payment-form">
+      <div class="f-group" style="margin-bottom:12px;">
+        <label class="f-label">Template Selected</label>
+        <input class="f-inp" id="f-template-name" type="text" readonly disabled style="background:var(--bg2); cursor:not-allowed; border-color:var(--bdr); color:var(--text); font-weight:600;">
+      </div>
       <div class="f-group">
         <label class="f-label">Recipient's Name *</label>
         <input class="f-inp" id="f-recip" type="text" placeholder="Who is this surprise for?">
@@ -213,8 +217,12 @@
         const dReq = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
         if (dReq.exists) {
           const order = dReq.data();
-          const tId = order.templateId || 'sorry';
+          const tId = order.templateId || (order.orders && order.orders[0] ? order.orders[0].templateId : null) || (order.items && order.items[0] ? order.items[0].id : null) || 'sorry';
           currentTemplateId = tId;
+          
+          let tName = order.templateName || (order.orders && order.orders[0] ? order.orders[0].templateName : null) || tId;
+          const tNameInput = document.getElementById('f-template-name');
+          if (tNameInput) tNameInput.value = tName;
           
           if (tId === 'among-us') {
             const msgGrp = document.getElementById('f-msg')?.closest('.f-group');
@@ -292,7 +300,7 @@
         const dSnap = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
         if (dSnap.exists) {
           const data = dSnap.data();
-          tId = data.templateId || (data.items && data.items[0] ? data.items[0].id : 'sorry');
+          tId = data.templateId || (data.orders && data.orders[0] ? data.orders[0].templateId : null) || (data.items && data.items[0] ? data.items[0].id : null) || 'sorry';
         }
       }
 
@@ -301,6 +309,7 @@
       const giftLink = window.location.origin + '/templates/' + folder + '/index.html?id=' + ORDER_ID;
       
       const updateData = {
+        templateNameDetailed: document.getElementById('f-template-name')?.value || tId,
         recipientName: recip,
         wishMessage: msg,
         eventDate: date || null,

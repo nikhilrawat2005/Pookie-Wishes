@@ -297,6 +297,7 @@ async function checkoutSubmitOrder() {
       try {
         await firebase.firestore().collection('orders').doc(sequentialId).set({
           orderId: sequentialId, buyerName: data.name, buyerEmail: data.email,
+          templateId: data.orders[0]?.templateId || 'sorry',
           orders: data.orders, totalAmount: 0,
           status: 'paid', deliveryStatus: 'pending',
           gateway: 'none_free',
@@ -374,6 +375,7 @@ async function checkoutSubmitOrder() {
       await firebase.firestore().collection('orders').doc(sequentialId).set({
         orderId: sequentialId,
         razorpayOrderId: razorOrderId,
+        templateId: data.orders[0]?.templateId || 'sorry',
         buyerName: data.name, buyerEmail: data.email,
         orders: data.orders, totalAmount: total,
         status: 'pending_payment', deliveryStatus: 'pending',
