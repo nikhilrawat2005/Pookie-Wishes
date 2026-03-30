@@ -73,9 +73,9 @@
       </div>
 
       <div class="f-group">
-        <label class="f-label">Photos (Max 3) <span class="opt">(Optional)</span></label>
+        <label class="f-label">Photos (Max 3) <span class="opt" id="f-photos-opt">(Required for this Template)</span></label>
         <div class="img-note">
-          If you are purchasing a Birthday Template, you can provide photos. If you don't provide photos, we will use cute stickers instead! ✨
+          Please upload 1-3 photos to make your surprise magical! ✨ (We'll use cute stickers if you skip, but photos are highly recommended.)
         </div>
         <label class="upload-zone">
           <div style="font-size:1.5rem;margin-bottom:5px;">📸</div>
@@ -266,6 +266,13 @@
 
     if (!recip || !msg) {
       toast("Recipient Name and Wish Message are required!", "err");
+      return;
+    }
+
+    // Require photos unless the template doesn't need them
+    const tIdForVal = currentTemplateId;
+    if (tIdForVal !== 'among-us' && selectedFiles.length === 0) {
+      toast("Please upload at least 1 photo for this template!", "err");
       return;
     }
 

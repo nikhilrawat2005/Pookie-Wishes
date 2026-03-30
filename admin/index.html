@@ -247,6 +247,7 @@
 lucide.createIcons();
 const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
 let SITE=null, db=null, orders=[], curFilter='all', curOrderId=null;
+let lastDoc = null, hasMore = true;
 
 window.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -278,17 +279,38 @@ async function adminLogin() {
 }
 async function adminLogout() { await firebase.auth().signOut(); }
 
-async function loadOrders() {
-  document.getElementById('tbl-body').innerHTML = '<div class="empty">Loading...</div>';
+async function loadOrders(isLoadMore = false) {
+  if (!isLoadMore) {
+    document.getElementById('tbl-body').innerHTML = '<div class="empty">Loading...</div>';
+    orders = [];
+    lastDoc = null;
+    hasMore = true;
+  }
+  
   try {
-    const snap = await db.collection('orders').get();
-    orders = snap.docs.map(d => ({ _docId: d.id, ...d.data() }));
-    orders.sort((a,b) => (b.createdAt?.toDate?.() || 0) - (a.createdAt?.toDate?.() || 0));
+    let query = db.collection('orders').orderBy('createdAt', 'desc').limit(50);
+    if (isLoadMore && lastDoc) {
+      query = query.startAfter(lastDoc);
+    }
+    
+    const snap = await query.get();
+    
+    if (snap.empty) {
+      hasMore = false;
+    } else {
+      lastDoc = snap.docs[snap.docs.length - 1];
+      const newOrders = snap.docs.map(d => ({ _docId: d.id, ...d.data() }));
+      orders = [...orders, ...newOrders];
+      if (snap.docs.length < 50) hasMore = false;
+    }
     
     updateStats();
     renderTable();
   } catch(e) {
-    document.getElementById('tbl-body').innerHTML = '<div class="empty">Permission Denied or Error. Check Rules.</div>';
+    if (orders.length === 0) {
+      document.getElementById('tbl-body').innerHTML = '<div class="empty" style="font-size:0.8rem;color:#fca5a5;">Error fetching data. If index error, check browser console.</div>';
+    }
+    console.error("Fetch error:", e);
   }
 }
 
@@ -318,7 +340,7 @@ function renderTable() {
   
   const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us'];
 
-  document.getElementById('tbl-body').innerHTML = list.map(o => {
+  let html = list.map(o => {
     const oid = o.orderId || o._docId;
     const isZT = ztTemplates.includes(o.templateId || (o.items?.[0]?.id));
     let sLabel = o.status, sCls = 'badge-pending';
@@ -337,6 +359,12 @@ function renderTable() {
       <div class="tc tc-sub">${dt}</div>
     </div>`;
   }).join('');
+  
+  if (hasMore && curFilter === 'all') {
+    html += `<div style="text-align:center; padding: 20px;"><button class="btn btn-soft" onclick="loadOrders(true)">Load More Orders</button></div>`;
+  }
+  
+  document.getElementById('tbl-body').innerHTML = html;
   lucide.createIcons();
 }
 
