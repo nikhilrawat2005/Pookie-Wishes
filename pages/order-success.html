@@ -69,13 +69,13 @@
       </div>
 
       <div class="f-group">
-        <label class="f-label">Photos (Max 6) <span class="opt">(Optional)</span></label>
+        <label class="f-label">Photos (Max 3) <span class="opt">(Optional)</span></label>
         <div class="img-note">
           If you are purchasing a Birthday Template, you can provide photos. If you don't provide photos, we will use cute stickers instead! ✨
         </div>
         <label class="upload-zone">
           <div style="font-size:1.5rem;margin-bottom:5px;">📸</div>
-          <div style="font-size:0.85rem;color:var(--text);">Click to select up to 6 photos</div>
+          <div style="font-size:0.85rem;color:var(--text);">Click to select up to 3 photos</div>
           <input type="file" id="f-photos" multiple accept="image/*" onchange="updateFileList(this)">
         </label>
         <div class="file-list" id="file-list-display">No files selected</div>
@@ -173,8 +173,8 @@
   }
 
   function updateFileList(input) {
-    if (input.files.length > 6) {
-      toast("You can only select up to 6 photos", "err");
+    if (input.files.length > 3) {
+      toast("You can only select up to 3 photos", "err");
       input.value = ""; // reset
       selectedFiles = [];
       document.getElementById('file-list-display').textContent = "No files selected";
@@ -202,30 +202,7 @@
     return data.secure_url;
   }
 
-  async function submitPersonalisation() {
-    const recip = document.getElementById('f-recip').value.trim();
-    const msg = document.getElementById('f-msg').value.trim();
-    const date = document.getElementById('f-date').value;
-    const extra = document.getElementById('f-extra').value.trim();
-
-    if (!recip || !msg) {
-      toast("Recipient Name and Wish Message are required!", "err");
-      return;
-    }
-
-    const btn = document.getElementById('submit-details-btn');
-    if (btn.dataset.locked) return;
-    btn.dataset.locked = "true";
-    btn.innerHTML = `<span class="loading-spinner"></span> Processing...`;
-    btn.disabled = true;
-
-    try {
-      toast("Uploading photos...", "inf");
-      let photoLinks = [];
-      for (let i = 0; i < selectedFiles.length; i++) {
-        const url = await uploadToCloudinary(selectedFiles[i], i);
-        photoLinks.push(url);
-      }
+    let currentTemplateId = 'sorry-template';
 
     // --- Form Adaptation ---
     async function adaptForm() {
@@ -235,6 +212,7 @@
         if (dReq.exists) {
           const order = dReq.data();
           const tId = order.templateId || 'sorry-template';
+          currentTemplateId = tId;
           
           if (tId === 'among-us') {
             const msgGrp = document.getElementById('f-msg')?.closest('.f-group');
@@ -262,10 +240,35 @@
     // Call adaptForm when ready
     window.addEventListener('load', () => { setTimeout(adaptForm, 1000); });
 
+  async function submitPersonalisation() {
+    const recip = document.getElementById('f-recip').value.trim();
+    const msg = document.getElementById('f-msg').value.trim();
+    const date = document.getElementById('f-date').value;
+    const extra = document.getElementById('f-extra').value.trim();
+
+    if (!recip || !msg) {
+      toast("Recipient Name and Wish Message are required!", "err");
+      return;
+    }
+
+    const btn = document.getElementById('submit-details-btn');
+    if (btn.dataset.locked) return;
+    btn.dataset.locked = "true";
+    btn.innerHTML = `<span class="loading-spinner"></span> Processing...`;
+    btn.disabled = true;
+
+    try {
+      toast("Uploading photos...", "inf");
+      let photoLinks = [];
+      for (let i = 0; i < selectedFiles.length; i++) {
+        const url = await uploadToCloudinary(selectedFiles[i], i);
+        photoLinks.push(url);
+      }
+
       // Templates that fully support zero-touch Level 3 deployment locally
       const autoDeliverTemplates = ['sorry-template'];
-      const isZeroTouch = autoDeliverTemplates.includes(tId);
-      const giftLink = window.location.origin + '/templates/' + tId + '/index.html?id=' + ORDER_ID;
+      const isZeroTouch = autoDeliverTemplates.includes(currentTemplateId);
+      const giftLink = window.location.origin + '/templates/' + currentTemplateId + '/index.html?id=' + ORDER_ID;
       
       const updateData = {
         recipientName: recip,

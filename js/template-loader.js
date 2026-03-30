@@ -138,8 +138,8 @@ window.getPookieData = async function(templateId) {
                     photos[0] || "./assets/405498876_d151cba1-8cd1-4512-9b0e-8ee86c0394b2-removebg-preview.png",
                     photos[1] || "./assets/406447035_17ac2c68-efd2-44d1-a0f2-72f5e3367264-removebg-preview.png",
                     photos[2] || "./assets/407747963_d3743ace-5292-4567-93ca-1b01a01b16e2-removebg-preview.png",
-                    photos[3] || "./assets/images__4_-removebg-preview.png",
-                    photos[4] || "./assets/images__5_-removebg-preview.png"
+                    photos[0] || "./assets/images__4_-removebg-preview.png",
+                    photos[1] || "./assets/images__5_-removebg-preview.png"
                 ]
             };
         }
