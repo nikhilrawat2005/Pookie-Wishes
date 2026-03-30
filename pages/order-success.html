@@ -299,7 +299,8 @@
       if (window.fbReady && ORDER_ID !== '—') {
         const dSnap = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
         if (dSnap.exists) {
-          tId = dSnap.data().templateId || 'sorry-template';
+          const data = dSnap.data();
+          tId = data.templateId || (data.items && data.items[0] ? data.items[0].id : 'sorry-template');
         }
       }
 

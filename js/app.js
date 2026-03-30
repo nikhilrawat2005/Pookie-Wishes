@@ -805,6 +805,7 @@ async function saveOrder(orderData) {
         name: orderData.name,
         email: orderData.email
       },
+      templateId: orderData.items[0]?.id || 'sorry-template', // Store at root for easy fetch ✨
       items: orderData.items,
       total: orderData.total,
       screenshot: orderData.screenshot,
@@ -861,11 +862,16 @@ const submitOrder = safeAsync(async () => {
     screenshot: screenshotURL
   };
 
-  await saveOrder(orderData);
+  const orderId = await saveOrder(orderData);
 
+  // Clear local cart after successful order
+  localStorage.removeItem('pookie_cart');
+  cart = [];
+  updateCartBadge();
 
-  // Redirect immediately – no waiting
-  window.location.href = ROOT + "pages/order-success.html";
+  // Redirect with parameters so success page can adapt! ✨
+  const encodedEmail = encodeURIComponent(email);
+  window.location.href = `${ROOT}pages/order-success.html?id=${orderId}&email=${encodedEmail}`;
 });
 
 // --- Initialize checkout page (adds preview & submit listener)---
