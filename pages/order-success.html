@@ -238,7 +238,15 @@
     }
 
     // Call adaptForm when ready
-    window.addEventListener('load', () => { setTimeout(adaptForm, 1000); });
+    window.addEventListener('load', () => { 
+      const t = setInterval(() => {
+        if (window.fbReady && ORDER_ID !== '—') {
+          clearInterval(t);
+          adaptForm();
+        }
+      }, 100);
+      setTimeout(() => clearInterval(t), 10000); // 10s max
+    });
 
   async function submitPersonalisation() {
     const recip = document.getElementById('f-recip').value.trim();
@@ -266,9 +274,27 @@
       }
 
       // Templates that fully support zero-touch Level 3 deployment locally
-      const autoDeliverTemplates = ['sorry-template'];
-      const isZeroTouch = autoDeliverTemplates.includes(currentTemplateId);
-      const giftLink = window.location.origin + '/templates/' + currentTemplateId + '/index.html?id=' + ORDER_ID;
+      const autoDeliverTemplates = [
+        'sorry-template', 
+        'hello-kitty', 
+        'harry-potter', 
+        'love-trap', 
+        'celestial-space', 
+        'among-us',
+        'test-pookie'
+      ];
+      
+      // Re-fetch templateId to ensure it's not a stale default
+      let tId = currentTemplateId;
+      if (window.fbReady && ORDER_ID !== '—') {
+        const dSnap = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
+        if (dSnap.exists) {
+          tId = dSnap.data().templateId || 'sorry-template';
+        }
+      }
+
+      const isZeroTouch = autoDeliverTemplates.includes(tId);
+      const giftLink = window.location.origin + '/templates/' + tId + '/index.html?id=' + ORDER_ID;
       
       const updateData = {
         recipientName: recip,
