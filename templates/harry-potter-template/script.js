@@ -25,9 +25,9 @@ let C = {
     { bang: "FOREVER!",   img: "images/snitch.png",      caption: "The best adventures are still ahead. The story never ends, and the magic only grows. 🪄" }
   ],
   flipCards: [
-    { frontSymbol: "🔮", caption: "The Day We Met ✨",      photo: "user_content/photos/memory1.jpg" },
-    { frontSymbol: "⚡",  caption: "Our Best Adventure 🌟", photo: "user_content/photos/memory2.jpg" },
-    { frontSymbol: "🦉", caption: "Always & Forever 💛",   photo: "user_content/photos/memory3.jpg" }
+    { frontSymbol: "🔮", caption: "The Day We Met ✨",      photo: "images/hedwig.png" },
+    { frontSymbol: "⚡",  caption: "Our Best Adventure 🌟", photo: "images/snitch.png" },
+    { frontSymbol: "🦉", caption: "Always & Forever 💛",   photo: "images/fawkes.png" }
   ],
   scratchWish: "May this year bring you\nadventures that thrill you,\nlove that holds you,\nlaughter that heals you,\nand every dream you've dared to dream.\n\nYou deserve every bit of it.\nHappy Birthday, you magical soul. ❤️✨",
   letter: {

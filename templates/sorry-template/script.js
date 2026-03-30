@@ -172,6 +172,9 @@ function renderScene(index) {
 }
 
 function renderWelcome() {
+    const welcomePhoto = (userData.photos && userData.photos[0]) 
+        ? userData.photos[0] 
+        : './sorry image/738ffeb8-05d8-45d7-831e-4a849554b810.webp';
     app.innerHTML = `
         <div class="space-y-8 py-6 scale-[var(--card-scale)]">
             <div class="relative inline-block">
@@ -188,7 +191,7 @@ function renderWelcome() {
                 ${userData.welcomeSubText}
             </p>
             <div class="relative mt-4">
-                <img src="./sorry image/gaOmpX3C9ZA5YyhXk0v6OGr88gx8FMbYe9n2cDwrL25_LPAGdibjP5YKGhOoVM_cLq7VFVThqCPzw7SsIn6s2ntI3959A1owHPa33jIdF3g.jpg" class="w-56 h-56 object-cover mx-auto rounded-3xl shadow-2xl animate-float border-8 border-white">
+                <img src="${welcomePhoto}" class="w-56 h-56 object-cover mx-auto rounded-3xl shadow-2xl animate-float border-8 border-white" onerror="this.src='./sorry image/738ffeb8-05d8-45d7-831e-4a849554b810.webp'">
                 <div class="absolute -top-4 -right-4 bg-secondary text-white p-3 rounded-full shadow-lg rotate-12">
                     <i data-lucide="heart" class="w-6 h-6 fill-current"></i>
                 </div>

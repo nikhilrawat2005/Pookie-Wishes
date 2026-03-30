@@ -65,6 +65,7 @@ window.getPookieData = async function(templateId) {
                 letterTitle: "A LETTER FOR YOU ✦",
                 letterBody: message,
                 specialCardTitle: "Official Pookie Voucher",
+                photos: photos,
                 songs: [
                     {
                         title: "Dagabaaz Re",
@@ -86,9 +87,9 @@ window.getPookieData = async function(templateId) {
                 finalLetterBody: "May this new year bring you everything your heart desires.",
                 finalLetterPink: `Happy Birthday, my love. You deserve the world and so much more. 🎂✨`,
                 wishes: [
-                    { message: "Happy Birthday to you! 🎊💕", sticker: "assets/hello-kitty-i-love-you.gif", memory: photos[0] || "assets/memory1.jpg" },
-                    { message: "You're perfect just the way you are! ✨🌸", sticker: "assets/eyes.gif", memory: photos[1] || "assets/memory2.jpg" },
-                    { message: "Endless joy and love! 💝🌟", sticker: "assets/giphy.gif", memory: photos[2] || "assets/memory3.jpg" }
+                    { message: "Happy Birthday to you! 🎊💕", sticker: "assets/hello-kitty-i-love-you.gif", memory: photos[0] || "assets/kitty.png" },
+                    { message: "You're perfect just the way you are! ✨🌸", sticker: "assets/eyes.gif", memory: photos[1] || "assets/kitty_love_card.png" },
+                    { message: "Endless joy and love! 💝🌟", sticker: "assets/giphy.gif", memory: photos[2] || "assets/cat_couple.png" }
                 ]
             };
         }
@@ -103,9 +104,9 @@ window.getPookieData = async function(templateId) {
                     { icon: "📚", from: "From Hermione Granger", text: "In every timeline, there's one person who makes the journey worth it. That's you. ✨" }
                 ],
                 flipCards: [
-                    { frontSymbol: "🔮", caption: "The Day We Met ✨", photo: photos[0] || "user_content/photos/memory1.jpg" },
-                    { frontSymbol: "⚡", caption: "Our Best Adventure 🌟", photo: photos[1] || "user_content/photos/memory2.jpg" },
-                    { frontSymbol: "🦉", caption: "Always & Forever 💛", photo: photos[2] || "user_content/photos/memory3.jpg" }
+                    { frontSymbol: "🔮", caption: "The Day We Met ✨", photo: photos[0] || "assets/hedwig-cute.gif" },
+                    { frontSymbol: "⚡", caption: "Our Best Adventure 🌟", photo: photos[1] || "assets/sorting-hat.png" },
+                    { frontSymbol: "🦉", caption: "Always & Forever 💛", photo: photos[2] || "assets/snitch.gif" }
                 ],
                 scratchWish: `May this year bring you adventures that thrill you, love that holds you, and every dream you've dared to dream.\n\nHappy Birthday, ${recipient}! ❤️✨`,
                 letter: {
@@ -125,7 +126,7 @@ window.getPookieData = async function(templateId) {
                 questions: ["Tum mujhe ignore toh nahi karte na? 🥺", "Sach sach — mujhe dekh ke smile aata hai na?", "Agar main ghayab ho jaau toh miss karoge? 💭"],
                 letter_lines: ["Hey 💜", "", message, "", `Will you be mine? 💜`, "", `— ${sender}`],
                 no_button_messages: ["Nahi?? 😤", "Pakdo isko!! 😡", "Galat answer bestie 💀", "Button bhaag raha hai 😅"],
-                photos: [photos[0] || "user_uploads/photo1.jpg", photos[1] || "user_uploads/photo2.jpg", photos[2] || "user_uploads/photo3.jpg"]
+                photos: [photos[0] || "assets/love-sticker.webp", photos[1] || "assets/kittyheart.webp", photos[2] || "assets/hello-kitty-love.gif"]
             };
         }
 
@@ -135,11 +136,11 @@ window.getPookieData = async function(templateId) {
                 senderName: sender,
                 wishMessage: message,
                 memoryPhotos: [
-                    photos[0] || "./assets/405498876_d151cba1-8cd1-4512-9b0e-8ee86c0394b2-removebg-preview.png",
-                    photos[1] || "./assets/406447035_17ac2c68-efd2-44d1-a0f2-72f5e3367264-removebg-preview.png",
-                    photos[2] || "./assets/407747963_d3743ace-5292-4567-93ca-1b01a01b16e2-removebg-preview.png",
-                    photos[0] || "./assets/images__4_-removebg-preview.png",
-                    photos[1] || "./assets/images__5_-removebg-preview.png"
+                    photos[0] || "./assets/star-placeholder.png",
+                    photos[1] || "./assets/star-placeholder.png",
+                    photos[2] || "./assets/star-placeholder.png",
+                    photos[0] || "./assets/star-placeholder.png",
+                    photos[1] || "./assets/star-placeholder.png"
                 ]
             };
         }
