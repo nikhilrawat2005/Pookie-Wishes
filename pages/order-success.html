@@ -202,7 +202,7 @@
     return data.secure_url;
   }
 
-    let currentTemplateId = 'sorry-template';
+    let currentTemplateId = 'sorry';
     
     // Note: Template folders have been standardized to [id]-template
 
@@ -213,7 +213,7 @@
         const dReq = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
         if (dReq.exists) {
           const order = dReq.data();
-          const tId = order.templateId || 'sorry-template';
+          const tId = order.templateId || 'sorry';
           currentTemplateId = tId;
           
           if (tId === 'among-us') {
@@ -229,7 +229,7 @@
             // Fill dummy content for hidden fields to pass validation
             const msgField = document.getElementById('f-msg');
             if (msgField && !msgField.value) msgField.value = "N/A (Among Us Mode)";
-          } else if (['hello-kitty', 'harry-potter', 'love-trap', 'celestial-space'].includes(tId)) {
+          } else if (['hello-kitty', 'harry-potter', 'love-trap', 'celestial'].includes(tId)) {
             const sub = document.querySelector('.sub');
             if (sub) sub.textContent = "Make it magical! ✨ Upload your special photos and write a heartfelt message.";
           }
@@ -277,11 +277,11 @@
 
       // Templates that fully support zero-touch Level 3 deployment locally
       const autoDeliverTemplates = [
-        'sorry-template', 
+        'sorry', 
         'hello-kitty', 
         'harry-potter', 
         'love-trap', 
-        'celestial-space', 
+        'celestial', 
         'among-us',
         'test-pookie'
       ];
@@ -292,12 +292,12 @@
         const dSnap = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
         if (dSnap.exists) {
           const data = dSnap.data();
-          tId = data.templateId || (data.items && data.items[0] ? data.items[0].id : 'sorry-template');
+          tId = data.templateId || (data.items && data.items[0] ? data.items[0].id : 'sorry');
         }
       }
 
       const isZeroTouch = autoDeliverTemplates.includes(tId);
-      const folder = (tId === 'sorry-template') ? tId : tId + '-template';
+      const folder = tId + '-template';
       const giftLink = window.location.origin + '/templates/' + folder + '/index.html?id=' + ORDER_ID;
       
       const updateData = {

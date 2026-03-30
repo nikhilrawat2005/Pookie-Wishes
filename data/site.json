@@ -142,7 +142,7 @@
       }
     },
     {
-      "id": "celestial-space",
+      "id": "celestial",
       "name": "Celestial Universe",
       "tagline": "Interstellar Birthday Journey ✨",
       "emoji": "🌌",
@@ -210,7 +210,7 @@
       }
     },
     {
-      "id": "sorry-template",
+      "id": "sorry",
       "name": "I'm Sorry",
       "tagline": "Please forgive me? 🥺",
       "badge": "New ✨",

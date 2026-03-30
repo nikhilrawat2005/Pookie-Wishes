@@ -805,7 +805,7 @@ async function saveOrder(orderData) {
         name: orderData.name,
         email: orderData.email
       },
-      templateId: orderData.items[0]?.id || 'sorry-template', // Store at root for easy fetch ✨
+      templateId: orderData.items[0]?.id || 'sorry', // Store at root for easy fetch ✨
       items: orderData.items,
       total: orderData.total,
       screenshot: orderData.screenshot,

@@ -316,21 +316,21 @@ function renderTable() {
     return;
   }
   
-  const ztTemplates = ['sorry-template'];
+  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us'];
 
   document.getElementById('tbl-body').innerHTML = list.map(o => {
     const oid = o.orderId || o._docId;
-    const isZT = ztTemplates.includes(o.templateId || (o.orders?.[0]?.templateId));
+    const isZT = ztTemplates.includes(o.templateId || (o.items?.[0]?.id));
     let sLabel = o.status, sCls = 'badge-pending';
     if(o.deliveryStatus==='delivered') { sLabel='Delivered'; sCls='badge-delivered'; }
     else if(o.status==='paid') { sLabel='Paid / Info Req'; sCls='badge-verified'; }
     
     const dt = o.createdAt?.toDate?.().toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) || '—';
-    const tpl = o.templateId || (o.orders?.[0]?.templateName) || 'Unknown';
+    const tpl = o.templateId || (o.items?.[0]?.name) || 'Unknown';
 
     return `<div class="tbl-row" onclick="openDrawer('${oid}')">
       <div class="tc mono">${oid}</div>
-      <div class="tc">${o.buyerName||'—'}<div class="tc-sub">${o.buyerEmail||''}</div></div>
+      <div class="tc">${o.user?.name || o.buyerName || '—'}<div class="tc-sub">${o.user?.email || o.buyerEmail || ''}</div></div>
       <div class="tc">${tpl} ${isZT ? '<span class="badge badge-zt"><i data-lucide="zap" style="width:10px;"></i> Zero-Touch</span>' : ''}</div>
       <div class="tc mono" style="font-weight:600;">₹${o.totalAmount||0}</div>
       <div><span class="badge ${sCls}">${sLabel}</span></div>
@@ -350,15 +350,17 @@ function openDrawer(oid) {
   const o = orders.find(x => (x.orderId || x._docId) === oid);
   if(!o) return;
   
-  const ztTemplates = ['sorry-template'];
-  const isZT = ztTemplates.includes(o.templateId || (o.orders?.[0]?.templateId));
+  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us'];
+  const tId = o.templateId || (o.items?.[0]?.id);
+  const isZT = ztTemplates.includes(tId);
   
   document.getElementById('drw-ov').classList.add('on');
   document.getElementById('drw').classList.add('on');
   
   let deliveryBlock = '';
   if (isZT) {
-    const linkObj = o.deliveryLink || (window.location.origin + '/templates/' + (o.templateId || o.orders?.[0]?.templateId) + '/index.html?id=' + oid);
+    const folder = tId + '-template'; 
+    const linkObj = o.deliveryLink || (window.location.origin + '/templates/' + folder + '/index.html?id=' + oid);
     deliveryBlock = `
       <div class="zt-box">
          <i data-lucide="zap" class="zt-ico"></i>
@@ -403,9 +405,9 @@ function openDrawer(oid) {
     
     <div class="sec-title"><i data-lucide="user"></i> Core Info</div>
     <div class="inf-box">
-      <div class="inf-row"><div class="inf-k">Order ID</div><div class="inf-v mono">${oid} <button class="copy-btn" onclick="copy('${oid}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
-      <div class="inf-row"><div class="inf-k">Customer</div><div class="inf-v">${o.buyerEmail||'—'} <button class="copy-btn" onclick="copy('${o.buyerEmail}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
-      <div class="inf-row"><div class="inf-k">Revenue</div><div class="inf-v" style="color:var(--mint);">₹${o.totalAmount||0}</div></div>
+      <div class="tc-sub">${o.user?.name || o.buyerName || '—'} <button class="copy-btn" onclick="copy('${o.user?.name || o.buyerName || '—'}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+      <div class="inf-row"><div class="inf-k">Customer Email</div><div class="inf-v">${o.user?.email || o.buyerEmail || '—'} <button class="copy-btn" onclick="copy('${o.user?.email || o.buyerEmail || '—'}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+      <div class="inf-row"><div class="inf-k">Total Revenue</div><div class="inf-v" style="color:var(--mint);">₹${o.totalAmount || o.total || 0}</div></div>
     </div>
     
     <div class="sec-title"><i data-lucide="message-square"></i> Personalisation</div>
@@ -435,8 +437,8 @@ async function resendZeroTouch(oid, link) {
   try {
     const ejs = SITE.emailjs.account1;
     await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
-      to_email: o.buyerEmail,
-      recipient_name: o.buyerName || 'Awesome Customer',
+      to_email: o.user?.email || o.buyerEmail,
+      recipient_name: o.user?.name || o.buyerName || 'Awesome Customer',
       gift_link: link,
       order_id: oid
     });
@@ -453,8 +455,8 @@ async function sendManual(oid) {
   try {
     const ejs = SITE.emailjs.account1;
     await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
-      to_email: o.buyerEmail,
-      recipient_name: o.buyerName || 'Awesome Customer',
+      to_email: o.user?.email || o.buyerEmail,
+      recipient_name: o.user?.name || o.buyerName || 'Awesome Customer',
       gift_link: lnk,
       order_id: oid
     });
