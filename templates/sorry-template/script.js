@@ -74,12 +74,9 @@ function setupParticles() {
 // Custom Cursor logic
 function setupCursor() {
     window.addEventListener('mousemove', (e) => {
-        gsap.to(cursor, {
-            x: e.clientX,
-            y: e.clientY,
-            duration: 0.2,
-            ease: "power2.out"
-        });
+        // Use simpler animation for cursor to reduce JS overhead
+        cursor.style.left = e.clientX + 'px';
+        cursor.style.top = e.clientY + 'px';
     });
 }
 

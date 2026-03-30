@@ -1,0 +1,991 @@
+/* ══════════════════════════════════════════════════════
+   HARRY POTTER MAGICAL BIRTHDAY — style.css
+   FULLY RESPONSIVE — All screen types
+   ══════════════════════════════════════════════════════ */
+
+@import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700;900&family=Cinzel:wght@400;600;700&family=IM+Fell+English:ital@0;1&display=swap');
+
+/* ─────────────────────────────────
+   DESIGN TOKENS
+───────────────────────────────── */
+:root {
+  --gold:  #f4c842;
+  --gl:    #ffe57a;
+  --gd:    #b8922a;
+  --mid:   #060918;
+  --db:    #0a0e2e;
+  --pur:   #4a1a7a;
+  --pl:    #7b3fa0;
+  --parch: #f5e6c8;
+  --txt:   #e8dfc0;
+  --gg:    0 0 22px rgba(244,200,66,.9), 0 0 50px rgba(244,200,66,.4);
+  --gp:    0 0 22px rgba(123,63,160,.9), 0 0 50px rgba(74,26,122,.4);
+  --gr:    0 0 22px rgba(174,0,1,.8),    0 0 50px rgba(174,0,1,.3);
+  --transition: all .3s ease;
+}
+
+/* ─────────────────────────────────
+   BASE RESET
+───────────────────────────────── */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+body {
+  background: var(--mid);
+  color: var(--txt);
+  font-family: 'IM Fell English', serif;
+  overflow-x: hidden;
+  cursor: none;
+  min-height: 100vh;
+  min-height: 100dvh;
+}
+
+/* ─────────────────────────────────
+   CUSTOM CURSOR (desktop only)
+───────────────────────────────── */
+#cur {
+  position: fixed; width: 22px; height: 22px;
+  border: 2px solid var(--gold); border-radius: 50%;
+  top: 0; left: 0; pointer-events: none; z-index: 99999;
+  mix-blend-mode: difference;
+  transition: transform .08s ease;
+}
+#cur2 {
+  position: fixed; width: 7px; height: 7px;
+  background: var(--gold); border-radius: 50%;
+  top: 0; left: 0; pointer-events: none; z-index: 99998; opacity: .65;
+}
+.wdot {
+  position: fixed; border-radius: 50%;
+  pointer-events: none; z-index: 9997;
+  animation: wdotF .85s ease forwards;
+}
+@keyframes wdotF {
+  from { opacity: .9; }
+  to   { transform: scale(0); opacity: 0; }
+}
+
+/* ─────────────────────────────────
+   ANIMATED STAR BACKGROUND
+───────────────────────────────── */
+#bgC {
+  position: fixed; inset: 0;
+  width: 100%; height: 100%;
+  z-index: 0; pointer-events: none;
+}
+
+/* ─────────────────────────────────
+   FLOATING MAGIC PARTICLES
+───────────────────────────────── */
+.ptc { position: fixed; inset: 0; pointer-events: none; z-index: 1; overflow: hidden; }
+.pt {
+  position: absolute; border-radius: 50%;
+  animation: ptUp linear infinite; opacity: 0;
+}
+@keyframes ptUp {
+  0%   { transform: translateY(100vh) rotate(0);      opacity: 0; }
+  10%  { opacity: 1; }
+  90%  { opacity: .45; }
+  100% { transform: translateY(-10vh) rotate(720deg); opacity: 0; }
+}
+
+/* ─────────────────────────────────
+   GOLDEN SNITCH — flies across screen
+───────────────────────────────── */
+.snitch-float {
+  position: fixed; pointer-events: none; z-index: 6;
+  animation: snitchFly 20s cubic-bezier(.45,.05,.55,.95) infinite;
+  filter: drop-shadow(0 0 16px rgba(244,200,66,1));
+}
+.snitch-float img { width: clamp(40px, 6vw, 65px); }
+@keyframes snitchFly {
+  0%   { top: 8%;  left: -8%;  transform: rotate(-20deg) scaleX(1); }
+  18%  { top: 62%; left: 92%;  transform: rotate(30deg)  scaleX(-1); }
+  36%  { top: 18%; left: 78%;  transform: rotate(-8deg)  scaleX(-1); }
+  54%  { top: 75%; left: 12%;  transform: rotate(35deg)  scaleX(1); }
+  72%  { top: 40%; left: 55%;  transform: rotate(-12deg) scaleX(1); }
+  90%  { top: 85%; left: 85%;  transform: rotate(20deg)  scaleX(-1); }
+  100% { top: 8%;  left: -8%;  transform: rotate(-20deg) scaleX(1); }
+}
+
+/* ─────────────────────────────────
+   CHARACTER STICKER IMAGES
+───────────────────────────────── */
+.stk {
+  position: absolute;
+  pointer-events: none;
+  z-index: 4;
+}
+.stk img {
+  width: 100%;
+  display: block;
+  filter: drop-shadow(0 8px 24px rgba(0,0,0,.55));
+}
+
+/* S1 - Intro characters */
+.stk-harry {
+  top: 5%; right: 2.5%;
+  width: clamp(60px, 7vw, 118px);
+  animation: floatA 4s ease-in-out infinite;
+}
+.stk-hermione {
+  top: 7%; left: 2.5%;
+  width: clamp(55px, 6vw, 95px);
+  animation: floatB 4.5s ease-in-out infinite;
+}
+.stk-hippogriff {
+  bottom: 13%; left: 1%;
+  width: clamp(80px, 10vw, 175px);
+  animation: floatC 5.5s ease-in-out infinite;
+  opacity: .8;
+  filter: drop-shadow(0 6px 20px rgba(244,200,66,.25));
+}
+.stk-fawkes-intro {
+  top: 8%; right: 18%;
+  width: clamp(55px, 6.5vw, 105px);
+  animation: floatA 3.8s ease-in-out infinite .8s;
+  opacity: .75;
+  filter: drop-shadow(0 0 18px rgba(255,100,0,.5));
+}
+
+/* S2 - Wish card characters */
+.stk-niffler {
+  bottom: 5%; right: 1%;
+  width: clamp(60px, 7vw, 108px);
+  animation: floatB 3.5s ease-in-out infinite;
+}
+.stk-draco {
+  bottom: 5%; left: 1%;
+  width: clamp(55px, 6.5vw, 95px);
+  animation: floatA 4s ease-in-out infinite .4s;
+}
+
+/* S3 - Story scroll */
+.stk-fawkes-s3 {
+  top: 4%; right: 1.5%;
+  width: clamp(60px, 7vw, 115px);
+  animation: floatA 4s ease-in-out infinite;
+  opacity: .82;
+  filter: drop-shadow(0 0 20px rgba(255,100,0,.4));
+}
+.stk-ron-s3 {
+  bottom: 5%; left: 1%;
+  width: clamp(55px, 6.5vw, 100px);
+  animation: floatB 4.2s ease-in-out infinite .3s;
+}
+
+/* S4 - Memory flip */
+.stk-ron-s4 {
+  bottom: 5%; left: 1%;
+  width: clamp(55px, 6.5vw, 94px);
+  animation: floatB 4s ease-in-out infinite;
+}
+.stk-hagrid-s4 {
+  bottom: 4%; right: 1%;
+  width: clamp(60px, 7vw, 108px);
+  animation: floatA 4.5s ease-in-out infinite .5s;
+}
+
+/* S5 - Word hunt */
+.stk-hagrid-s5 {
+  bottom: 5%; right: 1%;
+  width: clamp(60px, 7vw, 110px);
+  animation: floatB 4.2s ease-in-out infinite;
+}
+
+/* S7 - Scratch card */
+.stk-cloak {
+  right: -15px; bottom: 15%;
+  width: clamp(60px, 7vw, 115px);
+  animation: floatA 5s ease-in-out infinite;
+  opacity: .35;
+  filter: drop-shadow(0 0 15px rgba(244,200,66,.3));
+}
+.stk-hippogriff-s7 {
+  left: -10px; top: 18%;
+  width: clamp(70px, 8vw, 125px);
+  animation: floatC 5.5s ease-in-out infinite .8s;
+  opacity: .25;
+}
+
+/* S8 - Letter */
+.stk-fawkes-letter {
+  top: 5%; right: 2%;
+  width: clamp(60px, 7vw, 115px);
+  animation: floatA 4s ease-in-out infinite;
+  opacity: .3;
+  filter: drop-shadow(0 0 20px rgba(255,100,0,.4));
+}
+
+/* Float keyframes */
+@keyframes floatA {
+  0%,100% { transform: translateY(0) rotate(-2deg);  }
+  50%      { transform: translateY(-18px) rotate(2deg); }
+}
+@keyframes floatB {
+  0%,100% { transform: translateY(0) rotate(1.5deg);  }
+  50%      { transform: translateY(-14px) rotate(-1.5deg); }
+}
+@keyframes floatC {
+  0%,100% { transform: translateY(0) rotate(-1deg) scale(1);    }
+  50%      { transform: translateY(-12px) rotate(1deg) scale(1.02); }
+}
+
+/* ─────────────────────────────────
+   LOADING SCREEN
+───────────────────────────────── */
+#load {
+  position: fixed; inset: 0; background: var(--mid); z-index: 10000;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  transition: opacity 1.2s ease;
+  padding: 2rem;
+  text-align: center;
+}
+.lsym {
+  font-size: clamp(3rem, 8vw, 6.5rem);
+  margin-bottom: 1rem;
+  animation: lPulse 1.8s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(244,200,66,.9));
+}
+@keyframes lPulse {
+  0%,100% { transform: scale(1); }
+  50%      { transform: scale(1.12); filter: drop-shadow(0 0 55px rgba(244,200,66,1)); }
+}
+.lname {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(1.2rem, 3.5vw, 2.8rem);
+  color: var(--gold); text-shadow: var(--gg);
+  margin-bottom: .4rem;
+  animation: lFlicker 3s ease-in-out infinite;
+  letter-spacing: .06em;
+}
+@keyframes lFlicker {
+  0%,90%,100% { opacity:1; }
+  92% { opacity:.25; } 94% { opacity:1; } 96% { opacity:.5; } 98% { opacity:1; }
+}
+.lsub {
+  font-family: 'Cinzel', serif; font-size: clamp(.55rem, 1.5vw, .72rem);
+  letter-spacing: .3em; color: var(--gold); opacity: .45; margin-bottom: 1.5rem;
+}
+.lbar-w {
+  width: min(280px, 80vw); height: 3px;
+  background: rgba(244,200,66,.12); border-radius: 3px; overflow: hidden;
+}
+.lbar {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gd), var(--gold), var(--gl));
+  width: 0%; animation: lFill 3s ease forwards;
+  box-shadow: 0 0 14px var(--gold);
+}
+@keyframes lFill { to { width: 100%; } }
+
+/* ─────────────────────────────────
+   SECTIONS
+───────────────────────────────── */
+.sec {
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: none; flex-direction: column;
+  align-items: center; justify-content: center;
+  position: relative; z-index: 3;
+  padding: clamp(4rem, 8vw, 5rem) clamp(1rem, 4vw, 1.5rem) clamp(3rem, 6vw, 4rem);
+  width: 100%;
+  overflow: hidden;
+}
+.sec.on    { display: flex; }
+.sec.enter { animation: secIn .85s ease forwards; }
+@keyframes secIn {
+  from { opacity: 0; transform: translateY(22px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ─────────────────────────────────
+   SIDE NAVIGATION
+───────────────────────────────── */
+#nav {
+  position: fixed; right: 1.2rem; top: 50%;
+  transform: translateY(-50%); z-index: 1000;
+  display: flex; flex-direction: column; gap: .65rem;
+  opacity: 0; transition: opacity .5s;
+}
+#nav.show { opacity: 1; }
+.nd {
+  width: 10px; height: 10px; border-radius: 50%;
+  background: rgba(244,200,66,.2);
+  border: 1px solid rgba(244,200,66,.5);
+  cursor: pointer; transition: var(--transition); position: relative;
+}
+.nd.on {
+  background: var(--gold);
+  box-shadow: var(--gg); transform: scale(1.4);
+}
+.nd::after {
+  content: attr(data-l); position: absolute;
+  right: 1.5rem; top: 50%; transform: translateY(-50%);
+  font-family: 'Cinzel', serif; font-size: .6rem;
+  color: var(--gold); white-space: nowrap;
+  opacity: 0; transition: opacity .2s; letter-spacing: .08em;
+}
+.nd:hover::after { opacity: 1; }
+
+/* ─────────────────────────────────
+   COMMON TYPOGRAPHY
+───────────────────────────────── */
+.ttl {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(1.25rem, 3.5vw, 2.9rem);
+  color: var(--gold); text-shadow: var(--gg);
+  text-align: center; letter-spacing: .05em; margin-bottom: .35rem;
+}
+.sub {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(.88rem, 1.8vw, 1.22rem);
+  color: var(--parch); text-align: center;
+  opacity: .8; margin-bottom: clamp(1.5rem, 3vw, 2.5rem);
+  max-width: min(620px, 90vw);
+}
+.divl {
+  width: clamp(120px, 20vw, 190px); height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: .8rem auto 2rem;
+}
+.hn { color: var(--gold); text-shadow: var(--gg); font-style: normal; }
+.scroll-hint {
+  font-family: 'Cinzel', serif; font-size: .64rem;
+  color: var(--gold); opacity: .32;
+  text-align: center; margin-top: .8rem; letter-spacing: .1em;
+}
+.hint-text {
+  font-family: 'Cinzel', serif; font-size: .68rem;
+  color: var(--gold); opacity: .32;
+  text-align: center; margin-top: 1.2rem; letter-spacing: .08em;
+}
+
+/* ─────────────────────────────────
+   BUTTONS
+───────────────────────────────── */
+.btn {
+  font-family: 'Cinzel', serif; font-size: clamp(.78rem, 1.8vw, .93rem);
+  letter-spacing: .15em; color: var(--mid);
+  background: linear-gradient(135deg, var(--gd), var(--gold), var(--gl), var(--gold));
+  border: none; padding: clamp(.7rem, 2vw, .85rem) clamp(1.4rem, 3vw, 2.2rem);
+  border-radius: 4px;
+  cursor: pointer; position: relative; overflow: hidden;
+  transition: transform .2s, box-shadow .3s;
+  box-shadow: var(--gg); font-weight: 700; text-transform: uppercase;
+  white-space: nowrap;
+}
+.btn::before {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(135deg, transparent 30%, rgba(255,255,255,.4) 50%, transparent 70%);
+  transform: translateX(-100%); transition: transform .45s;
+}
+.btn:hover::before { transform: translateX(100%); }
+.btn:hover { transform: translateY(-3px) scale(1.04); box-shadow: 0 0 50px rgba(244,200,66,1); }
+.btn:active { transform: scale(.96); }
+
+.btn-o {
+  font-family: 'Cinzel', serif; font-size: clamp(.72rem, 1.6vw, .82rem);
+  letter-spacing: .14em; color: var(--gold);
+  background: transparent; border: 1px solid rgba(244,200,66,.55);
+  padding: clamp(.6rem, 1.8vw, .7rem) clamp(1.2rem, 2.5vw, 1.7rem);
+  border-radius: 4px;
+  cursor: pointer; transition: var(--transition); text-transform: uppercase;
+  white-space: nowrap;
+}
+.btn-o:hover { background: rgba(244,200,66,.1); border-color: var(--gold); box-shadow: var(--gg); }
+.skip-row {
+  display: flex; gap: .8rem; flex-wrap: wrap;
+  justify-content: center; margin-top: 1.2rem;
+}
+
+/* ═══════════════════════════════════
+   S1 · INTRO
+═══════════════════════════════════ */
+#s1 { background: radial-gradient(ellipse at 50% 32%, #0d1a4a 0%, var(--mid) 68%); }
+
+.castle {
+  position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
+  width: min(950px, 100%); height: clamp(25vh, 35vh, 42vh);
+  pointer-events: none;
+}
+.wdrop {
+  position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+  width: 2px;
+  background: linear-gradient(180deg, rgba(255,255,255,.9), rgba(244,200,66,.3), transparent);
+  animation: wdropA 1s ease .3s both; z-index: 5;
+}
+@keyframes wdropA { from { height: 0; } to { height: 130px; } }
+@keyframes fuA    { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+.ey {
+  font-family: 'Cinzel', serif; font-size: clamp(.62rem, 1.5vw, .75rem);
+  letter-spacing: .3em; color: var(--gold); text-transform: uppercase;
+  opacity: 0; animation: fuA 1s ease 1.2s forwards;
+}
+.ibolt {
+  font-size: clamp(2rem, 4.5vw, 3.5rem);
+  opacity: 0; animation: fuA 1s ease 1.4s forwards, boltF 3s ease-in-out 2.4s infinite;
+}
+@keyframes boltF {
+  0%,75%,100% { text-shadow: 0 0 10px #fff, 0 0 20px var(--gold); }
+  80%          { text-shadow: 0 0 60px #fff, 0 0 120px var(--gl); }
+}
+.it1 {
+  display: block; font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(1rem, 2.5vw, 2.2rem); color: var(--gl); text-shadow: var(--gg);
+}
+.it2 {
+  display: block; font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(2.2rem, 6.5vw, 6rem); color: var(--gold); text-shadow: var(--gg);
+  line-height: 1; word-break: break-word;
+}
+.it3 {
+  display: block; font-family: 'Cinzel', serif;
+  font-size: clamp(.75rem, 1.5vw, 1.2rem);
+  letter-spacing: .2em; color: var(--parch); opacity: .85; margin-top: .4em;
+}
+.ititle {
+  text-align: center; opacity: 0;
+  animation: fuA 1.2s ease 1.8s forwards; margin-bottom: 1.5rem;
+}
+.imsg {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(.92rem, 2vw, 1.4rem); color: var(--parch);
+  text-align: center; max-width: min(640px, 90vw); line-height: 1.75;
+  margin-bottom: 2rem; opacity: 0; animation: fuA 1s ease 2.4s forwards;
+  padding: 0 .5rem;
+}
+.imsg strong { color: var(--gold); font-style: normal; }
+.ibtnW { opacity: 0; animation: fuA 1s ease 3s forwards; }
+.shint {
+  position: absolute; bottom: clamp(1rem, 3vh, 1.5rem); left: 50%; transform: translateX(-50%);
+  display: flex; flex-direction: column; align-items: center; gap: .4rem;
+  opacity: .4; animation: shintB 2s ease-in-out infinite; cursor: pointer;
+  white-space: nowrap;
+}
+@keyframes shintB {
+  0%,100% { transform: translateX(-50%) translateY(0); }
+  50%      { transform: translateX(-50%) translateY(-8px); }
+}
+.shint span { font-family: 'Cinzel', serif; font-size: clamp(.5rem, 1.2vw, .62rem); color: var(--gold); letter-spacing: .25em; }
+.shint-arr  { font-size: 1.1rem; color: var(--gold); }
+
+/* ═══════════════════════════════════
+   S2 · WISH CARDS
+═══════════════════════════════════ */
+#s2 { background: linear-gradient(180deg, var(--mid), #0c0c24); }
+
+.wgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(270px, 80vw), 1fr));
+  gap: 1.5rem; max-width: min(960px, 95vw); width: 100%;
+}
+.wcard {
+  background: linear-gradient(135deg, rgba(244,200,66,.04), rgba(74,26,122,.07));
+  border: 1px solid rgba(244,200,66,.2);
+  border-radius: 14px; padding: clamp(1.2rem, 3vw, 1.8rem) clamp(1.2rem, 3vw, 1.8rem) clamp(1.5rem, 3.5vw, 2.2rem);
+  position: relative; overflow: hidden;
+  opacity: 0; transform: translateY(28px);
+  transition: opacity .6s ease, transform .6s ease, box-shadow .3s;
+}
+.wcard.vis { opacity: 1; transform: translateY(0); }
+.wcard:hover { transform: translateY(-7px) scale(1.016); box-shadow: 0 10px 50px rgba(244,200,66,.2); }
+.wcard::before {
+  content: ''; position: absolute; top: -1px; left: 0; right: 0; height: 2px;
+  background: linear-gradient(90deg, transparent, var(--gold), var(--gl), var(--gold), transparent);
+}
+.wico  { font-size: clamp(1.6rem, 3.5vw, 2.2rem); display: block; margin-bottom: .8rem; }
+.wfrom {
+  font-family: 'Cinzel', serif; font-size: clamp(.58rem, 1.2vw, .65rem);
+  letter-spacing: .22em; color: var(--gold);
+  opacity: .7; text-transform: uppercase; margin-bottom: .5rem;
+}
+.wtxt {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(.88rem, 1.8vw, 1rem); line-height: 1.78; color: var(--parch);
+}
+.wtxt strong { color: var(--gold); font-style: normal; }
+
+/* Character image inside wish card — bottom-right corner */
+.wcard-char {
+  position: absolute; bottom: -5px; right: -5px;
+  width: min(85px, 15vw); opacity: .18; pointer-events: none;
+  filter: drop-shadow(0 4px 8px rgba(244,200,66,.15));
+}
+.wcard-char img { width: 100%; display: block; }
+
+/* ═══════════════════════════════════
+   S3 · STORY COMIC PANELS
+═══════════════════════════════════ */
+#s3 { background: linear-gradient(180deg, #0c0c24, var(--db)); }
+
+.stscroll {
+  width: 100%; max-width: min(980px, 95vw);
+  overflow-x: auto; padding-bottom: 1rem;
+  scrollbar-width: thin; scrollbar-color: var(--gold) rgba(244,200,66,.1);
+  -webkit-overflow-scrolling: touch;
+}
+.stscroll::-webkit-scrollbar { height: 5px; }
+.stscroll::-webkit-scrollbar-track { background: rgba(244,200,66,.08); border-radius: 3px; }
+.stscroll::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+.ststrip { display: flex; gap: 0; width: max-content; }
+
+.panel {
+  width: clamp(200px, 28vw, 255px); min-height: clamp(300px, 45vh, 360px);
+  border: 3px solid rgba(244,200,66,.4);
+  position: relative; overflow: hidden;
+  background: linear-gradient(160deg, #0a0e2e, #0e0620);
+  cursor: pointer;
+  transition: transform .22s, box-shadow .22s, border-color .22s;
+  flex-shrink: 0;
+}
+.panel:hover {
+  transform: scale(1.04) translateY(-4px); z-index: 10;
+  border-color: var(--gold);
+  box-shadow: 0 0 40px rgba(244,200,66,.3);
+}
+.pimg {
+  width: 100%; height: clamp(160px, 25vh, 225px);
+  background: linear-gradient(135deg, #12062a, #050a22);
+  display: flex; align-items: center; justify-content: center;
+  position: relative; overflow: hidden;
+}
+/* Scanline overlay for comic feel */
+.pimg::after {
+  content: ''; position: absolute; inset: 0; z-index: 2;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent, transparent 3px,
+    rgba(0,0,0,.08) 3px, rgba(0,0,0,.08) 4px
+  );
+  pointer-events: none;
+}
+.pimg img {
+  width: 90%; max-height: 210px;
+  object-fit: contain; z-index: 1; position: relative;
+  transition: transform .3s, filter .3s;
+  filter: drop-shadow(0 6px 18px rgba(0,0,0,.7));
+}
+.panel:hover .pimg img {
+  transform: scale(1.08) translateY(-4px);
+  filter: drop-shadow(0 8px 25px rgba(244,200,66,.35));
+}
+.pimg::before {
+  content: ''; position: absolute; inset: 0; z-index: 0;
+  background: radial-gradient(ellipse at center bottom, rgba(244,200,66,.08) 0%, transparent 70%);
+}
+.pcap {
+  padding: .9rem 1rem;
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(.78rem, 1.5vw, .87rem); color: var(--parch); line-height: 1.48;
+  background: rgba(6,9,24,.96);
+  border-top: 2px solid rgba(244,200,66,.3);
+}
+.pnum {
+  position: absolute; top: .55rem; left: .55rem;
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(.9rem, 1.8vw, 1.05rem); color: var(--gold);
+  text-shadow: 0 0 8px rgba(244,200,66,.6), 1px 1px 0 #000; z-index: 3;
+}
+.pbang {
+  position: absolute; top: .55rem; right: .55rem;
+  font-family: 'Cinzel', serif; font-size: clamp(.65rem, 1.3vw, .78rem); font-weight: 700;
+  background: var(--gold); color: var(--mid);
+  padding: .12rem .55rem; border-radius: 3px; z-index: 3;
+  transform: rotate(3deg); letter-spacing: .06em;
+  box-shadow: 0 2px 8px rgba(0,0,0,.5);
+}
+
+/* ═══════════════════════════════════
+   S4 · MEMORY FLIP CARDS
+═══════════════════════════════════ */
+#s4 { background: linear-gradient(180deg, var(--db), #0f0a28); }
+
+.fcgrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(200px, 40vw), 1fr));
+  gap: clamp(1rem, 3vw, 2.2rem); max-width: min(820px, 95vw); width: 100%;
+  perspective: 1200px;
+}
+.fcard { width: 100%; aspect-ratio: 3/4; cursor: pointer; }
+.fci {
+  width: 100%; height: 100%;
+  position: relative; transform-style: preserve-3d;
+  transition: transform .9s cubic-bezier(.175,.885,.32,1.275);
+}
+.fcard.flipped .fci { transform: rotateY(180deg); }
+.fcf, .fcb {
+  position: absolute; inset: 0;
+  backface-visibility: hidden; border-radius: 16px; overflow: hidden;
+}
+/* Card front */
+.fcf {
+  background: linear-gradient(145deg, #150830, #0a1840);
+  border: 2px solid rgba(244,200,66,.6);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 1.1rem; box-shadow: var(--gp);
+}
+.fpat {
+  position: absolute; inset: 0;
+  background-image:
+    repeating-linear-gradient(45deg, rgba(244,200,66,.03) 0, rgba(244,200,66,.03) 1px, transparent 1px, transparent 12px),
+    repeating-linear-gradient(-45deg, rgba(244,200,66,.03) 0, rgba(244,200,66,.03) 1px, transparent 1px, transparent 12px);
+}
+.fsym {
+  font-size: clamp(2.2rem, 5vw, 3.2rem); position: relative; z-index: 1;
+  animation: fsymF 3s ease-in-out infinite;
+}
+@keyframes fsymF {
+  0%,100% { transform: translateY(0) scale(1); }
+  50%      { transform: translateY(-10px) scale(1.14); }
+}
+.flbl {
+  font-family: 'Cinzel', serif; font-size: clamp(.62rem, 1.3vw, .72rem);
+  color: var(--gold); letter-spacing: .2em;
+  position: relative; z-index: 1; opacity: .7;
+}
+.ftap {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(.58rem, 1.2vw, .65rem); color: var(--parch); opacity: .45;
+  position: relative; z-index: 1;
+}
+/* Card back */
+.fcb {
+  transform: rotateY(180deg);
+  background: linear-gradient(145deg, #1a0530, #0a0a2e);
+  border: 2px solid rgba(244,200,66,.6);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: 1rem; gap: .75rem;
+}
+.fphoto {
+  width: 100%; flex: 1; border-radius: 12px; overflow: hidden;
+  background: linear-gradient(135deg, #2a1050, #0a2050);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 3.5rem;
+}
+.fphoto img {
+  width: 100%; height: 100%;
+  object-fit: cover; border-radius: 12px; display: block;
+}
+.fcap2 {
+  font-family: 'Cinzel', serif; font-size: clamp(.65rem, 1.3vw, .75rem);
+  color: var(--gold); letter-spacing: .14em; text-align: center; opacity: .9;
+}
+
+/* Sparkle burst */
+.sburst { position: fixed; pointer-events: none; z-index: 9999; }
+.sbp {
+  position: absolute; width: 5px; height: 5px;
+  border-radius: 50%; animation: sbpF .8s ease-out forwards;
+}
+@keyframes sbpF { to { transform: translate(var(--tx),var(--ty)); opacity: 0; } }
+
+/* ═══════════════════════════════════
+   S5 · WORD SEARCH
+═══════════════════════════════════ */
+#s5 { background: linear-gradient(180deg, #0f0a28, var(--db)); }
+
+.ws-intro {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  color: var(--parch); font-size: clamp(.88rem, 1.8vw, 1rem);
+  margin-bottom: 1.5rem; opacity: .7; max-width: min(420px, 90vw); text-align: center;
+}
+.wswrap {
+  display: flex; gap: 2rem;
+  align-items: flex-start; justify-content: center;
+  flex-wrap: wrap; max-width: min(900px, 95vw); width: 100%;
+}
+#wsgrid {
+  display: grid; grid-template-columns: repeat(10, 1fr);
+  gap: 2px; background: rgba(244,200,66,.1);
+  border: 1px solid rgba(244,200,66,.28);
+  border-radius: 10px; padding: 6px;
+  user-select: none; touch-action: none;
+}
+.wc {
+  width: clamp(24px, min(4.2vw, 4.2vh), 40px);
+  height: clamp(24px, min(4.2vw, 4.2vh), 40px);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cinzel', serif;
+  font-size: clamp(.55rem, min(1.2vw, 1.2vh), .95rem);
+  color: var(--parch); border-radius: 4px;
+  transition: background .12s, color .12s;
+}
+.wc.sel   { background: rgba(244,200,66,.25); color: var(--gold); }
+.wc.found {
+  background: rgba(244,200,66,.22); color: var(--gold);
+  text-shadow: var(--gg); font-weight: 700;
+}
+.wswords { min-width: min(160px, 35vw); }
+.wswords h3 {
+  font-family: 'Cinzel', serif; color: var(--gold);
+  font-size: clamp(.75rem, 1.5vw, .85rem); letter-spacing: .1em; margin-bottom: .6rem;
+  border-bottom: 1px solid rgba(244,200,66,.25); padding-bottom: .4rem;
+}
+.wsw {
+  font-family: 'Cinzel', serif; font-size: clamp(.72rem, 1.4vw, .82rem);
+  color: var(--parch); letter-spacing: .04em;
+  padding: .2rem .5rem; border-radius: 4px;
+  transition: var(--transition); margin-bottom: .2rem;
+}
+.wsw.found { color: var(--gold); text-decoration: line-through; opacity: .45; background: rgba(244,200,66,.08); }
+.ws-win {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(1.1rem, 2.5vw, 2rem);
+  color: var(--gold); text-shadow: var(--gg); margin-bottom: 1rem;
+}
+
+/* ═══════════════════════════════════
+   S6 · SORTING HAT
+═══════════════════════════════════ */
+#s6 { background: linear-gradient(180deg, #160820, #0f0a28); }
+
+.hat-wrap {
+  position: relative;
+  width: clamp(120px, 15vw, 200px);
+  cursor: pointer; margin: 0 auto 1rem; display: block;
+  animation: hatFloat 3s ease-in-out infinite;
+}
+.hat-wrap img {
+  width: 100%; display: block;
+  filter: drop-shadow(0 0 30px rgba(244,200,66,.55));
+}
+.hat-glow {
+  position: absolute; inset: -20px;
+  background: radial-gradient(ellipse at center, rgba(244,200,66,.12) 0%, transparent 70%);
+  pointer-events: none; animation: hatGlow 3s ease-in-out infinite;
+}
+@keyframes hatFloat {
+  0%,100% { transform: translateY(0) rotate(-5deg); }
+  50%      { transform: translateY(-20px) rotate(5deg); }
+}
+@keyframes hatGlow {
+  0%,100% { opacity: .6; }
+  50%      { opacity: 1; }
+}
+
+.hat-quote {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  color: var(--parch); opacity: .75; text-align: center;
+  max-width: min(420px, 90vw); margin-bottom: 1.2rem;
+  font-size: clamp(.88rem, 1.8vw, .98rem);
+}
+.sopts {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: clamp(.6rem, 2vw, 1rem); max-width: min(500px, 95vw); width: 100%; margin: 1.6rem 0;
+}
+.hbtn {
+  border: 2px solid; border-radius: 12px;
+  padding: clamp(.7rem, 2vw, 1.1rem) clamp(.6rem, 2vw, 1rem);
+  cursor: pointer; background: transparent;
+  font-family: 'Cinzel', serif; font-size: clamp(.72rem, 1.5vw, .83rem);
+  letter-spacing: .08em; transition: var(--transition);
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+}
+.hbtn .hi { font-size: clamp(1.4rem, 3.5vw, 1.9rem); }
+.griff { border-color: #ae0001; color: #e25c5c; }
+.griff:hover, .griff.sel { background: rgba(174,0,1,.2); box-shadow: 0 0 25px rgba(174,0,1,.6); transform: translateY(-3px); }
+.slyth { border-color: #2a623d; color: #5cb87c; }
+.slyth:hover, .slyth.sel { background: rgba(42,98,61,.2); box-shadow: 0 0 25px rgba(42,98,61,.6); transform: translateY(-3px); }
+.raven { border-color: #3a5aab; color: #7a9fe0; }
+.raven:hover, .raven.sel { background: rgba(58,90,171,.2); box-shadow: 0 0 25px rgba(58,90,171,.6); transform: translateY(-3px); }
+.huffl { border-color: #ecb939; color: #ecb939; }
+.huffl:hover, .huffl.sel { background: rgba(236,185,57,.2); box-shadow: 0 0 25px rgba(236,185,57,.6); transform: translateY(-3px); }
+
+#sRes {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(1.2rem, 3vw, 2.3rem);
+  text-align: center; display: none;
+  animation: popIn .7s ease forwards;
+}
+.sdesc {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  color: var(--parch); font-size: clamp(.88rem, 1.8vw, .98rem);
+  text-align: center; margin-top: .5rem; opacity: .85; display: none;
+  max-width: min(400px, 90vw);
+}
+@keyframes popIn { from { transform: scale(0); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+
+/* ═══════════════════════════════════
+   S7 · SCRATCH CARD
+═══════════════════════════════════ */
+#s7 { background: linear-gradient(180deg, #0f0a28, var(--mid)); }
+
+.scwrap { width: min(460px, 92vw); text-align: center; }
+.scpct {
+  font-family: 'Cinzel', serif; font-size: clamp(.82rem, 1.8vw, .95rem);
+  color: var(--gold); letter-spacing: .1em; margin-bottom: .5rem;
+}
+.sccard {
+  width: 100%; aspect-ratio: 16/9;
+  border-radius: 14px; overflow: hidden; position: relative;
+  border: 2px solid rgba(244,200,66,.4);
+  box-shadow: 0 0 50px rgba(244,200,66,.2);
+  cursor: crosshair; margin: 1.2rem auto;
+}
+.screv {
+  position: absolute; inset: 0;
+  background: linear-gradient(135deg, #1a0a3a, #060920);
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  padding: clamp(1rem, 3vw, 1.5rem); z-index: 1;
+}
+.scwish {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(.88rem, 2.2vw, 1.3rem); color: var(--gl);
+  line-height: 1.7; text-align: center;
+  text-shadow: 0 0 25px rgba(244,200,66,.4);
+}
+#scrC { position: absolute; inset: 0; z-index: 2; border-radius: 14px; }
+.schint {
+  font-family: 'Cinzel', serif; font-size: clamp(.6rem, 1.2vw, .7rem);
+  letter-spacing: .2em; color: var(--gold); opacity: .5;
+  text-transform: uppercase;
+  animation: shintB 2s ease-in-out infinite; margin-top: .5rem;
+}
+
+/* ═══════════════════════════════════
+   S8 · FINAL LETTER
+═══════════════════════════════════ */
+#s8 { background: radial-gradient(ellipse at 50% 50%, #1a0a3a 0%, var(--mid) 65%); }
+
+.envwrap { text-align: center; cursor: pointer; }
+.envsym {
+  animation: envF 4s ease-in-out infinite;
+  filter: drop-shadow(0 0 30px rgba(244,200,66,.7));
+  display: block; transition: transform .3s; user-select: none;
+  margin: 0 auto;
+  width: clamp(100px, 15vw, 140px);
+  height: auto;
+}
+@keyframes envF {
+  0%,100% { transform: translateY(0) rotate(-3deg); }
+  50%      { transform: translateY(-18px) rotate(3deg); }
+}
+.envsym:hover { transform: scale(1.12) !important; }
+.envhint {
+  font-family: 'Cinzel', serif; font-size: clamp(.6rem, 1.2vw, .7rem);
+  letter-spacing: .22em; color: var(--gold); opacity: .5;
+  text-transform: uppercase; text-align: center; margin-top: .5rem;
+  animation: shintB 2s ease-in-out infinite;
+}
+.parch {
+  display: none; max-width: min(660px, 95vw); width: 100%;
+  background: linear-gradient(155deg, #f5e6c8, #e8d4a8 40%, #f0ddb8 70%, #f5e6c8);
+  border-radius: 10px; padding: clamp(1.2rem, 4vw, 3.2rem);
+  position: relative; color: #2a1a0a;
+  box-shadow: 0 0 100px rgba(244,200,66,.35), inset 0 0 60px rgba(0,0,0,.05);
+  animation: parchO 1.2s cubic-bezier(.25,.46,.45,.94) forwards; overflow: hidden;
+}
+@keyframes parchO {
+  from { opacity: 0; transform: scaleY(.04) rotate(-.5deg); }
+  to   { opacity: 1; transform: scaleY(1) rotate(0); }
+}
+.parch::before {
+  content: ''; position: absolute; inset: 0;
+  background-image: repeating-linear-gradient(0deg, transparent, transparent 27px, rgba(100,60,10,.06) 27px, rgba(100,60,10,.06) 28px);
+  pointer-events: none;
+}
+.pstamp { position: absolute; top: 1rem; right: 1.5rem; font-size: 2rem; opacity: .14; transform: rotate(12deg); }
+.pfrom {
+  font-family: 'Cinzel', serif; font-size: clamp(.55rem, 1.2vw, .62rem);
+  letter-spacing: .28em; color: #7a3a0a; opacity: .65;
+  text-transform: uppercase; margin-bottom: 1rem;
+}
+.ptitle {
+  font-family: 'Cinzel Decorative', cursive;
+  font-size: clamp(1.2rem, 3vw, 2.5rem);
+  color: #5a2d0c; letter-spacing: .05em; margin-bottom: 1.2rem; line-height: 1.1;
+}
+.pbody {
+  font-family: 'IM Fell English', serif; font-style: italic;
+  font-size: clamp(.88rem, 1.6vw, 1.08rem); color: #3a1a08; line-height: 1.92;
+}
+.pbody strong { color: #7a2a0a; font-style: normal; }
+.psign {
+  font-family: 'Cinzel Decorative', cursive; font-size: clamp(.9rem, 1.8vw, 1.1rem);
+  color: #5a2d0c; text-align: right; margin-top: 2rem;
+}
+.pcor { position: absolute; font-size: 1rem; opacity: .25; }
+.pcor.tl { top: .6rem; left: .8rem; } .pcor.tr { top: .6rem; right: .8rem; }
+.pcor.bl { bottom: .6rem; left: .8rem; } .pcor.br { bottom: .6rem; right: .8rem; }
+.finrow {
+  display: none; gap: 1rem;
+  flex-wrap: wrap; justify-content: center; margin-top: 2rem;
+}
+
+/* ─────────────────────────────────
+   CONFETTI
+───────────────────────────────── */
+.cfp {
+  position: fixed; top: -20px; pointer-events: none;
+  z-index: 9999; border-radius: 2px; animation: cfF linear forwards;
+}
+@keyframes cfF { to { transform: translateY(110vh) rotate(720deg); } }
+
+/* ══════════════════════════════════════════════════════
+   RESPONSIVE BREAKPOINTS
+══════════════════════════════════════════════════════ */
+
+/* ── TABLET (769px – 1024px) ── */
+@media (min-width: 769px) and (max-width: 1024px) {
+  .stk-harry     { width: clamp(70px, 8vw, 100px); }
+  .stk-hermione  { width: clamp(60px, 7vw, 85px); }
+  .stk-hippogriff{ width: clamp(90px, 11vw, 145px); }
+  .fcgrid { grid-template-columns: repeat(3, 1fr); }
+  .wgrid  { grid-template-columns: repeat(2, 1fr); }
+}
+
+/* ── MOBILE (≤ 768px) ── */
+@media (max-width: 768px) {
+  .stk    { display: none !important; }
+  .snitch-float { display: none !important; }
+  #nav    { display: none; }
+  .wcard-char { display: none; }
+  body { cursor: auto; }
+  #cur, #cur2 { display: none; }
+
+  .wgrid { grid-template-columns: 1fr; }
+  .sopts { grid-template-columns: 1fr 1fr; }
+  .fcgrid { grid-template-columns: repeat(2, 1fr); gap: 1rem; }
+
+  .it2 { font-size: clamp(2rem, 10vw, 3rem); }
+  .castle { height: 22vh; }
+
+  .wswrap { flex-direction: column; align-items: center; gap: 1.2rem; }
+  .wswords { display: flex; flex-direction: column; align-items: center; }
+}
+
+/* ── SMALL PHONE (≤ 400px) ── */
+@media (max-width: 400px) {
+  .sopts  { grid-template-columns: 1fr; }
+  .fcgrid { grid-template-columns: 1fr; max-width: 240px; }
+  .wc     { width: 22px; height: 22px; font-size: .5rem; }
+  .imsg   { font-size: .85rem; }
+  .it2    { font-size: clamp(1.8rem, 11vw, 2.5rem); }
+}
+
+/* ── LANDSCAPE PHONE ── */
+@media (max-height: 500px) and (orientation: landscape) {
+  .sec {
+    min-height: auto;
+    padding-top: 3.5rem;
+    padding-bottom: 2rem;
+    justify-content: flex-start;
+  }
+  .castle { height: 16vh; }
+  .ibolt  { display: none; }
+  .shint  { display: none; }
+  .it2    { font-size: clamp(1.5rem, 6vw, 2.5rem); }
+  .ititle { margin-bottom: .8rem; }
+  .imsg   { margin-bottom: 1rem; font-size: .9rem; }
+}
+
+/* ── WIDE DESKTOP (≥ 1400px) ── */
+@media (min-width: 1400px) {
+  .wgrid { grid-template-columns: repeat(3, 1fr); }
+  .fcgrid { grid-template-columns: repeat(3, 1fr); }
+}

@@ -1,0 +1,35 @@
+{
+  "_how_to_use": "Edit the values below to personalize your Love Trap site!",
+
+  "questions": [
+    "Tum mujhe ignore toh nahi karte na? 🥺",
+    "Sach sach — mujhe dekh ke smile aata hai na?",
+    "Agar main ghayab ho jaau toh miss karoge? 💭"
+  ],
+
+  "letter_lines": [
+    "Hey 💜",
+    "",
+    "Ye letter sirf tumhare liye hai.",
+    "Tum mujhe genuinely bahut pasand ho —",
+    "isliye ye sab banaya.",
+    "",
+    "So… meri baat suno.",
+    "Will you be mine? 💜"
+  ],
+
+  "no_button_messages": [
+    "Nahi?? 😤 Yeh button sahi nahi hai!",
+    "Pakdo isko!! 😡",
+    "Galat answer bestie 💀",
+    "Button bhaag raha hai 😅",
+    "Try again!! 👿",
+    "Seriously? 🤨"
+  ],
+
+  "photos": [
+    "user_uploads/photo1.jpg",
+    "user_uploads/photo2.jpg",
+    "user_uploads/photo3.jpg"
+  ]
+}

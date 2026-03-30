@@ -60,7 +60,7 @@
       ],
       "media": {
         "thumbnail": "media/hello-kitty/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774022269/preview_z3mcd8.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774022269/preview_z3mcd8.mp4",
         "gallery": [
           "media/hello-kitty/img1.jpg",
           "media/hello-kitty/img2.jpg",
@@ -99,7 +99,7 @@
       ],
       "media": {
         "thumbnail": "media/harry-potter/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774022365/preview_yvsyhy.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774022365/preview_yvsyhy.mp4",
         "gallery": [
           "media/harry-potter/img1.jpg",
           "media/harry-potter/img2.jpg",
@@ -133,7 +133,7 @@
       ],
       "media": {
         "thumbnail": "media/love-trap/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774376488/Untitled_design_jdl9sl.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774376488/Untitled_design_jdl9sl.mp4",
         "gallery": [
           "media/love-trap/1.jpg",
           "media/love-trap/2.jpg",
@@ -170,7 +170,7 @@
       ],
       "media": {
         "thumbnail": "media/celestial/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774623999/gallexy_rvnjkc.mov",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774623999/gallexy_rvnjkc.mov",
         "gallery": [
           "media/celestial/img1.jpg",
           "media/celestial/img2.jpg"
@@ -205,7 +205,7 @@
       ],
       "media": {
         "thumbnail": "media/among us/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774800517/WhatsApp_Video_2026-03-29_at_8.58.24_PM_pvtd7x.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774800517/WhatsApp_Video_2026-03-29_at_8.58.24_PM_pvtd7x.mp4",
         "gallery": []
       }
     },
@@ -237,7 +237,7 @@
       ],
       "media": {
         "thumbnail": "media/sorry/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1774800515/WhatsApp_Video_2026-03-29_at_8.58.24_PM_1_vzc6xw.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774800515/WhatsApp_Video_2026-03-29_at_8.58.24_PM_1_vzc6xw.mp4",
         "gallery": []
       }
     },

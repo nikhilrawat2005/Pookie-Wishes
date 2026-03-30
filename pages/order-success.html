@@ -69,13 +69,13 @@
       </div>
 
       <div class="f-group">
-        <label class="f-label">Photos (Max 3) <span class="opt">(Optional)</span></label>
+        <label class="f-label">Photos (Max 6) <span class="opt">(Optional)</span></label>
         <div class="img-note">
           If you are purchasing a Birthday Template, you can provide photos. If you don't provide photos, we will use cute stickers instead! ✨
         </div>
         <label class="upload-zone">
           <div style="font-size:1.5rem;margin-bottom:5px;">📸</div>
-          <div style="font-size:0.85rem;color:var(--text);">Click to select up to 3 photos</div>
+          <div style="font-size:0.85rem;color:var(--text);">Click to select up to 6 photos</div>
           <input type="file" id="f-photos" multiple accept="image/*" onchange="updateFileList(this)">
         </label>
         <div class="file-list" id="file-list-display">No files selected</div>
@@ -173,8 +173,8 @@
   }
 
   function updateFileList(input) {
-    if (input.files.length > 3) {
-      toast("You can only select up to 3 photos", "err");
+    if (input.files.length > 6) {
+      toast("You can only select up to 6 photos", "err");
       input.value = ""; // reset
       selectedFiles = [];
       document.getElementById('file-list-display').textContent = "No files selected";
@@ -227,15 +227,40 @@
         photoLinks.push(url);
       }
 
-      toast("Saving details...", "inf");
-      
-      let tId = 'sorry';
-      let currentOrder = null;
-      if (window.fbReady && ORDER_ID !== '—') {
+    // --- Form Adaptation ---
+    async function adaptForm() {
+      if (!window.fbReady || ORDER_ID === '—') return;
+      try {
         const dReq = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
-        currentOrder = dReq.data() || {};
-        tId = currentOrder.templateId || 'sorry-template';
+        if (dReq.exists) {
+          const order = dReq.data();
+          const tId = order.templateId || 'sorry-template';
+          
+          if (tId === 'among-us') {
+            const msgGrp = document.getElementById('f-msg')?.closest('.f-group');
+            const phoGrp = document.getElementById('f-photos')?.closest('.f-group');
+            if (msgGrp) msgGrp.style.display = 'none';
+            if (phoGrp) phoGrp.style.display = 'none';
+            
+            // Adjust validation and text
+            const sub = document.querySelector('.sub');
+            if (sub) sub.textContent = "Almost done! 🚀 Just give us the name of the special person for your Among Us surprise.";
+            
+            // Fill dummy content for hidden fields to pass validation
+            const msgField = document.getElementById('f-msg');
+            if (msgField && !msgField.value) msgField.value = "N/A (Among Us Mode)";
+          } else if (['hello-kitty', 'harry-potter', 'love-trap', 'celestial-space'].includes(tId)) {
+            const sub = document.querySelector('.sub');
+            if (sub) sub.textContent = "Make it magical! ✨ Upload your special photos and write a heartfelt message.";
+          }
+        }
+      } catch (e) {
+        console.warn("Adaptation error:", e);
       }
+    }
+
+    // Call adaptForm when ready
+    window.addEventListener('load', () => { setTimeout(adaptForm, 1000); });
 
       // Templates that fully support zero-touch Level 3 deployment locally
       const autoDeliverTemplates = ['sorry-template'];

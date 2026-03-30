@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>A Magical Birthday ✨</title>
+<link rel="stylesheet" href="style.css"/>
+</head>
+<body>
+
+<!-- Custom cursor -->
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- Star canvas background -->
+<canvas id="bgC"></canvas>
+
+<!-- Floating particles container -->
+<div class="ptc" id="parts"></div>
+
+<!-- Golden Snitch flying across screen -->
+<div class="snitch-float" id="snitchFly">
+  <img src="images/snitch.png" alt=""/>
+</div>
+
+<!-- Side Navigation dots -->
+<nav id="nav">
+  <div class="nd on" data-s="1" data-l="WELCOME"></div>
+  <div class="nd"    data-s="2" data-l="WISHES"></div>
+  <div class="nd"    data-s="3" data-l="YOUR STORY"></div>
+  <div class="nd"    data-s="4" data-l="MEMORIES"></div>
+  <div class="nd"    data-s="5" data-l="WORD HUNT"></div>
+  <div class="nd"    data-s="6" data-l="SORTING HAT"></div>
+  <div class="nd"    data-s="7" data-l="SCRATCH WISH"></div>
+  <div class="nd"    data-s="8" data-l="FINAL LETTER"></div>
+</nav>
+
+<!-- Loading Screen -->
+<div id="load">
+  <div class="lsym">⚡</div>
+  <div class="lname" id="lname">Happy Birthday!</div>
+  <div class="lsub">HOGWARTS AWAITS YOU</div>
+  <div class="lbar-w"><div class="lbar"></div></div>
+</div>
+
+<!-- ═══════════════════════════════════
+     S1 · CINEMATIC INTRO
+═══════════════════════════════════ -->
+<section id="s1" class="sec on">
+
+  <!-- Hogwarts Castle SVG silhouette -->
+  <svg class="castle" viewBox="0 0 950 300" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet">
+    <defs>
+      <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1">
+        <stop offset="0%" stop-color="#0a0e2e" stop-opacity=".95"/>
+        <stop offset="100%" stop-color="#060918"/>
+      </linearGradient>
+    </defs>
+    <path fill="url(#cg)" d="M0 300 L0 190 L40 190 L40 140 L55 140 L55 110 L70 110 L70 90 L85 90 L85 110 L100 110 L100 140 L115 140 L115 190 L140 190 L140 155 L155 155 L155 105 L168 105 L168 80 L180 65 L192 80 L192 105 L205 105 L205 155 L225 155 L225 170 L245 170 L245 120 L258 100 L271 120 L271 170 L295 170 L295 185 L320 185 L320 150 L335 130 L345 110 L355 130 L365 150 L365 185 L390 185 L390 170 L415 170 L415 120 L428 100 L441 85 L454 100 L467 120 L467 170 L495 170 L495 185 L525 185 L525 150 L538 128 L551 150 L551 185 L575 185 L575 170 L595 170 L595 120 L608 100 L621 120 L621 170 L645 170 L645 155 L660 105 L673 80 L685 65 L697 80 L710 105 L723 155 L738 155 L738 190 L760 190 L760 140 L775 110 L790 90 L805 110 L820 140 L835 190 L860 190 L860 140 L875 110 L890 110 L890 90 L905 90 L905 110 L920 110 L920 140 L950 140 L950 300 Z"/>
+    <circle cx="800" cy="50" r="28" fill="#e8e0d0" opacity=".07"/>
+    <circle cx="100" cy="40" r="2"   fill="#fff" opacity=".5"/>
+    <circle cx="300" cy="25" r="1.5" fill="#fff" opacity=".6"/>
+    <circle cx="600" cy="32" r="2"   fill="#fff" opacity=".4"/>
+    <circle cx="750" cy="20" r="1.5" fill="#fff" opacity=".55"/>
+    <circle cx="200" cy="58" r="1.2" fill="#ffe57a" opacity=".7"/>
+    <circle cx="500" cy="14" r="1.5" fill="#ffe57a" opacity=".5"/>
+    <circle cx="870" cy="42" r="1.8" fill="#fff" opacity=".45"/>
+  </svg>
+
+  <!-- Harry on broom - right side, flying in -->
+  <div class="stk stk-harry">
+    <img src="images/harry_broom.png" alt="Harry Potter"/>
+  </div>
+
+  <!-- Hermione - left side -->
+  <div class="stk stk-hermione">
+    <img src="images/hermione.png" alt="Hermione Granger"/>
+  </div>
+
+  <!-- Hippogriff - bottom left, majestic -->
+  <div class="stk stk-hippogriff">
+    <img src="images/hippogriff.png" alt="Hippogriff"/>
+  </div>
+
+  <!-- Fawkes the Phoenix - top right glow -->
+  <div class="stk stk-fawkes-intro">
+    <img src="images/fawkes.png" alt="Fawkes"/>
+  </div>
+
+  <div class="wdrop"></div>
+  <div class="ey" id="iEy">✦ A Magical Birthday Experience ✦</div>
+  <div class="ibolt">⚡</div>
+  <div class="ititle">
+    <span class="it1">Happy Birthday</span>
+    <span class="it2 hn" id="iName">...</span>
+    <span class="it3">Your Magical Day Has Finally Arrived</span>
+  </div>
+  <p class="imsg">
+    "Somewhere deep in the halls of Hogwarts, every witch and wizard paused their spells,
+    every owl stopped mid-flight, and the enchanted ceiling of the Great Hall lit up — just to say:
+    <strong>you are truly extraordinary.</strong>
+    Today is entirely, magically, <strong>yours. ✨</strong>"
+  </p>
+  <div class="ibtnW">
+    <button class="btn" id="startBtn">Begin the Magic ⚡</button>
+  </div>
+  <div class="shint" onclick="go(2)">
+    <span>DISCOVER YOUR MAGIC</span>
+    <div class="shint-arr">▼</div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     S2 · BIRTHDAY WISH CARDS
+═══════════════════════════════════ -->
+<section id="s2" class="sec">
+
+  <!-- Niffler peeking bottom-right (holding gold) -->
+  <div class="stk stk-niffler">
+    <img src="images/niffler.png" alt="Niffler"/>
+  </div>
+  <!-- Draco sneaking bottom-left -->
+  <div class="stk stk-draco">
+    <img src="images/draco.png" alt="Draco Malfoy"/>
+  </div>
+
+  <div class="ttl">Wishes From the Wizarding World 💬</div>
+  <div class="sub">Every witch and wizard across the realm agrees — you are magical, <span class="hn n2">...</span></div>
+  <div class="divl"></div>
+  <div class="wgrid" id="wishGrid"></div>
+  <button class="btn" onclick="go(3)" style="margin-top:2rem;">Read Your Story →</button>
+</section>
+
+<!-- ═══════════════════════════════════
+     S3 · STORY COMIC SCROLL
+═══════════════════════════════════ -->
+<section id="s3" class="sec">
+
+  <!-- Fawkes top right glowing -->
+  <div class="stk stk-fawkes-s3">
+    <img src="images/fawkes.png" alt="Fawkes"/>
+  </div>
+  <!-- Ron with Scabbers bottom left -->
+  <div class="stk stk-ron-s3">
+    <img src="images/ron_owl.png" alt="Ron"/>
+  </div>
+
+  <div class="ttl" id="s3ttl">Your Magical Story 📖</div>
+  <div class="sub">A legend told panel by panel — your chapter in the wizarding world</div>
+  <div class="divl"></div>
+  <div class="stscroll">
+    <div class="ststrip" id="ststrip"></div>
+  </div>
+  <p class="scroll-hint">← SCROLL TO READ YOUR STORY →</p>
+  <button class="btn" onclick="go(4)" style="margin-top:2rem;">Flip the Memory Cards ✨</button>
+</section>
+
+<!-- ═══════════════════════════════════
+     S4 · MEMORY FLIP CARDS
+═══════════════════════════════════ -->
+<section id="s4" class="sec">
+
+  <!-- Ron bottom-left -->
+  <div class="stk stk-ron-s4">
+    <img src="images/ron.png" alt="Ron"/>
+  </div>
+  <!-- Hagrid bottom-right -->
+  <div class="stk stk-hagrid-s4">
+    <img src="images/hagrid.png" alt="Hagrid"/>
+  </div>
+
+  <div class="ttl">Magical Memories ✨</div>
+  <div class="sub">Tap each card to reveal a cherished moment — <span class="hn n4">...</span>'s magic captured in time</div>
+  <div class="divl"></div>
+  <div class="fcgrid" id="fcgrid"></div>
+  <p class="hint-text">✦ Replace photos in user_content/photos/ folder ✦</p>
+  <button class="btn" onclick="go(5)" style="margin-top:1.8rem;">Wizard Word Hunt →</button>
+</section>
+
+<!-- ═══════════════════════════════════
+     S5 · WORD SEARCH GAME
+═══════════════════════════════════ -->
+<section id="s5" class="sec">
+
+  <!-- Hagrid watching the game -->
+  <div class="stk stk-hagrid-s5">
+    <img src="images/hagrid2.png" alt="Hagrid"/>
+  </div>
+
+  <div class="ttl">Wizard Word Hunt 🧙</div>
+  <div class="sub">Prove your wizarding knowledge — find all hidden names in the enchanted grid!</div>
+  <div class="divl"></div>
+
+  <div id="wsStart" style="text-align:center;">
+    <p class="ws-intro">"The enchanted grid awaits, young wizard. Can you find every name hidden within?"</p>
+    <button class="btn" onclick="initWS()">Start the Hunt 🔮</button>
+    <br>
+    <button class="btn-o" onclick="go(6)" style="margin-top:.9rem;">Skip → Sorting Hat</button>
+  </div>
+
+  <div id="wsGame" style="display:none;width:100%;max-width:900px;">
+    <div class="wswrap">
+      <div style="touch-action:none;user-select:none;">
+        <div id="wsgrid"></div>
+      </div>
+      <div class="wswords" id="wswords">
+        <h3>✦ Find These ✦</h3>
+      </div>
+    </div>
+    <div id="wsWin" style="display:none;text-align:center;margin-top:1.8rem;">
+      <div class="ws-win">Mischief Managed! ✨</div>
+      <div class="skip-row"><button class="btn" onclick="go(6)">Next → Sorting Hat</button></div>
+    </div>
+    <div class="skip-row" id="wsSkipRow" style="margin-top:1rem;">
+      <button class="btn-o" onclick="go(6)">Skip → Sorting Hat</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     S6 · SORTING HAT
+═══════════════════════════════════ -->
+<section id="s6" class="sec">
+  <div class="ttl">The Sorting Hat 🎩</div>
+  <div class="sub">Hmm... Where does <span class="hn n5">...</span> truly belong?</div>
+  <div class="divl"></div>
+
+  <!-- Big beautiful Sorting Hat image -->
+  <div class="hat-wrap" id="hatWrap" onclick="shakeHat()">
+    <img src="images/sorting_hat.png" alt="Sorting Hat" id="hatImg"/>
+    <div class="hat-glow"></div>
+  </div>
+
+  <p class="hat-quote">"I see great things in you... but which house calls to your soul?"</p>
+
+  <div class="sopts">
+    <button class="hbtn griff" onclick="pickH('gryffindor','🦁 Gryffindor','Bravery, nerve, and chivalry. You face every challenge head-on — and you always will.','#e25c5c')">
+      <span class="hi">🦁</span><span>GRYFFINDOR</span>
+    </button>
+    <button class="hbtn slyth" onclick="pickH('slytherin','🐍 Slytherin','Cunning, resourceful, fiercely ambitious. You know exactly what you want — and how to get it.','#5cb87c')">
+      <span class="hi">🐍</span><span>SLYTHERIN</span>
+    </button>
+    <button class="hbtn raven" onclick="pickH('ravenclaw','🦅 Ravenclaw','Wit, wisdom, and wonder. Your mind is your greatest superpower.','#7a9fe0')">
+      <span class="hi">🦅</span><span>RAVENCLAW</span>
+    </button>
+    <button class="hbtn huffl" onclick="pickH('hufflepuff','🦡 Hufflepuff','Loyal, patient, endlessly kind. You are the truest magic the world has ever known.','#ecb939')">
+      <span class="hi">🦡</span><span>HUFFLEPUFF</span>
+    </button>
+  </div>
+
+  <div id="sRes"></div>
+  <div class="sdesc" id="sDesc"></div>
+  <div class="skip-row" style="margin-top:1.4rem;">
+    <button class="btn" id="sortNext" style="display:none;" onclick="go(7)">Next → Scratch Wish</button>
+    <button class="btn-o" onclick="go(7)">Skip →</button>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     S7 · SCRATCH CARD
+═══════════════════════════════════ -->
+<section id="s7" class="sec">
+
+  <!-- Cloak of Invisibility right -->
+  <div class="stk stk-cloak">
+    <img src="images/cloak.png" alt="Cloak"/>
+  </div>
+  <!-- Hippogriff left faded -->
+  <div class="stk stk-hippogriff-s7">
+    <img src="images/hippogriff.png" alt="Hippogriff"/>
+  </div>
+
+  <div class="ttl">Your Birthday Wish 🎁</div>
+  <div class="sub">Scratch the enchanted parchment to reveal your special message, <span class="hn n7">...</span></div>
+  <div class="divl"></div>
+
+  <div class="scwrap">
+    <div class="scpct" id="scPct">0% Revealed</div>
+    <div class="sccard" id="scCard">
+      <div class="screv">
+        <div class="scwish" id="scWish">
+          ⚡ <span class="hn n7a">...</span> ⚡<br><br>Loading your wish...
+        </div>
+      </div>
+      <canvas id="scrC"></canvas>
+    </div>
+    <div class="schint" id="scHint">✦ SCRATCH THE PARCHMENT AWAY ✦</div>
+    <div id="scDone" style="display:none;margin-top:1rem;">
+      <button class="btn" onclick="go(8)">Open the Final Letter ✉️</button>
+    </div>
+    <div class="skip-row">
+      <button class="btn-o" onclick="go(8)">Skip → Final Letter</button>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════
+     S8 · FINAL HOGWARTS LETTER
+═══════════════════════════════════ -->
+<section id="s8" class="sec">
+
+  <!-- Fawkes top-right glowing on letter page -->
+  <div class="stk stk-fawkes-letter">
+    <img src="images/fawkes.png" alt="Fawkes Phoenix"/>
+  </div>
+
+  <div class="ttl">A Letter From Hogwarts ✉️</div>
+  <div class="sub">An owl has arrived with something very special, <span class="hn n8">...</span>...</div>
+  <div class="divl"></div>
+
+  <!-- Envelope -->
+  <div class="envwrap" id="envWrap" onclick="openLetter()">
+    <svg class="envsym" width="140" height="105" viewBox="0 0 140 105" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="eg" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#d4aa55"/>
+          <stop offset="100%" stop-color="#8a6020"/>
+        </linearGradient>
+        <filter id="envShadow">
+          <feDropShadow dx="0" dy="4" stdDeviation="8" flood-color="rgba(244,200,66,0.5)"/>
+        </filter>
+      </defs>
+      <rect x="4" y="18" width="132" height="80" rx="5" fill="url(#eg)" filter="url(#envShadow)"/>
+      <path d="M4 18 L70 62 L136 18 Z" fill="#c49535"/>
+      <path d="M4 98 L70 62 L136 98 Z" fill="#a07825"/>
+      <path d="M4 18 L4 98 L70 62 Z" fill="#c8a040"/>
+      <path d="M136 18 L136 98 L70 62 Z" fill="#b89030"/>
+      <!-- Wax seal -->
+      <circle cx="70" cy="62" r="16" fill="#9a0000"/>
+      <circle cx="70" cy="62" r="14" fill="#c20000"/>
+      <text x="63" y="68" font-size="15" fill="#f4c842" font-family="serif" font-weight="bold">H</text>
+      <text x="14" y="40" font-size="14" opacity=".6">⭐</text>
+      <text x="112" y="40" font-size="14" opacity=".6">⭐</text>
+    </svg>
+    <div class="envhint">✦ TAP TO OPEN YOUR LETTER ✦</div>
+  </div>
+
+  <!-- Parchment letter -->
+  <div class="parch" id="parch">
+    <div class="pstamp">🦁</div>
+    <div class="pcor tl">⚡</div><div class="pcor tr">⚡</div>
+    <div class="pcor bl">⚡</div><div class="pcor br">⚡</div>
+    <div class="pfrom">📍 Hogwarts School of Witchcraft &amp; Wizardry · To: <span class="hn n8p">...</span></div>
+    <div class="ptitle" id="pTitle">Happy Birthday!</div>
+    <div class="pbody" id="pBody">Loading your magical letter...</div>
+    <div class="psign" id="pSign">— With love 🪄</div>
+  </div>
+
+  <div class="finrow" id="finRow">
+    <button class="btn" onclick="bigCelebrate()">🎉 CELEBRATE!</button>
+    <button class="btn-o" onclick="location.reload()">Start Over ⚡</button>
+  </div>
+</section>
+
+<script src="app.js"></script>
+</body>
+</html>

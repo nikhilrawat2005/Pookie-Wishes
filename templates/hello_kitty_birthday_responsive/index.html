@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover"/>
+  <title>Happy Birthday, My Love 🎀</title>
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Nunito:wght@400;600;700;800;900&family=Dancing+Script:wght@600;700&family=Fredoka+One&family=Great+Vibes&family=Playfair+Display:ital,wght@1,700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- ░░ FLOATING BACKGROUND ░░ -->
+  <div class="bg-elements" id="bgElements"></div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       PAGE 1 — WELCOME
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="page active" id="page1">
+    <div class="page1-wrapper">
+
+      <img src="assets/bow.png" class="corner-bow bow-tl" alt=""/>
+      <img src="assets/bow.png" class="corner-bow bow-tr" alt=""/>
+
+      <div class="intro-kitty-wrap">
+        <img src="assets/hello_kitty_intro.png" class="intro-kitty" alt="Hello Kitty"/>
+        <img src="assets/hello-kitty-i-love-you.gif" class="intro-love-gif" alt=""/>
+      </div>
+
+      <div class="browser-window">
+        <div class="browser-bar">
+          <span class="dot dot-r"></span>
+          <span class="dot dot-y"></span>
+          <span class="dot dot-g"></span>
+          <span class="browser-title">🎀 Happy Birthday! 🎀</span>
+          <div class="browser-kitty-sticker">
+            <img src="assets/kitty.png" alt=""/>
+          </div>
+        </div>
+        <div class="browser-content">
+          <div class="spidy-row">
+            <img src="assets/hello_kitty_spidy1.png" class="spidy-sm anim-spin-cw" alt=""/>
+            <div class="title-block">
+              <h1 class="main-title" id="mainTitle">
+                Happy Birthday,<br/>
+                <span class="name-highlight">Beautiful!</span>
+                <span class="title-cake">🎂</span>
+              </h1>
+              <p class="subtitle">Today is all about celebrating the most amazing person in my world. Something magical is waiting for you...</p>
+            </div>
+            <img src="assets/hello_kitty_spidy2.png" class="spidy-sm anim-spin-ccw" alt=""/>
+          </div>
+
+          <div class="cat-area">
+            <img src="assets/giphy.gif"  class="cat-gif"  alt=""/>
+            <p class="ready-text">Ready for your birthday surprise? ✨</p>
+            <img src="assets/eyes.gif"   class="eyes-gif" alt=""/>
+          </div>
+
+          <button class="btn-pink" onclick="goToPage(2)">Let's Gooo 🎀</button>
+        </div>
+      </div>
+
+      <p class="footer-text">Made with endless love for your special day 💕</p>
+    </div>
+  </div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       PAGE 2 — ENVELOPE
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="page" id="page2">
+    <div class="page-header">
+      <img src="assets/hello_kitty_card.png" class="page-header-img" alt=""/>
+      <h2 class="page-title">A Birthday Love Letter 💌</h2>
+      <p class="page-sub">From my heart to the birthday queen</p>
+    </div>
+    <div class="card-container">
+      <div class="envelope-wrap">
+        <div class="envelope" id="envelope" onclick="openEnvelope()">
+          <div class="envelope-flap"></div>
+          <div class="envelope-body">
+            <div class="envelope-letter">
+              <img src="assets/hello-kitty-i-love-you.gif" class="env-gif" alt=""/>
+            </div>
+          </div>
+          <img src="assets/bow.png" class="env-bow" alt=""/>
+        </div>
+        <p class="click-hint" id="envelopeHint">Click to open 💌</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       PAGE 3 — LETTER CONTENT
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="page" id="page3">
+    <div class="page-header">
+      <h2 class="page-title">A Birthday Love Letter 💌</h2>
+      <p class="page-sub">From my heart to the birthday queen</p>
+    </div>
+    <div class="card-container">
+      <div class="letter-card">
+        <div class="letter-header">
+          <span>💌</span>
+          <span class="letter-to">To My Birthday Princess</span>
+        </div>
+        <div class="letter-corner-img">
+          <img src="assets/kitty_love_card.png" alt=""/>
+        </div>
+        <div class="letter-body">
+          <p class="letter-greeting" id="letterGreeting">My dearest birthday girl,</p>
+          <p class="letter-text"    id="letterBody">Today marks another year of your incredible existence...</p>
+          <p class="letter-sign"    id="letterSign">Forever yours 💝</p>
+          <span class="letter-seal">✔</span>
+        </div>
+        <button class="music-btn" id="letterMusicBtn" onclick="toggleLetterMusic()" title="Toggle music">🎵</button>
+      </div>
+      <button class="btn-pink" onclick="goToPage(4)">Continue It ✨</button>
+    </div>
+  </div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       PAGE 4 — CAKE CUTTING
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="page" id="page4">
+    <div class="page-header">
+      <h2 class="page-title">It's Cake Time! 🎂</h2>
+      <p class="page-sub">Draw a line across the cake to cut it!</p>
+    </div>
+    <div class="card-container">
+      <div class="cake-card">
+        <div class="cake-kitty-row">
+          <img src="assets/hello_kitty_spidy3.png" class="cake-side-kitty" alt=""/>
+          <div class="cake-center">
+            <p class="cake-instruction">Draw across the middle ✂️</p>
+            <div class="cake-canvas-wrap">
+              <canvas id="cakeCanvas" width="280" height="240"></canvas>
+              <div class="cake-img-wrap" id="cakeDisplay">
+                <img src="assets/birthday_cake.png" class="cake-img" id="cakeImg" alt="Cake"/>
+              </div>
+            </div>
+            <div id="cakeCutMsg" class="cake-cut-msg" style="display:none">
+              <img src="assets/candle_cake.png" class="cut-cake-img" alt=""/>
+              <p class="perfect-cut">Perfect Cut! 🎉</p>
+              <p class="cake-wish">May this year bring everything your heart desires! ✨</p>
+              <button class="btn-pink" onclick="goToPage(5)" style="margin-top:14px">Make a Wish! 🌟</button>
+            </div>
+          </div>
+          <img src="assets/hello_kitty_spidy4.png" class="cake-side-kitty" alt=""/>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       PAGE 5 — MAKE A WISH
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="page" id="page5">
+    <div class="page-header">
+      <h2 class="page-title">Make a Wish! ✨</h2>
+      <p class="page-sub">Close your eyes and wish for something wonderful</p>
+    </div>
+    <div class="card-container">
+      <div class="wish-card">
+        <div class="wish-slideshow-outer">
+          <div class="wish-slideshow" id="wishSlideshow">
+            <img class="wish-img active" src="assets/hello_kitty_intro.png" alt=""/>
+            <img class="wish-img"        src="assets/cat_couple.png"        alt=""/>
+            <img class="wish-img"        src="assets/hello_kitty_card.png"  alt=""/>
+            <img class="wish-img"        src="assets/kitty_love_card.png"   alt=""/>
+          </div>
+          <img src="assets/source.gif" class="wish-bg-gif" alt=""/>
+        </div>
+        <div class="wish-content">
+          <img src="assets/candle_cake.png" class="wish-cake-icon" alt=""/>
+          <h3 class="wish-title">Time to Make a Wish! ✨</h3>
+          <p class="wish-text">Close your eyes and make your birthday wish! 🌟</p>
+          <p class="wish-sub">Think of something wonderful for your new year!</p>
+          <div class="wish-gifs-row">
+            <img src="assets/hello-kitty-i-love-you.gif" class="wish-love-gif" alt=""/>
+            <img src="assets/angry.gif"                   class="wish-angry-gif" alt=""/>
+          </div>
+          <button class="btn-pink" onclick="goToPage(6)">I've Made My Wish! 🕯️</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       PAGE 6 — MEMORY CARD GAME  ★ POLISHED ★
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="page" id="page6">
+    <div class="page-header">
+      <h2 class="page-title">Memory Match 🃏</h2>
+      <p class="page-sub">Find all the pairs — but watch out for the bomb! 💣</p>
+    </div>
+    <div class="card-container">
+      <div class="mem-shell">
+
+        <!-- ── Top bar: stats + controls ── -->
+        <div class="mem-topbar">
+          <div class="mem-stat-pill">
+            <span class="mem-stat-icon">✅</span>
+            <span class="mem-stat-label">Matches</span>
+            <span class="mem-stat-val" id="matchCount">0/4</span>
+          </div>
+          <div class="mem-stat-pill">
+            <span class="mem-stat-icon">🔄</span>
+            <span class="mem-stat-label">Flips</span>
+            <span class="mem-stat-val" id="flipCount">0</span>
+          </div>
+          <div class="mem-stat-pill">
+            <span class="mem-stat-icon">💣</span>
+            <span class="mem-stat-label">Bombs</span>
+            <span class="mem-stat-val" id="bombCount">0</span>
+          </div>
+          <div class="mem-btn-group">
+            <button class="mem-icon-btn" onclick="initMemoryGame()" title="Shuffle & restart">🔀</button>
+            <button class="mem-icon-btn mem-quit-btn" onclick="confirmQuitGame()" title="Quit game">🚪</button>
+          </div>
+        </div>
+
+        <!-- ── Bomb alert banner (hidden by default) ── -->
+        <div class="mem-bomb-alert" id="memBombAlert" style="display:none">
+          💣 Boom! All matches reset — reshuffled! 💣
+        </div>
+
+        <!-- ── 3×3 grid ── -->
+        <div class="mem-grid" id="memoryGrid"></div>
+
+        <!-- ── Win panel ── -->
+        <div class="mem-win-panel" id="memoryWin" style="display:none">
+          <img src="assets/hello-kitty-i-love-you.gif" class="mem-win-gif" alt=""/>
+          <p class="mem-win-title">You Found Them All! 🎉</p>
+          <p class="mem-win-sub">Amazing! Just like everything else about you ✨</p>
+          <div class="mem-win-btns">
+            <button class="btn-pink" onclick="goToPage(7)">Continue 🎁</button>
+            <button class="btn-outline" onclick="initMemoryGame()">Play Again 🔀</button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       QUIT CONFIRMATION MODAL
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="modal-overlay" id="quitModal" style="display:none">
+    <div class="modal-box">
+      <div class="modal-icon">🚪</div>
+      <h3 class="modal-title">Quit the game?</h3>
+      <p class="modal-body">Your progress will be lost. Are you sure you want to skip the memory game?</p>
+      <div class="modal-btn-row">
+        <button class="btn-pink" onclick="doQuitGame()">Yes, skip it 🚶</button>
+        <button class="btn-outline" onclick="closeModal('quitModal')">Keep playing 🎮</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       PAGE 7 — BIRTHDAY WISHES CARDS
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="page" id="page7">
+    <div class="page-header">
+      <h2 class="page-title">Birthday Wishes 🎁</h2>
+      <p class="page-sub">Click each card to reveal a special memory!</p>
+    </div>
+    <div class="card-container">
+      <div class="wishes-shell">
+
+        <div class="wishes-deco-row">
+          <img src="assets/bomb_card.png"  class="deco-bomb wobble"     alt=""/>
+          <img src="assets/random.gif"     class="deco-random"          alt=""/>
+          <img src="assets/kitty.gif"      class="deco-kitty"           alt=""/>
+        </div>
+
+        <div class="flip-cards-row" id="flipCardsRow">
+
+          <!-- Card 0 -->
+          <div class="flip-card-wrap">
+            <div class="flip-card" id="flipCard0" onclick="flipCard(0)">
+              <div class="flip-front">
+                <div class="flip-img"><img src="assets/hello_kitty_card.png" alt=""/></div>
+                <div class="flip-hint">Open!</div>
+              </div>
+              <div class="flip-back flip-back-min">
+                <span class="fback-icon">💌</span>
+                <span class="fback-tap">tap to close</span>
+              </div>
+            </div>
+            <div class="reveal-panel" id="reveal0"></div>
+          </div>
+
+          <!-- Card 1 -->
+          <div class="flip-card-wrap">
+            <div class="flip-card" id="flipCard1" onclick="flipCard(1)">
+              <div class="flip-front">
+                <div class="flip-img"><img src="assets/kitty_love_card.png" alt=""/></div>
+                <div class="flip-hint">Open!</div>
+              </div>
+              <div class="flip-back flip-back-min">
+                <span class="fback-icon">🌸</span>
+                <span class="fback-tap">tap to close</span>
+              </div>
+            </div>
+            <div class="reveal-panel" id="reveal1"></div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="flip-card-wrap">
+            <div class="flip-card" id="flipCard2" onclick="flipCard(2)">
+              <div class="flip-front">
+                <div class="flip-img"><img src="assets/spiderman_kitty_card.png" alt=""/></div>
+                <div class="flip-hint">Open!</div>
+              </div>
+              <div class="flip-back flip-back-min">
+                <span class="fback-icon">✨</span>
+                <span class="fback-tap">tap to close</span>
+              </div>
+            </div>
+            <div class="reveal-panel" id="reveal2"></div>
+          </div>
+
+        </div>
+
+        <div class="wishes-progress" id="wishesProgress">
+          <p class="wishes-count" id="wishesCount">0 of 3 wishes unlocked — keep going! 🎉</p>
+          <div class="wishes-bar"><div class="wishes-fill" id="wishesFill"></div></div>
+        </div>
+        <button class="btn-pink" id="continueWishesBtn" style="display:none;margin-top:18px" onclick="showModal('wishesModal')">All Wishes Opened! ✨</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░ WISHES MODAL ░░ -->
+  <div class="modal-overlay" id="wishesModal" style="display:none">
+    <div class="modal-box">
+      <img src="assets/cat_couple.png" class="modal-kitty" alt=""/>
+      <div class="modal-icon">🎉</div>
+      <h3 class="modal-title">All Wishes Unlocked!</h3>
+      <p class="modal-sub">Incredible, beautiful, perfect just as you are.</p>
+      <p class="modal-body">Each wish carries my love and hopes for your amazing new year ahead. ✨</p>
+      <button class="btn-pink" onclick="goToPage(9); closeModal('wishesModal')">Open Final Letter 💌</button>
+      <p class="modal-skip" onclick="closeModal('wishesModal')">Enjoy a little longer</p>
+    </div>
+  </div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       PAGE 9 — FINAL LETTER
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="page" id="page9">
+    <div class="page-header">
+      <h2 class="page-title">Final Birthday Letter</h2>
+      <p class="page-sub">A special message sealed with love 💕</p>
+    </div>
+    <div class="card-container">
+      <div class="letter-card final-letter-card">
+        <div class="final-kitty-top">
+          <img src="assets/final_love_letter.png" class="final-letter-img" alt=""/>
+        </div>
+        <div class="letter-header">
+          <span>💌</span>
+          <span class="letter-to">Final Birthday Love Letter</span>
+        </div>
+        <div class="final-corner">
+          <img src="assets/hello-kitty-i-love-you.gif" alt=""/>
+        </div>
+        <div class="letter-body">
+          <p class="letter-greeting" id="finalLetterGreeting">My dearest birthday princess,</p>
+          <p class="letter-text"    id="finalLetterBody">May this new year bring you everything your heart desires...</p>
+          <p class="letter-pink"    id="finalLetterPink">Happy Birthday, my love. You deserve the world. 🎂✨</p>
+          <hr class="letter-divider"/>
+        </div>
+        <div class="final-actions">
+          <span class="seal-note">Sealing completes your birthday experience.</span>
+          <div class="final-btns">
+            <button class="btn-pink-light" id="sealBtn" onclick="sealLetter()">Seal The Letter 🔒</button>
+            <button class="btn-green"      onclick="restartExperience()">Experience Again</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
+       PAGE 10 — SEALED / CELEBRATION
+  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
+  <div class="page" id="page10">
+    <div class="sealed-page">
+      <div class="sealed-burst">
+        <img src="assets/source.gif"          class="sealed-sparkle"    alt=""/>
+        <img src="assets/hello_kitty_intro.png" class="sealed-main-kitty" alt=""/>
+        <img src="assets/bow.png"             class="sealed-bow sealed-bow-l" alt=""/>
+        <img src="assets/bow.png"             class="sealed-bow sealed-bow-r" alt=""/>
+      </div>
+      <img src="assets/kitty_love_card.png" class="sealed-card" alt=""/>
+      <h2 class="sealed-title">Sealed With Love! 💕</h2>
+      <p  class="sealed-sub" id="sealedSub">Happy Birthday, Beautiful! 🎂✨</p>
+      <div class="sealed-spidy-row">
+        <img src="assets/hello_kitty_spidy1.png" class="sealed-spidy" alt=""/>
+        <img src="assets/hello_kitty_spidy2.png" class="sealed-spidy" alt=""/>
+        <img src="assets/hello_kitty_spidy3.png" class="sealed-spidy" alt=""/>
+        <img src="assets/hello_kitty_spidy4.png" class="sealed-spidy" alt=""/>
+      </div>
+      <button class="btn-pink" onclick="restartExperience()" style="margin-top:28px">Experience Again 🎉</button>
+    </div>
+  </div>
+
+  <audio id="bgMusic" loop preload="none">
+    <source src="assets/birthday-song.mp3" type="audio/mpeg">
+  </audio>
+
+  <script src="script.js"></script>
+</body>
+</html>

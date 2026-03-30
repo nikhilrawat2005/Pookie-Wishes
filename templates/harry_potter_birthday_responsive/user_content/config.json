@@ -1,0 +1,87 @@
+{
+  "name": "NIKHIL",
+
+  "intro": {
+    "badge": "✦ A Magical Birthday Experience ✦",
+    "tagline": "The wizarding world has been waiting to celebrate you..."
+  },
+
+  "wishCards": [
+    {
+      "icon": "🧙‍♂️",
+      "from": "From Albus Dumbledore",
+      "text": "Happiness can be found even in the darkest of times — but today is made entirely of light. Celebrate yourself. You have earned every joy this day brings."
+    },
+    {
+      "icon": "⚡",
+      "from": "From Harry Potter",
+      "text": "You've got that rare kind of magic that makes everyone around you feel seen. You don't just walk into a room — you light it up. Happy Birthday! 🪄"
+    },
+    {
+      "icon": "📚",
+      "from": "From Hermione Granger",
+      "text": "In every timeline, there's one person who makes the journey worth it. In this one? That person is you. Never stop being exactly who you are. ✨"
+    },
+    {
+      "icon": "🌙",
+      "from": "From Luna Lovegood",
+      "text": "The rarest kind of person is one with both kindness and courage. You have both in abundance. May today fill your heart as much as you fill the hearts of others."
+    },
+    {
+      "icon": "🦁",
+      "from": "From Minerva McGonagall",
+      "text": "True character — your kind — is rare. You make everyone around you proud. Celebrate grandly today, you have more than earned it."
+    },
+    {
+      "icon": "💫",
+      "from": "From the Wizarding World",
+      "text": "Across every enchanted realm — every version of today is celebrating you. Because some things are certain across all magic: the sun rises, and you are deeply, completely loved. ❤️"
+    }
+  ],
+
+  "storyPanels": [
+    { "bang": "ORIGIN!", "emoji": "🌅", "caption": "And so it began — the day you arrived and the world quietly became a more magical place." },
+    { "bang": "BRILLIANT!", "emoji": "📚", "caption": "With curiosity like Hermione and courage like Harry — your brilliance grew with every year." },
+    { "bang": "POWERFUL!", "emoji": "✨", "caption": "Your kindness, your wit, your warmth — a magic stronger than any spell ever cast." },
+    { "bang": "LEGENDARY!", "emoji": "❤️", "caption": "The greatest superpower? The way you make every person feel seen and loved. That's rare." },
+    { "bang": "TODAY!", "emoji": "🎂", "caption": "The most magical chapter yet — the Birthday. The grand celebration of YOU! 🎉" },
+    { "bang": "FOREVER!", "emoji": "🌟", "caption": "The best adventures are still ahead. The story never ends, and the magic only grows. 🪄" }
+  ],
+
+  "flipCards": [
+    {
+      "frontSymbol": "🔮",
+      "caption": "The Day We Met ✨",
+      "photo": "user_content/photos/memory1.jpg"
+    },
+    {
+      "frontSymbol": "⚡",
+      "caption": "Our Best Adventure 🌟",
+      "photo": "user_content/photos/memory2.jpg"
+    },
+    {
+      "frontSymbol": "🦉",
+      "caption": "Always & Forever 💛",
+      "photo": "user_content/photos/memory3.jpg"
+    }
+  ],
+
+  "powers": [
+    { "icon": "❤️", "name": "Kindness",   "value": 99 },
+    { "icon": "😂", "name": "Laughter",   "value": 98 },
+    { "icon": "🧠", "name": "Brilliance", "value": 97 },
+    { "icon": "🔥", "name": "Passion",    "value": 100 },
+    { "icon": "💪", "name": "Resilience", "value": 100 },
+    { "icon": "✨", "name": "Magic",      "value": "∞" }
+  ],
+
+  "powersQuote": "In every realm, every timeline — NAME is the rarest kind of person: one who makes the world genuinely better just by being in it.",
+
+  "scratchWish": "May this year bring you adventures that thrill you, love that holds you, laughter that heals you, and every dream you've dared to dream.\n\nYou deserve every bit of it.\nHappy Birthday, you magical soul. ❤️✨",
+
+  "letter": {
+    "title": "Happy Birthday, NIKHIL! 🎂",
+    "body": "Dear NIKHIL,\n\nIf the wizarding world had a favourite person — it would be you.\n\nNot because you have magical powers or a wand. But because you have something far rarer: a genuinely warm heart. You show up for people. You make ordinary moments feel like something worth remembering. You laugh in a way that makes other people want to laugh too.\n\nToday, on your birthday, we want you to know this:\n\nYou are not ordinary. You never were. You are one of those rare people who leaves every room — every conversation, every chapter — a little warmer than it was before.\n\nSo tonight, when the confetti settles and the day quiets down, remember this: you are so deeply, completely, endlessly loved, NIKHIL.\n\nThe best is absolutely still ahead. This is just the beginning.\n\nFly high. Dream bigger. Stay exactly who you are. ⚡",
+    "signature": "— With all our hearts & magic 🪄❤️"
+  }
+}

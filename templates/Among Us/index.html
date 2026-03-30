@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You're Kind of Sus (But I Love You)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Inter:wght@400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body id="body-theme">
+
+    <div id="app">
+        <!-- Tension Timer Overlay -->
+        <div id="tension-overlay" class="hidden">
+            <h2 class="tension-title">Final decision in...</h2>
+            <div id="countdown-number" class="tension-number">3</div>
+        </div>
+
+        <!-- STATE 1: SETUP ("Emergency Meeting") -->
+        <div class="scene active" id="scene-1">
+            <div class="bg-layer bg-stars"></div>
+            <div class="content fade-in text-center">
+                <img src="res/among-us-emergency.gif" alt="Meeting" class="gif-meeting bounce-in delay-05">
+                <h1 class="glitch delay-1" data-text="EMERGENCY MEETING CALLED">EMERGENCY MEETING CALLED</h1>
+                <p class="typewriter-text delay-2 subtext text-red mt-2">Suspicious behavior detected.</p>
+                <p class="typewriter-text delay-3 subtext text-red">Compiling evidence against <span class="inject-name">Name</span>...</p>
+                
+                <div class="loader-container delay-4 mt-3">
+                    <div class="loader-bar"></div>
+                </div>
+
+                <div class="actions cta-setup mt-2">
+                    <button class="btn btn-outline pulse-red" onclick="nextScene()">SEE EVIDENCE &rarr;</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATE 2: EVIDENCE ("Playful Accusation") -->
+        <div class="scene" id="scene-2">
+            <div class="bg-layer bg-stars"></div>
+            <img src="res/Red-Among-Us-PNG-Photo-removebg-preview.png" alt="Decor" class="decor-image decor-bottom-right float">
+            <img src="res/Among-Us-Character-PNG-Image-File.png" alt="Decor Hand" class="decor-image decor-bottom-left float-slow hidden-mobile">
+            
+            <div class="fake-chat-log">
+                <div class="chat-msg align-left delay-chat-1">
+                    <img src="res/cyan.png" class="chat-avatar" alt="cyan">
+                    <div class="chat-bubble">
+                        <span class="chat-name">cyan</span>
+                        <span class="chat-text">i saw them in electrical</span>
+                    </div>
+                </div>
+                <div class="chat-msg align-left delay-chat-2">
+                    <img src="res/red.png" class="chat-avatar" alt="red">
+                    <div class="chat-bubble">
+                        <span class="chat-name">red</span>
+                        <span class="chat-text">it’s definitely them</span>
+                    </div>
+                </div>
+                <div class="chat-msg align-left delay-chat-3">
+                    <img src="res/yellow.png" class="chat-avatar" alt="yellow">
+                    <div class="chat-bubble">
+                        <span class="chat-name">yellow</span>
+                        <span class="chat-text">kinda sus</span>
+                    </div>
+                </div>
+                <div class="chat-msg align-left delay-chat-4">
+                    <img src="res/green.png" class="chat-avatar" alt="green">
+                    <div class="chat-bubble">
+                        <span class="chat-name">green</span>
+                        <span class="chat-text">just vote already</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="content fade-in w-100 text-center">
+                <h2>EVIDENCE LOG</h2>
+                
+                <div class="evidence-stack mt-2">
+                    <div class="evidence-item delay-1">
+                        <span class="bullet">&bull;</span> Hogging the aux and replaying the same songs
+                    </div>
+                    <div class="evidence-item delay-2">
+                        <span class="bullet">&bull;</span> Laughs at their own jokes
+                    </div>
+                    <div class="evidence-item delay-3">
+                        <span class="bullet">&bull;</span> Eats other people's food
+                        <img src="res/hd-cyan-character-imposter-in-vent-among-us-png-733961695044852k16dym7i9f-removebg-preview.png" alt="Vent" class="vent-icon float-icon pl-2">
+                    </div>
+                    <div class="evidence-item delay-4">
+                        <span class="bullet">&bull;</span> Always late
+                    </div>
+                </div>
+
+                <div class="actions delay-5 mt-4">
+                    <button class="btn btn-outline text-white" onclick="nextScene()">Proceed to voting</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATE 3: VOTING ("Decision Phase") -->
+        <div class="scene" id="scene-3">
+            <div class="bg-layer bg-stars"></div>
+            <div class="content fade-in text-center">
+                <img src="res/desktop-wallpaper-among-us-png-among-us-characters.jpg" alt="Group" class="group-img float-slow delay-05">
+                
+                <div class="voting-panel delay-1 mt-3">
+                    <h3>DECISION PHASE</h3>
+                    <p class="vote-status" id="vote-counter-text">Voting in progress...</p>
+                    
+                    <div class="vote-buttons mt-4 delay-2">
+                        <button class="btn btn-skip" id="btn-silent" onclick="staySilent()">STAY SILENT</button>
+                        <button class="btn btn-eject" id="btn-defend" onclick="defendYourself()">DEFEND YOURSELF</button>
+                    </div>
+                    <p id="too-late-msg" class="hidden text-red mt-3 type-fast" style="font-weight: bold;">Too late. Votes already submitted.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATE 4: ELIMINATION ("Climax") -->
+        <div class="scene" id="scene-4">
+            <div class="bg-layer bg-stars"></div>
+            <div class="content text-center center-abs" style="overflow: visible;">
+                <img src="res/blue.png" alt="Ejected" class="ejected-crewmate">
+                
+                <div style="min-height: 120px; display: flex; flex-direction: column; justify-content: flex-start; align-items: center; width: 100%; z-index: 5;">
+                    <h1 class="eliminated-text mt-3" id="eject-text-1"></h1>
+                    <h2 class="eliminated-subtext text-white" id="eject-text-2" style="margin-top: 1rem;"></h2>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATE 5: SCAN RESULT ("Analyzing Subject") -->
+        <div class="scene" id="scene-5">
+            <div class="bg-layer bg-neutral border-scan"></div>
+            <div class="content fade-in w-100 scan-container">
+                <h2 class="scan-title glitch text-left" data-text="Analyzing subject...">Analyzing subject...</h2>
+                <div class="scan-stats mt-3 text-left">
+                    <p class="stat-line delay-1">> Loyalty: <span class="text-success">98%</span></p>
+                    <p class="stat-line delay-2">> Annoyance: 87%</p>
+                    <p class="stat-line delay-3">> Stability: inconsistent</p>
+                    <p class="stat-line delay-4">> Importance: <span class="text-red">critical</span></p>
+                </div>
+                <p class="scan-conclusion delay-6 mt-4 type-fast text-success text-center">Conclusion: cannot be removed.</p>
+            </div>
+        </div>
+
+        <!-- STATE 6: REVEAL ("Emotional Shift") -->
+        <div class="scene" id="scene-6">
+            <div class="bg-layer bg-gradient-warm"></div>
+            <div class="content fade-in text-center">
+                <img src="res/among-us-6084857_1280.webp" alt="Couple" class="couple-img float">
+                
+                <div class="dialogue-box warm-box mt-2">
+                    <p class="typewriter-text line-1">You're kind of annoying sometimes.</p>
+                    <p class="typewriter-text line-2">You make things chaotic.</p>
+                    <p class="typewriter-text line-3">You're not always easy.</p>
+                    <p class="typewriter-text line-4 delay-long mt-3 highlight">But you matter.</p>
+                    <p class="typewriter-text line-5 delay-very-long">And I wouldn't replace you.</p>
+                </div>
+
+                <div class="actions delay-show-btn mt-4">
+                    <button class="btn btn-warm" onclick="nextScene()">Next</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- STATE 7: FINAL ("Resolution") -->
+        <div class="scene" id="scene-7">
+            <div class="bg-layer bg-minimal"></div>
+            <div class="content fade-in text-center center-abs">
+                <img src="res/5977d99c1869e1d528bfd728d1d9e072-removebg-preview.png" alt="Green Crewmate" class="character bounce-infinite">
+                <h1 class="success-text drop-in mt-3">VERDICT: NOT SUS</h1>
+                <p class="subtext">Permanent crewmate.</p>
+                <p class="footer-text mt-4 text-muted">Task remaining: keep being my friend.</p>
+                
+                <div class="actions mt-4">
+                    <button class="btn btn-outline text-white" onclick="location.reload()">Replay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
