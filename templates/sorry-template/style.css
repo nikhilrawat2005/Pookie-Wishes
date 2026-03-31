@@ -200,3 +200,29 @@ body:hover #custom-cursor {
     font-family: 'Quicksand', sans-serif;
     font-weight: 500;
 }
+
+/* Marketing Watermark */
+.pookie-watermark {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 0.8rem;
+    color: rgba(74, 28, 36, 0.6);
+    text-decoration: none;
+    z-index: 100;
+    font-weight: 700;
+    background: rgba(255, 183, 197, 0.3);
+    padding: 6px 16px;
+    border-radius: 30px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    white-space: nowrap;
+}
+.pookie-watermark:hover {
+    background: rgba(255, 107, 129, 0.15);
+    color: #FF6B81;
+    transform: translateX(-50%) translateY(-2px) scale(1.05);
+    box-shadow: 0 10px 20px rgba(255, 107, 129, 0.1);
+}

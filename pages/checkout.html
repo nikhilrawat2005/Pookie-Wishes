@@ -55,6 +55,16 @@
     .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; margin-right: 6px; }
     @keyframes spin { to { transform: rotate(360deg); } }
     @media(max-width:768px) { .co-wrap{grid-template-columns:1fr} .co-sidebar{position:static;order:-1} .co-card{padding:22px 16px} }
+
+    /* Upsell Checkbox Styles */
+    .upsell-box { background: rgba(255, 42, 133, 0.03); border: 1.5px solid var(--bdr-pink); border-radius: var(--r); padding: 16px; margin-top: 20px; display: flex; align-items: flex-start; gap: 14px; cursor: pointer; transition: all 0.2s ease; }
+    .upsell-box:hover { background: rgba(255, 42, 133, 0.06); border-color: var(--pink); }
+    .upsell-box input { width: 20px; height: 20px; accent-color: var(--pink); margin-top: 2px; cursor: pointer; }
+    .upsell-info { flex: 1; }
+    .upsell-title { font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+    .upsell-title span { background: var(--g-main); color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .upsell-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+    .upsell-price { font-family: var(--fd); font-weight: 800; color: var(--pink); font-size: 1rem; margin-top: 4px; }
   </style>
 </head>
 <body>
@@ -91,7 +101,17 @@
 
       <div class="divider"></div>
 
-      <div class="divider"></div>
+      <div class="co-sec">
+        <div class="co-sec-lbl">Add-ons (Optional)</div>
+        <label class="upsell-box" for="lifetime-upsell">
+          <input type="checkbox" id="lifetime-upsell" onchange="renderSummary(JSON.parse(localStorage.getItem('pw_cart')||'[]'))">
+          <div class="upsell-info">
+            <div class="upsell-title">Lifetime Hosting 💎 <span>Recommended</span></div>
+            <div class="upsell-desc">Normally, links expire after 1 year. With Lifetime Hosting, your surprise stays online forever! No recurring fees.</div>
+            <div class="upsell-price">+ ₹100</div>
+          </div>
+        </label>
+      </div>
 
       <div class="divider"></div>
 
@@ -148,7 +168,7 @@
         <a href="privacy-policy.html" style="color:var(--dim)">Privacy Policy</a>
       </div>
       <div style="margin-top:20px; font-size:0.75rem; color:var(--dim); max-width:650px; margin-left:auto; margin-right:auto; line-height:1.6; border-top:1px solid rgba(0,0,0,0.05); padding-top:15px;">
-        <p><strong>Compliance & Safety:</strong> We strictly prohibit any illegal, copyrighted, adult, or harmful content. All submissions are manually reviewed before processing. This is a digital service. No physical products are sold or shipped.</p>
+        <p><strong>Compliance & Safety:</strong> We strictly prohibit any illegal, copyrighted, adult, or harmful content. All submissions are automatically processed but subject to post-delivery safety review. This is a digital service. No physical products are sold or shipped.</p>
         <p style="margin-top:8px; font-weight:700; color:var(--text2);">Support Email: support@pookiewishes.com</p>
       </div>
     </div>
@@ -208,7 +228,10 @@ function waitForSite() {
 }
 
 function renderSummary(items) {
-  const total = items.reduce((s,i) => s+i.price, 0);
+  const tplTotal = items.reduce((s,i) => s+i.price, 0);
+  const isLifetime = document.getElementById('lifetime-upsell')?.checked;
+  const total = tplTotal + (isLifetime ? 100 : 0);
+  
   document.getElementById('sc-total').textContent = total;
   document.getElementById('qr-amt').textContent   = total;
   const tpls = SITE.templates || [];
@@ -273,7 +296,9 @@ async function checkoutSubmitOrder() {
   btn.innerHTML = `<span class="loading-spinner"></span> Redirecting...`;
   btn.disabled = true;
   const orderId = 'PW-' + Date.now();
-  const total   = data.orders.reduce((s,o)=>s+o.price,0);
+  const tplTotal = data.orders.reduce((s,o)=>s+o.price,0);
+  const isLifetime = document.getElementById('lifetime-upsell')?.checked;
+  const total = tplTotal + (isLifetime ? 100 : 0);
 
   // --- 0-PRICE BYPASS (For Testing) ---
   if (total === 0) {
@@ -378,6 +403,7 @@ async function checkoutSubmitOrder() {
         templateId: data.orders[0]?.templateId || 'sorry',
         buyerName: data.name, buyerEmail: data.email,
         orders: data.orders, totalAmount: total,
+        lifetime: !!isLifetime,
         status: 'pending_payment', deliveryStatus: 'pending',
         gateway: 'razorpay',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()

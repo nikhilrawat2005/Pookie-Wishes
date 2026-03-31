@@ -632,11 +632,11 @@ function renderDetailPage() {
             <div class="spec-item"><strong>Output:</strong> Personalized digital webpage</div>
             <div class="spec-item"><strong>Delivery:</strong> Private shareable link</div>
             <div class="spec-item"><strong>Access:</strong> Mobile & desktop access</div>
-            <div class="spec-item"><strong>Time:</strong> Delivery within 24–72 hours</div>
+            <div class="spec-item"><strong>Time:</strong> Instant automated delivery</div>
           </div>
           <div class="price-row">
             <div class="price-amount">${t.currency||'₹'}${t.price}</div>
-            <div class="price-note">One-time · Fully customised for your moment ✨<br>Delivery via private link in 24-72 hours.</div>
+            <div class="price-note">One-time · Fully customised for your moment ✨<br>Instant delivery via private link.</div>
           </div>
           <div class="detail-actions">
             <button class="btn btn-primary btn-lg" style="flex:1"

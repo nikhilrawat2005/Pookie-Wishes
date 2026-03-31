@@ -240,36 +240,6 @@
         "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774800515/WhatsApp_Video_2026-03-29_at_8.58.24_PM_1_vzc6xw.mp4",
         "gallery": []
       }
-    },
-    {
-      "id": "test-pookie",
-      "name": "Testing Pookie",
-      "tagline": "Free Test Template 🧪",
-      "badge": "Testing Only",
-      "emoji": "🧪",
-      "price": 0,
-      "currency": "₹",
-      "currencyCode": "INR",
-      "demoUrl": "https://pookiewishes.com",
-      "tags": [
-        "test",
-        "free",
-        "development"
-      ],
-      "shortDesc": "A special 0-price template created help you test the entire ordering and personalization flow without any real payment.",
-      "longDesc": "This template is purely for testing purposes. It allows you to go through the checkout, skip the payment gateway (since price is 0), and reach the personalization form to verify photo uploads and email notifications.",
-      "vibe": "Experimental & Free",
-      "features": [
-        "🧪 0-Price Testing",
-        "✅ No payment required",
-        "📸 Photo upload testing",
-        "📧 Notification testing"
-      ],
-      "media": {
-        "thumbnail": "media/test/thumbnail.jpg",
-        "video": "",
-        "gallery": []
-      }
     }
   ],
   "comingSoon": [
@@ -277,25 +247,25 @@
       "id": "minecraft",
       "name": "Minecraft",
       "emoji": "⛏️",
-      "tagline": "Block Party Incoming!"
+      "tagline": "A Blocky Birthday Adventure"
     },
     {
       "id": "barbie",
       "name": "Barbie",
       "emoji": "💅",
-      "tagline": "It's a Barbie World!"
+      "tagline": "Life in Plastic, It's Fantastic!"
+    },
+    {
+      "id": "retro",
+      "name": "Retro Gaming",
+      "emoji": "🕹️",
+      "tagline": "Press Start to Celebrate"
     },
     {
       "id": "anime",
       "name": "Anime Vibes",
       "emoji": "🌸",
-      "tagline": "Sugoi Birthday!"
-    },
-    {
-      "id": "bollywood",
-      "name": "Bollywood",
-      "emoji": "🎬",
-      "tagline": "Filmy Birthday Wala Feel!"
+      "tagline": "Sugoi Birthday Surprise!"
     }
   ]
 }

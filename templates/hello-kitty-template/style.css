@@ -752,3 +752,30 @@ button { cursor: pointer; font-family: inherit; }
     padding: 36px;
   }
 }
+
+/* Marketing Watermark */
+.pookie-watermark {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: clamp(.7rem, 1.8vw, .85rem);
+  color: var(--pink);
+  text-decoration: none;
+  z-index: 100;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.6);
+  padding: 8px 20px;
+  border-radius: 40px;
+  backdrop-filter: blur(10px);
+  border: 2px solid var(--pink-light);
+  transition: all 0.3s cubic-bezier(.22,.68,0,1.2);
+  white-space: nowrap;
+  font-family: 'Fredoka One', cursive;
+  box-shadow: 0 4px 15px var(--pink-glow);
+}
+.pookie-watermark:hover {
+  background: var(--pink-pale);
+  transform: translateX(-50%) translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 25px var(--pink-glow);
+}

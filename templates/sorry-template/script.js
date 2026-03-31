@@ -455,6 +455,7 @@ function renderMusic() {
             <div class="mt-4 animate-float">
                 <img src="./sorry image/hello-kitty-i-love-you.gif" class="w-16 h-16 object-contain opacity-60">
             </div>
+            <a href="https://pookie-wishes.vercel.app" target="_blank" class="pookie-watermark">Gift this to your loved ones 💌 Pookie Wishes</a>
         </div>
     `;
     setupMusicLogic(songs);

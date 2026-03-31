@@ -1047,6 +1047,31 @@
         padding-right: env(safe-area-inset-right);
       }
     }
+
+    /* Marketing Watermark */
+    .pookie-watermark {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: clamp(0.7rem, 1.8vw, 0.8rem);
+      color: var(--p1);
+      text-decoration: none;
+      z-index: 100;
+      font-weight: 700;
+      background: rgba(255, 255, 255, 0.5);
+      padding: 6px 16px;
+      border-radius: 30px;
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(155, 114, 207, 0.2);
+      transition: all 0.3s ease;
+      white-space: nowrap;
+    }
+    .pookie-watermark:hover {
+      background: var(--p5);
+      transform: translateX(-50%) translateY(-2px) scale(1.05);
+      box-shadow: 0 8px 25px rgba(120, 80, 200, 0.15);
+    }
   </style>
 </head>
 
@@ -1149,6 +1174,7 @@
       <div class="duo" id="s8g"></div>
       <div class="body-txt">Ab hum dono saath hain.<br>You just made me the happiest person alive ❤️‍🔥</div>
       <button class="btn btn-ghost" onclick="restart()" style="margin-top:4px">🔁 Wanna See Again?</button>
+      <a href="https://pookie-wishes.vercel.app" target="_blank" class="pookie-watermark">Gift this to your loved ones 💌 Pookie Wishes</a>
     </div>
 
   </div>
