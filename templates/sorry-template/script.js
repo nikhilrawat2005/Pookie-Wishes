@@ -172,14 +172,17 @@ function renderScene(index) {
 }
 
 function renderWelcome() {
-    const welcomePhoto = (userData.photos && userData.photos[0]) 
-        ? userData.photos[0] 
+    const safeData = userData || {};
+    
+    // Set dynamic properties
+    const welcomePhoto = (safeData.photos && safeData.photos[0]) 
+        ? safeData.photos[0] 
         : './sorry image/738ffeb8-05d8-45d7-831e-4a849554b810.webp';
     app.innerHTML = `
         <div class="space-y-8 py-6 scale-[var(--card-scale)]">
             <div class="relative inline-block">
                 <span class="absolute -top-10 -left-10 text-4xl animate-bounce">✨</span>
-                <h2 class="text-secondary font-cursive text-3xl mb-2 opacity-0 welcome-fade-in">${userData.welcomeTitle}</h2>
+                <h2 class="text-secondary font-cursive text-3xl mb-2 opacity-0 welcome-fade-in">${safeData.welcomeTitle || 'Hello!'}</h2>
             </div>
             <div class="relative group">
                 <h1 class="text-6xl md:text-8xl font-black text-dark tracking-tighter leading-none mb-4 uppercase italic">
@@ -188,7 +191,7 @@ function renderWelcome() {
                 <div class="h-2 w-24 bg-secondary mx-auto rounded-full group-hover:w-48 transition-all duration-500"></div>
             </div>
             <p class="text-gray-500 max-w-sm mx-auto text-lg leading-relaxed handwriting font-medium">
-                ${userData.welcomeSubText}
+                ${safeData.welcomeSubText || 'A little surprise for you...'}
             </p>
             <div class="relative mt-4">
                 <img src="${welcomePhoto}" class="w-56 h-56 object-cover mx-auto rounded-3xl shadow-2xl animate-float border-8 border-white" onerror="this.src='./sorry image/738ffeb8-05d8-45d7-831e-4a849554b810.webp'">
@@ -291,6 +294,7 @@ function launchConfetti() {
 }
 
 function renderLetter() {
+    const d = userData || {};
     app.innerHTML = `
         <div class="flex flex-col items-center justify-center p-4 w-full scale-[var(--card-scale)]">
             <div class="mb-6 text-center">
@@ -306,17 +310,17 @@ function renderLetter() {
                 <div class="envelope-letter shadow-2xl rounded-xl">
                     <div class="letter-paper h-full rounded-xl">
                         <div class="flex justify-between items-start mb-6 border-b-2 border-accent pb-4">
-                            <h3 class="text-secondary font-black text-2xl">${userData.letterTitle}</h3>
+                            <h3 class="text-secondary font-black text-2xl">${d.letterTitle || 'A Special Note'}</h3>
                             <div class="relative">
                                 <img src="./sorry image/kitty.jpg" class="w-12 h-12 rounded-lg rotate-12 border-2 border-accent">
                                 <img src="./sorry image/280a31ad-3ac2-46dc-a266-8974d5160df9.webp" class="absolute -top-2 -right-2 w-6 h-6 rotate-12">
                             </div>
                         </div>
                         <div class="text-left text-dark space-y-4 handwriting text-xl leading-relaxed">
-                            <p>${userData.letterBody.replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>
+                            <p>${(d.letterBody || '').replace(/\n\n/g, '</p><p>').replace(/\n/g, '<br>')}</p>
                         </div>
                         <div class="mt-12 text-right border-t border-accent pt-6">
-                            <p class="font-cursive text-secondary text-3xl">${userData.senderName} 🩷</p>
+                            <p class="font-cursive text-secondary text-3xl">${d.senderName || 'Me'} 🩷</p>
                         </div>
                     </div>
                 </div>
@@ -333,10 +337,11 @@ window.openEnvelope = () => {
 
 // --------------------- VOUCHER SCENE (RESTORED) ---------------------
 function renderCards() {
+    const d = userData || {};
     app.innerHTML = `
         <div class="space-y-6 w-full max-w-md py-4 scale-[var(--card-scale)]">
             <div class="text-center">
-                <h2 class="text-dark font-black text-4xl mb-1 tracking-tighter italic uppercase">${userData.specialCardTitle}</h2>
+                <h2 class="text-dark font-black text-4xl mb-1 tracking-tighter italic uppercase">${d.specialCardTitle || 'VOUCHER'}</h2>
                 <p class="text-secondary font-medium tracking-[0.2em] text-[10px] uppercase">Official Pookie Voucher</p>
             </div>
             
@@ -351,7 +356,7 @@ function renderCards() {
                 <div class="space-y-4 text-left border-y-2 border-dashed border-accent py-6 my-6 relative">
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-bold text-gray-400 uppercase">Pay To The Order Of:</span>
-                        <span class="text-lg font-black text-dark handwriting">${userData.recipientName} ❤️</span>
+                        <span class="text-lg font-black text-dark handwriting">${d.recipientName || 'You'} ❤️</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="text-xs font-bold text-gray-400 uppercase">Valid Until:</span>
@@ -362,7 +367,7 @@ function renderCards() {
                 <div class="flex justify-between items-end mt-6">
                     <div class="text-left">
                         <p class="text-[8px] font-bold text-gray-300 uppercase">Authorized Signature</p>
-                        <p class="font-cursive text-secondary text-xl border-b-2 border-accent px-2">${userData.senderName} 🩷</p>
+                        <p class="font-cursive text-secondary text-xl border-b-2 border-accent px-2">${d.senderName || 'Me'} 🩷</p>
                     </div>
                     <div class="voucher-verified-stamp">Verified By<br>Bhondu Pookie 🐾</div>
                 </div>
@@ -409,7 +414,7 @@ window.handleStamp = () => {
 };
 
 function renderMusic() {
-    const songs = userData.songs;
+    const songs = (userData && userData.songs && userData.songs.length > 0) ? userData.songs : [{title: "Cute Song", artist: "Unknown", url: ""}];
     app.innerHTML = `
         <div class="space-y-6 w-full max-w-sm py-2 scale-[var(--card-scale)] flex flex-col items-center justify-center">
             <div class="text-center">

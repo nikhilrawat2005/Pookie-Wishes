@@ -473,7 +473,8 @@ function flipCard(idx) {
 }
 
 function injectReveal(idx, panel) {
-  const wish    = (userData.wishes || [])[idx] || {};
+  const safeData = userData || {};
+  const wish    = (safeData.wishes || [])[idx] || {};
   const msg     = wish.message || '💕 Happy Birthday! 💕';
   const sticker = wish.sticker || 'assets/hello-kitty-i-love-you.gif';
   const memSrc  = wish.memory  || `assets/memory${idx + 1}.jpg`;
