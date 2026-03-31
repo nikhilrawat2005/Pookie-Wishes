@@ -39,6 +39,7 @@
       "price": 0,
       "currency": "₹",
       "currencyCode": "INR",
+      "hasPhotos": true,
       "demoUrl": "https://hellokittybirthday.vercel.app/",
       "tags": [
         "kawaii",
@@ -78,6 +79,7 @@
       "price": 0,
       "currency": "₹",
       "currencyCode": "INR",
+      "hasPhotos": true,
       "demoUrl": "https://hp-template-tau.vercel.app/",
       "tags": [
         "magic",
@@ -149,6 +151,7 @@
       "price": 0,
       "currency": "₹",
       "currencyCode": "INR",
+      "hasPhotos": true,
       "demoUrl": "https://celestialbirthday-omega.vercel.app/",
       "tags": [
         "space",
@@ -186,6 +189,7 @@
       "price": 0,
       "currency": "₹",
       "currencyCode": "INR",
+      "hasPhotos": false,
       "demoUrl": "https://amongus-mu-coral.vercel.app",
       "tags": [
         "amongus",
@@ -218,6 +222,7 @@
       "price": 0,
       "currency": "₹",
       "currencyCode": "INR",
+      "hasPhotos": false,
       "demoUrl": "https://sorry-rho-nine.vercel.app/",
       "tags": [
         "apology",

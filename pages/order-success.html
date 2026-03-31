@@ -46,6 +46,7 @@
 
     <!-- Personalisation Form -->
     <div id="post-payment-form">
+      <div id="form-step-indicator" style="font-size: 0.8rem; color: var(--pink); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Step 1 of 1</div>
       <div class="f-group" style="margin-bottom:12px;">
         <label class="f-label">Template Selected</label>
         <input class="f-inp" id="f-template-name" type="text" readonly disabled style="background:var(--bg2); cursor:not-allowed; border-color:var(--bdr); color:var(--text); font-weight:600;">
@@ -67,15 +68,10 @@
         </div>
       </div>
 
-      <div class="f-group">
-        <label class="f-label">Any Extra Instructions? <span class="opt">(Optional)</span></label>
-        <textarea class="f-inp" id="f-extra" rows="2" placeholder="Specific colors, vibe, etc."></textarea>
-      </div>
-
-      <div class="f-group">
-        <label class="f-label">Photos (Max 3) <span class="opt" id="f-photos-opt">(Required for this Template)</span></label>
+      <div class="f-group" id="photo-upload-sec">
+        <label class="f-label">Photos (Max 3) <span class="opt" id="f-photos-opt">(Required)</span></label>
         <div class="img-note">
-          Please upload 1-3 photos to make your surprise magical! ✨ (We'll use cute stickers if you skip, but photos are highly recommended.)
+          Please upload 1-3 photos to make your surprise magical! ✨
         </div>
         <label class="upload-zone">
           <div style="font-size:1.5rem;margin-bottom:5px;">📸</div>
@@ -146,6 +142,9 @@
   document.getElementById('show-email').textContent = CUSTOMER_EMAIL;
 
   let selectedFiles = [];
+  let currentOrderIndex = 0;
+  let orderData = null;
+  let personalizations = [];
 
   window.addEventListener('DOMContentLoaded', async () => {
     await waitForSite();
@@ -167,6 +166,16 @@
         });
       } catch(e) { console.warn("Could not mark order as paid", e); }
     }
+  });
+
+  window.addEventListener('load', () => { 
+    const t = setInterval(() => {
+      if (window.fbReady && ORDER_ID !== '—') {
+        clearInterval(t);
+        loadOrder();
+      }
+    }, 100);
+    setTimeout(() => clearInterval(t), 10000);
   });
 
   function waitForSite() {
@@ -206,72 +215,64 @@
     return data.secure_url;
   }
 
-    let currentTemplateId = 'sorry';
-    
-    // Note: Template folders have been standardized to [id]-template
-
-    // --- Form Adaptation ---
-    async function adaptForm() {
-      if (!window.fbReady || ORDER_ID === '—') return;
-      try {
-        const dReq = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
-        if (dReq.exists) {
-          const order = dReq.data();
-          const tId = order.templateId || (order.orders && order.orders[0] ? order.orders[0].templateId : null) || (order.items && order.items[0] ? order.items[0].id : null) || 'sorry';
-          currentTemplateId = tId;
-          
-          let tName = order.templateName || (order.orders && order.orders[0] ? order.orders[0].templateName : null) || tId;
-          const tNameInput = document.getElementById('f-template-name');
-          if (tNameInput) tNameInput.value = tName;
-          
-          if (tId === 'among-us') {
-            const msgGrp = document.getElementById('f-msg')?.closest('.f-group');
-            const phoGrp = document.getElementById('f-photos')?.closest('.f-group');
-            if (msgGrp) msgGrp.style.display = 'none';
-            if (phoGrp) phoGrp.style.display = 'none';
-            
-            // Adjust validation and text
-            const sub = document.querySelector('.sub');
-            if (sub) sub.textContent = "Almost done! 🚀 Just give us the name of the special person for your Among Us surprise.";
-            
-            // Fill dummy content for hidden fields to pass validation
-            const msgField = document.getElementById('f-msg');
-            if (msgField && !msgField.value) msgField.value = "N/A (Among Us Mode)";
-          } else if (['hello-kitty', 'harry-potter', 'love-trap', 'celestial'].includes(tId)) {
-            const sub = document.querySelector('.sub');
-            if (sub) sub.textContent = "Make it magical! ✨ Upload your special photos and write a heartfelt message.";
-          }
+  async function loadOrder() {
+    try {
+      const dReq = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
+      if (dReq.exists) {
+        orderData = dReq.data();
+        if (orderData.detailsSubmitted) {
+          showFinalSuccess(orderData.deliveryLinks || [orderData.deliveryLink]);
+          return;
         }
-      } catch (e) {
-        console.warn("Adaptation error:", e);
+        adaptForm();
       }
+    } catch (e) { console.error("Load error:", e); }
+  }
+
+  function adaptForm() {
+    if (!orderData || !orderData.orders) return;
+    const currentItem = orderData.orders[currentOrderIndex];
+    const totalItems = orderData.orders.length;
+    
+    document.getElementById('form-step-indicator').textContent = `Step ${currentOrderIndex + 1} of ${totalItems}`;
+    document.getElementById('f-template-name').value = currentItem.templateName || currentItem.templateId;
+    
+    // Look up template metadata
+    const tMeta = SITE.templates.find(t => t.id === currentItem.templateId);
+    const photoSec = document.getElementById('photo-upload-sec');
+    
+    if (tMeta && tMeta.hasPhotos === false) {
+      photoSec.style.display = 'none';
+    } else {
+      photoSec.style.display = 'block';
     }
 
-    // Call adaptForm when ready
-    window.addEventListener('load', () => { 
-      const t = setInterval(() => {
-        if (window.fbReady && ORDER_ID !== '—') {
-          clearInterval(t);
-          adaptForm();
-        }
-      }, 100);
-      setTimeout(() => clearInterval(t), 10000); // 10s max
-    });
+    // Reset fields
+    document.getElementById('f-recip').value = "";
+    document.getElementById('f-msg').value = "";
+    document.getElementById('f-date').value = "";
+    selectedFiles = [];
+    document.getElementById('file-list-display').textContent = "No files selected";
+    document.getElementById('f-photos').value = "";
+
+    // Change button text for final step
+    const btn = document.getElementById('submit-details-btn');
+    btn.textContent = (currentOrderIndex === totalItems - 1) ? "Complete Order 🚀" : "Next Template ➡️";
+  }
 
   async function submitPersonalisation() {
     const recip = document.getElementById('f-recip').value.trim();
     const msg = document.getElementById('f-msg').value.trim();
     const date = document.getElementById('f-date').value;
-    const extra = document.getElementById('f-extra').value.trim();
 
     if (!recip || !msg) {
       toast("Recipient Name and Wish Message are required!", "err");
       return;
     }
 
-    // Require photos unless the template doesn't need them
-    const tIdForVal = currentTemplateId;
-    if (tIdForVal !== 'among-us' && selectedFiles.length === 0) {
+    const currentItem = orderData.orders[currentOrderIndex];
+    const tMeta = SITE.templates.find(t => t.id === currentItem.templateId);
+    if (tMeta?.hasPhotos !== false && selectedFiles.length === 0) {
       toast("Please upload at least 1 photo for this template!", "err");
       return;
     }
@@ -279,144 +280,122 @@
     const btn = document.getElementById('submit-details-btn');
     if (btn.dataset.locked) return;
     btn.dataset.locked = "true";
+    const originalText = btn.textContent;
     btn.innerHTML = `<span class="loading-spinner"></span> Processing...`;
     btn.disabled = true;
 
     try {
-      toast("Uploading photos...", "inf");
       let photoLinks = [];
-      for (let i = 0; i < selectedFiles.length; i++) {
-        const url = await uploadToCloudinary(selectedFiles[i], i);
-        photoLinks.push(url);
-      }
-
-      // Templates that fully support zero-touch Level 3 deployment locally
-      const autoDeliverTemplates = [
-        'sorry', 
-        'hello-kitty', 
-        'harry-potter', 
-        'love-trap', 
-        'celestial', 
-        'among-us',
-        'test-pookie'
-      ];
-      
-      // Re-fetch templateId to ensure it's not a stale default
-      let tId = currentTemplateId;
-      if (window.fbReady && ORDER_ID !== '—') {
-        const dSnap = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
-        if (dSnap.exists) {
-          const data = dSnap.data();
-          tId = data.templateId || (data.orders && data.orders[0] ? data.orders[0].templateId : null) || (data.items && data.items[0] ? data.items[0].id : null) || 'sorry';
+      if (selectedFiles.length > 0) {
+        toast(`Uploading photos for ${currentItem.templateId}...`, "inf");
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const url = await uploadToCloudinary(selectedFiles[i], i);
+          photoLinks.push(url);
         }
       }
 
-      const isZeroTouch = autoDeliverTemplates.includes(tId);
-      const folder = tId + '-template';
-      const giftLink = window.location.origin + '/templates/' + folder + '/index.html?id=' + ORDER_ID;
-      
-      const updateData = {
-        templateNameDetailed: document.getElementById('f-template-name')?.value || tId,
+      // Save this item's data
+      personalizations.push({
+        templateId: currentItem.templateId,
         recipientName: recip,
         wishMessage: msg,
         eventDate: date || null,
-        extraInstructions: extra || null,
-        photos: photoLinks,
-        detailsSubmitted: true,
-        deliveryLink: isZeroTouch ? giftLink : null,
-        deliveryStatus: isZeroTouch ? 'delivered' : 'pending' // Zero-Touch Auto-Delivery Magic ✨
-      };
-
-      if (window.fbReady && ORDER_ID !== '—') {
-        await firebase.firestore().collection('orders').doc(ORDER_ID).update(updateData);
-      }
-
-      toast("Sending notification to Team Cipher...", "inf");
-      try {
-        const ejs = SITE.emailjs?.account1;
-        if (!ejs?.serviceId || !ejs?.templateId_admin || !ejs?.publicKey) {
-          throw new Error("EmailJS missing configuration in site.json. Check serviceId, templateId_admin, and publicKey.");
-        }
-
-        const adminUrl = window.location.origin + window.location.pathname.replace('order-success.html', 'admin/index.html');
-        
-        // Prepare photo links string for email
-        const photoLinksStr = photoLinks.length > 0 ? photoLinks.join('\n') : 'No photos provided';
-
-        // Send comprehensive notification to Admin
-        await emailjs.send(ejs.serviceId, ejs.templateId_admin, {
-          order_id: ORDER_ID,
-          customer_email: CUSTOMER_EMAIL,
-          recipient_name: recip,
-          wish_message: msg,
-          event_date: date || 'N/A',
-          extra_instructions: extra || 'None',
-          photo_links: photoLinksStr,
-          admin_link: adminUrl
-        }, ejs.publicKey);
-        
-        // Provide the Auto-Delivery Email to the Customer if Zero-Touch
-        if (isZeroTouch && ejs?.templateId_delivery) {
-          try {
-             await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
-                to_email: CUSTOMER_EMAIL,
-                recipient_name: 'Awesome Customer',
-                gift_link: giftLink,
-                order_id: ORDER_ID
-             }, ejs.publicKey);
-          } catch(e) { console.warn("Auto delivery email failed", e); }
-        }
-
-      } catch(e) {
-        console.error("EmailJS Error:", e);
-        const errDetail = e.text || e.message || 'Check EmailJS Setup';
-        toast(`Admin Notification Failed: ${errDetail}`, "err");
-        alert(`ADMIN NOTIFICATION ERROR: ${errDetail}\n\nPlease check your EmailJS Template and Public Key in site.json.`);
-      }
-
-      document.getElementById('post-payment-form').style.display = 'none';
-      
-      // Zero-Touch UI Replacement vs Manual Notification UI
-      if (isZeroTouch) {
-          document.getElementById('success-msg').innerHTML = `
-            <div style="font-size:3.5rem; margin-bottom:10px;">🎁✨</div>
-            <h3 style="font-family:var(--fd); color:var(--text); margin-bottom:10px; font-size:1.6rem;">Your Surprise is Ready!</h3>
-            <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
-              Because you chose a **Premium Zero-Touch Template**, your surprise was generated instantly. Here is the secret link to share with ${recip} 🩷
-            </p>
-            
-            <div style="background:var(--bg2); padding:18px; border-radius:var(--r); border:2px dashed var(--bdr-pink); margin-bottom:20px; word-break:break-all;">
-                <span style="font-family:var(--fm); font-size:0.85rem; color:var(--text2); user-select:all;">${giftLink}</span>
-            </div>
-            
-            <div style="display:flex; gap:12px; justify-content:center; margin-bottom:20px; flex-wrap:wrap;">
-                <button class="btn btn-soft" style="font-weight:600;" onclick="navigator.clipboard.writeText('${giftLink}');toast('Link Copied! 📋','ok')">📋 Copy Link</button>
-                <a href="${giftLink}" target="_blank" class="btn btn-primary" style="font-weight:700;">Visit Surprise ✨</a>
-            </div>
-            <p style="font-size:0.75rem; color:var(--dim); font-style:italic;">
-              We have also securely emailed this link to <strong>${CUSTOMER_EMAIL}</strong>. It will automatically expire after 30 days.
-            </p>
-          `;
-      }
-      
-      document.getElementById('success-msg').style.display = 'block';
-
-      confetti({
-        particleCount: 150,
-        spread: 70,
-        origin: { y: 0.6 },
-        colors: ['#e8829a', '#a89ee8', '#7aaee8']
+        photos: photoLinks
       });
 
-      toast("Success! Order fully submitted 🎉", "ok");
+      if (currentOrderIndex < orderData.orders.length - 1) {
+        // Move to next form
+        currentOrderIndex++;
+        btn.dataset.locked = "";
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        adaptForm();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        toast("Step saved! Next one... ✨", "ok");
+      } else {
+        // Final Submission
+        toast("Finalizing your surprises... 🪄", "inf");
+        await finalizeOrder();
+      }
 
     } catch (err) {
       console.error(err);
-      toast("An error occurred. Please try again or contact WhatsApp.", "err");
+      toast("An error occurred. Please try again.", "err");
       btn.dataset.locked = "";
-      btn.innerHTML = `Complete Order 🚀`;
+      btn.innerHTML = originalText;
       btn.disabled = false;
     }
+  }
+
+  async function finalizeOrder() {
+    // Generate links for all personalized items
+    const deliveryLinks = personalizations.map((p, idx) => {
+        const folder = p.templateId + '-template';
+        return window.location.origin + '/templates/' + folder + '/index.html?id=' + ORDER_ID + '&item=' + idx;
+    });
+
+    const updateData = {
+      personalizations: personalizations,
+      detailsSubmitted: true,
+      deliveryLinks: deliveryLinks,
+      deliveryStatus: 'delivered'
+    };
+
+    if (window.fbReady) {
+      await firebase.firestore().collection('orders').doc(ORDER_ID).update(updateData);
+    }
+
+    // Send Team Notification
+    try {
+      const ejs = SITE.emailjs?.account1;
+      await emailjs.send(ejs.serviceId, ejs.templateId_admin, {
+        order_id: ORDER_ID,
+        customer_email: CUSTOMER_EMAIL,
+        summary: personalizations.map(p => `${p.templateId} for ${p.recipientName}`).join(', '),
+        admin_link: window.location.origin + '/admin/index.html'
+      }, ejs.publicKey);
+      
+      // Auto-delivery email
+      await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
+        to_email: CUSTOMER_EMAIL,
+        recipient_name: 'Awesome Customer',
+        gift_link: deliveryLinks.join('\n'),
+        order_id: ORDER_ID
+      }, ejs.publicKey);
+    } catch(e) { console.warn("Email notification failed", e); }
+
+    showFinalSuccess(deliveryLinks);
+  }
+
+  function showFinalSuccess(links) {
+    document.getElementById('post-payment-form').style.display = 'none';
+    const successDiv = document.getElementById('success-msg');
+    
+    let linksHtml = links.map((link, i) => `
+        <div style="background:var(--bg2); padding:15px; border-radius:var(--r); border:1px solid var(--bdr-pink); margin-bottom:15px; text-align:left;">
+            <div style="font-weight:700; font-size:0.85rem; color:var(--pink); margin-bottom:5px;">Surprise ${i+1}: ${orderData?.orders?.[i]?.templateName || 'Link'}</div>
+            <div style="font-family:var(--fm); font-size:0.75rem; color:var(--text2); word-break:break-all; margin-bottom:10px;">${link}</div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-soft btn-sm" onclick="navigator.clipboard.writeText('${link}');toast('Link ${i+1} Copied!','ok')">📋 Copy</button>
+                <a href="${link}" target="_blank" class="btn btn-primary btn-sm">Visit ✨</a>
+            </div>
+        </div>
+    `).join('');
+
+    successDiv.innerHTML = `
+        <div style="font-size:3.5rem; margin-bottom:10px;">🎁✨</div>
+        <h3 style="font-family:var(--fd); color:var(--text); margin-bottom:10px; font-size:1.6rem;">All Surprises are Ready!</h3>
+        <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
+          Your personalized surprises have been generated instantly. share these secret links with your loved ones 🩷
+        </p>
+        ${linksHtml}
+        <p style="font-size:0.75rem; color:var(--dim); font-style:italic;">
+          Links automatically expire after 30 days unless you have Lifetime Hosting.
+        </p>
+    `;
+    
+    successDiv.style.display = 'block';
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
   }
 
   function toast(msg, type='inf') {

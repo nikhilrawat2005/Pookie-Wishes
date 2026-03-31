@@ -297,8 +297,10 @@ async function checkoutSubmitOrder() {
   btn.disabled = true;
   const orderId = 'PW-' + Date.now();
   const tplTotal = data.orders.reduce((s,o)=>s+o.price,0);
-  const isLifetime = document.getElementById('lifetime-upsell')?.checked;
+  const isLifetime = !!document.getElementById('lifetime-upsell')?.checked;
   const total = tplTotal + (isLifetime ? 100 : 0);
+  const expiryDate = new Date();
+  expiryDate.setDate(expiryDate.getDate() + 30);
 
   // --- 0-PRICE BYPASS (For Testing) ---
   if (total === 0) {
@@ -403,7 +405,8 @@ async function checkoutSubmitOrder() {
         templateId: data.orders[0]?.templateId || 'sorry',
         buyerName: data.name, buyerEmail: data.email,
         orders: data.orders, totalAmount: total,
-        lifetime: !!isLifetime,
+        lifetime: isLifetime,
+        hostingExpiry: isLifetime ? null : firebase.firestore.Timestamp.fromDate(expiryDate),
         status: 'pending_payment', deliveryStatus: 'pending',
         gateway: 'razorpay',
         createdAt: firebase.firestore.FieldValue.serverTimestamp()

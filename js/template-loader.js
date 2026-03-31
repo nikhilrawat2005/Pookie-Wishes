@@ -37,23 +37,25 @@ window.getPookieData = async function(templateId) {
 
         // 4. Check 30-Day Expiration Rule
         const createdAt = order.createdAt?.toDate ? order.createdAt.toDate() : new Date();
-        const now = new Date();
-        const diffDays = (now - createdAt) / (1000 * 60 * 60 * 24);
+        const hostingExpiry = order.hostingExpiry?.toDate ? order.hostingExpiry.toDate() : new Date(createdAt.getTime() + 30 * 24 * 60 * 60 * 1000);
+        const isLifetime = order.lifetime === true;
         
-        if (diffDays > 30) {
-            showErrorSplash(
-                "Time's Up! ⏳", 
-                "This Pookie Wish has beautifully expired after 30 days to save space in the stars. ✨"
-            );
+        const now = new Date();
+        
+        if (!isLifetime && now > hostingExpiry) {
+            showExpirySplash(orderId);
             throw new Error("Expired");
         }
 
         // 5. Map fields per template
-        const template = templateId || order.templateId;
-        const recipient = order.recipientName || "Pookie";
+        const itemIdx = parseInt(urlParams.get('item') || '0');
+        const pData = (order.personalizations && order.personalizations[itemIdx]) ? order.personalizations[itemIdx] : order;
+
+        const template = templateId || pData.templateId || order.templateId;
+        const recipient = pData.recipientName || order.recipientName || "Pookie";
         const sender = order.buyerName || "Your Love";
-        const photos = order.photos || [];
-        const message = order.wishMessage || "Wishing you the best!";
+        const photos = pData.photos || order.photos || [];
+        const message = pData.wishMessage || order.wishMessage || "Wishing you the best!";
 
         if (template === 'sorry') {
             return {
@@ -154,6 +156,28 @@ window.getPookieData = async function(templateId) {
         throw err; // Stop execution
     }
 };
+
+function showExpirySplash(orderId) {
+    document.body.innerHTML = `
+        <div style="height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#09090b; color:#fff; text-align:center; padding:20px; font-family:'Outfit', sans-serif;">
+            <div style="font-size:4rem; margin-bottom:20px; animation:float 3s ease-in-out infinite;">✨⏳</div>
+            <h1 style="background:linear-gradient(135deg, #ff2a85 0%, #ff7ea5 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:900; font-size:2.5rem; margin-bottom:15px;">Memories Locked</h1>
+            <p style="color:#a1a1aa; max-width:400px; line-height:1.6; margin-bottom:30px; font-size:1.1rem;">
+                This Pookie Wish has completed its 30-day standard journey. To unlock it forever, upgrade to Lifetime Hosting.
+            </p>
+            <a href="https://wa.me/918700113731?text=Hi! I want to upgrade my order ${orderId} to Lifetime Hosting 💎" 
+               style="background:#ff2a85; color:#fff; text-decoration:none; padding:16px 32px; border-radius:12px; font-weight:700; box-shadow:0 10px 20px rgba(255,42,133,0.3); transition:all 0.3s;"
+               onmouseover="this.style.transform='translateY(-2px) scale(1.02)'"
+               onmouseout="this.style.transform='none'">
+               Unlock Lifetime ✨ (₹100)
+            </a>
+            <style>
+                @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} }
+                body { margin:0; }
+            </style>
+        </div>
+    `;
+}
 
 function showErrorSplash(title, subtext="") {
     // Halts template execution and shows a beautiful error screen
