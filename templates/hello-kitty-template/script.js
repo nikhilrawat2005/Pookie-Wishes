@@ -23,7 +23,11 @@
    § 1  GLOBALS
 ────────────────────────────────────────────────────── */
 let userData      = null;
-let currentPage      = 1;
+let currentPage   = 1;
+let cakeCtx = null, cakeDrawing = false, cakeCut = false, cakeStartX = 0, cakeStartY = 0;
+let wishSlideTimer = null;
+let bgMusic = null;
+let flippedCards = new Set();
 
 // --- Init ---
 async function init() {

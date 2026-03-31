@@ -1031,7 +1031,7 @@ window.onYouTubeIframeAPIReady=function(){
   ytPlayer=new YT.Player('yt-player',{
     height:'1',width:'1',
     videoId:SONGS[0].id,
-    playerVars:{autoplay:0,controls:0,disablekb:1,fs:0,modestbranding:1,rel:0,playsinline:1,start:SONGS[0].start,origin:window.location.origin},
+    playerVars:{autoplay:0,controls:0,disablekb:1,fs:0,modestbranding:1,rel:0,playsinline:1,start:SONGS[0].start},
     events:{
       onReady:()=>{ ytReady=true; },
       onError:(e)=>{

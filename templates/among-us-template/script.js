@@ -1,6 +1,8 @@
-// Configuration and State
 let userData      = null;
 let targetName    = 'Crewmate';
+let currentSceneIndex = 1;
+let totalScenes   = 7;
+let voteInterval;
 
 function initSetup() {
     const loaderBar = document.querySelector('.loader-bar');
