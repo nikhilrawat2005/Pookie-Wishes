@@ -159,20 +159,23 @@ async function init() {
     setupInitialized = true;
     
     try {
+        // Wait up to 3s for getPookieData to be injected by template-loader.js
+        let waited = 0;
+        while (!window.getPookieData && waited < 3000) {
+            await new Promise(r => setTimeout(r, 100));
+            waited += 100;
+        }
+
         if (window.getPookieData) {
             userData = await window.getPookieData('among-us');
         }
         
-        // Fallback for local dev
+        // Fallback for local dev — silently skip 404
         if (!userData) {
-            const res = await fetch('user.json'); // Standardized fallback name
-            if (!res.ok) {
-                // Secondary fallback for legacy compatibility
-                const resOld = await fetch('data.json');
-                if (resOld.ok) userData = await resOld.json();
-            } else {
-                userData = await res.json();
-            }
+            try {
+                const res = await fetch('user.json');
+                if (res.ok) userData = await res.json();
+            } catch(e) { /* no user.json - that's fine */ }
         }
         
         if (userData && userData.targetName) {
@@ -183,16 +186,12 @@ async function init() {
         initSetup();
     } catch (err) {
         console.error('Initialization failed:', err);
-        initSetup(); // Try to start anyway
+        document.querySelectorAll('.inject-name').forEach(el => el.textContent = targetName);
+        initSetup(); // Start anyway with defaults
     }
 }
 
 document.addEventListener("DOMContentLoaded", init);
-if (document.readyState === "complete" || document.readyState === "interactive") {
-    setTimeout(() => {
-        if (!setupInitialized) { init(); }
-    }, 100);
-}
 
 function typeWriter(element, text, speed, callback) {
     if(!element) return;
