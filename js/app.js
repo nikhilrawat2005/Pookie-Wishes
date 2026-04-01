@@ -110,6 +110,21 @@ function initFirebase() {
             btn.id = "admin-btn";
             nav.appendChild(btn);
           }
+          
+          const uDd = document.getElementById("u-dd");
+          if (uDd && !document.getElementById("admin-dd-btn")) {
+            const ddItem = document.createElement("a");
+            ddItem.href = ROOT + "admin/index.html";
+            ddItem.innerText = "⚙️ Admin Panel";
+            ddItem.className = "dd-item";
+            ddItem.id = "admin-dd-btn";
+            const sep = uDd.querySelector(".dd-sep");
+            if (sep) {
+              uDd.insertBefore(ddItem, sep);
+            } else {
+              uDd.appendChild(ddItem);
+            }
+          }
         }
       } else {
         if (PAGE === 'favorites') showFavPrompt();
