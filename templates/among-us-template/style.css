@@ -287,15 +287,16 @@ p { font-size: 1.2rem; line-height: 1.6; }
 
 /* Marketing Watermark */
 .pookie-watermark {
-    position: absolute;
-    bottom: 24px;
-    left: 50%;
-    transform: translateX(-50%);
+    position: fixed;
+    bottom: 16px;
+    right: 16px;
+    left: auto;
+    transform: none;
     font-family: 'Inter', sans-serif;
     font-size: 0.8rem;
     color: rgba(255, 255, 255, 0.7);
     text-decoration: none;
-    z-index: 1000;
+    z-index: 99999;
     font-weight: 500;
     background: rgba(0, 0, 0, 0.4);
     padding: 8px 20px;
@@ -322,7 +323,7 @@ p { font-size: 1.2rem; line-height: 1.6; }
 .pookie-watermark:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #fff;
-    transform: translateX(-50%) translateY(-3px);
+    transform: translateY(-3px);
     border-color: rgba(255, 255, 255, 0.3);
     box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
 }
