@@ -984,6 +984,47 @@ body {
   .imsg   { margin-bottom: 1rem; font-size: .9rem; }
 }
 
+/* Marketing Watermark */
+.pookie-watermark {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  z-index: 1000;
+  font-weight: 500;
+  background: rgba(0, 0, 0, 0.4);
+  padding: 8px 20px;
+  border-radius: 50px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  white-space: nowrap;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+.pookie-watermark span {
+  font-size: 1.1rem;
+}
+.pookie-watermark b {
+  color: #fff;
+  font-weight: 700;
+}
+.pookie-watermark:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  transform: translateX(-50%) translateY(-3px);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+}
+
 /* ── WIDE DESKTOP (≥ 1400px) ── */
 @media (min-width: 1400px) {
   .wgrid { grid-template-columns: repeat(3, 1fr); }
