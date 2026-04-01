@@ -328,13 +328,14 @@ async function loadOrders(isLoadMore = false) {
 }
 
 function updateStats() {
-  document.getElementById('s-total').textContent = orders.length;
-  document.getElementById('s-rev').textContent   = '₹' + orders.reduce((s,o)=>s+(o.totalAmount||0),0);
-  document.getElementById('s-pend').textContent  = orders.filter(o=>o.status==='pending_verification').length;
-  document.getElementById('s-done').textContent  = orders.filter(o=>o.deliveryStatus==='delivered').length;
+  const validOrders = orders.filter(o => ['paid', 'delivered', 'pending_verification'].includes(o.status));
+  document.getElementById('s-total').textContent = validOrders.length;
+  document.getElementById('s-rev').textContent   = '₹' + validOrders.reduce((s,o)=>s+(o.totalAmount||0),0);
+  document.getElementById('s-pend').textContent  = validOrders.filter(o=>o.status==='pending_verification').length;
+  document.getElementById('s-done').textContent  = validOrders.filter(o=>o.deliveryStatus==='delivered').length;
   
   // Optional: Update revenue to show Lifetime specifically if needed
-  const lifeRev = orders.filter(o=>o.lifetime).reduce((s,o)=>s+(o.totalAmount||0),0);
+  const lifeRev = validOrders.filter(o=>o.lifetime).reduce((s,o)=>s+(o.totalAmount||0),0);
   console.log('Lifetime Revenue:', lifeRev);
 }
 
@@ -389,10 +390,11 @@ function createTemplateGrid() {
 }
 
 function renderTable() {
-  let list = orders;
-  if(curFilter==='delivered') list = orders.filter(o=>o.deliveryStatus==='delivered' || o.status==='delivered');
-  if(curFilter==='incoming')  list = orders.filter(o=>o.status==='pending_verification' || o.status==='paid');
-  if(curFilter==='lifetime')  list = orders.filter(o=>o.lifetime === true);
+  const validOrders = orders.filter(o => ['paid', 'delivered', 'pending_verification'].includes(o.status));
+  let list = validOrders;
+  if(curFilter==='delivered') list = validOrders.filter(o=>o.deliveryStatus==='delivered' || o.status==='delivered');
+  if(curFilter==='incoming')  list = validOrders.filter(o=>o.status==='pending_verification' || o.status==='paid');
+  if(curFilter==='lifetime')  list = validOrders.filter(o=>o.lifetime === true);
   
   if(!list.length) {
     document.getElementById('tbl-body').innerHTML = '<div class="empty">No orders found.</div>';

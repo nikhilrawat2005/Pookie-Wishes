@@ -136,14 +136,7 @@ window.getPookieData = async function(templateId) {
             return {
                 recipientName: recipient.toUpperCase(),
                 senderName: sender,
-                wishMessage: message,
-                memoryPhotos: [
-                    photos[0] || "./assets/star-placeholder.png",
-                    photos[1] || "./assets/star-placeholder.png",
-                    photos[2] || "./assets/star-placeholder.png",
-                    photos[0] || "./assets/star-placeholder.png",
-                    photos[1] || "./assets/star-placeholder.png"
-                ]
+                wishMessage: message
             };
         }
 

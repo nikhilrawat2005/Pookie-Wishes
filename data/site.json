@@ -151,7 +151,7 @@
       "price": 0,
       "currency": "₹",
       "currencyCode": "INR",
-      "hasPhotos": true,
+      "hasPhotos": false,
       "demoUrl": "https://celestialbirthday-omega.vercel.app/",
       "tags": [
         "space",
