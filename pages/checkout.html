@@ -92,7 +92,7 @@
       <div class="co-sec">
         <div class="co-sec-lbl">Add-ons (Optional)</div>
         <label class="upsell-box" for="lifetime-upsell">
-          <input type="checkbox" id="lifetime-upsell" onchange="renderSummary(JSON.parse(localStorage.getItem('pw_cart')||'[]'))">
+          <input type="checkbox" id="lifetime-upsell" onchange="renderSummary(JSON.parse(localStorage.getItem('pookie_cart')||'[]'))">
           <div class="upsell-info">
             <div class="upsell-title">Lifetime Hosting 💎 <span>Recommended</span></div>
             <div class="upsell-desc">Normally, links expire after 1 year. With Lifetime Hosting, your surprise stays online forever! No recurring fees.</div>
@@ -186,14 +186,14 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Sync cart prices with latest SITE data to avoid 0-price display bugs
   syncCheckoutCart();
 
-  const cartItems = JSON.parse(localStorage.getItem('pw_cart') || '[]');
+  const cartItems = JSON.parse(localStorage.getItem('pookie_cart') || '[]');
   if (!cartItems.length) { window.location.href = '../index.html'; return; }
 
   renderSummary(cartItems);
 });
 
 function syncCheckoutCart() {
-  const items = JSON.parse(localStorage.getItem('pw_cart') || '[]');
+  const items = JSON.parse(localStorage.getItem('pookie_cart') || '[]');
   if (!items.length || !SITE?.templates) return;
   
   const updated = items.map(item => {
@@ -205,7 +205,7 @@ function syncCheckoutCart() {
     }
     return item;
   });
-  localStorage.setItem('pw_cart', JSON.stringify(updated));
+  localStorage.setItem('pookie_cart', JSON.stringify(updated));
 }
 
 function waitForSite() {
@@ -216,22 +216,30 @@ function waitForSite() {
 }
 
 function renderSummary(items) {
-  const tplTotal = items.reduce((s,i) => s+i.price, 0);
+  const tplTotal = items.reduce((s,i) => s+Number(i.price||0), 0);
   const isLifetime = document.getElementById('lifetime-upsell')?.checked;
   const total = tplTotal + (isLifetime ? 100 : 0);
   
-  document.getElementById('sc-total').textContent = total;
-  document.getElementById('qr-amt').textContent   = total;
-  const tpls = SITE.templates || [];
-  document.getElementById('sc-items').innerHTML = items.map(item => {
+  const totalEl = document.getElementById('sc-total');
+  const qrAmtEl = document.getElementById('qr-amt');
+  if (totalEl) totalEl.textContent = total;
+  if (qrAmtEl) qrAmtEl.textContent = total;
+
+  const itemsContainer = document.getElementById('sc-items');
+  if (!itemsContainer) return;
+
+  const tpls = (window.SITE && window.SITE.templates) ? window.SITE.templates : [];
+
+  itemsContainer.innerHTML = items.map(item => {
     const tpl = tpls.find(t => t.id === item.id) || {};
-    const ph  = item.id==='hello-kitty' ? 'hk':'hp';
-    const bg  = ph==='hk' ? 'linear-gradient(135deg,#fff0f4,#f4eeff)':'linear-gradient(135deg,#f5eee8,#f0ece0)';
+    const thumb = tpl.media?.thumbnail || '';
+    const emoji = item.emoji || '🎁';
+    
     return `<div class="sc-item">
-      <div class="sc-thumb" style="${!tpl.media?.thumbnail?`background:${bg}`:''}">
-        ${tpl.media?.thumbnail ? `<img src="../${tpl.media.thumbnail}" onerror="this.style.display='none'">` : item.emoji}
+      <div class="sc-thumb">
+        ${thumb ? `<img src="../${thumb}" onerror="this.onerror=null; this.parentElement.innerHTML='${emoji}'">` : emoji}
       </div>
-      <span class="sc-name">${item.emoji} ${item.name}</span>
+      <span class="sc-name">${emoji} ${item.name}</span>
       <span class="sc-price">${item.currency||'₹'}${item.price}</span>
     </div>`;
   }).join('');
@@ -242,7 +250,7 @@ function renderSummary(items) {
 function validate() {
   const name  = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
-  const items = JSON.parse(localStorage.getItem('pw_cart')||'[]');
+  const items = JSON.parse(localStorage.getItem('pookie_cart')||'[]');
   if (!name)               { toast('Enter your name','err'); return null; }
   if (!email?.includes('@')){ toast('Enter a valid email','err'); return null; }
   const orders = items.map(i => ({ templateId:i.id, templateName:`${i.emoji} ${i.name}`, price:i.price }));
@@ -335,7 +343,7 @@ async function checkoutSubmitOrder() {
       return;
     }
 
-    localStorage.removeItem('pw_cart');
+    localStorage.removeItem('pookie_cart');
     toast('Free Order Placed! 🎉', 'ok');
     setTimeout(() => {
       window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${sequentialId}&email=${encodeURIComponent(data.email)}`;
@@ -415,7 +423,7 @@ async function checkoutSubmitOrder() {
     "order_id": razorOrderId,
     "handler": function (response) {
       // Clear cart
-      localStorage.removeItem('pw_cart');
+      localStorage.removeItem('pookie_cart');
       toast("Payment Successful! 🎉", "ok");
       
       // Update status in Firestore (optional but recommended)

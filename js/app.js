@@ -19,7 +19,7 @@ const PAGE = (() => {
 })();
 
 // ── State ─────────────────────────────────────────────
-let SITE        = null;
+window.SITE      = null;
 let currentUser = null;
 let favSet      = new Set();
 let cart        = [];
@@ -34,7 +34,7 @@ function getCached(key, fn) {
 
 // ── Boot ─────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', async () => {
-  SITE = await loadData();
+  window.SITE = await loadData();
   injectSiteText();
   initNavScroll();
   initCartDrawer();
@@ -60,8 +60,8 @@ async function loadData() {
 }
 
 function injectSiteText() {
-  if (!SITE?.site) return;
-  const s = SITE.site;
+  if (!window.SITE?.site) return;
+  const s = window.SITE.site;
   document.querySelectorAll('[data-site-name]').forEach(el => el.textContent = s.name || 'Pookie Wishes');
   document.querySelectorAll('[data-site-email]').forEach(el => el.textContent = s.email || '');
   document.querySelectorAll('[data-site-email-href]').forEach(el => el.href = `mailto:${s.email || ''}`);
@@ -77,7 +77,7 @@ function injectSiteText() {
 //  FIREBASE  (v9 compat — NO module imports)
 // ═══════════════════════════════════════════════════════
 function initFirebase() {
-  const cfg = SITE?.firebase;
+  const cfg = window.SITE?.firebase;
   if (!cfg?.apiKey || cfg.apiKey.startsWith('YOUR')) {
     console.warn('[PW] Firebase not configured');
     if (PAGE === 'favorites') showFavPrompt();
@@ -345,7 +345,7 @@ function renderFavPage() {
 //  CART
 // ═══════════════════════════════════════════════════════
 function loadLocalCart() {
-  try { cart = JSON.parse(localStorage.getItem('pw_cart') || '[]'); }
+  try { cart = JSON.parse(localStorage.getItem('pookie_cart') || '[]'); }
   catch { cart = []; }
   syncCartWithSite();
   updateCartBadge(); refreshCartBtns(); renderCartDrawer();
@@ -377,18 +377,18 @@ function syncCartWithSite() {
     return next;
   });
 
-  if (changed) localStorage.setItem('pw_cart', JSON.stringify(cart));
+  if (changed) localStorage.setItem('pookie_cart', JSON.stringify(cart));
   return changed;
 }
 
 function saveCart() {
-  localStorage.setItem('pw_cart', JSON.stringify(cart));
+  localStorage.setItem('pookie_cart', JSON.stringify(cart));
   updateCartBadge(); refreshCartBtns(); renderCartDrawer();
 }
 
 function addToCart(id, e) {
   if (e) e.stopPropagation();
-  const tpl = (SITE?.templates || []).find(t => t.id === id);
+  const tpl = window.SITE?.templates?.find(t => t.id === id);
   if (!tpl) return;
   if (cart.find(i => i.id === id)) { toast('Already in cart!', 'inf'); return; }
   cart.push({
@@ -805,10 +805,6 @@ function setLoading(state) {
 // ═══════════════════════════════════════════════════════
 //  MODALS
 // ═══════════════════════════════════════════════════════
-
-// ═══════════════════════════════════════════════════════
-//  MODALS
-// ═══════════════════════════════════════════════════════
 function openModal(id) {
   document.getElementById(id)?.classList.add('open');
   document.body.style.overflow = 'hidden';
@@ -901,8 +897,7 @@ Object.assign(window, {
   vidTogglePlay, vidToggleMute, vidFullscreen, vidSeek,
   galShowVideo, galShowImg,
 
-  saveOrder,
-  submitOrder,
+  SITE,
   isAdmin,
   getCached,
   initReveals
