@@ -203,42 +203,77 @@ body:hover #custom-cursor {
 
 /* Marketing Watermark */
 .pookie-watermark {
-    position: fixed;
-    bottom: 16px;
-    right: 16px;
-    left: auto;
-    transform: none;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.8rem;
-    color: rgba(255, 255, 255, 0.7);
-    text-decoration: none;
-    z-index: 99999;
-    font-weight: 500;
-    background: rgba(0, 0, 0, 0.4);
-    padding: 8px 20px;
-    border-radius: 50px;
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    white-space: nowrap;
-    letter-spacing: 0.5px;
+    position: relative;
+    width: 100%;
+    margin-top: 30px;
+    margin-bottom: 20px;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 8px;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    gap: 12px;
+    font-family: 'Inter', 'Nunito', sans-serif;
+    pointer-events: none;
+    animation: slideUpCloud 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+    z-index: 100;
 }
-.pookie-watermark span {
-    font-size: 1.1rem;
+@media (min-width: 768px) {
+    .pookie-watermark {
+        position: fixed;
+        bottom: 25px;
+        right: 25px;
+        width: auto;
+        margin: 0;
+        align-items: flex-end;
+        z-index: 99999;
+    }
 }
-.pookie-watermark b {
-    color: #fff;
+@keyframes slideUpCloud {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); pointer-events: auto; }
+}
+.watermark-cloud {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    color: #333;
+    padding: 12px 18px;
+    border-radius: 20px;
+    font-size: 0.85rem;
     font-weight: 700;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+    max-width: 250px;
+    line-height: 1.4;
+    border: 1px solid rgba(0,0,0,0.1);
+    pointer-events: auto;
+    text-align: center;
+    position: relative;
+    font-family: 'Inter', 'Nunito', sans-serif;
 }
-.pookie-watermark:hover {
-    background: rgba(255, 255, 255, 0.1);
+@media (min-width: 768px) {
+    .watermark-cloud {
+        border-radius: 20px 20px 0 20px;
+        text-align: right;
+    }
+}
+.watermark-btn {
+    background: linear-gradient(135deg, #ff0f7b, #f89b29);
     color: #fff;
+    text-decoration: none;
+    padding: 10px 24px;
+    border-radius: 50px;
+    font-weight: 800;
+    font-size: 0.9rem;
+    box-shadow: 0 6px 20px rgba(255, 15, 123, 0.3);
+    pointer-events: auto;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Inter', 'Nunito', sans-serif;
+}
+.watermark-btn:hover {
     transform: translateY(-3px);
-    border-color: rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 8px 25px rgba(255, 15, 123, 0.45);
+    color: #fff;
 }
