@@ -452,10 +452,8 @@ function renderMusic() {
                     <i data-lucide="refresh-cw" class="w-4 h-4"></i> WATCH IT AGAIN
                 </button>
             </div>
-            <div class="mt-4 animate-float">
-                <img src="./sorry image/hello-kitty-i-love-you.gif" class="w-16 h-16 object-contain opacity-60">
-            </div>
-            <!-- Marketing Watermark -->
+            
+            <!-- Marketing Watermark - Moved below buttons -->
             <div class="pookie-watermark">
                 <div class="watermark-cloud">
                     Want to create such a cute gift for your loved ones? ❤️
@@ -463,6 +461,10 @@ function renderMusic() {
                 <a href="https://pookie-wishes.vercel.app" target="_blank" class="watermark-btn">
                     <span>🎁</span> Visit Pookie Wishes
                 </a>
+            </div>
+
+            <div class="mt-4 animate-float">
+                <img src="./sorry image/hello-kitty-i-love-you.gif" class="w-16 h-16 object-contain opacity-60">
             </div>
         </div>
     `;
