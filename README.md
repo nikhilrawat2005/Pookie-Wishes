@@ -1,36 +1,73 @@
-# Pookie Wishes 🎀 — Complete Setup Guide
+# 🎀 Pookie Wishes — Premium Digital Surprises 🎀
 
-> Personalised digital surprises — birthdays, proposals, anniversaries & more.
+Catch their heart with a personalized digital journey. **Pookie Wishes** is an all-in-one ecosystem for creating, selling, and delivering interactive, high-end surprise websites for birthdays, proposals, anniversaries, and more.
+
+[![Live Demo](https://img.shields.io/badge/Live-Site-ff0f7b?style=for-the-badge&logo=vercel)](https://pookie-wishes.vercel.app)
 
 ---
 
-## 🚨 Action Required (External Steps You Must Do)
+## ✨ Why Pookie Wishes?
 
-These are things that **cannot be done from code**. You must do these yourself on the external dashboards.
+In a world of boring greeting cards, **Pookie Wishes** offers an immersive experience. Each template is a mini-game or story that leads to a heartfelt final message.
 
-### ✅ Step A — Firestore Security Rules (MOST IMPORTANT)
+### 🌟 Key Features
+- **Premium Templates**: Hello Kitty, Harry Potter, Celestial Universe, Among Us, and more.
+- **Zero-Touch Automation**: Order confirmation, payment verification, and delivery are fully automated.
+- **Admin Command Center**: Manage orders, track photos, and resend delivery emails with one click.
+- **Personalisation Engine**: Buyers upload photos and write messages immediately after purchase.
+- **Modern Aesthetics**: Glassmorphism, smooth GSAP animations, and responsive design for all devices.
 
-> **Why?** Without this, the Admin Panel cannot read orders even if they are saved in Firebase.
+---
 
-1. Go to **[Firebase Console](https://console.firebase.google.com/)** → Your Project
-2. Click **Firestore Database** in the left sidebar
-3. Click the **Rules** tab at the top
-4. **Delete everything** and paste this exactly:
+## 🛠️ Tech Stack & Integrations
 
+- **Frontend**: HTML5, Vanilla CSS3 (Glassmorphism), JavaScript (ES6+).
+- **Backend/DB**: Firebase Firestore, Firebase Auth.
+- **Payment Gateway**: Razorpay (Integrated via Python Vercel Functions).
+- **Communication**: EmailJS (Automated delivery & admin alerts).
+- **Asset Hosting**: Cloudinary (Automatic unsigned uploads).
+
+---
+
+## 🚀 Production Setup (Owner Guide)
+
+To go live, follow these steps to configure your external services:
+
+### 1️⃣ Firebase Configuration
+- Create a project on [Firebase Console](https://console.firebase.google.com/).
+- Enable **Firestore Database** and **Authentication** (Google Login).
+- Update your keys in `data/site.json` under the `firebase` object.
+- **Security Rules**: Paste the rules provided in Step 6 below.
+
+### 2️⃣ Razorpay Gateway (Payments)
+- Create a **Razorpay** account.
+- Generate your **API Keys** (Key ID and Secret).
+- **Environment Variables**: Add these to your Vercel/Hosting dashboard:
+  - `RAZORPAY_KEY_ID`
+  - `RAZORPAY_KEY_SECRET`
+
+### 3️⃣ EmailJS Automation
+- Set up two templates on [EmailJS](https://www.emailjs.com/):
+  - **Delivery Template**: Sends the personalized link to the buyer.
+  - **Admin Template**: Notifies you of new orders.
+- Use variables like `{{order_id}}`, `{{customer_email}}`, and `{{wish_message}}`.
+
+### 4️⃣ Cloudinary (Photos)
+- Create a [Cloudinary](https://cloudinary.com/) account.
+- Create an **Unsigned Upload Preset** named `pookie_unsigned`.
+- Set the folder to `orders`.
+
+### 5️⃣ Firestore Security Rules (Critical)
+Paste this into your Firebase Rules tab:
 ```javascript
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
-
-    // Orders: anyone can create/update (for checkout & personalization form)
-    // Only admins can read/delete
     match /orders/{orderId} {
       allow create, update: if true;
-      allow read, delete: if request.auth != null &&
-        request.auth.token.email in ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
+      allow read, delete: if request.auth != null && 
+        request.auth.token.email in ['nikhil2005114@gmail.com', 'your-email@gmail.com'];
     }
-
-    // Counters: public read/write needed for sequential order IDs (order1, order2...)
     match /counters/{doc} {
       allow read, write: if true;
     }
@@ -38,105 +75,22 @@ service cloud.firestore {
 }
 ```
 
-5. Click **Publish**
+---
 
-> ⚠️ If you skip this step, the Admin Panel will show blank even if orders exist in Firestore.
+## 💻 Local Development
+
+1. Clone the repository.
+2. Run `npx serve .` to preview.
+3. Pricing and site details are managed in `data/site.json`.
 
 ---
 
-### ✅ Step B — Cloudinary Unsigned Upload Preset
+## 📬 Contact & Support
 
-> **Why?** Without this, photo uploads will silently fail.
-
-1. Go to **[Cloudinary Console](https://console.cloudinary.com/)**
-2. Click **Settings** (gear icon) → **Upload** tab
-3. Scroll to **Upload Presets** → Click **Add upload preset**
-4. Set:
-   - **Preset name**: `pookie_unsigned` ← must be exactly this
-   - **Signing Mode**: `Unsigned`
-   - **Folder**: `orders` (optional but recommended)
-5. Click **Save**
+Maintainer: **Team Cipher**
+Instagram: [@pookiewish](https://www.instagram.com/pookiewish/)
+Email: [teamcipher.work@gmail.com](mailto:teamcipher.work@gmail.com)
 
 ---
 
-### ✅ Step C — EmailJS Template Variables
-
-> **Why?** Admin notification emails won't send if template variables don't match.
-
-1. Go to **[EmailJS Dashboard](https://www.emailjs.com/)** → **Email Templates**
-2. Open your admin notification template (ID is in `site.json` → `templateId_admin`)
-3. Make sure **all these variables** are used somewhere in the template body:
-
-| Variable | What it contains |
-|---|---|
-| `{{order_id}}` | The order ID (e.g. `order1`) |
-| `{{customer_email}}` | Buyer's email |
-| `{{recipient_name}}` | Who the surprise is for |
-| `{{wish_message}}` | The heartfelt message |
-| `{{event_date}}` | Date of the event |
-| `{{extra_instructions}}` | Any special notes |
-| `{{photo_links}}` | Links to uploaded photos |
-| `{{admin_link}}` | Direct link to Admin Panel |
-
-4. Set **To Email** field to your admin email address
-5. Click **Save**
-
----
-
-### ✅ Step D — Verify `data/site.json` Keys
-
-Open `data/site.json` and confirm all fields are filled:
-
-```json
-"emailjs": {
-  "account1": {
-    "publicKey": "YOUR_EMAILJS_PUBLIC_KEY",
-    "serviceId": "YOUR_SERVICE_ID",
-    "templateId_delivery": "YOUR_DELIVERY_TEMPLATE_ID",
-    "templateId_admin": "YOUR_ADMIN_NOTIFICATION_TEMPLATE_ID"
-  }
-},
-"firebase": {
-  "apiKey": "...",
-  "authDomain": "...",
-  "projectId": "...",
-  ...
-}
-```
-
----
-
-## 🧪 How to Test (After All Steps Above)
-
-1. Open your site → Add **Testing Pookie (₹0)** to cart
-2. Go to Checkout → Enter name & email → Click **Submit**
-3. You will land on the **Success Page** — fill recipient details + upload photos
-4. Click **Complete Order**
-5. **Admin Panel check**: Go to `/admin/index.html` → Login with `nikhil2005114@gmail.com`
-   - Orders must appear in the table ✅
-6. **Email check**: You should receive a notification email within seconds ✅
-
----
-
-## ⚙️ Admin Panel Access
-
-The Admin Panel only works for specific emails. They are hardcoded in `admin/index.html`:
-
-```javascript
-const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
-```
-
-If you need to add another email, add it to this array **and also** to the Firestore Rules in Step A.
-
----
-
-## 🐛 Troubleshooting
-
-| Problem | Most Likely Cause | Fix |
-|---|---|---|
-| **Admin Panel is blank/empty** | Firestore Rules not updated | Do **Step A** above — paste the new rules and publish |
-| **Orders not saving** | Firestore Rules blocking writes | Check browser Console (F12) for red errors |
-| **No admin email received** | Wrong template ID or missing variables | Do **Step C** — verify all `{{variables}}` in your template |
-| **Photos not uploading** | Cloudinary preset wrong/missing | Do **Step B** — preset must be named `pookie_unsigned` and Unsigned |
-| **"Access Denied" in Admin Panel** | Logged in with wrong Google account | Sign out and sign in with `nikhil2005114@gmail.com` |
-| **Price shows ₹0 at checkout** | `site.json` loaded slowly | Refresh the page and try again |
+> "Don't just wish it. Pookie Wish it." 🎀

@@ -174,56 +174,6 @@
   </div>
 </div>
 
-<div class="overlay" id="modal-order">
-  <div class="modal order-modal" style="max-width:540px;text-align:left">
-    <button class="modal-x" onclick="closeModal('modal-order')">✕</button>
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:18px">
-      <div>
-        <div style="font-family:var(--fd);font-size:1.2rem;font-weight:700;color:var(--text)" id="order-tname"></div>
-        <div style="font-family:var(--fm);font-size:.85rem;background:var(--g-main);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text" id="order-price"></div>
-      </div>
-    </div>
-    <div class="steps">
-      <div class="stp active" id="ord-stp1"><div class="stp-dot">1</div><span>Details</span></div>
-      <div class="stp-line"></div>
-      <div class="stp" id="ord-stp2"><div class="stp-dot">2</div><span>Review</span></div>
-      <div class="stp-line"></div>
-      <div class="stp" id="ord-stp3"><div class="stp-dot">3</div><span>Done</span></div>
-    </div>
-
-    <div id="order-step1">
-      <div class="order-note">Fill in your contact details to proceed to secure checkout. You will be able to add your personalized photos and messages immediately after the payment is completed.</div>
-      <div class="f-row">
-        <div class="f-group"><label class="f-label">YOUR NAME *</label><input class="f-inp" id="ord-myname" type="text" placeholder="Priya Sharma"></div>
-        <div class="f-group"><label class="f-label">YOUR WHATSAPP *</label><input class="f-inp" id="ord-myphone" type="tel" placeholder="+91 98765 43210"></div>
-      </div>
-      <div class="f-row">
-        <div class="f-group"><label class="f-label">BIRTHDAY PERSON'S NAME *</label><input class="f-inp" id="ord-bname" type="text" placeholder="Rahul"></div>
-        <div class="f-group"><label class="f-label">BIRTHDAY DATE *</label><input class="f-inp" id="ord-bdate" type="date"></div>
-      </div>
-      <div class="f-group"><label class="f-label">YOUR MESSAGE 💌 <span style="color:var(--dim)">(optional)</span></label><textarea class="f-inp" id="ord-msg" rows="3" placeholder="Write something from the heart…"></textarea></div>
-
-      <button class="btn btn-primary btn-full btn-lg" onclick="proceedToReview()">Review Order →</button>
-    </div>
-
-    <div id="order-step2" style="display:none">
-      <div class="order-note" style="background:rgba(122,201,184,.08);border-color:rgba(122,201,184,.25)">✅ Ready to proceed? Click below to go to our secure payment gateway.</div>
-      <span class="wa-label">Your order summary</span>
-      <div class="wa-preview-box" id="ord-preview"></div>
-      <div style="display:flex;gap:8px">
-        <button class="btn btn-ghost btn-lg" style="flex:0 0 auto" onclick="goBackToStep1()">← Edit</button>
-        <button class="btn btn-primary btn-lg" style="flex:1" id="submit-btn" onclick="submitOrder()">Proceed to Payment 🎁</button>
-      </div>
-    </div>
-
-    <div class="success-box" id="order-step3">
-      <span class="s-ico">🎉</span>
-      <h2>Order Placed!</h2>
-      <p>We've opened WhatsApp with your details. We'll be in touch soon to get everything ready. 🌸</p>
-      <button class="btn btn-soft btn-lg" onclick="closeModal('modal-order')">Back to Templates</button>
-    </div>
-  </div>
-</div>
 
 <div id="toasts"></div>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>

@@ -18,17 +18,6 @@
     .co-sec-lbl::after { content:''; flex:1; height:1px; background:var(--bdr-pink); }
     .co-sec { margin-bottom:26px; }
     .divider { height:1px; background:var(--bdr); margin:22px 0; }
-    .bday-block { background:var(--bg2); border:1px solid var(--bdr); border-radius:var(--r); padding:16px; margin-bottom:12px; }
-    .ss-zone { border:2px dashed var(--bdr2); border-radius:var(--r); padding:22px; text-align:center; cursor:pointer; transition:all .2s; }
-    .ss-zone:hover { border-color:var(--pink); background:var(--pink-s); }
-    .ss-zone.done { border-color:var(--mint); border-style:solid; background:rgba(122,201,184,.06); }
-    .ss-ico { font-size:2.2rem; display:block; margin-bottom:8px; }
-    .ss-txt { font-size:.875rem; color:var(--muted); }
-    .ss-sub { font-size:.76rem; color:var(--dim); margin-top:3px; }
-    .ss-prev { max-width:100%; max-height:160px; border-radius:var(--rs); margin-top:12px; display:none; border:1px solid var(--bdr); }
-    .ss-prev.on { display:block; }
-    .ss-retake { font-size:.75rem; color:var(--pink); cursor:pointer; margin-top:7px; display:none; }
-    .ss-retake.on { display:block; }
     .submit-note { background:var(--g-pink); border:1px solid var(--bdr-pink); border-radius:var(--r); padding:13px 16px; font-size:.82rem; color:var(--text2); line-height:1.8; margin-bottom:18px; }
     /* Sidebar */
     .co-sidebar { position:sticky; top:90px; display:flex; flex-direction:column; gap:14px; }
@@ -81,8 +70,7 @@
         <div class="stp"><div class="stp-dot">2</div><span>Pay via Razorpay</span></div>
       </div>
 
-      <div class="co-title">Place Your Order 💖</div>
-      <div class="co-sub">Fill in your details, pay via UPI, upload your screenshot, and we'll start creating your surprise.</div>
+      <div class="co-sub">Fill in your details and pay securely to instantly unlock your personalization form.</div>
 
       <div class="co-sec">
         <div class="co-sec-lbl">Your Details</div>
@@ -116,7 +104,7 @@
       <div class="divider"></div>
 
       <div class="submit-note">
-        After submitting — you will be redirected to Razorpay to pay securely. Once payment is successful, you will receive a link to our personalisation form to add your photos and message. 💖
+        After clicking below, you will be redirected to Razorpay to pay securely using UPI, Cards, or Netbanking. Once successful, you can instantly add your photos and messages. 💖
       </div>
       <button class="btn btn-primary btn-xl btn-full btn-shimmer" id="co-submit-btn" onclick="checkoutSubmitOrder()">Proceed to Payment 💳</button>
       <p style="text-align:center; font-size:0.75rem; color:var(--dim); margin-top:12px;">

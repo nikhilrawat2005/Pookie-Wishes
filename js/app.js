@@ -787,139 +787,24 @@ function galShowImg(src, el) {
 }
 
 // ═══════════════════════════════════════════════════════
-//  ORDER SAVING & CHECKOUT (Pro version)
+//  ORDER HELPERS
 // ═══════════════════════════════════════════════════════
 
-// --- Loading feedback ---
 function setLoading(state) {
-  const btn = document.getElementById("submit-btn");
+  const btn = document.getElementById("co-submit-btn") || document.getElementById("submit-btn");
   if (!btn) return;
-
   if (state) {
     btn.disabled = true;
     btn.innerHTML = `<span class="loading-spinner"></span> Processing...`;
   } else {
     btn.disabled = false;
-    btn.innerText = "Submit Order ✨";
+    btn.innerText = "Proceed to Payment 💳";
   }
 }
 
-
-// --- Save order (structured format) ---
-async function saveOrder(orderData) {
-  if (!fbReady) {
-    console.error("Firebase not ready");
-    toast("Firebase not ready – order not saved", "err");
-    throw new Error("Firebase not ready");
-  }
-
-  try {
-    const db = firebase.firestore();
-    const docRef = await db.collection("orders").add({
-      user: {
-        name: orderData.name,
-        email: orderData.email
-      },
-      templateId: orderData.items[0]?.id || 'sorry', // Store at root for easy fetch ✨
-      items: orderData.items,
-      total: orderData.total,
-      screenshot: orderData.screenshot,
-      status: "pending",
-      createdAt: firebase.firestore.FieldValue.serverTimestamp()
-    });
-
-    console.log("Order saved:", docRef.id);
-    toast("Order saved successfully! ✅", "ok");
-    return docRef.id;
-  } catch (err) {
-    console.error("Error saving order:", err);
-    toast("Failed to save order: " + err.message, "err");
-    throw err;
-  }
-}
-
-// --- Main submit order (with progress updates) ---
-const submitOrder = safeAsync(async () => {
-  // Validate required fields
-  const name  = getVal("f-name");
-  const email = getVal("f-email");
-  if (!name || !email) {
-    toast("Fill all required fields ❌", "err");
-    return;
-  }
-
-  // Validate cart
-  if (!cart.length) {
-    toast("Your cart is empty. Add a template first.", "err");
-    return;
-  }
-
-  setLoading(true);
-  const btn = document.getElementById("submit-btn");
-
-  let screenshotURL = "";
-
-  // Update button to show saving status
-  if (btn) btn.innerHTML = `<span class="loading-spinner"></span> Saving order...`;
-
-  const total = cart.reduce((sum, i) => sum + i.price, 0);
-  const orderData = {
-    name,
-    email,
-    items: cart.map(item => ({
-      id: item.id,
-      name: item.name,
-      price: item.price,
-      currency: item.currency,
-      emoji: item.emoji
-    })),
-    total,
-    screenshot: screenshotURL
-  };
-
-  const orderId = await saveOrder(orderData);
-
-  // Clear local cart after successful order
-  localStorage.removeItem('pookie_cart');
-  cart = [];
-  updateCartBadge();
-
-  // Redirect with parameters so success page can adapt! ✨
-  const encodedEmail = encodeURIComponent(email);
-  window.location.href = `${ROOT}pages/order-success.html?id=${orderId}&email=${encodedEmail}`;
-});
-
-// --- Initialize checkout page (adds preview & submit listener)---
-function initCheckout() {
-  // Attach event listener to submit button if exists
-  const submitBtn = document.getElementById("submit-btn");
-  if (submitBtn) {
-    submitBtn.addEventListener("click", submitOrder);
-  }
-
-  // Instant screenshot preview using URL.createObjectURL
-  const screenshotInput = document.getElementById("f-screenshot");
-  const previewImg = document.getElementById("ss-prev");
-  if (screenshotInput && previewImg) {
-    screenshotInput.addEventListener("change", (e) => {
-      if (e.target.files && e.target.files[0]) {
-        const url = URL.createObjectURL(e.target.files[0]);
-        previewImg.src = url;
-        // Optional: store previous URL to revoke later
-        if (screenshotInput.dataset.prevUrl) {
-          URL.revokeObjectURL(screenshotInput.dataset.prevUrl);
-        }
-        screenshotInput.dataset.prevUrl = url;
-      } else {
-        previewImg.src = "";
-        if (screenshotInput.dataset.prevUrl) {
-          URL.revokeObjectURL(screenshotInput.dataset.prevUrl);
-          delete screenshotInput.dataset.prevUrl;
-        }
-      }
-    });
-  }
-}
+// ═══════════════════════════════════════════════════════
+//  MODALS
+// ═══════════════════════════════════════════════════════
 
 // ═══════════════════════════════════════════════════════
 //  MODALS
