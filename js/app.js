@@ -3,6 +3,19 @@
 //  Custom email/upload backend · Firebase v9-compat
 // ═══════════════════════════════════════════════════════
 
+// ── Vercel Analytics (static site method) ─────────────
+// Injects the official Vercel analytics script once per page load.
+// The script is served by Vercel's edge at /_vercel/insights/script.js
+// and only activates when deployed to Vercel (safe to include locally).
+(function () {
+  if (document.getElementById('va-script')) return; // avoid duplicates
+  const s = document.createElement('script');
+  s.id   = 'va-script';
+  s.src  = '/_vercel/insights/script.js';
+  s.defer = true;
+  document.head.appendChild(s);
+})();
+
 // ── Page detection ────────────────────────────────────
 const isPages  = window.location.pathname.includes('/pages/');
 const ROOT     = isPages ? '../' : '';
