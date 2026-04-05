@@ -41,12 +41,11 @@ document.addEventListener('DOMContentLoaded', async () => {
   initFirebase();
   loadLocalCart();
   updateCartBadge();
+  initReveals(); // Always run first so .reveal elements are never stuck hidden
 
-  if (PAGE === 'home')    { renderTemplateCards(); renderComingSoon(); }
-  if (PAGE === 'detail')  { renderDetailPage(); }
+  if (PAGE === 'home')     { renderTemplateCards(); renderComingSoon(); }
+  if (PAGE === 'detail')   { renderDetailPage(); }
   if (PAGE === 'checkout') { initCheckout(); }
-
-  initReveals();
 });
 
 // ═══════════════════════════════════════════════════════
@@ -800,6 +799,12 @@ function setLoading(state) {
     btn.disabled = false;
     btn.innerText = "Proceed to Payment 💳";
   }
+}
+
+// Initialise checkout page (called by boot — MUST always exist)
+function initCheckout() {
+  // Checkout rendering is handled entirely by the inline script in checkout.html.
+  // This stub exists so the boot sequence doesn't throw a ReferenceError.
 }
 
 // ═══════════════════════════════════════════════════════
