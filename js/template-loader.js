@@ -90,7 +90,7 @@ window.getPookieData = async function(templateId) {
                 finalLetterPink: `Happy Birthday, my love. You deserve the world and so much more. 🎂✨`,
                 wishes: [
                     { message: "Happy Birthday to you! 🎊💕", sticker: "assets/hello-kitty-i-love-you.gif", memory: photos[0] || "assets/kitty.png" },
-                    { message: "You're perfect just the way you are! ✨🌸", sticker: "assets/eyes.gif", memory: photos[1] || "assets/kitty_love_card.png" },
+                    { message: "You're perfect just the way you are! ✨🌸", sticker: "assets/hello-kitty-i-love-you.gif", memory: photos[1] || "assets/kitty_love_card.png" },
                     { message: "Endless joy and love! 💝🌟", sticker: "assets/giphy.gif", memory: photos[2] || "assets/cat_couple.png" }
                 ]
             };

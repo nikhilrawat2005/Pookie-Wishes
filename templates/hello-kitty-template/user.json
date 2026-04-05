@@ -2,7 +2,7 @@
   "name": "Beautiful",
   "wishes": [
     { "message": "💕 Happy Birthday! Wishing you all the joy and love today! 💕", "sticker": "assets/hello-kitty-i-love-you.gif" },
-    { "message": "🎂 May this year bring you endless smiles and happiness! 🎂", "sticker": "assets/hello-kitty-cake.gif" },
+    { "message": "🎂 May this year bring you endless smiles and happiness! 🎂", "sticker": "assets/hello-kitty-i-love-you.gif" },
     { "message": "🌸 You deserve all the wonderful things in life! 🌸", "sticker": "assets/hello-kitty-i-love-you.gif" }
   ]
 }
