@@ -44,8 +44,24 @@
       Email: <strong id="show-email">—</strong>
     </div>
 
-    <!-- Personalisation Form -->
-    <div id="post-payment-form">
+    <!-- Loading State -->
+    <div id="loading-order" style="text-align:center; padding:40px 0;">
+      <div class="loading-spinner" style="width:40px; height:40px; border-width:3px; border-top-color:var(--pink);"></div>
+      <p style="color:var(--muted); margin-top:15px;">Loading your order data... ✨</p>
+    </div>
+
+    <!-- Error Message (Hidden Initially) -->
+    <div id="error-msg" style="display:none; text-align:center; padding:40px 0;">
+      <div style="font-size:3rem; margin-bottom:15px;">🔍❌</div>
+      <h3 style="font-family:var(--fd); color:var(--text); margin-bottom:10px;">Order Not Found</h3>
+      <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
+        We couldn't find an order with this ID. Please double check your link or contact support.
+      </p>
+      <a href="../index.html" class="btn btn-soft">Go to Home</a>
+    </div>
+
+    <!-- Personalisation Form (Hidden Initially) -->
+    <div id="post-payment-form" style="display:none;">
       <div id="form-step-indicator" style="font-size: 0.8rem; color: var(--pink); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Step 1 of 1</div>
       <div class="f-group" style="margin-bottom:12px;">
         <label class="f-label">Template Selected</label>
@@ -216,17 +232,32 @@
   }
 
   async function loadOrder() {
+    const loadingEl = document.getElementById('loading-order');
+    const formEl = document.getElementById('post-payment-form');
+    const errorEl = document.getElementById('error-msg');
+
     try {
       const dReq = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
+      
+      if (loadingEl) loadingEl.style.display = 'none';
+
       if (dReq.exists) {
         orderData = dReq.data();
         if (orderData.detailsSubmitted) {
           showFinalSuccess(orderData.deliveryLinks || [orderData.deliveryLink]);
           return;
         }
+        if (formEl) formEl.style.display = 'block';
         adaptForm();
+      } else {
+        if (errorEl) errorEl.style.display = 'block';
+        if (formEl) formEl.style.display = 'none';
       }
-    } catch (e) { console.error("Load error:", e); }
+    } catch (e) { 
+      console.error("Load error:", e); 
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (errorEl) errorEl.style.display = 'block';
+    }
   }
 
   function adaptForm() {

@@ -426,16 +426,16 @@ async function checkoutSubmitOrder() {
       localStorage.removeItem('pookie_cart');
       toast("Payment Successful! 🎉", "ok");
       
-      // Update status in Firestore (optional but recommended)
+      // Update status in Firestore
       if (window.fbReady) {
-        firebase.firestore().collection('orders').doc(razorOrderId).update({
+        firebase.firestore().collection('orders').doc(sequentialId).update({
           status: 'paid',
           razorpay_payment_id: response.razorpay_payment_id
         }).catch(e => console.warn('Firestore update failed:', e));
       }
 
       // Redirect to success form
-      window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${razorOrderId}&email=${encodeURIComponent(data.email)}`;
+      window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${sequentialId}&email=${encodeURIComponent(data.email)}`;
     },
     "prefill": {
       "name": data.name,
