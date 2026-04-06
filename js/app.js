@@ -55,6 +55,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   loadLocalCart();
   updateCartBadge();
   initReveals(); // Always run first so .reveal elements are never stuck hidden
+  window.pookieNav = (url) => { if (url) location.href = url; };
 
   if (PAGE === 'home')     { renderTemplateCards(); renderComingSoon(); }
   if (PAGE === 'detail')   { renderDetailPage(); }
@@ -506,7 +507,7 @@ function buildCard(t) {
     <span class="ph-emoji">${t.emoji}</span></div>`;
 
   return `
-    <div class="t-card ${t.special ? 't-special' : ''}" data-id="${t.id}" data-search="${search}" onclick="location.href='${detailUrl}'">
+    <div class="t-card ${t.special ? 't-special' : ''}" data-id="${t.id}" data-search="${search}" onclick="pookieNav('${detailUrl}')">
       <div class="t-media">
         ${imgHTML}${phHTML}
         ${t.badge ? `<span class="t-badge ${t.badge.includes('New') ? 'new' : ''}">${t.badge}</span>` : ''}
@@ -524,10 +525,10 @@ function buildCard(t) {
         <div class="t-tagline">${t.tagline}</div>
         <div class="t-card-btns" onclick="event.stopPropagation()">
           ${t.special 
-            ? `<button class="btn btn-primary btn-full" onclick="location.href='${detailUrl}'">Customise Now 🎨</button>`
+            ? `<button class="btn btn-primary btn-full" onclick="pookieNav('${detailUrl}')">Customise Now 🎨</button>`
             : `
             <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">${addBtnLabel}</button>
-            <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${t.id}',event); location.href='${ROOT}pages/checkout.html'">Create Surprise 🎁</button>
+            <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${t.id}',event); pookieNav('${ROOT}pages/checkout.html')">Create Surprise 🎁</button>
             `
           }
         </div>
@@ -587,6 +588,46 @@ function renderDetailPage() {
   if (!t) { root.innerHTML = '<p style="padding:120px 48px;color:var(--muted)">Template not found.</p>'; return; }
 
   document.title = `${t.name} — Pookie Wishes ✨`;
+  const ph    = t.id === 'hello-kitty' ? 'hk' : 'hp';
+  const bg    = ph === 'hk' ? 'linear-gradient(135deg,#fff0f4,#f4eeff,#eef4ff)' : 'linear-gradient(135deg,#f5eee8,#f0ece0,#eaeaf5)';
+  const vibeC = t.id === 'hello-kitty' ? 'v-cute' : 'v-magic';
+  const isFav  = favSet.has(t.id);
+  const inCart = cart.some(i => i.id === t.id);
+
+  const hasVideo = !!t.media?.video;
+  const hasThumb = !!t.media?.thumbnail;
+
+  const mediaInner = hasVideo ? `
+      <video id="detail-vid"
+        src="${t.media.video}"
+        ${hasThumb ? `poster="${ROOT}${t.media.thumbnail}"` : ''}
+        preload="metadata"
+        playsinline
+        style="width:100%;height:100%;display:block;object-fit:cover">
+      </video>
+      <div class="vid-overlay" id="vid-overlay" onclick="vidTogglePlay()">
+        <div class="vid-play-btn" id="vid-play-btn">▶</div>
+      </div>
+    `
+    : hasThumb
+    ? `<img src="${ROOT}${t.media.thumbnail}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover">`
+    : `<div class="t-ph ${ph}" style="height:100%;${bg ? `background:${bg}` : ''}"><span style="font-size:5rem">${t.emoji}</span></div>`;
+
+  const galItems = (t.media?.gallery||[]).filter(Boolean);
+  const galHTML  = (hasVideo || galItems.length) ? `
+    <div class="gallery-thumbs" id="gallery-thumbs">
+      ${hasVideo ? `<div class="gallery-thumb active" id="gthumb-video" onclick="galShowVideo(this)" title="Play video">
+        <div class="gph ${ph}" style="${bg ? `background:${bg}` : ''}">▶</div>
+      </div>` : ''}
+      ${galItems.map((img, i) => `
+        <div class="gallery-thumb ${!hasVideo&&i===0?'active':''}" onclick="galShowImg('${ROOT}${img}',this)">
+          <img src="${ROOT}${img}" loading="lazy" onerror="this.parentElement.style.display='none'">
+        </div>`).join('')}
+    </div>` : '';
+
+  const featsHTML = (t.features||[]).map(f => `<div class="feat-item">${f}</div>`).join('');
+  const tagsHTML  = (t.tags||[]).map(g => `<span class="tag">#${g}</span>`).join('');
+
   const wa = (SITE.site?.whatsapp||'918700113731').replace(/\D/g,'');
   const waLink = `https://wa.me/${wa}?text=${encodeURIComponent(`Hi! I'm interested in the "Fully Custom Theme" service for ${t.price}. I want to build a completely unique surprise.`)}`;
   const insta = (SITE.site?.instagram || 'https://www.instagram.com/pookiewish/').replace(/\/$/, '') + '/';

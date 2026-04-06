@@ -141,6 +141,60 @@ a{text-decoration:none;color:inherit}
 .t-card-btns{display:flex;gap:7px;margin-top:auto}
 .t-card-btns .btn{flex:1;font-size:.8rem;padding:8px 14px}
 
+/* ─── SPECIAL BANNER CARD (Fully Custom) ─── */
+.t-special {
+  grid-column: 1 / -1;
+  display: grid !important;
+  grid-template-columns: 360px 1fr;
+  background: var(--card);
+  background-image: var(--g-soft);
+  border: 1.5px solid var(--pink-l);
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+}
+.t-special:hover {
+  transform: translateY(-4px);
+  border-color: var(--pink);
+  box-shadow: var(--sh-lg);
+}
+.t-special .t-media {
+  aspect-ratio: auto;
+  height: 100%;
+}
+.t-special .t-body {
+  padding: 32px 40px;
+  justify-content: center;
+}
+.t-special .t-name {
+  font-size: 1.6rem;
+}
+.t-special .t-tagline {
+  font-size: 1rem;
+  max-width: 500px;
+  margin-bottom: 24px;
+}
+.t-special .t-card-btns {
+  max-width: 300px;
+}
+.t-special .t-price {
+  font-size: 1.2rem;
+}
+
+@media (max-width: 850px) {
+  .t-special {
+    display: flex !important;
+    grid-template-columns: none;
+    grid-column: auto;
+  }
+  .t-special .t-media {
+    aspect-ratio: 16/9;
+    height: auto;
+  }
+  .t-special .t-body {
+    padding: 20px;
+  }
+}
+
 /* ─── COMING SOON ─── */
 .cs-wrap{padding-top:44px;border-top:1px solid var(--bdr)}
 .cs-title{font-family:var(--fd);font-size:1.4rem;font-weight:700;color:var(--text);margin-bottom:20px}
