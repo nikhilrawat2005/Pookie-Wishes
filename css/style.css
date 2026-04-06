@@ -485,13 +485,12 @@ textarea.f-inp{resize:vertical;min-height:82px;line-height:1.6}
 }
 .vc-progress-fill {
   height: 100%; background: var(--g-main); border-radius: 2px;
-  transition: width .1s linear;
 }
 .vc-thumb {
   position: absolute; top: 50%; transform: translate(-50%,-50%);
   width: 14px; height: 14px; border-radius: 50%;
   background: var(--pink); box-shadow: var(--sh-pink);
-  pointer-events: none; transition: left .1s linear;
+  pointer-events: none;
 }
 .vc-time {
   font-family: var(--fm); font-size: .7rem;

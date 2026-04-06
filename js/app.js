@@ -691,18 +691,31 @@ function initVideoPlayer() {
   const vid = document.getElementById('detail-vid');
   if (!vid) return;
 
-  vid.addEventListener('timeupdate', () => {
-    if (!vid.duration) return;
+  let rafId = null;
+
+  function updateVisuals() {
+    if (!vid || !vid.duration) return;
     const pct = (vid.currentTime / vid.duration) * 100;
     const fill = document.getElementById('vc-fill');
     const thumb = document.getElementById('vc-thumb');
-    if (fill)  fill.style.width = pct + '%';
-    if (thumb) thumb.style.left  = pct + '%';
+    if (fill) fill.style.width = pct + '%';
+    if (thumb) thumb.style.left = pct + '%';
+    
+    if (!vid.paused && !vid.ended) {
+      rafId = requestAnimationFrame(updateVisuals);
+    }
+  }
+  vid.updateVisuals = updateVisuals;
+
+  vid.addEventListener('timeupdate', () => {
+    if (!vid.duration) return;
+    // Visually update fast things via RAF when playing, but update time text here as it's slow
     const timeEl = document.getElementById('vc-time');
     if (timeEl) timeEl.textContent = fmtTime(vid.currentTime) + ' / ' + fmtTime(vid.duration);
   });
 
   vid.addEventListener('ended', () => {
+    cancelAnimationFrame(rafId);
     const playBtn = document.getElementById('vc-play');
     const overlay = document.getElementById('vid-overlay');
     const pbig    = document.getElementById('vid-play-btn');
@@ -712,13 +725,16 @@ function initVideoPlayer() {
   });
 
   vid.addEventListener('play',  () => {
+    updateVisuals(); 
     const playBtn = document.getElementById('vc-play');
     const overlay = document.getElementById('vid-overlay');
     if (playBtn) playBtn.textContent = '⏸';
     if (overlay) overlay.style.opacity = '0';
     setTimeout(() => { if (overlay && !vid.paused) overlay.style.display = 'none'; }, 300);
   });
+
   vid.addEventListener('pause', () => {
+    cancelAnimationFrame(rafId);
     const playBtn = document.getElementById('vc-play');
     const overlay = document.getElementById('vid-overlay');
     const pbig    = document.getElementById('vid-play-btn');
@@ -761,6 +777,7 @@ function vidSeek(e) {
   const rect = wrap.getBoundingClientRect();
   const pct  = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
   vid.currentTime = pct * vid.duration;
+  if (vid.updateVisuals) vid.updateVisuals();
 }
 
 function galShowVideo(el) {
