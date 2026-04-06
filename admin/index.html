@@ -87,7 +87,7 @@
     .stat-c { background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--bdr); border-radius: var(--rl); padding: 20px; box-shadow: var(--sh); position: relative; overflow: hidden; }
     .stat-c i { position: absolute; top: 20px; right: 20px; color: var(--dim); opacity: 0.3; width: 24px; height: 24px; }
     .stat-n { font-family: var(--fd); font-size: 2.2rem; font-weight: 700; margin-bottom: 4px; }
-    .stat-n.grd { background: var(--g-main); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-n.grd { background: var(--g-main); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
     .stat-l { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
     
     /* TABLE */
@@ -160,6 +160,33 @@
     .toast.err { border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; }
     .toast.ok { border-color: rgba(16, 185, 129, 0.3); color: #6ee7b7; }
     @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* MOBILE TOGGLE */
+    .sb-toggle { display: none; background: var(--bg3); border: 1px solid var(--bdr); color: var(--text); padding: 8px; border-radius: var(--r); cursor: pointer; align-items: center; justify-content: center; }
+    .sb-x-mobile { display: none; position: absolute; top: 20px; right: 20px; color: var(--muted); background: transparent; border: none; cursor: pointer; }
+
+    /* RESPONSIVENESS */
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(-100%); width: 280px; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+      .sidebar.on { transform: translateX(0); }
+      .main { margin-left: 0; padding: 24px 20px; }
+      .sb-toggle { display: inline-flex; }
+      .sb-x-mobile { display: block; }
+    }
+
+    @media (max-width: 768px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .main-title { font-size: 1.4rem; }
+      .tbl { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .tbl-hd, .tbl-row { min-width: 900px; }
+      .stat-n { font-size: 1.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr; }
+      .main-hd { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .main-hd .btn-soft { width: 100%; }
+    }
   </style>
 </head>
 <body>
@@ -180,6 +207,7 @@
   <div class="sidebar">
     <div class="sb-logo">
       <i data-lucide="rocket"></i> Zenith
+      <button class="sb-x-mobile" onclick="toggleSidebar()"><i data-lucide="x"></i></button>
     </div>
     
     <a href="../index.html" class="sb-link" style="color:var(--dim);"><i data-lucide="external-link"></i> Back to Site</a>
@@ -201,8 +229,11 @@
 
   <div class="main">
     <div class="main-hd">
-      <div class="main-title" id="main-title">Dashboard Overview</div>
-      <button class="btn btn-soft" onclick="loadOrders()"><i data-lucide="refresh-cw" style="width:16px;"></i> Refresh Data</button>
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="sb-toggle" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+        <div class="main-title" id="main-title">Dashboard Overview</div>
+      </div>
+      <button class="btn btn-soft" id="refresh-btn" onclick="loadOrders()"><i data-lucide="refresh-cw" style="width:16px;"></i> Refresh Data</button>
     </div>
 
     <div class="stats" id="stats-panel">
@@ -259,8 +290,21 @@
 <script>
 lucide.createIcons();
 const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
-let SITE=null, db=null, orders=[], curFilter='all', curOrderId=null;
+let SITE=null, db=null, orders=[], curFilter='all', curOrderId=null, isLoading=false;
 let lastDoc = null, hasMore = true;
+
+function toggleSidebar() {
+  const sb = document.querySelector('.sidebar');
+  const ov = document.getElementById('drw-ov');
+  const isSbOpen = sb.classList.contains('on');
+  if (isSbOpen) {
+    sb.classList.remove('on');
+    if (!document.getElementById('drw').classList.contains('on')) ov.classList.remove('on');
+  } else {
+    sb.classList.add('on');
+    ov.classList.add('on');
+  }
+}
 
 window.addEventListener('DOMContentLoaded', async () => {
   try {
@@ -293,13 +337,18 @@ async function adminLogin() {
 async function adminLogout() { await firebase.auth().signOut(); }
 
 async function loadOrders(isLoadMore = false) {
+  if (isLoading) return;
+  
   if (!isLoadMore) {
     document.getElementById('tbl-body').innerHTML = '<div class="empty">Loading...</div>';
     orders = [];
     lastDoc = null;
     hasMore = true;
+    const btn = document.getElementById('refresh-btn');
+    if(btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
   }
   
+  isLoading = true;
   try {
     let query = db.collection('orders').orderBy('createdAt', 'desc').limit(50);
     if (isLoadMore && lastDoc) {
@@ -324,6 +373,10 @@ async function loadOrders(isLoadMore = false) {
       document.getElementById('tbl-body').innerHTML = '<div class="empty" style="font-size:0.8rem;color:#fca5a5;">Error fetching data. If index error, check browser console.</div>';
     }
     console.error("Fetch error:", e);
+  } finally {
+    isLoading = false;
+    const btn = document.getElementById('refresh-btn');
+    if(btn) { btn.disabled = false; btn.style.opacity = '1'; }
   }
 }
 
@@ -518,6 +571,7 @@ function openDrawer(oid) {
 function closeDrawer() {
   document.getElementById('drw-ov').classList.remove('on');
   document.getElementById('drw').classList.remove('on');
+  document.querySelector('.sidebar').classList.remove('on');
 }
 
 async function resendZeroTouch(oid, link) {
