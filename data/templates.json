@@ -41,6 +41,30 @@
       ],
       "vibe": "Magical & Epic",
       "image": "images/harry-potter-preview.jpg"
+    },
+    {
+      "id": "hand-made",
+      "name": "Fully Custom Theme",
+      "tagline": "Your Vision, Our Digital Magic ✨",
+      "badge": "Special Service",
+      "emoji": "🎨",
+      "price": "₹200",
+      "vibe": "100% Personalised",
+      "special": true,
+      "tags": ["custom", "bespoke", "unique", "handmade", "creative"],
+      "description": "Don't want to follow a template? This is for you. We'll build a completely custom surprise website according to your specific themes, games, and layout ideas. Share your vision, and we'll bring it to life from scratch.",
+      "longDesc": "Our Fully Custom Theme is a blank canvas. Unlike standard templates, this service involves direct collaboration with our designers. We can include custom games, unique animations, and multi-page storytelling tailored exactly to your recipient's personality. This is the ultimate pookie surprise.\n\nNote: This is a bespoke service. Payment is required only after we handover the final link to you.",
+      "features": [
+        "🎨 100% Unique Design",
+        "🕹️ Custom Interactive Games",
+        "🤝 Direct collaboration with creators",
+        "🔗 Private shareable link (30 Days)",
+        "⏳ Instant delivery NOT available (Requires 24-48h Build time)",
+        "💳 Pay After Delivery Policy"
+      ],
+      "media": {
+        "thumbnail": "images/custom-theme-preview.jpg"
+      }
     }
   ],
   "comingSoon": [

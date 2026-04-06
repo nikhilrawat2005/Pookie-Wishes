@@ -506,14 +506,15 @@ function buildCard(t) {
     <span class="ph-emoji">${t.emoji}</span></div>`;
 
   return `
-    <div class="t-card" data-id="${t.id}" data-search="${search}" onclick="location.href='${detailUrl}'">
+    <div class="t-card ${t.special ? 't-special' : ''}" data-id="${t.id}" data-search="${search}" onclick="location.href='${detailUrl}'">
       <div class="t-media">
         ${imgHTML}${phHTML}
         ${t.badge ? `<span class="t-badge ${t.badge.includes('New') ? 'new' : ''}">${t.badge}</span>` : ''}
+        ${!t.special ? `
         <div class="t-card-actions" onclick="event.stopPropagation()">
           <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}"
             onclick="toggleFav('${t.id}',event)">${isFav?'💖':'🤍'}</button>
-        </div>
+        </div>` : ''}
       </div>
       <div class="t-body">
         <div class="t-meta">
@@ -522,8 +523,13 @@ function buildCard(t) {
         </div>
         <div class="t-tagline">${t.tagline}</div>
         <div class="t-card-btns" onclick="event.stopPropagation()">
-          <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">${addBtnLabel}</button>
-          <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${t.id}',event); location.href='${ROOT}pages/checkout.html'">Create Surprise 🎁</button>
+          ${t.special 
+            ? `<button class="btn btn-primary btn-full" onclick="location.href='${detailUrl}'">Customise Now 🎨</button>`
+            : `
+            <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">${addBtnLabel}</button>
+            <button class="btn btn-primary" onclick="event.stopPropagation(); addToCart('${t.id}',event); location.href='${ROOT}pages/checkout.html'">Create Surprise 🎁</button>
+            `
+          }
         </div>
       </div>
     </div>`;
@@ -581,45 +587,62 @@ function renderDetailPage() {
   if (!t) { root.innerHTML = '<p style="padding:120px 48px;color:var(--muted)">Template not found.</p>'; return; }
 
   document.title = `${t.name} — Pookie Wishes ✨`;
-  const ph    = t.id === 'hello-kitty' ? 'hk' : 'hp';
-  const bg    = ph === 'hk' ? 'linear-gradient(135deg,#fff0f4,#f4eeff,#eef4ff)' : 'linear-gradient(135deg,#f5eee8,#f0ece0,#eaeaf5)';
-  const vibeC = t.id === 'hello-kitty' ? 'v-cute' : 'v-magic';
-  const isFav  = favSet.has(t.id);
-  const inCart = cart.some(i => i.id === t.id);
+  const wa = (SITE.site?.whatsapp||'918700113731').replace(/\D/g,'');
+  const waLink = `https://wa.me/${wa}?text=${encodeURIComponent(`Hi! I'm interested in the "Fully Custom Theme" service for ${t.price}. I want to build a completely unique surprise.`)}`;
+  const insta = (SITE.site?.instagram || 'https://www.instagram.com/pookiewish/').replace(/\/$/, '') + '/';
 
-  const hasVideo = !!t.media?.video;
-  const hasThumb = !!t.media?.thumbnail;
+  const specsHTML = t.special ? `
+      <div class="spec-item"><strong>Service:</strong> 100% Hand-made Custom Development</div>
+      <div class="spec-item"><strong>Process:</strong> Collaborative design & review</div>
+      <div class="spec-item"><strong>Build Time:</strong> 24-48 Hours</div>
+      <div class="spec-item"><strong>Payment:</strong> Pay After Delivery 💎</div>
+  ` : `
+      <div class="spec-item"><strong>Output:</strong> Personalized digital webpage</div>
+      <div class="spec-item"><strong>Delivery:</strong> Private shareable link</div>
+      <div class="spec-item"><strong>Access:</strong> Mobile & desktop access</div>
+      <div class="spec-item"><strong>Time:</strong> Instant automated delivery</div>
+  `;
 
-  const mediaInner = hasVideo ? `
-      <video id="detail-vid"
-        src="${t.media.video}"
-        ${hasThumb ? `poster="${ROOT}${t.media.thumbnail}"` : ''}
-        preload="metadata"
-        playsinline
-        style="width:100%;height:100%;display:block;object-fit:cover">
-      </video>
-      <div class="vid-overlay" id="vid-overlay" onclick="vidTogglePlay()">
-        <div class="vid-play-btn" id="vid-play-btn">▶</div>
+  const priceNote = t.special 
+    ? `One-time · Our most premium service. ✨<br><strong>Pay ₹${t.price} only after you love the final result.</strong>`
+    : `One-time · Fully customised for your moment ✨<br>Instant delivery via private link.`;
+
+  const actionsHTML = t.special ? `
+    <div style="display:flex; flex-direction:column; gap:12px; width:100%;">
+      <a href="${waLink}" target="_blank" class="btn btn-primary btn-lg" style="width:100%; gap:10px; background:#25D366; border:none; box-shadow:0 8px 24px rgba(37,211,102,0.3)">
+        <span style="font-size:1.2rem">💬</span> Request on WhatsApp
+      </a>
+      <a href="${insta}" target="_blank" class="btn btn-soft btn-lg" style="width:100%; gap:10px;">
+        <span style="font-size:1.2rem">📸</span> DM on Instagram
+      </a>
+    </div>
+  ` : `
+      <button class="btn btn-primary btn-lg" style="flex:1"
+        onclick="addToCart('${t.id}',event);setTimeout(()=>checkoutCart(),300)">
+        Create Surprise 🎁
+      </button>
+      <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}"
+        onclick="toggleFav('${t.id}',event)" style="width:44px;height:44px;font-size:1.1rem">
+        ${isFav?'💖':'🤍'}
+      </button>
+      <button class="card-icon-btn cart-add ${inCart?'in':''}" data-cart-add="${t.id}"
+        onclick="addToCart('${t.id}',event)" style="width:44px;height:44px;font-size:1.1rem">
+        ${inCart?'🛒':'＋'}
+      </button>
+  `;
+
+  const customMediaBox = t.special ? `
+    <div style="height:100%; width:100%; background:var(--g-soft); display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:30px; gap:20px; border-radius:inherit;">
+      <div style="font-size:5rem; animation:bob 3s ease-in-out infinite;">🪄✨</div>
+      <h2 style="font-family:var(--fd); font-size:1.8rem; color:var(--text);">Beyond Templates</h2>
+      <p style="color:var(--muted); max-width:400px; font-size:1rem; line-height:1.6">
+        Our Fully Custom service means we build <strong>everything</strong> from scratch. Special themes, complex games, or multi-page experiences—you dream it, we code it.
+      </p>
+      <div style="background:white; border:1px dashed var(--bdr-pink); padding:12px 20px; border-radius:12px; font-family:var(--fm); font-size:0.8rem; color:var(--pink);">
+        No Advance Payment Required 🌸
       </div>
-    `
-    : hasThumb
-    ? `<img src="${ROOT}${t.media.thumbnail}" alt="${t.name}" style="width:100%;height:100%;object-fit:cover">`
-    : `<div class="t-ph ${ph}" style="height:100%;${bg ? `background:${bg}` : ''}"><span style="font-size:5rem">${t.emoji}</span></div>`;
-
-  const galItems = (t.media?.gallery||[]).filter(Boolean);
-  const galHTML  = (hasVideo || galItems.length) ? `
-    <div class="gallery-thumbs" id="gallery-thumbs">
-      ${hasVideo ? `<div class="gallery-thumb active" id="gthumb-video" onclick="galShowVideo(this)" title="Play video">
-        <div class="gph ${ph}" style="${bg ? `background:${bg}` : ''}">▶</div>
-      </div>` : ''}
-      ${galItems.map((img, i) => `
-        <div class="gallery-thumb ${!hasVideo&&i===0?'active':''}" onclick="galShowImg('${ROOT}${img}',this)">
-          <img src="${ROOT}${img}" loading="lazy" onerror="this.parentElement.style.display='none'">
-        </div>`).join('')}
-    </div>` : '';
-
-  const featsHTML = (t.features||[]).map(f => `<div class="feat-item">${f}</div>`).join('');
-  const tagsHTML  = (t.tags||[]).map(g => `<span class="tag">#${g}</span>`).join('');
+    </div>
+  ` : mediaInner;
 
   root.innerHTML = `
     <div class="detail-page">
@@ -628,9 +651,9 @@ function renderDetailPage() {
 
         <!-- Media -->
         <div class="detail-media">
-          <div class="media-player" id="media-player">${mediaInner}</div>
-          ${galHTML}
-          ${hasVideo ? `
+          <div class="media-player" id="media-player">${customMediaBox}</div>
+          ${!t.special ? galHTML : ''}
+          ${hasVideo && !t.special ? `
           <div class="vid-controls" id="vid-controls">
             <button class="vc-btn" onclick="vidTogglePlay()" id="vc-play">▶</button>
             <div class="vc-progress-wrap" onclick="vidSeek(event)" id="vc-prog-wrap">
@@ -656,28 +679,14 @@ function renderDetailPage() {
           </div>
           <div class="detail-tags">${tagsHTML}</div>
           <div class="service-specs">
-            <div class="spec-item"><strong>Output:</strong> Personalized digital webpage</div>
-            <div class="spec-item"><strong>Delivery:</strong> Private shareable link</div>
-            <div class="spec-item"><strong>Access:</strong> Mobile & desktop access</div>
-            <div class="spec-item"><strong>Time:</strong> Instant automated delivery</div>
+            ${specsHTML}
           </div>
           <div class="price-row">
             <div class="price-amount">${t.currency||'₹'}${t.price}</div>
-            <div class="price-note">One-time · Fully customised for your moment ✨<br>Instant delivery via private link.</div>
+            <div class="price-note">${priceNote}</div>
           </div>
           <div class="detail-actions">
-            <button class="btn btn-primary btn-lg" style="flex:1"
-              onclick="addToCart('${t.id}',event);setTimeout(()=>checkoutCart(),300)">
-              Create Surprise 🎁
-            </button>
-            <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}"
-              onclick="toggleFav('${t.id}',event)" style="width:44px;height:44px;font-size:1.1rem">
-              ${isFav?'💖':'🤍'}
-            </button>
-            <button class="card-icon-btn cart-add ${inCart?'in':''}" data-cart-add="${t.id}"
-              onclick="addToCart('${t.id}',event)" style="width:44px;height:44px;font-size:1.1rem">
-              ${inCart?'🛒':'＋'}
-            </button>
+            ${actionsHTML}
           </div>
         </div>
       </div>
