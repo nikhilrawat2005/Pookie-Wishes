@@ -576,30 +576,49 @@ function renderTemplateCards() {
   const all = SITE?.templates || [];
   const SPECIAL_IDS = ['love-trap', 'sorry'];
 
-  const birthdayList = all.filter(t => !SPECIAL_IDS.includes(t.id));
+  const specialCard  = all.find(t => t.special);
+  const birthdayList = all.filter(t => !t.special && !SPECIAL_IDS.includes(t.id));
   const specialList  = all.filter(t => SPECIAL_IDS.includes(t.id));
-
-  const makeRow = (items) => items.map(buildCard).join('');
 
   let html = '';
 
+  // Fully Custom card — full width, standalone above the rows
+  if (specialCard) {
+    html += `<div class="tpl-special-wrap">${buildCard(specialCard)}</div>`;
+  }
+
+  // Birthday Wishes row
   if (birthdayList.length) html += `
     <div class="tpl-section-hd" id="section-hd-birthday">
       <span class="tpl-section-label">🎂 Birthday Wishes</span>
       <div class="tpl-section-line"></div>
+      <div class="tpl-scroll-btns">
+        <button class="tpl-scroll-btn" onclick="scrollRow('section-row-birthday',-1)" aria-label="Scroll left">&#8249;</button>
+        <button class="tpl-scroll-btn" onclick="scrollRow('section-row-birthday',1)" aria-label="Scroll right">&#8250;</button>
+      </div>
     </div>
-    <div class="tpl-scroll-row" id="section-row-birthday">${makeRow(birthdayList)}</div>
+    <div class="tpl-scroll-row" id="section-row-birthday">${birthdayList.map(buildCard).join('')}</div>
   `;
 
+  // Special Moments row
   if (specialList.length) html += `
     <div class="tpl-section-hd" id="section-hd-special">
-      <span class="tpl-section-label">💌 Special Moments</span>
+      <span class="tpl-section-label">&#128140; Special Moments</span>
       <div class="tpl-section-line"></div>
+      <div class="tpl-scroll-btns">
+        <button class="tpl-scroll-btn" onclick="scrollRow('section-row-special',-1)" aria-label="Scroll left">&#8249;</button>
+        <button class="tpl-scroll-btn" onclick="scrollRow('section-row-special',1)" aria-label="Scroll right">&#8250;</button>
+      </div>
     </div>
-    <div class="tpl-scroll-row" id="section-row-special">${makeRow(specialList)}</div>
+    <div class="tpl-scroll-row" id="section-row-special">${specialList.map(buildCard).join('')}</div>
   `;
 
-  g.innerHTML = html || '<div class="load-msg"><span>🌸</span>No templates found</div>';
+  g.innerHTML = html || '<div class="load-msg"><span>&#127800;</span>No templates found</div>';
+}
+
+function scrollRow(rowId, dir) {
+  const row = document.getElementById(rowId);
+  if (row) row.scrollBy({ left: dir * 320, behavior: 'smooth' });
 }
 
 function renderSuggestionBox() {
@@ -1086,7 +1105,7 @@ Object.assign(window, {
   googleLogin, emailSignIn, emailRegister, resetPassword, doLogout,
   toggleFav, addToCart, removeFromCart, openCart, closeCart, checkoutCart,
   openModal, closeModal, toggleDd, closeDd,
-  handleSearch, clearSearch,
+  handleSearch, clearSearch, scrollRow,
   vidTogglePlay, vidToggleMute, vidFullscreen, vidSeek,
   galShowVideo, galShowImg,
 

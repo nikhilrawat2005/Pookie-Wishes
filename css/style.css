@@ -645,6 +645,10 @@ textarea.f-inp{resize:vertical;min-height:82px;line-height:1.6}
 /* ─── TEMPLATE HOME SECTIONS (2-row horizontal scroll) ─── */
 .tpl-home { margin-bottom: 60px; }
 
+/* Fully Custom card — full width standalone above scroll rows */
+.tpl-special-wrap { margin-bottom: 36px; }
+.tpl-special-wrap .t-special { width: 100%; }
+
 .tpl-section-hd {
   display: flex;
   align-items: center;
@@ -667,6 +671,21 @@ textarea.f-inp{resize:vertical;min-height:82px;line-height:1.6}
   height: 1px;
   background: linear-gradient(to right, var(--bdr-pink), transparent);
 }
+
+/* Scroll arrow buttons */
+.tpl-scroll-btns { display: flex; gap: 6px; flex-shrink: 0; }
+.tpl-scroll-btn {
+  width: 34px; height: 34px; border-radius: 50%;
+  background: var(--card); border: 1.5px solid var(--bdr2);
+  color: var(--text2); font-size: 1.35rem; line-height: 1;
+  cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .2s var(--ease); box-shadow: var(--sh); flex-shrink: 0;
+}
+.tpl-scroll-btn:hover {
+  background: var(--pink-s); border-color: var(--bdr-pink);
+  color: var(--pink); transform: scale(1.1); box-shadow: var(--sh-pink);
+}
+.tpl-scroll-btn:active { transform: scale(0.95); }
 
 /* Horizontal scroll row */
 .tpl-scroll-row {
@@ -692,17 +711,8 @@ textarea.f-inp{resize:vertical;min-height:82px;line-height:1.6}
   scroll-snap-align: start;
 }
 
-/* Special (Fully Custom) card spans full width in birthday row */
-.tpl-scroll-row .t-special {
-  flex: 0 0 560px;
-  display: flex !important;
-  grid-template-columns: none;
-}
-.tpl-scroll-row .t-special .t-media { aspect-ratio: 16/9; height: auto; }
-.tpl-scroll-row .t-special .t-body { padding: 24px 28px; }
-
 @media(max-width: 600px) {
   .tpl-scroll-row .t-card { flex: 0 0 82vw; }
-  .tpl-scroll-row .t-special { flex: 0 0 90vw; }
   .tpl-section-label { font-size: 1rem; }
+  .tpl-scroll-btn { width: 30px; height: 30px; font-size: 1.1rem; }
 }
