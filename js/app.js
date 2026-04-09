@@ -565,9 +565,8 @@ function renderTemplateCards() {
 }
 
 function renderSuggestionBox() {
-  const wrap = document.getElementById('cs-grid');
-  if (!wrap) return;
-  wrap.innerHTML = ''; // suggestion box is pure HTML (already in index.html)
+  // Suggestion box HTML is already static in index.html — nothing to render here.
+  // Just make sure the section is visible (reveal animation will handle it).
 }
 
 // ── Suggestion submit ────────────────────────────────
