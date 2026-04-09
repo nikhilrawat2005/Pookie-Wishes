@@ -86,7 +86,7 @@
       ],
       "media": {
         "thumbnail": "media/hello-kitty/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774022269/preview_z3mcd8.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757215/hello_kityy_upzstg.mp4",
         "gallery": [
           "media/hello-kitty/img1.jpg",
           "media/hello-kitty/img2.jpg",
@@ -126,7 +126,7 @@
       ],
       "media": {
         "thumbnail": "media/harry-potter/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774022365/preview_yvsyhy.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775759936/harrypotter_yyg0fz.mp4",
         "gallery": [
           "media/harry-potter/img1.jpg",
           "media/harry-potter/img2.jpg",
@@ -160,7 +160,7 @@
       ],
       "media": {
         "thumbnail": "media/love-trap/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774376488/Untitled_design_jdl9sl.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757170/lovetrap_hsllk6.mp4",
         "gallery": [
           "media/love-trap/1.jpg",
           "media/love-trap/2.jpg",
@@ -198,7 +198,7 @@
       ],
       "media": {
         "thumbnail": "media/celestial/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774623999/gallexy_rvnjkc.mov",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757036/celestials_wi8iwi.mp4",
         "gallery": [
           "media/celestial/img1.jpg",
           "media/celestial/img2.jpg"
@@ -234,7 +234,7 @@
       ],
       "media": {
         "thumbnail": "media/among us/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774800517/WhatsApp_Video_2026-03-29_at_8.58.24_PM_pvtd7x.mp4",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757004/amongus_njf0vu.mp4",
         "gallery": []
       }
     },
@@ -267,7 +267,35 @@
         "🌳 Grand glade celebration finale"
       ],
       "media": {
-        "thumbnail": "media/hoppers/thumbnail.jpg"
+        "thumbnail": "media/hoppers/thumbnail.jpg",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757381/hoppers_jfcvl2.mp4"
+      }
+    },
+    {
+      "id": "sorry",
+      "name": "The Apology",
+      "tagline": "Because Sorry Needs More Than Just Words 🥺",
+      "badge": "Most Emotional",
+      "emoji": "🥺",
+      "price": 39,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "hasPhotos": true,
+      "tags": ["apology", "sorry", "romantic", "emotional", "love"],
+      "shortDesc": "A heartfelt apology experience that goes beyond words. For when you need to say sorry and truly mean it.",
+      "longDesc": "Sometimes words alone aren't enough. The Apology template creates a beautiful, deeply personal experience — a heartfelt letter, romantic music, photo memories, and a redeemable Pookie Voucher. For the moments when only the most genuine sorry will do.",
+      "vibe": "Emotional & Sweet",
+      "features": [
+        "💌 Personalised apology letter",
+        "🩷 Heartfelt animated opening",
+        "🎵 Romantic background music",
+        "🎟️ Redeemable Pookie Voucher",
+        "📸 Personal photo memories",
+        "🔄 Replay & share anytime"
+      ],
+      "media": {
+        "thumbnail": "media/sorry/thumbnail.jpg",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757177/sorry_ydt96k.mp4"
       }
     }
   ],

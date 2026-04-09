@@ -57,7 +57,19 @@ document.addEventListener('DOMContentLoaded', async () => {
   initReveals(); // Always run first so .reveal elements are never stuck hidden
   window.pookieNav = (url) => { if (url) location.href = url; };
 
-  if (PAGE === 'home')     { renderTemplateCards(); renderSuggestionBox(); }
+  if (PAGE === 'home')     {
+    renderTemplateCards();
+    renderSuggestionBox();
+    // Wire up search input
+    const inp = document.getElementById('search-inp');
+    if (inp) inp.addEventListener('input', e => handleSearch(e.target.value));
+    // Re-trigger stagger on dynamically rendered content
+    requestAnimationFrame(() => {
+      document.querySelectorAll('#tpl-grid .tpl-section-hd, #tpl-grid .tpl-scroll-row, #tpl-grid .t-card').forEach((el, i) => {
+        setTimeout(() => el.classList.add('on'), i * 60);
+      });
+    });
+  }
   if (PAGE === 'detail')   { renderDetailPage(); }
   if (PAGE === 'checkout') { initCheckout(); }
 });
@@ -560,8 +572,34 @@ function buildCard(t) {
 function renderTemplateCards() {
   const g = document.getElementById('tpl-grid');
   if (!g) return;
-  const cards = (SITE?.templates||[]).map(buildCard).join('');
-  g.innerHTML = cards || '<div class="load-msg"><span>🌸</span>No templates found</div>';
+
+  const all = SITE?.templates || [];
+  const SPECIAL_IDS = ['love-trap', 'sorry'];
+
+  const birthdayList = all.filter(t => !SPECIAL_IDS.includes(t.id));
+  const specialList  = all.filter(t => SPECIAL_IDS.includes(t.id));
+
+  const makeRow = (items) => items.map(buildCard).join('');
+
+  let html = '';
+
+  if (birthdayList.length) html += `
+    <div class="tpl-section-hd" id="section-hd-birthday">
+      <span class="tpl-section-label">🎂 Birthday Wishes</span>
+      <div class="tpl-section-line"></div>
+    </div>
+    <div class="tpl-scroll-row" id="section-row-birthday">${makeRow(birthdayList)}</div>
+  `;
+
+  if (specialList.length) html += `
+    <div class="tpl-section-hd" id="section-hd-special">
+      <span class="tpl-section-label">💌 Special Moments</span>
+      <div class="tpl-section-line"></div>
+    </div>
+    <div class="tpl-scroll-row" id="section-row-special">${makeRow(specialList)}</div>
+  `;
+
+  g.innerHTML = html || '<div class="load-msg"><span>🌸</span>No templates found</div>';
 }
 
 function renderSuggestionBox() {
@@ -628,6 +666,13 @@ function handleSearch(q) {
     const match = !q || (c.dataset.search||'').includes(q);
     c.style.display = match ? '' : 'none';
     if (match) n++;
+  });
+  // Hide section header + row if all its cards are hidden
+  document.querySelectorAll('.tpl-scroll-row').forEach(row => {
+    const anyVisible = [...row.querySelectorAll('.t-card')].some(c => c.style.display !== 'none');
+    const hd = row.previousElementSibling;
+    if (hd) hd.style.display = anyVisible ? '' : 'none';
+    row.style.display = anyVisible ? '' : 'none';
   });
   const lbl = document.getElementById('filter-label');
   const cnt = document.getElementById('filter-count');

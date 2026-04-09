@@ -641,3 +641,68 @@ textarea.f-inp{resize:vertical;min-height:82px;line-height:1.6}
   .hiw-home-grid { gap:15px; grid-template-columns:1fr; }
   .what-you-get-hero { grid-template-columns:1fr; margin-top:20px; padding:15px; }
 }
+
+/* ─── TEMPLATE HOME SECTIONS (2-row horizontal scroll) ─── */
+.tpl-home { margin-bottom: 60px; }
+
+.tpl-section-hd {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 18px;
+  margin-top: 44px;
+}
+.tpl-section-hd:first-child { margin-top: 0; }
+
+.tpl-section-label {
+  font-family: var(--fd);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--text);
+  white-space: nowrap;
+}
+
+.tpl-section-line {
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(to right, var(--bdr-pink), transparent);
+}
+
+/* Horizontal scroll row */
+.tpl-scroll-row {
+  display: flex;
+  gap: 20px;
+  overflow-x: auto;
+  padding-bottom: 16px;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(232,130,154,0.3) transparent;
+}
+.tpl-scroll-row::-webkit-scrollbar { height: 4px; }
+.tpl-scroll-row::-webkit-scrollbar-track { background: transparent; }
+.tpl-scroll-row::-webkit-scrollbar-thumb {
+  background: rgba(232,130,154,0.35);
+  border-radius: 4px;
+}
+
+/* Fixed-width cards inside scroll rows */
+.tpl-scroll-row .t-card {
+  flex: 0 0 300px;
+  scroll-snap-align: start;
+}
+
+/* Special (Fully Custom) card spans full width in birthday row */
+.tpl-scroll-row .t-special {
+  flex: 0 0 560px;
+  display: flex !important;
+  grid-template-columns: none;
+}
+.tpl-scroll-row .t-special .t-media { aspect-ratio: 16/9; height: auto; }
+.tpl-scroll-row .t-special .t-body { padding: 24px 28px; }
+
+@media(max-width: 600px) {
+  .tpl-scroll-row .t-card { flex: 0 0 82vw; }
+  .tpl-scroll-row .t-special { flex: 0 0 90vw; }
+  .tpl-section-label { font-size: 1rem; }
+}
