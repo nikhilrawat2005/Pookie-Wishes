@@ -569,6 +569,17 @@ function buildCard(t) {
     </div>`;
 }
 
+function buildSeeMoreCard(cat) {
+  const icon = cat === 'birthday' ? '🎂' : '💝';
+  const label = cat === 'birthday' ? 'Birthday' : 'Love';
+  return `
+    <div class="see-more-card" onclick="handleSeeMore('${cat}')">
+      <div class="see-more-icon">${icon}</div>
+      <div class="see-more-text">See More ${label}</div>
+    </div>
+  `;
+}
+
 function renderTemplateCards() {
   const g = document.getElementById('tpl-grid');
   if (!g) return;
@@ -597,7 +608,10 @@ function renderTemplateCards() {
         <button class="tpl-scroll-btn" onclick="scrollRow('section-row-birthday',1)" aria-label="Scroll right">&#8250;</button>
       </div>
     </div>
-    <div class="tpl-scroll-row" id="section-row-birthday">${birthdayList.map(buildCard).join('')}</div>
+    <div class="tpl-scroll-row" id="section-row-birthday">
+      ${birthdayList.map(buildCard).join('')}
+      ${buildSeeMoreCard('birthday')}
+    </div>
   `;
 
   // Special Moments row
@@ -610,7 +624,10 @@ function renderTemplateCards() {
         <button class="tpl-scroll-btn" onclick="scrollRow('section-row-special',1)" aria-label="Scroll right">&#8250;</button>
       </div>
     </div>
-    <div class="tpl-scroll-row" id="section-row-special">${specialList.map(buildCard).join('')}</div>
+    <div class="tpl-scroll-row" id="section-row-special">
+      ${specialList.map(buildCard).join('')}
+      ${buildSeeMoreCard('love')}
+    </div>
   `;
 
   g.innerHTML = html || '<div class="load-msg"><span>&#127800;</span>No templates found</div>';
@@ -619,6 +636,20 @@ function renderTemplateCards() {
 function scrollRow(rowId, dir) {
   const row = document.getElementById(rowId);
   if (row) row.scrollBy({ left: dir * 320, behavior: 'smooth' });
+}
+
+function handleSeeMore(cat) {
+  const inp = document.getElementById('search-inp');
+  if (inp) {
+    inp.value = cat;
+    handleSearch(cat);
+    
+    // Scroll to the results with the proper heading
+    const label = document.getElementById('filter-label');
+    if (label) {
+      label.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
 }
 
 function renderSuggestionBox() {
@@ -695,7 +726,10 @@ function handleSearch(q) {
   });
   const lbl = document.getElementById('filter-label');
   const cnt = document.getElementById('filter-count');
-  if (lbl) lbl.textContent = q ? 'Search Results' : 'All Templates';
+  if (lbl) {
+    if (q === 'birthday') lbl.textContent = 'Birthday Wishes';
+    else lbl.textContent = q ? 'Search Results' : 'All Templates';
+  }
   if (cnt) cnt.textContent = q ? `${n} found` : '';
 }
 function clearSearch() {

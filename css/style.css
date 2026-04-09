@@ -727,3 +727,43 @@ textarea.f-inp{resize:vertical;min-height:82px;line-height:1.6}
   .tpl-section-label { font-size: 1rem; }
   .tpl-scroll-btn { width: 30px; height: 30px; font-size: 1.1rem; }
 }
+/* See More Card (Compact) */
+.see-more-card {
+  flex: 0 0 160px;
+  min-height: 280px;
+  background: linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1.5px dashed rgba(232, 130, 154, 0.4);
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
+  color: var(--pink);
+  font-family: var(--fd);
+  scroll-snap-align: start;
+  margin-bottom: 8px;
+}
+.see-more-card:hover {
+  background: rgba(255, 255, 255, 0.12);
+  border-style: solid;
+  border-color: var(--pink);
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(232, 130, 154, 0.15);
+}
+.see-more-icon {
+  width: 44px; height: 44px;
+  background: var(--g-main); color: #fff;
+  border-radius: 50%; display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; box-shadow: 0 4px 10px rgba(232, 130, 154, 0.2);
+}
+.see-more-text {
+  font-size: 0.85rem; font-weight: 700; text-align: center; padding: 0 10px;
+}
+@media(max-width: 600px) {
+  .see-more-card { flex: 0 0 50vw; min-height: 240px; }
+}
