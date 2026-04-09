@@ -755,6 +755,29 @@ function renderDetailPage() {
   const featsHTML = (t.features||[]).map(f => `<div class="feat-item">${f}</div>`).join('');
   const tagsHTML  = (t.tags||[]).map(g => `<span class="tag">#${g}</span>`).join('');
 
+  // ── Submission Guide HTML ──
+  const submitHTML = (t.submitDetails || []).map(s => `
+    <div class="submit-step">
+      <div class="ss-ico-wrap">
+        <span class="ss-ico">${s.icon || '✨'}</span>
+        ${s.required ? '<span class="ss-req-dot" title="Required"></span>' : ''}
+      </div>
+      <div class="ss-content">
+        <div class="ss-label">${s.label} ${!s.required ? '<span class="ss-opt">(Optional)</span>' : ''}</div>
+        <div class="ss-desc">${s.desc}</div>
+      </div>
+    </div>
+  `).join('');
+
+  const submitSection = submitHTML ? `
+    <div class="detail-submit-guide">
+      <div class="feat-title">What you'll need to submit</div>
+      <div class="submit-list">
+        ${submitHTML}
+      </div>
+    </div>
+  ` : '';
+
   const wa = (SITE.site?.whatsapp||'918700113731').replace(/\D/g,'');
   const waLink = `https://wa.me/${wa}?text=${encodeURIComponent(`Hi! I'm interested in the "Fully Custom Theme" service for ${t.price}. I want to build a completely unique surprise.`)}`;
   const insta = (SITE.site?.instagram || 'https://www.instagram.com/pookiewish/').replace(/\/$/, '') + '/';
@@ -845,6 +868,7 @@ function renderDetailPage() {
             <div class="feat-title">What's included</div>
             <div class="feat-list">${featsHTML}</div>
           </div>
+          ${submitSection}
           <div class="detail-tags">${tagsHTML}</div>
           <div class="service-specs">
             ${specsHTML}
