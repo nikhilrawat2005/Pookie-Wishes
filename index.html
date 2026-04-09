@@ -91,9 +91,57 @@
   <div class="t-grid stagger-in" id="tpl-grid">
     <div class="load-msg"><span style="font-size:1.8rem">🌸</span>Loading templates…</div>
   </div>
-  <section class="cs-wrap reveal">
-    <h2 class="cs-title">More <em>Themes</em> Dropping Soon</h2>
-    <div class="cs-grid stagger-in" id="cs-grid"></div>
+  <section class="sug-section reveal" id="cs-grid">
+    <div class="sug-inner">
+      <div class="sug-header">
+        <span class="sug-chip">💡 Shape What's Next</span>
+        <h2 class="sug-title">What <em>Theme</em> Should We Build?</h2>
+        <p class="sug-sub">Got a vibe in mind? Drop your idea below — the most loved themes become real. Your dream template could be live next. ✨</p>
+      </div>
+      <div class="sug-form-wrap" id="sug-box">
+        <div class="sug-orbs">
+          <div class="sug-orb sug-orb-1"></div>
+          <div class="sug-orb sug-orb-2"></div>
+          <div class="sug-orb sug-orb-3"></div>
+        </div>
+        <div class="sug-form">
+          <div class="sug-field-group">
+            <label class="sug-label" for="sug-name">🎨 Name the Theme <span class="sug-required">*</span></label>
+            <div class="sug-inp-wrap">
+              <input
+                class="sug-inp"
+                id="sug-name"
+                type="text"
+                maxlength="60"
+                placeholder="e.g. Taylor Swift Era, Studio Ghibli, Beach Vibe..."
+                autocomplete="off"
+              >
+              <span class="sug-inp-glow"></span>
+            </div>
+          </div>
+          <div class="sug-field-group">
+            <label class="sug-label" for="sug-desc">
+              💬 Describe it <span class="sug-optional">(optional)</span>
+            </label>
+            <div class="sug-inp-wrap">
+              <textarea
+                class="sug-inp sug-textarea"
+                id="sug-desc"
+                rows="3"
+                maxlength="250"
+                placeholder="Tell us the vibe, colours, features, or why it would be perfect..."
+              ></textarea>
+              <span class="sug-inp-glow"></span>
+            </div>
+          </div>
+          <button class="sug-btn" id="sug-btn" onclick="submitSuggestion()">
+            <span class="sug-btn-shine"></span>
+            🚀 Drop My Idea
+          </button>
+          <p class="sug-disclaimer">Most-voted ideas get built first. We'll DM you if yours goes live! 💌</p>
+        </div>
+      </div>
+    </div>
   </section>
 </main>
 

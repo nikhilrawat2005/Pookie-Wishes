@@ -57,7 +57,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   initReveals(); // Always run first so .reveal elements are never stuck hidden
   window.pookieNav = (url) => { if (url) location.href = url; };
 
-  if (PAGE === 'home')     { renderTemplateCards(); renderComingSoon(); }
+  if (PAGE === 'home')     { renderTemplateCards(); renderSuggestionBox(); }
   if (PAGE === 'detail')   { renderDetailPage(); }
   if (PAGE === 'checkout') { initCheckout(); }
 });
@@ -490,6 +490,15 @@ function checkoutCart() {
 // ═══════════════════════════════════════════════════════
 //  TEMPLATE CARDS
 // ═══════════════════════════════════════════════════════
+// ── Discount helpers ─────────────────────────────────
+const SALE_PRICE   = 49;   // First-month sale target price
+const SALE_LABEL   = '🎉 First Month Sale';
+
+function getDiscountPct(originalPrice) {
+  // e.g. 69 → 49 = Math.round((69-49)/69*100) = 29%
+  return Math.round(((originalPrice - SALE_PRICE) / originalPrice) * 100);
+}
+
 function buildCard(t) {
   const isFav  = favSet.has(t.id);
   const inCart = cart.some(i => i.id === t.id);
@@ -498,6 +507,16 @@ function buildCard(t) {
   const search = [t.name, ...(t.tags||[]), t.vibe||''].join(' ').toLowerCase();
   const detailUrl = `${ROOT}pages/template.html?t=${t.id}`;
   const addBtnLabel = inCart ? '🛒 In Cart' : '🛒 Add to Cart';
+
+  // Discount logic — show sale for templates priced > ₹49
+  const hasDiscount = !t.special && Number(t.price) > SALE_PRICE;
+  const discPct     = hasDiscount ? getDiscountPct(Number(t.price)) : 0;
+  const priceHTML   = hasDiscount
+    ? `<span class="t-price-wrap">
+         <span class="t-price-orig">${t.currency||'₹'}${t.price}</span>
+         <span class="t-price sale">₹${SALE_PRICE}</span>
+       </span>`
+    : `<span class="t-price">${t.currency||'₹'}${t.price}</span>`;
 
   const imgHTML = t.media?.thumbnail
     ? `<img class="t-thumb" src="${ROOT}${t.media.thumbnail}" alt="${t.name}" loading="lazy"
@@ -511,6 +530,7 @@ function buildCard(t) {
       <div class="t-media">
         ${imgHTML}${phHTML}
         ${t.badge ? `<span class="t-badge ${t.badge.includes('New') ? 'new' : ''}">${t.badge}</span>` : ''}
+        ${hasDiscount ? `<span class="t-sale-badge">-${discPct}% OFF</span>` : ''}
         ${!t.special ? `
         <div class="t-card-actions" onclick="event.stopPropagation()">
           <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}"
@@ -520,8 +540,9 @@ function buildCard(t) {
       <div class="t-body">
         <div class="t-meta">
           <span class="t-name">${t.emoji} ${t.name}</span>
-          <span class="t-price">${t.currency||'₹'}${t.price}</span>
+          ${priceHTML}
         </div>
+        ${hasDiscount ? `<div class="t-sale-strip">${SALE_LABEL}</div>` : ''}
         <div class="t-tagline">${t.tagline}</div>
         <div class="t-card-btns" onclick="event.stopPropagation()">
           ${t.special 
@@ -543,16 +564,59 @@ function renderTemplateCards() {
   g.innerHTML = cards || '<div class="load-msg"><span>🌸</span>No templates found</div>';
 }
 
-function renderComingSoon() {
-  const g = document.getElementById('cs-grid');
-  if (!g) return;
-  g.innerHTML = (SITE?.comingSoon||[]).map(c => `
-    <div class="cs-card">
-      <span class="cs-em">${c.emoji}</span>
-      <div class="cs-name">${c.name}</div>
-      <div class="cs-tag">${c.tagline}</div>
-      <span class="cs-bdg">coming soon</span>
-    </div>`).join('');
+function renderSuggestionBox() {
+  const wrap = document.getElementById('cs-grid');
+  if (!wrap) return;
+  wrap.innerHTML = ''; // suggestion box is pure HTML (already in index.html)
+}
+
+// ── Suggestion submit ────────────────────────────────
+async function submitSuggestion() {
+  const nameEl  = document.getElementById('sug-name');
+  const descEl  = document.getElementById('sug-desc');
+  const btn     = document.getElementById('sug-btn');
+  const name    = nameEl?.value.trim();
+  const desc    = descEl?.value.trim();
+
+  if (!name) {
+    toast('Give your theme a name first! 🎨', 'err');
+    nameEl?.focus();
+    return;
+  }
+
+  if (!fbReady) {
+    toast('Connection not ready — try again in a moment', 'err');
+    return;
+  }
+
+  // Disable button & show loading state
+  if (btn) { btn.disabled = true; btn.textContent = 'Sending... ✨'; }
+
+  try {
+    await firebase.firestore().collection('suggestions').add({
+      themeName:   name,
+      description: desc || '',
+      userEmail:   currentUser?.email || null,
+      userName:    currentUser?.displayName || null,
+      createdAt:   firebase.firestore.FieldValue.serverTimestamp()
+    });
+
+    // Show success state
+    const box = document.getElementById('sug-box');
+    if (box) {
+      box.innerHTML = `
+        <div class="sug-success">
+          <div class="sug-success-ico">🎉</div>
+          <h3>We got your idea!</h3>
+          <p>Thanks for dreaming with us. If your theme wins the vote, we'll build it just for you — and let you know first. ✨</p>
+        </div>`;
+    }
+    toast('Suggestion submitted! 💖', 'ok');
+  } catch (e) {
+    console.error(e);
+    toast('Could not submit. Try again!', 'err');
+    if (btn) { btn.disabled = false; btn.textContent = '🚀 Drop My Idea'; }
+  }
 }
 
 // ── Search ────────────────────────────────────────────

@@ -187,6 +187,19 @@
       .main-hd { flex-direction: column; align-items: flex-start; gap: 16px; }
       .main-hd .btn-soft { width: 100%; }
     }
+
+    /* SUGGESTIONS */
+    .sug-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .sug-card { background: var(--card); border: 1px solid var(--bdr); border-radius: var(--rl); padding: 22px 24px; box-shadow: var(--sh); transition: all 0.25s; }
+    .sug-card:hover { border-color: var(--bdr-pink); transform: translateY(-3px); box-shadow: 0 10px 32px rgba(255,42,133,0.12); }
+    .sug-card-name { font-family: var(--fd); font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .sug-card-name .sug-ico { font-size: 1.4rem; }
+    .sug-card-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.7; margin-bottom: 16px; min-height: 40px; }
+    .sug-card-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .sug-card-email { font-family: var(--fm); font-size: 0.7rem; color: var(--dim); background: var(--bg3); padding: 3px 8px; border-radius: 6px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sug-card-date { font-family: var(--fm); font-size: 0.68rem; color: var(--dim); }
+    .sug-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .sug-count { font-family: var(--fm); font-size: 0.8rem; color: var(--muted); background: var(--bg3); border: 1px solid var(--bdr); border-radius: 100px; padding: 4px 12px; }
   </style>
 </head>
 <body>
@@ -220,6 +233,7 @@
     <div class="sb-divider"></div>
     <div class="sb-link" data-tab="ranking" onclick="setTab('ranking',this)"><i data-lucide="bar-chart-2"></i> Analytics</div>
     <div class="sb-link" data-tab="templates" onclick="setTab('templates',this)"><i data-lucide="layout-template"></i> All Templates</div>
+    <div class="sb-link" data-tab="suggestions" onclick="setTab('suggestions',this)"><i data-lucide="lightbulb"></i> Suggestions 💡</div>
     
     <div class="sb-foot">
       <div class="sb-user"><i data-lucide="user"></i> <span id="sb-email"></span></div>
@@ -267,6 +281,7 @@
     </div>
 
     <div id="templates-grid" class="templates-grid" style="display:none;"></div>
+    <div id="suggestions-grid" style="display:none; padding-bottom:40px;"></div>
     
   </div>
 </div>
@@ -400,6 +415,7 @@ function setTab(filter, el) {
   const st = document.getElementById('stats-panel');
   const tbl = document.getElementById('orders-tbl');
   const grid = document.getElementById('templates-grid');
+  const sugGrid = document.getElementById('suggestions-grid');
   const hdr = document.getElementById('main-title');
   const rfBtn = document.querySelector('.main-hd .btn-soft');
   
@@ -407,13 +423,23 @@ function setTab(filter, el) {
     if(st) st.style.display = 'none';
     if(tbl) tbl.style.display = 'none';
     if(grid) grid.style.display = 'grid';
+    if(sugGrid) sugGrid.style.display = 'none';
     if(rfBtn) rfBtn.style.display = 'none';
     hdr.textContent = "All Templates";
     if(!grid.innerHTML.trim()) createTemplateGrid();
+  } else if(filter === 'suggestions') {
+    if(st) st.style.display = 'none';
+    if(tbl) tbl.style.display = 'none';
+    if(grid) grid.style.display = 'none';
+    if(sugGrid) sugGrid.style.display = 'block';
+    if(rfBtn) rfBtn.style.display = 'none';
+    hdr.textContent = "Theme Suggestions 💡";
+    loadSuggestions();
   } else {
     if(st) st.style.display = 'grid';
     if(tbl) tbl.style.display = 'block';
     if(grid) grid.style.display = 'none';
+    if(sugGrid) sugGrid.style.display = 'none';
     if(rfBtn) rfBtn.style.display = 'inline-flex';
     hdr.textContent = "Dashboard Overview";
     renderTable();
@@ -440,6 +466,45 @@ function createTemplateGrid() {
     </div>
   `).join('');
   lucide.createIcons();
+}
+
+async function loadSuggestions() {
+  const g = document.getElementById('suggestions-grid');
+  if (!g) return;
+  g.innerHTML = '<div class="empty"><i data-lucide="loader" class="spin"></i> Loading suggestions...</div>';
+  lucide.createIcons();
+  try {
+    const snap = await db.collection('suggestions').orderBy('createdAt', 'desc').limit(100).get();
+    if (snap.empty) {
+      g.innerHTML = '<div class="empty">No suggestions yet — share the site to get ideas rolling! 🚀</div>';
+      return;
+    }
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    g.innerHTML = `
+      <div class="sug-hd">
+        <div style="font-family:var(--fd);font-size:1rem;color:var(--text2);">All submitted theme ideas</div>
+        <span class="sug-count">${items.length} idea${items.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="sug-cards">
+        ${items.map((s, i) => {
+          const dt = s.createdAt?.toDate?.().toLocaleDateString('en-IN', { day:'2-digit', month: 'short', year:'2-digit' }) || '—';
+          const emojis = ['🎨','🌟','💫','🎭','🎪','🎠','🌈','🎵','🚀','💎','🌸','⚡'];
+          const ico = emojis[i % emojis.length];
+          return `
+            <div class="sug-card">
+              <div class="sug-card-name"><span class="sug-ico">${ico}</span>${s.themeName || 'Unnamed Idea'}</div>
+              <div class="sug-card-desc">${s.description ? s.description : '<span style="color:var(--dim);font-style:italic;">No description provided</span>'}</div>
+              <div class="sug-card-meta">
+                <span class="sug-card-email">${s.userEmail || 'Anonymous'}</span>
+                <span class="sug-card-date">${dt}</span>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>`;
+  } catch(e) {
+    g.innerHTML = '<div class="empty" style="color:#fca5a5;">Error loading suggestions. Check console.</div>';
+    console.error(e);
+  }
 }
 
 function renderTable() {
