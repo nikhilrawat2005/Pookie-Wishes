@@ -454,7 +454,8 @@ function createTemplateGrid() {
     { id: 'harry-potter', name: 'Harry Potter', icon: '⚡' },
     { id: 'love-trap', name: 'Love Trap', icon: '💘' },
     { id: 'celestial', name: 'Celestial Moon', icon: '🌙' },
-    { id: 'among-us', name: 'Among Us', icon: '🚀' }
+    { id: 'among-us', name: 'Among Us', icon: '🚀' },
+    { id: 'hoppers', name: 'Hoppers 🌿', icon: '🌿' }
   ];
   g.innerHTML = templates.map(t => `
     <div class="tpl-card">
@@ -519,7 +520,7 @@ function renderTable() {
     return;
   }
   
-  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us'];
+  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers'];
 
   let html = list.map(o => {
     const oid = o.orderId || o._docId;
@@ -559,7 +560,7 @@ function openDrawer(oid) {
   const o = orders.find(x => (x.orderId || x._docId) === oid);
   if(!o) return;
   
-  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us'];
+  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers'];
   const tId = o.templateId || (o.items?.[0]?.id);
   const isZT = ztTemplates.includes(tId);
   

@@ -239,36 +239,35 @@
       }
     },
     {
-      "id": "sorry",
-      "name": "I'm Sorry",
-      "tagline": "Please forgive me? 🥺",
-      "badge": "New ✨",
-      "emoji": "🥺",
-      "price": 49,
+      "id": "hoppers",
+      "name": "Hoppers 🌿",
+      "tagline": "A Pixar-Inspired Glade Adventure!",
+      "badge": "New Theme ✨",
+      "emoji": "🌿",
+      "price": 39,
       "currency": "₹",
       "currencyCode": "INR",
       "hasPhotos": false,
-      "demoUrl": "https://sorry-rho-nine.vercel.app/",
+      "demoUrl": "https://hoppers-birthday.vercel.app/",
       "tags": [
-        "apology",
-        "sorry",
+        "nature",
+        "pixar",
+        "forest",
         "cute",
-        "forgive",
-        "love"
+        "whimsical"
       ],
-      "shortDesc": "Messed up? Say sorry in the cutest way possible with interactive apologies and sad cute animations.",
-      "longDesc": "When words aren't enough, let this cute interactive template do the talking. Features adorable sad faces, an interactive apology scale, a heartfelt digital letter, and a final plea for forgiveness. Guaranteed to melt their heart.",
-      "vibe": "Apologetic & Cute",
+      "shortDesc": "An enchanting forest journey inspired by Pixar magic. Featuring council messages, a beaver delivery, and a magical finale.",
+      "longDesc": "Welcome to the Glade! This Pixar-inspired template takes your special person on a nature-filled adventure. They will receive wisdom from the Council creatures, take the Pond Rules oath, and open a parchment letter delivered by a very determined beaver. A truly whimsical and heartwarming surprise.",
+      "vibe": "Nature & Whimsical",
       "features": [
-        "🥺 Adorable sad character animations",
-        "✉️ Heartfelt digital apology letter",
-        "🎵 Sad background music that turns happy",
-        "💖 Interactive forgiveness button"
+        "🌿 Wisdom from the Glade Council",
+        "🦎 Interactive Pond Rules Oath",
+        "🦫 Determined beaver letter delivery",
+        "📜 Magical forest parchment reveal",
+        "🌳 Grand glade celebration finale"
       ],
       "media": {
-        "thumbnail": "media/sorry/thumbnail.jpg",
-        "video": "https://res.cloudinary.com/dktx4woql/video/upload/f_auto,q_auto/v1774800515/WhatsApp_Video_2026-03-29_at_8.58.24_PM_1_vzc6xw.mp4",
-        "gallery": []
+        "thumbnail": "media/hoppers/thumbnail.jpg"
       }
     }
   ],
