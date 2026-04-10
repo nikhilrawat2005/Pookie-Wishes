@@ -28,6 +28,7 @@ const PAGE = (() => {
   if (p.includes('template'))     return 'detail';
   if (p.includes('checkout'))     return 'checkout';
   if (p.includes('order-success'))return 'success';
+  if (p.includes('category'))     return 'category';
   return 'home';
 })();
 
@@ -72,6 +73,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   }
   if (PAGE === 'detail')   { renderDetailPage(); }
   if (PAGE === 'checkout') { initCheckout(); }
+  if (PAGE === 'category') { if (typeof renderCategoryPage === 'function') renderCategoryPage(); }
 });
 
 // ═══════════════════════════════════════════════════════
@@ -639,17 +641,7 @@ function scrollRow(rowId, dir) {
 }
 
 function handleSeeMore(cat) {
-  const inp = document.getElementById('search-inp');
-  if (inp) {
-    inp.value = cat;
-    handleSearch(cat);
-    
-    // Scroll to the results with the proper heading
-    const label = document.getElementById('filter-label');
-    if (label) {
-      label.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    }
-  }
+  window.location.href = (isPages ? '' : 'pages/') + 'category.html?c=' + cat;
 }
 
 function renderSuggestionBox() {
