@@ -112,13 +112,14 @@ a{text-decoration:none;color:inherit}
 /* Category Grid (Locked to 3 columns on Desktop) */
 .tpl-cat-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  grid-template-columns: repeat(3, 300px);
+  justify-content: center;
+  gap: 32px;
   margin-top: 32px;
   margin-bottom: 60px;
 }
-@media (max-width: 1024px) { .tpl-cat-grid { grid-template-columns: repeat(2, 1fr); gap: 20px; } }
-@media (max-width: 650px) { .tpl-cat-grid { grid-template-columns: 1fr; gap: 16px; } }
+@media (max-width: 1024px) { .tpl-cat-grid { grid-template-columns: repeat(2, 300px); gap: 24px; } }
+@media (max-width: 650px) { .tpl-cat-grid { grid-template-columns: 1fr; gap: 16px; width: 100%; max-width: 320px; margin-inline: auto; } }
 
 
 /* ─── TEMPLATE CARD ─── */
