@@ -1,1 +1,730 @@
-index.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Pookie Zenith</title>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;900&display=swap');
+    
+    :root {
+      --bg: #09090b;
+      --bg2: #0f0f13;
+      --bg3: #18181b;
+      --card: rgba(24, 24, 27, 0.6);
+      --bdr: rgba(255, 255, 255, 0.08);
+      --bdr2: rgba(255, 255, 255, 0.15);
+      --text: #ffffff;
+      --text2: #e4e4e7;
+      --muted: #a1a1aa;
+      --dim: #71717a;
+      --pink: #ff2a85;
+      --pink-s: rgba(255, 42, 133, 0.15);
+      --bdr-pink: rgba(255, 42, 133, 0.3);
+      --mint: #10b981;
+      --g-main: linear-gradient(135deg, #ff2a85 0%, #ff7ea5 100%);
+      --fd: 'Outfit', sans-serif;
+      --fm: 'Inter', monospace;
+      --rx: 16px;
+      --rl: 12px;
+      --r: 8px;
+      --rs: 6px;
+      --sh: 0 4px 24px rgba(0,0,0,0.4);
+    }
+    
+    * { box-sizing: border-box; }
+    body { background: var(--bg); margin: 0; font-family: var(--fm); color: var(--text); -webkit-font-smoothing: antialiased; }
+    
+    /* SCROLLBAR */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 10px; }
+    
+    /* LOGIN */
+    .login-pg { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; background: radial-gradient(circle at top, #1a1014 0%, var(--bg) 60%); }
+    .login-card { background: var(--card); backdrop-filter: blur(20px); border: 1px solid var(--bdr); border-radius: var(--rx); padding: 48px 40px; max-width: 400px; width: 100%; text-align: center; box-shadow: var(--sh); position: relative; overflow: hidden; }
+    .login-card::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: var(--g-main); }
+    .login-title { font-family: var(--fd); font-size: 1.8rem; font-weight: 700; margin-bottom: 8px; margin-top: 16px; }
+    .login-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 28px; line-height: 1.5; }
+    
+    .btn { cursor: pointer; border: none; font-family: var(--fm); font-size: 0.85rem; font-weight: 600; padding: 10px 18px; border-radius: var(--r); transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 8px; outline: none; }
+    .btn:hover { transform: translateY(-1px); }
+    .btn:active { transform: translateY(1px); }
+    .btn-full { width: 100%; }
+    .btn-primary { background: var(--pink); color: #fff; box-shadow: 0 0 15px rgba(255,42,133,0.3); }
+    .btn-primary:hover { border: none; box-shadow: 0 0 25px rgba(255,42,133,0.5); }
+    .btn-google { background: #fff; color: #000; }
+    .btn-soft { background: var(--bg3); color: var(--text2); border: 1px solid var(--bdr); }
+    .btn-soft:hover { background: #27272a; border-color: var(--bdr2); }
+    .btn-ghost { background: transparent; color: var(--muted); }
+    .btn-ghost:hover { background: var(--bg3); color: var(--text); }
+    
+    /* LAYOUT */
+    .admin-wrap { display: none; min-height: 100vh; }
+    .admin-wrap.on { display: flex; }
+    
+    /* SIDEBAR */
+    .sidebar { width: 250px; background: var(--card); backdrop-filter: blur(20px); border-right: 1px solid var(--bdr); padding: 24px 0; display: flex; flex-direction: column; position: fixed; top: 0; left: 0; height: 100vh; z-index: 200; transition: transform 0.3s; }
+    .sb-logo { font-family: var(--fd); font-size: 1.3rem; font-weight: 900; padding: 0 24px 20px; border-bottom: 1px solid var(--bdr); margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
+    .sb-logo i { color: var(--pink); }
+    .sb-link { display: flex; align-items: center; gap: 12px; padding: 12px 24px; color: var(--muted); font-size: 0.88rem; font-weight: 500; cursor: pointer; transition: all 0.2s; border-right: 3px solid transparent; }
+    .sb-link:hover { color: var(--text); background: rgba(255,255,255,0.03); }
+    .sb-link.on { color: var(--pink); background: var(--pink-s); border-right-color: var(--pink); }
+    .sb-link i { width: 18px; height: 18px; }
+    .sb-divider { height: 1px; background: var(--bdr); margin: 12px 24px; }
+    .sb-foot { margin-top: auto; padding: 20px 24px; border-top: 1px solid var(--bdr); display: flex; flex-direction: column; gap: 10px; }
+    .sb-user { font-size: 0.75rem; color: var(--dim); word-break: break-all; display: flex; align-items: center; gap: 8px; }
+    
+    /* MAIN */
+    .main { flex: 1; margin-left: 250px; padding: 32px 40px; overflow-y: auto; height: 100vh; background: radial-gradient(circle at top right, #1a1014 0%, var(--bg) 40%); }
+    .main-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 32px; }
+    .main-title { font-family: var(--fd); font-size: 1.8rem; font-weight: 700; color: var(--text); }
+    
+    /* STATS */
+    .stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 32px; }
+    .stat-c { background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--bdr); border-radius: var(--rl); padding: 20px; box-shadow: var(--sh); position: relative; overflow: hidden; }
+    .stat-c i { position: absolute; top: 20px; right: 20px; color: var(--dim); opacity: 0.3; width: 24px; height: 24px; }
+    .stat-n { font-family: var(--fd); font-size: 2.2rem; font-weight: 700; margin-bottom: 4px; }
+    .stat-n.grd { background: var(--g-main); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+    .stat-l { font-size: 0.8rem; color: var(--muted); font-weight: 500; }
+    
+    /* TABLE */
+    .tbl { background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--bdr); border-radius: var(--rl); box-shadow: var(--sh); }
+    .tbl-hd { display: grid; grid-template-columns: 140px 1fr 150px 120px 120px 100px; gap: 16px; padding: 14px 24px; border-bottom: 1px solid var(--bdr); font-size: 0.7rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .tbl-row { display: grid; grid-template-columns: 140px 1fr 150px 120px 120px 100px; gap: 16px; padding: 16px 24px; border-bottom: 1px solid var(--bdr); align-items: center; cursor: pointer; transition: background 0.2s; }
+    .tbl-row:hover { background: rgba(255,255,255,0.02); }
+    .tbl-row:last-child { border: none; }
+    
+    .tc { font-size: 0.85rem; color: var(--text2); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .tc.mono { font-family: var(--fm); font-size: 0.8rem; color: var(--muted); }
+    .tc-sub { font-size: 0.75rem; color: var(--dim); margin-top: 3px; }
+    
+    /* BADGES */
+    .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
+    .badge-pending { background: rgba(245, 158, 11, 0.1); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.2); }
+    .badge-verified { background: rgba(59, 130, 246, 0.1); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.2); }
+    .badge-delivered { background: rgba(16, 185, 129, 0.1); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.2); }
+    
+    .badge-zt { background: var(--pink-s); color: var(--pink); border: 1px solid var(--bdr-pink); margin-left: 6px; }
+    .badge-lifetime { background: rgba(147, 197, 253, 0.1); color: #60a5fa; border: 1px solid rgba(147, 197, 253, 0.2); margin-left: 6px; }
+    
+    .empty { padding: 60px; text-align: center; color: var(--dim); font-size: 0.9rem; }
+
+    /* TEMPLATE GRID */
+    .templates-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 24px; padding-bottom: 40px; }
+    .tpl-card { background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--bdr); border-radius: var(--rl); padding: 24px; box-shadow: var(--sh); transition: all 0.3s; display: flex; flex-direction: column; }
+    .tpl-card:hover { border-color: var(--bdr-pink); transform: translateY(-4px); box-shadow: 0 10px 40px rgba(255,42,133,0.15); }
+    .tpl-icon-wrap { width: 60px; height: 60px; border-radius: var(--r); background: var(--bg3); border: 1px solid var(--bdr); display:flex; align-items:center; justify-content:center; font-size: 1.8rem; margin-bottom: 20px; }
+    .tpl-title { font-family: var(--fd); font-size: 1.3rem; font-weight: 700; margin-bottom: 6px; color: var(--text); }
+    .tpl-id { font-family: var(--fm); font-size: 0.75rem; color: var(--dim); margin-bottom: 24px; background: rgba(0,0,0,0.3); padding: 4px 8px; border-radius: var(--rs); display: inline-block; }
+    
+    /* DRAWER */
+    .drw-ov { position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); z-index: 400; display: none; }
+    .drw-ov.on { display: block; }
+    .drw { position: fixed; top: 0; right: 0; width: 500px; max-width: 100vw; height: 100vh; background: var(--bg2); border-left: 1px solid var(--bdr); z-index: 500; transform: translateX(100%); transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1); display: flex; flex-direction: column; }
+    .drw.on { transform: translateX(0); }
+    .drw-hd { padding: 24px; border-bottom: 1px solid var(--bdr); display: flex; align-items: center; justify-content: space-between; background: var(--card); }
+    .drw-title { font-family: var(--fd); font-size: 1.2rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 8px; }
+    .drw-x { border: none; background: transparent; color: var(--muted); cursor: pointer; transition: color 0.2s; }
+    .drw-x:hover { color: var(--pink); }
+    
+    .drw-body { flex: 1; overflow-y: auto; padding: 24px; }
+    
+    /* SECTIONS */
+    .sec-title { font-size: 0.75rem; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 12px; display: flex; align-items: center; gap: 8px; }
+    .sec-title i { width: 14px; height: 14px; }
+    .sec-title:first-child { margin-top: 0; }
+    
+    .inf-box { background: var(--card); border: 1px solid var(--bdr); border-radius: var(--r); padding: 16px; margin-bottom: 16px; }
+    .inf-row { display: flex; margin-bottom: 10px; font-size: 0.85rem; }
+    .inf-row:last-child { margin-bottom: 0; }
+    .inf-k { width: 130px; color: var(--muted); }
+    .inf-v { flex: 1; color: var(--text2); font-weight: 500; word-break: break-all; }
+    
+    .copy-btn { border: none; background: transparent; color: var(--muted); cursor: pointer; margin-left: 6px; padding: 2px; }
+    .copy-btn:hover { color: var(--pink); }
+    
+    .f-inp { width: 100%; background: var(--bg); border: 1px solid var(--bdr); padding: 10px 14px; border-radius: var(--rs); color: var(--text); font-family: var(--fm); font-size: 0.85rem; outline: none; transition: border 0.2s; }
+    .f-inp:focus { border-color: var(--pink); box-shadow: 0 0 0 2px var(--pink-s); }
+    
+    /* ZERO TOUCH BOX */
+    .zt-box { background: rgba(16, 185, 129, 0.05); border: 1px solid rgba(16, 185, 129, 0.2); border-radius: var(--r); padding: 20px; text-align: center; margin-bottom: 20px; }
+    .zt-ico { color: #10b981; font-size: 2rem; margin-bottom: 10px; }
+    .zt-title { font-family: var(--fd); font-size: 1.1rem; font-weight: 700; color: #6ee7b7; margin-bottom: 4px; }
+    .zt-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 16px; }
+    .zt-link { background: rgba(0,0,0,0.3); border: 1px solid rgba(255,255,255,0.1); padding: 12px; border-radius: var(--rs); word-break: break-all; font-family: monospace; font-size: 0.75rem; margin-bottom: 16px; user-select: all; text-align: left; color: #a5eed0; }
+    
+    .toast { position: fixed; bottom: 20px; right: 20px; background: var(--card); backdrop-filter: blur(10px); border: 1px solid var(--bdr); padding: 12px 20px; border-radius: var(--r); box-shadow: var(--sh); display: flex; align-items: center; gap: 10px; font-size: 0.85rem; z-index: 1000; animation: slideUp 0.3s; }
+    .toast.err { border-color: rgba(239, 68, 68, 0.3); color: #fca5a5; }
+    .toast.ok { border-color: rgba(16, 185, 129, 0.3); color: #6ee7b7; }
+    @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+    /* MOBILE TOGGLE */
+    .sb-toggle { display: none; background: var(--bg3); border: 1px solid var(--bdr); color: var(--text); padding: 8px; border-radius: var(--r); cursor: pointer; align-items: center; justify-content: center; }
+    .sb-x-mobile { display: none; position: absolute; top: 20px; right: 20px; color: var(--muted); background: transparent; border: none; cursor: pointer; }
+
+    /* RESPONSIVENESS */
+    @media (max-width: 1024px) {
+      .sidebar { transform: translateX(-100%); width: 280px; box-shadow: 20px 0 50px rgba(0,0,0,0.5); }
+      .sidebar.on { transform: translateX(0); }
+      .main { margin-left: 0; padding: 24px 20px; }
+      .sb-toggle { display: inline-flex; }
+      .sb-x-mobile { display: block; }
+    }
+
+    @media (max-width: 768px) {
+      .stats { grid-template-columns: 1fr 1fr; }
+      .main-title { font-size: 1.4rem; }
+      .tbl { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+      .tbl-hd, .tbl-row { min-width: 900px; }
+      .stat-n { font-size: 1.8rem; }
+    }
+
+    @media (max-width: 480px) {
+      .stats { grid-template-columns: 1fr; }
+      .main-hd { flex-direction: column; align-items: flex-start; gap: 16px; }
+      .main-hd .btn-soft { width: 100%; }
+    }
+
+    /* SUGGESTIONS */
+    .sug-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 20px; }
+    .sug-card { background: var(--card); border: 1px solid var(--bdr); border-radius: var(--rl); padding: 22px 24px; box-shadow: var(--sh); transition: all 0.25s; }
+    .sug-card:hover { border-color: var(--bdr-pink); transform: translateY(-3px); box-shadow: 0 10px 32px rgba(255,42,133,0.12); }
+    .sug-card-name { font-family: var(--fd); font-size: 1.15rem; font-weight: 700; color: var(--text); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    .sug-card-name .sug-ico { font-size: 1.4rem; }
+    .sug-card-desc { font-size: 0.84rem; color: var(--muted); line-height: 1.7; margin-bottom: 16px; min-height: 40px; }
+    .sug-card-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; }
+    .sug-card-email { font-family: var(--fm); font-size: 0.7rem; color: var(--dim); background: var(--bg3); padding: 3px 8px; border-radius: 6px; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .sug-card-date { font-family: var(--fm); font-size: 0.68rem; color: var(--dim); }
+    .sug-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+    .sug-count { font-family: var(--fm); font-size: 0.8rem; color: var(--muted); background: var(--bg3); border: 1px solid var(--bdr); border-radius: 100px; padding: 4px 12px; }
+  </style>
+</head>
+<body>
+
+<div id="login-pg" class="login-pg">
+  <div class="login-card">
+    <i data-lucide="shield-check" style="width: 48px; height: 48px; color: var(--pink); margin-bottom: 16px; margin-inline:auto;"></i>
+    <div class="login-title">Pookie Zenith</div>
+    <p class="login-sub">Secure Admin Matrix<br>Authenticate to access live instances.</p>
+    <button class="btn btn-google btn-full" style="padding: 12px;" onclick="adminLogin()">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.14z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="#FBBC05" d="M10.53 28.59c-.49-1.47-.76-3.04-.76-4.59s.27-3.12.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.55 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/></svg>
+      Sign in with Google
+    </button>
+  </div>
+</div>
+
+<div id="admin-wrap" class="admin-wrap">
+  <div class="sidebar">
+    <div class="sb-logo">
+      <i data-lucide="rocket"></i> Zenith
+      <button class="sb-x-mobile" onclick="toggleSidebar()"><i data-lucide="x"></i></button>
+    </div>
+    
+    <a href="../index.html" class="sb-link" style="color:var(--dim);"><i data-lucide="external-link"></i> Back to Site</a>
+    <div class="sb-divider"></div>
+    
+    <div class="sb-link on" data-tab="all" onclick="setTab('all',this)"><i data-lucide="layers"></i> All Orders</div>
+    <div class="sb-link" data-tab="incoming" onclick="setTab('incoming',this)"><i data-lucide="inbox"></i> Incoming</div>
+    <div class="sb-link" data-tab="delivered" onclick="setTab('delivered',this)"><i data-lucide="check-circle"></i> Delivered</div>
+    <div class="sb-link" data-tab="lifetime" onclick="setTab('lifetime',this)"><i data-lucide="gem"></i> Lifetime</div>
+    <div class="sb-divider"></div>
+    <div class="sb-link" data-tab="ranking" onclick="setTab('ranking',this)"><i data-lucide="bar-chart-2"></i> Analytics</div>
+    <div class="sb-link" data-tab="templates" onclick="setTab('templates',this)"><i data-lucide="layout-template"></i> All Templates</div>
+    <div class="sb-link" data-tab="suggestions" onclick="setTab('suggestions',this)"><i data-lucide="lightbulb"></i> Suggestions 💡</div>
+    
+    <div class="sb-foot">
+      <div class="sb-user"><i data-lucide="user"></i> <span id="sb-email"></span></div>
+      <button class="btn btn-soft btn-full" onclick="adminLogout()">Sign Out</button>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="main-hd">
+      <div style="display:flex; align-items:center; gap:12px;">
+        <button class="sb-toggle" onclick="toggleSidebar()"><i data-lucide="menu"></i></button>
+        <div class="main-title" id="main-title">Dashboard Overview</div>
+      </div>
+      <button class="btn btn-soft" id="refresh-btn" onclick="loadOrders()"><i data-lucide="refresh-cw" style="width:16px;"></i> Refresh Data</button>
+    </div>
+
+    <div class="stats" id="stats-panel">
+      <div class="stat-c">
+        <i data-lucide="hash"></i>
+        <div class="stat-n" id="s-total">0</div>
+        <div class="stat-l">Total Processes</div>
+      </div>
+      <div class="stat-c">
+        <i data-lucide="indian-rupee"></i>
+        <div class="stat-n grd" id="s-rev">₹0</div>
+        <div class="stat-l">Total Revenue</div>
+      </div>
+      <div class="stat-c">
+        <i data-lucide="clock"></i>
+        <div class="stat-n" id="s-pend" style="color:#fcd34d;">0</div>
+        <div class="stat-l">Awaiting Manual</div>
+      </div>
+      <div class="stat-c">
+        <i data-lucide="zap"></i>
+        <div class="stat-n" id="s-done" style="color:#6ee7b7;">0</div>
+        <div class="stat-l">Zero-Touch & Delivered</div>
+      </div>
+    </div>
+
+    <div class="tbl" id="orders-tbl">
+      <div class="tbl-hd">
+        <div>Order ID</div><div>Customer</div><div>Template / Type</div><div>Revenue</div><div>Status</div><div>Timeline</div>
+      </div>
+      <div id="tbl-body"><div class="empty"><i data-lucide="loader" class="spin"></i> Loading...</div></div>
+    </div>
+
+    <div id="templates-grid" class="templates-grid" style="display:none;"></div>
+    <div id="suggestions-grid" style="display:none; padding-bottom:40px;"></div>
+    
+  </div>
+</div>
+
+<div class="drw-ov" id="drw-ov" onclick="closeDrawer()"></div>
+<div class="drw" id="drw">
+  <div class="drw-hd">
+    <div class="drw-title"><i data-lucide="file-text"></i> Order Details</div>
+    <button class="drw-x" onclick="closeDrawer()"><i data-lucide="x"></i></button>
+  </div>
+  <div class="drw-body" id="drw-body"></div>
+</div>
+
+<div id="toasts"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+
+<script>
+lucide.createIcons();
+const ADMIN_EMAILS = ['teamcipher.work@gmail.com', 'nikhil2005114@gmail.com'];
+let SITE=null, db=null, orders=[], curFilter='all', curOrderId=null, isLoading=false;
+let lastDoc = null, hasMore = true;
+
+function toggleSidebar() {
+  const sb = document.querySelector('.sidebar');
+  const ov = document.getElementById('drw-ov');
+  const isSbOpen = sb.classList.contains('on');
+  if (isSbOpen) {
+    sb.classList.remove('on');
+    if (!document.getElementById('drw').classList.contains('on')) ov.classList.remove('on');
+  } else {
+    sb.classList.add('on');
+    ov.classList.add('on');
+  }
+}
+
+window.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const res = await fetch('../data/site.json');
+    SITE = await res.json();
+    if (!firebase.apps.length) firebase.initializeApp(SITE.firebase);
+    db = firebase.firestore();
+  } catch (e) {
+    alert('CRITICAL ERROR: Failed to load site.json');
+    return;
+  }
+  
+  firebase.auth().onAuthStateChanged(user => {
+    if (user && ADMIN_EMAILS.includes(user.email)) {
+      document.getElementById('login-pg').style.display = 'none';
+      document.getElementById('admin-wrap').classList.add('on');
+      document.getElementById('sb-email').textContent = user.email.split('@')[0];
+      if (SITE?.emailjs?.account1?.publicKey) emailjs.init(SITE.emailjs.account1.publicKey);
+      loadOrders();
+    } else {
+      document.getElementById('login-pg').style.display = 'flex';
+      document.getElementById('admin-wrap').classList.remove('on');
+    }
+  });
+});
+
+async function adminLogin() {
+  try { await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch(e) {}
+}
+async function adminLogout() { await firebase.auth().signOut(); }
+
+async function loadOrders(isLoadMore = false) {
+  if (isLoading) return;
+  
+  if (!isLoadMore) {
+    document.getElementById('tbl-body').innerHTML = '<div class="empty">Loading...</div>';
+    orders = [];
+    lastDoc = null;
+    hasMore = true;
+    const btn = document.getElementById('refresh-btn');
+    if(btn) { btn.disabled = true; btn.style.opacity = '0.5'; }
+  }
+  
+  isLoading = true;
+  try {
+    let query = db.collection('orders').orderBy('createdAt', 'desc').limit(50);
+    if (isLoadMore && lastDoc) {
+      query = query.startAfter(lastDoc);
+    }
+    
+    const snap = await query.get();
+    
+    if (snap.empty) {
+      hasMore = false;
+    } else {
+      lastDoc = snap.docs[snap.docs.length - 1];
+      const newOrders = snap.docs.map(d => ({ _docId: d.id, ...d.data() }));
+      orders = [...orders, ...newOrders];
+      if (snap.docs.length < 50) hasMore = false;
+    }
+    
+    updateStats();
+    renderTable();
+  } catch(e) {
+    if (orders.length === 0) {
+      document.getElementById('tbl-body').innerHTML = '<div class="empty" style="font-size:0.8rem;color:#fca5a5;">Error fetching data. If index error, check browser console.</div>';
+    }
+    console.error("Fetch error:", e);
+  } finally {
+    isLoading = false;
+    const btn = document.getElementById('refresh-btn');
+    if(btn) { btn.disabled = false; btn.style.opacity = '1'; }
+  }
+}
+
+function updateStats() {
+  const validOrders = orders.filter(o => ['paid', 'delivered', 'pending_verification'].includes(o.status));
+  document.getElementById('s-total').textContent = validOrders.length;
+  document.getElementById('s-rev').textContent   = '₹' + validOrders.reduce((s,o)=>s+(o.totalAmount||0),0);
+  document.getElementById('s-pend').textContent  = validOrders.filter(o=>o.status==='pending_verification').length;
+  document.getElementById('s-done').textContent  = validOrders.filter(o=>o.deliveryStatus==='delivered').length;
+  
+  // Optional: Update revenue to show Lifetime specifically if needed
+  const lifeRev = validOrders.filter(o=>o.lifetime).reduce((s,o)=>s+(o.totalAmount||0),0);
+  console.log('Lifetime Revenue:', lifeRev);
+}
+
+function setTab(filter, el) {
+  curFilter = filter;
+  document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('on'));
+  el.classList.add('on');
+  
+  const st = document.getElementById('stats-panel');
+  const tbl = document.getElementById('orders-tbl');
+  const grid = document.getElementById('templates-grid');
+  const sugGrid = document.getElementById('suggestions-grid');
+  const hdr = document.getElementById('main-title');
+  const rfBtn = document.querySelector('.main-hd .btn-soft');
+  
+  if(filter === 'templates') {
+    if(st) st.style.display = 'none';
+    if(tbl) tbl.style.display = 'none';
+    if(grid) grid.style.display = 'grid';
+    if(sugGrid) sugGrid.style.display = 'none';
+    if(rfBtn) rfBtn.style.display = 'none';
+    hdr.textContent = "All Templates";
+    if(!grid.innerHTML.trim()) createTemplateGrid();
+  } else if(filter === 'suggestions') {
+    if(st) st.style.display = 'none';
+    if(tbl) tbl.style.display = 'none';
+    if(grid) grid.style.display = 'none';
+    if(sugGrid) sugGrid.style.display = 'block';
+    if(rfBtn) rfBtn.style.display = 'none';
+    hdr.textContent = "Theme Suggestions 💡";
+    loadSuggestions();
+  } else {
+    if(st) st.style.display = 'grid';
+    if(tbl) tbl.style.display = 'block';
+    if(grid) grid.style.display = 'none';
+    if(sugGrid) sugGrid.style.display = 'none';
+    if(rfBtn) rfBtn.style.display = 'inline-flex';
+    hdr.textContent = "Dashboard Overview";
+    renderTable();
+  }
+}
+
+function createTemplateGrid() {
+  const g = document.getElementById('templates-grid');
+  const templates = [
+    { id: 'sorry', name: 'The Apology (Sorry)', icon: '🥺' },
+    { id: 'hello-kitty', name: 'Hello Kitty', icon: '🎀' },
+    { id: 'harry-potter', name: 'Harry Potter', icon: '⚡' },
+    { id: 'love-trap', name: 'Love Trap', icon: '💘' },
+    { id: 'celestial', name: 'Celestial Moon', icon: '🌙' },
+    { id: 'among-us', name: 'Among Us', icon: '🚀' },
+    { id: 'hoppers', name: 'Hoppers 🌿', icon: '🌿' }
+  ];
+  g.innerHTML = templates.map(t => `
+    <div class="tpl-card">
+      <div class="tpl-icon-wrap">${t.icon}</div>
+      <div class="tpl-title">${t.name}</div>
+      <div class="tpl-id">ID: ${t.id}</div>
+      <div style="flex:1"></div>
+      <a href="../templates/${t.id}-template/index.html" target="_blank" class="btn btn-primary btn-full"><i data-lucide="external-link" style="width:16px;"></i> Visit Template</a>
+    </div>
+  `).join('');
+  lucide.createIcons();
+}
+
+async function loadSuggestions() {
+  const g = document.getElementById('suggestions-grid');
+  if (!g) return;
+  g.innerHTML = '<div class="empty"><i data-lucide="loader" class="spin"></i> Loading suggestions...</div>';
+  lucide.createIcons();
+  try {
+    const snap = await db.collection('suggestions').orderBy('createdAt', 'desc').limit(100).get();
+    if (snap.empty) {
+      g.innerHTML = '<div class="empty">No suggestions yet — share the site to get ideas rolling! 🚀</div>';
+      return;
+    }
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    g.innerHTML = `
+      <div class="sug-hd">
+        <div style="font-family:var(--fd);font-size:1rem;color:var(--text2);">All submitted theme ideas</div>
+        <span class="sug-count">${items.length} idea${items.length !== 1 ? 's' : ''}</span>
+      </div>
+      <div class="sug-cards">
+        ${items.map((s, i) => {
+          const dt = s.createdAt?.toDate?.().toLocaleDateString('en-IN', { day:'2-digit', month: 'short', year:'2-digit' }) || '—';
+          const emojis = ['🎨','🌟','💫','🎭','🎪','🎠','🌈','🎵','🚀','💎','🌸','⚡'];
+          const ico = emojis[i % emojis.length];
+          return `
+            <div class="sug-card">
+              <div class="sug-card-name"><span class="sug-ico">${ico}</span>${s.themeName || 'Unnamed Idea'}</div>
+              <div class="sug-card-desc">${s.description ? s.description : '<span style="color:var(--dim);font-style:italic;">No description provided</span>'}</div>
+              <div class="sug-card-meta">
+                <span class="sug-card-email">${s.userEmail || 'Anonymous'}</span>
+                <span class="sug-card-date">${dt}</span>
+              </div>
+            </div>`;
+        }).join('')}
+      </div>`;
+  } catch(e) {
+    g.innerHTML = '<div class="empty" style="color:#fca5a5;">Error loading suggestions. Check console.</div>';
+    console.error(e);
+  }
+}
+
+function renderTable() {
+  const validOrders = orders.filter(o => ['paid', 'delivered', 'pending_verification'].includes(o.status));
+  let list = validOrders;
+  if(curFilter==='delivered') list = validOrders.filter(o=>o.deliveryStatus==='delivered' || o.status==='delivered');
+  if(curFilter==='incoming')  list = validOrders.filter(o=>o.status==='pending_verification' || o.status==='paid');
+  if(curFilter==='lifetime')  list = validOrders.filter(o=>o.lifetime === true);
+  
+  if(!list.length) {
+    document.getElementById('tbl-body').innerHTML = '<div class="empty">No orders found.</div>';
+    return;
+  }
+  
+  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers'];
+
+  let html = list.map(o => {
+    const oid = o.orderId || o._docId;
+    const isZT = ztTemplates.includes(o.templateId || (o.items?.[0]?.id));
+    let sLabel = o.status, sCls = 'badge-pending';
+    if(o.deliveryStatus==='delivered') { sLabel='Delivered'; sCls='badge-delivered'; }
+    else if(o.status==='paid') { sLabel='Paid / Info Req'; sCls='badge-verified'; }
+    
+    const dt = o.createdAt?.toDate?.().toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) || '—';
+    const tpl = o.templateId || (o.items?.[0]?.name) || 'Unknown';
+
+    return `<div class="tbl-row" onclick="openDrawer('${oid}')">
+      <div class="tc mono">${oid}</div>
+      <div class="tc">${o.user?.name || o.buyerName || '—'}<div class="tc-sub">${o.user?.email || o.buyerEmail || ''}</div></div>
+      <div class="tc">${tpl} ${isZT ? '<span class="badge badge-zt"><i data-lucide="zap" style="width:10px;"></i> HT</span>' : ''} ${o.lifetime ? '<span class="badge badge-lifetime"><i data-lucide="gem" style="width:10px;"></i> LT</span>' : ''}</div>
+      <div class="tc mono" style="font-weight:600;">₹${o.totalAmount||0}</div>
+      <div><span class="badge ${sCls}">${sLabel}</span></div>
+      <div class="tc tc-sub">${dt}</div>
+    </div>`;
+  }).join('');
+  
+  if (hasMore && curFilter === 'all') {
+    html += `<div style="text-align:center; padding: 20px;"><button class="btn btn-soft" onclick="loadOrders(true)">Load More Orders</button></div>`;
+  }
+  
+  document.getElementById('tbl-body').innerHTML = html;
+  lucide.createIcons();
+}
+
+function copy(txt) {
+  navigator.clipboard.writeText(txt);
+  toast('Copied!','ok');
+}
+
+function openDrawer(oid) {
+  curOrderId = oid;
+  const o = orders.find(x => (x.orderId || x._docId) === oid);
+  if(!o) return;
+  
+  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers'];
+  const tId = o.templateId || (o.items?.[0]?.id);
+  const isZT = ztTemplates.includes(tId);
+  
+  document.getElementById('drw-ov').classList.add('on');
+  document.getElementById('drw').classList.add('on');
+  
+  let deliveryBlock = '';
+  if (isZT) {
+    const folder = tId + '-template'; 
+    const linkObj = o.deliveryLink || (window.location.origin + '/templates/' + folder + '/index.html?id=' + oid);
+    deliveryBlock = `
+      <div class="zt-box">
+         <i data-lucide="zap" class="zt-ico"></i>
+         <div class="zt-title">Zero-Touch Executed</div>
+         <p class="zt-sub">This order was completely automated. Link was generated securely.</p>
+         <div class="zt-link">${linkObj}</div>
+         <div style="display:flex;gap:10px;">
+             <button class="btn btn-soft" style="flex:1" onclick="copy('${linkObj}')">Copy Link</button>
+             <button class="btn btn-primary" style="flex:2" onclick="resendZeroTouch('${oid}', '${linkObj}')">Resend Delivery Email</button>
+         </div>
+      </div>
+    `;
+  } else {
+    deliveryBlock = `
+      <div class="inf-box">
+         <div class="sec-title"><i data-lucide="send"></i> Manual Delivery</div>
+         <input type="url" class="f-inp" id="manual-link" placeholder="Enter Vercel URL..." style="margin-bottom:10px;" value="${o.deliveryLink||''}">
+         <button class="btn btn-primary btn-full" onclick="sendManual('${oid}')">Send Delivery Email & Complete</button>
+      </div>
+    `;
+  }
+
+  const pData = o.detailsSubmitted ? `
+    <div class="inf-row"><div class="inf-k">Recipient</div><div class="inf-v">${o.recipientName||'—'} <button class="copy-btn" onclick="copy('${o.recipientName}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+    <div class="inf-row"><div class="inf-k">Date Event</div><div class="inf-v">${o.eventDate||'—'}</div></div>
+    <div class="inf-row"><div class="inf-k">Message</div><div class="inf-v" style="background:var(--bg3);padding:10px;border-radius:var(--rs);margin-top:4px;">${o.wishMessage||'—'}</div></div>
+  ` : '<div class="tc-sub" style="color:var(--pink);">User has not submitted form details yet.</div>';
+
+  const photosList = (o.photos && o.photos.length) ? `
+    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
+      ${o.photos.map((p,i) => `
+        <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--rs);padding:10px;text-align:center;">
+          <div style="font-size:0.75rem;color:var(--dim);margin-bottom:6px;">Photo ${i+1}</div>
+          <a href="${p}" target="_blank" class="btn btn-soft" style="font-size:0.7rem;padding:4px 8px;">View Image</a>
+        </div>
+      `).join('')}
+    </div>
+  ` : '<div class="tc-sub" style="margin-top:10px;">No photos provided (Stickers used).</div>';
+
+  document.getElementById('drw-body').innerHTML = `
+    ${deliveryBlock}
+    
+    <div class="sec-title"><i data-lucide="user"></i> Core Info</div>
+    <div class="inf-box">
+      <div class="tc-sub">${o.user?.name || o.buyerName || '—'} <button class="copy-btn" onclick="copy('${o.user?.name || o.buyerName || '—'}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+      <div class="inf-row"><div class="inf-k">Customer Email</div><div class="inf-v">${o.user?.email || o.buyerEmail || '—'} <button class="copy-btn" onclick="copy('${o.user?.email || o.buyerEmail || '—'}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+      <div class="inf-row"><div class="inf-k">Total Revenue</div><div class="inf-v" style="color:var(--mint);">₹${o.totalAmount || o.total || 0}</div></div>
+    </div>
+    
+    <div class="sec-title"><i data-lucide="message-square"></i> Personalisation</div>
+    <div class="inf-box">${pData}</div>
+    
+    <div class="sec-title"><i data-lucide="image"></i> Uploaded Media</div>
+    <div class="inf-box">${photosList}</div>
+
+    <div class="sec-title"><i data-lucide="settings"></i> Danger Zone</div>
+    <div class="inf-box" style="border-color: rgba(239, 68, 68, 0.3);">
+      <button class="btn btn-soft btn-full" style="color:#fca5a5;" onclick="deleteOrder('${oid}')"><i data-lucide="trash-2"></i> Permanently Delete Order</button>
+    </div>
+  `;
+  lucide.createIcons();
+}
+
+function closeDrawer() {
+  document.getElementById('drw-ov').classList.remove('on');
+  document.getElementById('drw').classList.remove('on');
+  document.querySelector('.sidebar').classList.remove('on');
+}
+
+async function resendZeroTouch(oid, link) {
+  const o = orders.find(x => (x.orderId || x._docId) === oid);
+  if(!o || !SITE?.emailjs?.account1) return toast('Config missing','err');
+  
+  toast('Re-sending Zero-Touch Email...', 'inf');
+  try {
+    const ejs = SITE.emailjs.account1;
+    await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
+      to_email: o.user?.email || o.buyerEmail,
+      recipient_name: o.user?.name || o.buyerName || 'Awesome Customer',
+      gift_link: link,
+      order_id: oid
+    });
+    toast('Email Resent Successfully ✨','ok');
+  } catch(e) { toast('Error sending email','err'); console.error(e); }
+}
+
+async function sendManual(oid) {
+  const o = orders.find(x => (x.orderId || x._docId) === oid);
+  const lnk = document.getElementById('manual-link').value.trim();
+  if(!lnk || !o) return toast('Input link','err');
+  
+  toast('Sending Delivery...', 'inf');
+  try {
+    const ejs = SITE.emailjs.account1;
+    await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
+      to_email: o.user?.email || o.buyerEmail,
+      recipient_name: o.user?.name || o.buyerName || 'Awesome Customer',
+      gift_link: lnk,
+      order_id: oid
+    });
+    
+    await db.collection('orders').doc(oid).update({ status: 'delivered', deliveryStatus: 'delivered', deliveryLink: lnk });
+    o.status = 'delivered'; o.deliveryStatus = 'delivered'; o.deliveryLink = lnk;
+    
+    closeDrawer(); renderTable(); updateStats();
+    toast('Delivered!','ok');
+  } catch(e) { toast('Error delivering','err'); }
+}
+
+async function deleteOrder(oid) {
+  if (!confirm('Permanently delete this order from database AND remove its media? This cannot be undone.')) return;
+  toast('Deleting order and media...', 'inf');
+  
+  try {
+    // 1. Attempt Cloudinary Media Deletion via Vercel Function
+    try {
+      const apiRes = await fetch('/api/delete-media', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ order_id: oid })
+      });
+      if (!apiRes.ok) {
+        console.warn('Media deletion proxy returned status', apiRes.status);
+      }
+    } catch(apiErr) {
+      console.warn("Cloudinary media deletion network warning:", apiErr);
+      // We don't block the actual Firestore doc deletion if this fails, 
+      // since the api might be unavailable in local dev without env vars.
+    }
+
+    // 2. Delete Firestore Document
+    await db.collection('orders').doc(oid).delete();
+    orders = orders.filter(x => (x.orderId || x._docId) !== oid);
+    
+    closeDrawer(); 
+    if (curFilter !== 'templates') renderTable(); 
+    updateStats();
+    
+    toast('Order & Media Deleted ✅', 'ok');
+  } catch(e) { 
+    toast('Failed to delete order', 'err'); 
+    console.error(e); 
+  }
+}
+
+function toast(m, t) {
+  const c = document.getElementById('toasts');
+  const d = document.createElement('div');
+  d.className = 'toast ' + (t==='err'?'err':'ok');
+  d.innerHTML = `<i data-lucide="${t==='err'?'alert-circle':'check-circle'}"></i> <span>${m}</span>`;
+  c.appendChild(d);
+  lucide.createIcons();
+  setTimeout(()=>d.remove(), 3000);
+}
+</script>
+</body>
+</html>

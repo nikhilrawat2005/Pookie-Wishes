@@ -1,1 +1,445 @@
-order-success.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Payment Successful! — Pookie Wishes ✨</title>
+  <link rel="icon" type="image/png" href="../favicon.png">🎂</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+  <style>
+    body { background:var(--bg); }
+    .pg { min-height:100vh; padding:80px 20px; display:flex; justify-content:center; }
+    .card { background:var(--card); border:1px solid var(--bdr); border-radius:var(--rx); padding:42px 36px; max-width:600px; width:100%; box-shadow:var(--sh-lg); }
+    .big-ico { font-size:3.5rem; display:block; margin-bottom:16px; text-align:center; animation:bob 2.5s ease-in-out infinite; }
+    .ttl { font-family:var(--fd); font-size:1.9rem; font-weight:700; color:var(--text); margin-bottom:8px; text-align:center; }
+    .sub { color:var(--muted); font-size:.9rem; line-height:1.6; margin-bottom:22px; text-align:center; }
+    .order-pill { background:var(--pink-s); border:1px solid var(--bdr-pink); border-radius:var(--r); padding:11px 16px; font-family:var(--fm); font-size:.78rem; color:var(--text2); margin-bottom:32px; text-align:center; }
+    
+    .f-row { margin-bottom:18px; }
+    .f-group { margin-bottom: 20px; }
+    .f-label.opt { color:var(--dim); font-size:0.65rem; }
+    .img-note { font-size: 0.75rem; color: var(--pink); background: var(--pink-s); padding: 10px; border-radius: var(--r); margin-bottom:15px; border: 1px solid var(--bdr-pink); }
+    
+    .upload-zone { border: 2px dashed var(--bdr2); padding: 16px; border-radius: var(--r); text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom:10px; background:var(--bg2);}
+    .upload-zone:hover { border-color: var(--pink); }
+    .upload-zone input[type="file"] { display: none; }
+    .file-list { font-size: 0.8rem; color: var(--dim); min-height: 20px; margin-bottom:10px;}
+    
+    @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+    .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<nav class="navbar"><a href="../index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a></nav>
+
+<div class="pg">
+  <div class="card reveal">
+    <span class="big-ico">🎉✨</span>
+    <div class="ttl">Payment Successful!</div>
+    <p class="sub">Thank you for your order! 💖 Complete your surprise by filling out the details below.</p>
+    
+    <div class="order-pill">
+      Order ID: <strong id="show-id">—</strong><br>
+      Email: <strong id="show-email">—</strong>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loading-order" style="text-align:center; padding:40px 0;">
+      <div class="loading-spinner" style="width:40px; height:40px; border-width:3px; border-top-color:var(--pink);"></div>
+      <p style="color:var(--muted); margin-top:15px;">Loading your order data... ✨</p>
+    </div>
+
+    <!-- Error Message (Hidden Initially) -->
+    <div id="error-msg" style="display:none; text-align:center; padding:40px 0;">
+      <div style="font-size:3rem; margin-bottom:15px;">🔍❌</div>
+      <h3 style="font-family:var(--fd); color:var(--text); margin-bottom:10px;">Order Not Found</h3>
+      <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
+        We couldn't find an order with this ID. Please double check your link or contact support.
+      </p>
+      <a href="../index.html" class="btn btn-soft">Go to Home</a>
+    </div>
+
+    <!-- Personalisation Form (Hidden Initially) -->
+    <div id="post-payment-form" style="display:none;">
+      <div id="form-step-indicator" style="font-size: 0.8rem; color: var(--pink); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Step 1 of 1</div>
+      <div class="f-group" style="margin-bottom:12px;">
+        <label class="f-label">Template Selected</label>
+        <input class="f-inp" id="f-template-name" type="text" readonly disabled style="background:var(--bg2); cursor:not-allowed; border-color:var(--bdr); color:var(--text); font-weight:600;">
+      </div>
+      <div class="f-group">
+        <label class="f-label">Recipient's Name *</label>
+        <input class="f-inp" id="f-recip" type="text" placeholder="Who is this surprise for?">
+      </div>
+
+      <div class="f-group">
+        <label class="f-label">Wish Message / Letter *</label>
+        <textarea class="f-inp" id="f-msg" rows="3" placeholder="Write your heartfelt message here..."></textarea>
+      </div>
+
+      <div class="f-row" style="display:flex; gap:16px;">
+        <div class="f-group" style="flex:1;">
+          <label class="f-label">Date <span class="opt">(Optional)</span></label>
+          <input class="f-inp" id="f-date" type="date">
+        </div>
+      </div>
+
+      <div class="f-group" id="photo-upload-sec">
+        <label class="f-label">Photos (Max 3) <span class="opt" id="f-photos-opt">(Required)</span></label>
+        <div class="img-note">
+          Please upload 1-3 photos to make your surprise magical! ✨
+        </div>
+        <label class="upload-zone">
+          <div style="font-size:1.5rem;margin-bottom:5px;">📸</div>
+          <div style="font-size:0.85rem;color:var(--text);">Click to select up to 3 photos</div>
+          <input type="file" id="f-photos" multiple accept="image/*" onchange="updateFileList(this)">
+        </label>
+        <div class="file-list" id="file-list-display">No files selected</div>
+      </div>
+
+      <button class="btn btn-primary btn-xl btn-full btn-shimmer" id="submit-details-btn" onclick="submitPersonalisation()">Complete Order 🚀</button>
+    </div>
+
+    <!-- Success Message (Hidden Initally) -->
+    <div id="success-msg" style="display:none; text-align:center; padding: 20px 0;">
+      <div style="font-size:3rem; margin-bottom:15px;">💌</div>
+      <h3 style="font-family:var(--fd); color:var(--text); margin-bottom:10px;">Order Completely Received!</h3>
+      <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
+        Our team will now start working on your surprise. It will be ready instantly upon form submission. Check your email for updates!
+      </p>
+      <a href="../index.html" class="btn btn-soft">Go to Home</a>
+    </div>
+
+    <p style="text-align:center;font-size:.74rem;color:var(--dim);margin-top:24px">
+      Questions? <a href="#" id="wa-link" target="_blank" style="color:var(--pink)">WhatsApp us</a>
+    </p>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="f-bottom">
+      <span>© 2026 Pookie Wishes — Personalized Digital Greeting Service 💖</span>
+      <div style="display:flex; gap:15px; margin-top:12px; flex-wrap:wrap; justify-content:center;">
+        <a href="about.html" style="color:var(--dim)">About Us</a>
+        <a href="terms.html" style="color:var(--dim)">Terms</a>
+        <a href="refund-policy.html" style="color:var(--dim)">Refund Policy</a>
+        <a href="privacy-policy.html" style="color:var(--dim)">Privacy Policy</a>
+      </div>
+      <div style="margin-top:20px; font-size:0.75rem; color:var(--dim); max-width:650px; margin-left:auto; margin-right:auto; line-height:1.6; border-top:1px solid rgba(0,0,0,0.05); padding-top:15px;">
+        <p><strong>Compliance & Safety:</strong> We strictly prohibit any illegal, copyrighted, adult, or harmful content. All submissions are manually reviewed before processing. This is a digital service. No physical products are sold or shipped.</p>
+        <p style="margin-top:8px; font-weight:700; color:var(--text2);">Support Email: support@pookiewishes.com</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toasts"></div>
+
+<!-- Firebase & EmailJS & Cloudinary Logic -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+
+<script src="../js/app.js"></script>
+
+<script>
+  // EmailJS will be initialized after SITE is loaded
+  const CLOUDINARY_UPLOAD_PRESET = "pookie_unsigned"; 
+  const CLOUDINARY_CLOUD_NAME = "dktx4woql";
+
+  const p = new URLSearchParams(location.search);
+  const ORDER_ID = p.get('id') || '—';
+  const CUSTOMER_EMAIL = decodeURIComponent(p.get('email') || '—');
+
+  document.getElementById('show-id').textContent = ORDER_ID;
+  document.getElementById('show-email').textContent = CUSTOMER_EMAIL;
+
+  let selectedFiles = [];
+  let currentOrderIndex = 0;
+  let orderData = null;
+  let personalizations = [];
+
+  window.addEventListener('DOMContentLoaded', async () => {
+    await waitForSite();
+    
+    // Initialize EmailJS with Public Key from site.json
+    if (window.SITE?.emailjs?.account1?.publicKey) {
+      emailjs.init(window.SITE.emailjs.account1.publicKey);
+    }
+    const wa = (SITE.site?.whatsapp||'918700113731').replace(/\D/g,'');
+    const text = encodeURIComponent(`Hi! I need help with my Pookie Wishes order. Order ID: ${ORDER_ID}`);
+    document.getElementById('wa-link').href = `https://wa.me/${wa}?text=${text}`;
+
+    // Mark order as paid if it's currently pending_payment
+    if(window.fbReady && ORDER_ID !== '—') {
+      try {
+        await firebase.firestore().collection('orders').doc(ORDER_ID).update({
+          status: 'paid',
+          paymentConfirmedAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      } catch(e) { console.warn("Could not mark order as paid", e); }
+    }
+  });
+
+  window.addEventListener('load', () => { 
+    const t = setInterval(() => {
+      if (window.fbReady && ORDER_ID !== '—') {
+        clearInterval(t);
+        loadOrder();
+      }
+    }, 100);
+    setTimeout(() => clearInterval(t), 10000);
+  });
+
+  function waitForSite() {
+    return new Promise(resolve => {
+      const t = setInterval(() => { if (window.SITE) { clearInterval(t); resolve(); } }, 50);
+      setTimeout(() => { clearInterval(t); resolve(); }, 3000);
+    });
+  }
+
+  function updateFileList(input) {
+    if (input.files.length > 3) {
+      toast("You can only select up to 3 photos", "err");
+      input.value = ""; // reset
+      selectedFiles = [];
+      document.getElementById('file-list-display').textContent = "No files selected";
+      return;
+    }
+    selectedFiles = Array.from(input.files);
+    if(selectedFiles.length === 0) {
+      document.getElementById('file-list-display').textContent = "No files selected";
+    } else {
+      document.getElementById('file-list-display').textContent = selectedFiles.map(f => f.name).join(', ');
+    }
+  }
+
+  async function uploadToCloudinary(file, index) {
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
+    formData.append("folder", `orders/${ORDER_ID}`);
+
+    const res = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+      method: "POST",
+      body: formData
+    });
+    const data = await res.json();
+    return data.secure_url;
+  }
+
+  async function loadOrder() {
+    const loadingEl = document.getElementById('loading-order');
+    const formEl = document.getElementById('post-payment-form');
+    const errorEl = document.getElementById('error-msg');
+
+    try {
+      const dReq = await firebase.firestore().collection('orders').doc(ORDER_ID).get();
+      
+      if (loadingEl) loadingEl.style.display = 'none';
+
+      if (dReq.exists) {
+        orderData = dReq.data();
+        if (orderData.detailsSubmitted) {
+          showFinalSuccess(orderData.deliveryLinks || [orderData.deliveryLink]);
+          return;
+        }
+        if (formEl) formEl.style.display = 'block';
+        adaptForm();
+      } else {
+        if (errorEl) errorEl.style.display = 'block';
+        if (formEl) formEl.style.display = 'none';
+      }
+    } catch (e) { 
+      console.error("Load error:", e); 
+      if (loadingEl) loadingEl.style.display = 'none';
+      if (errorEl) errorEl.style.display = 'block';
+    }
+  }
+
+  function adaptForm() {
+    if (!orderData || !orderData.orders) return;
+    const currentItem = orderData.orders[currentOrderIndex];
+    const totalItems = orderData.orders.length;
+    
+    document.getElementById('form-step-indicator').textContent = `Step ${currentOrderIndex + 1} of ${totalItems}`;
+    document.getElementById('f-template-name').value = currentItem.templateName || currentItem.templateId;
+    
+    // Look up template metadata
+    const tMeta = SITE.templates.find(t => t.id === currentItem.templateId);
+    const photoSec = document.getElementById('photo-upload-sec');
+    
+    if (tMeta && tMeta.hasPhotos === false) {
+      photoSec.style.display = 'none';
+    } else {
+      photoSec.style.display = 'block';
+    }
+
+    // Reset fields
+    document.getElementById('f-recip').value = "";
+    document.getElementById('f-msg').value = "";
+    document.getElementById('f-date').value = "";
+    selectedFiles = [];
+    document.getElementById('file-list-display').textContent = "No files selected";
+    document.getElementById('f-photos').value = "";
+
+    // Change button text for final step
+    const btn = document.getElementById('submit-details-btn');
+    btn.textContent = (currentOrderIndex === totalItems - 1) ? "Complete Order 🚀" : "Next Template ➡️";
+  }
+
+  async function submitPersonalisation() {
+    const recip = document.getElementById('f-recip').value.trim();
+    const msg = document.getElementById('f-msg').value.trim();
+    const date = document.getElementById('f-date').value;
+
+    if (!recip || !msg) {
+      toast("Recipient Name and Wish Message are required!", "err");
+      return;
+    }
+
+    const currentItem = orderData.orders[currentOrderIndex];
+    const tMeta = SITE.templates.find(t => t.id === currentItem.templateId);
+    if (tMeta?.hasPhotos !== false && selectedFiles.length === 0) {
+      toast("Please upload at least 1 photo for this template!", "err");
+      return;
+    }
+
+    const btn = document.getElementById('submit-details-btn');
+    if (btn.dataset.locked) return;
+    btn.dataset.locked = "true";
+    const originalText = btn.textContent;
+    btn.innerHTML = `<span class="loading-spinner"></span> Processing...`;
+    btn.disabled = true;
+
+    try {
+      let photoLinks = [];
+      if (selectedFiles.length > 0) {
+        toast(`Uploading photos for ${currentItem.templateId}...`, "inf");
+        for (let i = 0; i < selectedFiles.length; i++) {
+          const url = await uploadToCloudinary(selectedFiles[i], i);
+          photoLinks.push(url);
+        }
+      }
+
+      // Save this item's data
+      personalizations.push({
+        templateId: currentItem.templateId,
+        recipientName: recip,
+        wishMessage: msg,
+        eventDate: date || null,
+        photos: photoLinks
+      });
+
+      if (currentOrderIndex < orderData.orders.length - 1) {
+        // Move to next form
+        currentOrderIndex++;
+        btn.dataset.locked = "";
+        btn.innerHTML = originalText;
+        btn.disabled = false;
+        adaptForm();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        toast("Step saved! Next one... ✨", "ok");
+      } else {
+        // Final Submission
+        toast("Finalizing your surprises... 🪄", "inf");
+        await finalizeOrder();
+      }
+
+    } catch (err) {
+      console.error(err);
+      toast("An error occurred. Please try again.", "err");
+      btn.dataset.locked = "";
+      btn.innerHTML = originalText;
+      btn.disabled = false;
+    }
+  }
+
+  async function finalizeOrder() {
+    // Generate links for all personalized items
+    const deliveryLinks = personalizations.map((p, idx) => {
+        const folder = p.templateId + '-template';
+        return window.location.origin + '/templates/' + folder + '/index.html?id=' + ORDER_ID + '&item=' + idx;
+    });
+
+    const updateData = {
+      personalizations: personalizations,
+      detailsSubmitted: true,
+      deliveryLinks: deliveryLinks,
+      deliveryStatus: 'delivered'
+    };
+
+    if (window.fbReady) {
+      await firebase.firestore().collection('orders').doc(ORDER_ID).update(updateData);
+    }
+
+    // Send Team Notification
+    try {
+      const ejs = SITE.emailjs?.account1;
+      await emailjs.send(ejs.serviceId, ejs.templateId_admin, {
+        order_id: ORDER_ID,
+        customer_email: CUSTOMER_EMAIL,
+        summary: personalizations.map(p => `${p.templateId} for ${p.recipientName}`).join(', '),
+        admin_link: window.location.origin + '/admin/index.html'
+      }, ejs.publicKey);
+      
+      // Auto-delivery email
+      await emailjs.send(ejs.serviceId, ejs.templateId_delivery, {
+        to_email: CUSTOMER_EMAIL,
+        recipient_name: 'Awesome Customer',
+        gift_link: deliveryLinks.join('\n'),
+        order_id: ORDER_ID
+      }, ejs.publicKey);
+    } catch(e) { console.warn("Email notification failed", e); }
+
+    showFinalSuccess(deliveryLinks);
+  }
+
+  function showFinalSuccess(links) {
+    document.getElementById('post-payment-form').style.display = 'none';
+    const successDiv = document.getElementById('success-msg');
+    
+    let linksHtml = links.map((link, i) => `
+        <div style="background:var(--bg2); padding:15px; border-radius:var(--r); border:1px solid var(--bdr-pink); margin-bottom:15px; text-align:left;">
+            <div style="font-weight:700; font-size:0.85rem; color:var(--pink); margin-bottom:5px;">Surprise ${i+1}: ${orderData?.orders?.[i]?.templateName || 'Link'}</div>
+            <div style="font-family:var(--fm); font-size:0.75rem; color:var(--text2); word-break:break-all; margin-bottom:10px;">${link}</div>
+            <div style="display:flex; gap:8px;">
+                <button class="btn btn-soft btn-sm" onclick="navigator.clipboard.writeText('${link}');toast('Link ${i+1} Copied!','ok')">📋 Copy</button>
+                <a href="${link}" target="_blank" class="btn btn-primary btn-sm">Visit ✨</a>
+            </div>
+        </div>
+    `).join('');
+
+    successDiv.innerHTML = `
+        <div style="font-size:3.5rem; margin-bottom:10px;">🎁✨</div>
+        <h3 style="font-family:var(--fd); color:var(--text); margin-bottom:10px; font-size:1.6rem;">All Surprises are Ready!</h3>
+        <p style="color:var(--muted); font-size:0.9rem; line-height:1.6; margin-bottom:20px;">
+          Your personalized surprises have been generated instantly. share these secret links with your loved ones 🩷
+        </p>
+        ${linksHtml}
+        <p style="font-size:0.75rem; color:var(--dim); font-style:italic;">
+          Links automatically expire after 30 days unless you have Lifetime Hosting.
+        </p>
+    `;
+    
+    successDiv.style.display = 'block';
+    confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+  }
+
+  function toast(msg, type='inf') {
+    const tc = document.getElementById('toasts');
+    if(!tc) return;
+    const t = document.createElement('div');
+    t.className = `toast toast-${type}`;
+    const ic = type==='err'?'❌':type==='ok'?'✅':'ℹ️';
+    t.innerHTML = `<div class="t-ic">${ic}</div><div class="t-tx">${msg}</div>`;
+    tc.appendChild(t);
+    setTimeout(()=>t.classList.add('hide'), 3000);
+    setTimeout(()=>t.remove(), 3300);
+  }
+</script>
+</body>
+</html>

@@ -1,1 +1,458 @@
-checkout.html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Checkout — Pookie Wishes ✨</title>
+  <link rel="icon" type="image/png" href="../favicon.png">🎂</text></svg>">
+  <link rel="stylesheet" href="../css/style.css">
+
+  <style>
+    body { background:var(--bg); }
+    .co-page { min-height:100vh; padding:88px 20px 60px; }
+    .co-wrap { max-width:980px; margin:0 auto; display:grid; grid-template-columns:1fr 340px; gap:24px; align-items:start; }
+    .co-card { background:var(--card); border:1px solid var(--bdr); border-radius:var(--rx); padding:36px 32px; box-shadow:var(--sh-md); }
+    .co-title { font-family:var(--fd); font-size:1.55rem; font-weight:700; color:var(--text); margin-bottom:5px; }
+    .co-sub { font-size:.875rem; color:var(--muted); line-height:1.75; margin-bottom:26px; }
+    .co-sec-lbl { font-family:var(--fm); font-size:.67rem; color:var(--pink); text-transform:uppercase; letter-spacing:1.5px; margin-bottom:13px; display:flex; align-items:center; gap:8px; }
+    .co-sec-lbl::after { content:''; flex:1; height:1px; background:var(--bdr-pink); }
+    .co-sec { margin-bottom:26px; }
+    .divider { height:1px; background:var(--bdr); margin:22px 0; }
+    .submit-note { background:var(--g-pink); border:1px solid var(--bdr-pink); border-radius:var(--r); padding:13px 16px; font-size:.82rem; color:var(--text2); line-height:1.8; margin-bottom:18px; }
+    /* Sidebar */
+    .co-sidebar { position:sticky; top:90px; display:flex; flex-direction:column; gap:14px; }
+    .sc { background:var(--card); border:1px solid var(--bdr); border-radius:var(--rx); padding:20px; box-shadow:var(--sh); }
+    .sc-title { font-family:var(--fd); font-size:.95rem; font-weight:700; color:var(--text); margin-bottom:13px; }
+    .sc-item { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid var(--bdr); }
+    .sc-item:last-of-type { border:none; }
+    .sc-thumb { width:44px; height:32px; border-radius:8px; overflow:hidden; background:var(--bg3); flex-shrink:0; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+    .sc-thumb img { width:100%; height:100%; object-fit:cover; }
+    .sc-name { font-size:.83rem; font-weight:600; color:var(--text); flex:1; }
+    .sc-price { font-family:var(--fm); font-size:.8rem; background:var(--g-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .sc-total { display:flex; justify-content:space-between; align-items:center; margin-top:12px; padding-top:11px; border-top:2px solid var(--bdr2); }
+    .sc-total-l { font-weight:600; font-size:.88rem; color:var(--text2); }
+    .sc-total-a { font-family:var(--fd); font-size:1.4rem; font-weight:700; background:var(--g-main); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
+    .qr-img-wrap { border-radius:var(--r); overflow:hidden; border:1.5px solid var(--bdr2); margin-bottom:10px; }
+    .qr-img-wrap img { width:100%; display:block; }
+    .upi-lbl { font-size:.7rem; color:var(--dim); margin-bottom:4px; }
+    .upi-pill { font-family:var(--fm); font-size:.83rem; color:var(--text2); background:var(--bg2); border:1px solid var(--bdr2); border-radius:var(--rs); padding:7px 13px; display:inline-block; cursor:pointer; transition:all .2s; letter-spacing:.3px; }
+    .upi-pill:hover { border-color:var(--pink); background:var(--pink-s); }
+    .copy-ok { font-size:.7rem; color:var(--mint); margin-top:5px; display:none; }
+    .qr-steps { text-align:left; margin-top:12px; display:flex; flex-direction:column; gap:5px; }
+    .qr-step { display:flex; gap:7px; align-items:flex-start; font-size:.75rem; color:var(--muted); }
+    .qr-step-n { width:16px; height:16px; border-radius:50%; background:var(--pink-s); color:var(--pink); font-size:.6rem; font-weight:700; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:1px; }
+    .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; margin-right: 6px; }
+    @keyframes spin { to { transform: rotate(360deg); } }
+    @media(max-width:768px) { .co-wrap{grid-template-columns:1fr} .co-sidebar{position:static;order:-1} .co-card{padding:22px 16px} }
+
+    /* Upsell Checkbox Styles */
+    .upsell-box { background: rgba(255, 42, 133, 0.03); border: 1.5px solid var(--bdr-pink); border-radius: var(--r); padding: 16px; margin-top: 20px; display: flex; align-items: flex-start; gap: 14px; cursor: pointer; transition: all 0.2s ease; }
+    .upsell-box:hover { background: rgba(255, 42, 133, 0.06); border-color: var(--pink); }
+    .upsell-box input { width: 20px; height: 20px; accent-color: var(--pink); margin-top: 2px; cursor: pointer; }
+    .upsell-info { flex: 1; }
+    .upsell-title { font-weight: 700; font-size: 0.9rem; color: var(--text); margin-bottom: 2px; display: flex; align-items: center; gap: 6px; }
+    .upsell-title span { background: var(--g-main); color: #fff; font-size: 0.65rem; padding: 2px 8px; border-radius: 100px; text-transform: uppercase; letter-spacing: 0.5px; }
+    .upsell-desc { font-size: 0.78rem; color: var(--muted); line-height: 1.5; }
+    .upsell-price { font-family: var(--fd); font-weight: 800; color: var(--pink); font-size: 1rem; margin-top: 4px; }
+  </style>
+</head>
+<body>
+<nav class="navbar"><a href="../index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a><div class="nav-links"><a href="../index.html" class="btn btn-ghost">← Back</a></div></nav>
+
+<div class="co-page">
+  <div class="co-wrap">
+
+    <!-- FORM -->
+    <div class="co-card reveal">
+      <div class="steps" style="margin-bottom:24px;">
+        <div class="stp active"><div class="stp-dot">1</div><span>Fill Details</span></div>
+        <div class="stp-line"></div>
+        <div class="stp"><div class="stp-dot">2</div><span>Pay via Razorpay</span></div>
+      </div>
+
+      <div class="co-sub">Fill in your details and pay securely to instantly unlock your personalization form.</div>
+
+      <div class="co-sec">
+        <div class="co-sec-lbl">Your Details</div>
+        <div class="f-row">
+          <div class="f-group">
+            <label class="f-label">YOUR NAME *</label>
+            <input class="f-inp" id="f-name" type="text" placeholder="Priya Sharma" autocomplete="name">
+          </div>
+          <div class="f-group">
+            <label class="f-label">YOUR EMAIL * <span style="color:var(--dim);font-size:.7rem">(link sent here)</span></label>
+            <input class="f-inp" id="f-email" type="email" placeholder="priya@gmail.com" autocomplete="email">
+          </div>
+        </div>
+        <!-- PHONE FIELD REMOVED -->
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="co-sec">
+        <div class="co-sec-lbl">Add-ons (Optional)</div>
+        <label class="upsell-box" for="lifetime-upsell">
+          <input type="checkbox" id="lifetime-upsell" onchange="renderSummary(JSON.parse(localStorage.getItem('pookie_cart')||'[]'))">
+          <div class="upsell-info">
+            <div class="upsell-title">Lifetime Hosting 💎 <span>Recommended</span></div>
+            <div class="upsell-desc">Normally, links expire after 1 year. With Lifetime Hosting, your surprise stays online forever! No recurring fees.</div>
+            <div class="upsell-price">+ ₹100</div>
+          </div>
+        </label>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="submit-note">
+        After clicking below, you will be redirected to Razorpay to pay securely using UPI, Cards, or Netbanking. Once successful, you can instantly add your photos and messages. 💖
+      </div>
+      <button class="btn btn-primary btn-xl btn-full btn-shimmer" id="co-submit-btn" onclick="checkoutSubmitOrder()">Proceed to Payment 💳</button>
+      <p style="text-align:center; font-size:0.75rem; color:var(--dim); margin-top:12px;">
+        By placing an order, you agree to our <a href="terms.html" style="color:var(--pink)">Terms</a>, <a href="refund-policy.html" style="color:var(--pink)">Refund Policy</a>, and <a href="privacy-policy.html" style="color:var(--pink)">Privacy Policy</a>.
+      </p>
+      <p style="text-align:center;font-size:.74rem;color:var(--dim);margin-top:10px">
+        Questions? <a href="https://wa.me/918700113731" target="_blank" style="color:var(--pink)">WhatsApp us</a>
+      </p>
+    </div>
+
+    <!-- SIDEBAR -->
+    <div class="co-sidebar">
+      <div class="sc reveal" style="transition-delay:0.1s">
+        <div class="sc-title">Order Summary 🛒</div>
+        <div id="sc-items"></div>
+        <div class="sc-total">
+          <span class="sc-total-l">Total</span>
+          <span class="sc-total-a">₹<span id="sc-total">0</span></span>
+        </div>
+      </div>
+      <div class="sc reveal" style="transition-delay:0.2s">
+        <div class="rzp-trust">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" style="color:var(--mint)"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          <span>Secure Razorpay Checkout</span>
+        </div>
+        <div style="margin-top:15px; text-align:center;">
+          <div style="font-family:var(--fd);font-size:.9rem;font-weight:700;color:var(--text);margin-bottom:4px">100% Safe & Encrypted 🔒</div>
+          <div style="font-size:.72rem;color:var(--muted);line-height:1.5">Your payment is processed via Razorpay's secure servers. Supports UPI, Cards, and Netbanking.</div>
+        </div>
+        <div class="qr-steps" style="margin-top:15px; padding-top:15px; border-top:1px solid var(--bdr)">
+          <div class="qr-step"><div class="qr-step-n">1</div>Click Proceed to Payment</div>
+          <div class="qr-step"><div class="qr-step-n">2</div>Pay ₹<span id="qr-amt">0</span> securely</div>
+          <div class="qr-step"><div class="qr-step-n">3</div>Add photos & message instantly</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer class="footer">
+  <div class="footer-inner">
+    <div class="f-bottom">
+      <span>© 2026 Pookie Wishes — Personalized Digital Greeting Service 💖</span>
+      <div style="display:flex; gap:15px; margin-top:12px; flex-wrap:wrap; justify-content:center;">
+        <a href="about.html" style="color:var(--dim)">About Us</a>
+        <a href="terms.html" style="color:var(--dim)">Terms</a>
+        <a href="refund-policy.html" style="color:var(--dim)">Refund Policy</a>
+        <a href="privacy-policy.html" style="color:var(--dim)">Privacy Policy</a>
+      </div>
+      <div style="margin-top:20px; font-size:0.75rem; color:var(--dim); max-width:650px; margin-left:auto; margin-right:auto; line-height:1.6; border-top:1px solid rgba(0,0,0,0.05); padding-top:15px;">
+        <p><strong>Compliance & Safety:</strong> We strictly prohibit any illegal, copyrighted, adult, or harmful content. All submissions are automatically processed but subject to post-delivery safety review. This is a digital service. No physical products are sold or shipped.</p>
+        <p style="margin-top:8px; font-weight:700; color:var(--text2);">Support Email: support@pookiewishes.com</p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div id="toasts"></div>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<!-- Firebase Storage removed — screenshots now uploaded via backend to Cloudinary -->
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script src="../js/app.js"></script>
+
+<script>
+let ssFile = null;
+let compressedFile = null;
+
+window.addEventListener('DOMContentLoaded', async () => {
+  await waitForSite();
+
+  const upiId = SITE.payment?.upiId || '8700113731@fam';
+  const upiPill = document.getElementById('upi-pill');
+  if (upiPill) upiPill.textContent = upiId;
+
+  // Sync cart prices with latest SITE data to avoid 0-price display bugs
+  syncCheckoutCart();
+
+  const cartItems = JSON.parse(localStorage.getItem('pookie_cart') || '[]');
+  if (!cartItems.length) { window.location.href = '../index.html'; return; }
+
+  renderSummary(cartItems);
+});
+
+function syncCheckoutCart() {
+  const items = JSON.parse(localStorage.getItem('pookie_cart') || '[]');
+  if (!items.length || !SITE?.templates) return;
+  
+  const updated = items.map(item => {
+    const tpl = SITE.templates.find(t => t.id === item.id);
+    if (tpl) {
+      item.price = Number(tpl.price);
+      item.name = tpl.name;
+      item.emoji = tpl.emoji;
+    }
+    return item;
+  });
+  localStorage.setItem('pookie_cart', JSON.stringify(updated));
+}
+
+function waitForSite() {
+  return new Promise(resolve => {
+    const t = setInterval(() => { if (window.SITE) { clearInterval(t); resolve(); } }, 50);
+    setTimeout(() => { clearInterval(t); resolve(); }, 3000);
+  });
+}
+
+function renderSummary(items) {
+  const tplTotal = items.reduce((s,i) => s+Number(i.price||0), 0);
+  const isLifetime = document.getElementById('lifetime-upsell')?.checked;
+  const total = tplTotal + (isLifetime ? 100 : 0);
+  
+  const totalEl = document.getElementById('sc-total');
+  const qrAmtEl = document.getElementById('qr-amt');
+  if (totalEl) totalEl.textContent = total;
+  if (qrAmtEl) qrAmtEl.textContent = total;
+
+  const itemsContainer = document.getElementById('sc-items');
+  if (!itemsContainer) return;
+
+  const tpls = (window.SITE && window.SITE.templates) ? window.SITE.templates : [];
+
+  itemsContainer.innerHTML = items.map(item => {
+    const tpl = tpls.find(t => t.id === item.id) || {};
+    const thumb = tpl.media?.thumbnail || '';
+    const emoji = item.emoji || '🎁';
+    
+    return `<div class="sc-item">
+      <div class="sc-thumb">
+        ${thumb ? `<img src="../${thumb}" onerror="this.onerror=null; this.parentElement.innerHTML='${emoji}'">` : emoji}
+      </div>
+      <span class="sc-name">${emoji} ${item.name}</span>
+      <span class="sc-price">${item.currency||'₹'}${item.price}</span>
+    </div>`;
+  }).join('');
+}
+
+
+
+function validate() {
+  const name  = document.getElementById('f-name').value.trim();
+  const email = document.getElementById('f-email').value.trim();
+  const items = JSON.parse(localStorage.getItem('pookie_cart')||'[]');
+  if (!name)               { toast('Enter your name','err'); return null; }
+  if (!email?.includes('@')){ toast('Enter a valid email','err'); return null; }
+  const orders = items.map(i => ({ templateId:i.id, templateName:`${i.emoji} ${i.name}`, price:i.price }));
+  if (orders.length === 0) {
+    toast("No items in order ❌", "err");
+    return null;
+  }
+  return { name, email, orders };
+}
+
+async function checkoutSubmitOrder() {
+  const btn = document.getElementById('co-submit-btn');
+  // Duplicate click protection
+  if (btn.dataset.locked) return;
+  btn.dataset.locked = "true";
+
+  // Internet check
+  if (!navigator.onLine) {
+    toast("No internet connection ❌", "err");
+    btn.dataset.locked = "";
+    return;
+  }
+
+  if (!window.fbReady) {
+    await new Promise(resolve => {
+      const t = setInterval(() => { if (window.fbReady) { clearInterval(t); resolve(); } }, 100);
+      setTimeout(() => { clearInterval(t); resolve(); }, 5000);
+    });
+  }
+
+  const data = validate();
+  if (!data) {
+    btn.dataset.locked = "";
+    return;
+  }
+
+  // Disable button and show spinner
+  const originalHTML = btn.innerHTML;
+  btn.innerHTML = `<span class="loading-spinner"></span> Redirecting...`;
+  btn.disabled = true;
+  const orderId = 'PW-' + Date.now();
+  const tplTotal = data.orders.reduce((s,o)=>s+o.price,0);
+  const isLifetime = !!document.getElementById('lifetime-upsell')?.checked;
+  const total = tplTotal + (isLifetime ? 100 : 0);
+  const expiryDate = new Date();
+  expiryDate.setDate(expiryDate.getDate() + 30);
+
+  // --- 0-PRICE BYPASS (For Testing) ---
+  if (total === 0) {
+    btn.innerHTML = `<span class="loading-spinner"></span> Processing Free Order...`;
+
+    let sequentialId = 'TEST-' + Date.now(); // safe default
+    if (window.fbReady) {
+      try {
+        // Step 1: Try to get a sequential ID (may fail if counters collection is blocked)
+        const statRef = firebase.firestore().collection('counters').doc('stats');
+        const statDoc = await statRef.get();
+        const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
+        await statRef.set({ totalOrders: count }, { merge: true });
+        sequentialId = 'order' + count;
+      } catch(e) {
+        console.warn('Counter update failed (rules?), using timestamp ID:', e.message);
+        // sequentialId stays as 'TEST-' + timestamp — still valid
+      }
+
+      // Step 2: ALWAYS save the order — this is the critical part
+      try {
+        await firebase.firestore().collection('orders').doc(sequentialId).set({
+          orderId: sequentialId, buyerName: data.name, buyerEmail: data.email,
+          templateId: data.orders[0]?.templateId || 'sorry',
+          orders: data.orders, totalAmount: 0,
+          status: 'paid', deliveryStatus: 'pending',
+          gateway: 'none_free',
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        console.log('✅ Order saved to Firestore:', sequentialId);
+      } catch(e) {
+        console.error('❌ CRITICAL: Order save failed!', e);
+        alert('Order could not be saved to database: ' + e.message + '\n\nCheck your Firestore Security Rules.');
+        btn.innerHTML = originalHTML;
+        btn.disabled = false;
+        btn.dataset.locked = '';
+        return;
+      }
+    } else {
+      alert('Firebase not ready. Order cannot be placed.');
+      btn.innerHTML = originalHTML;
+      btn.disabled = false;
+      btn.dataset.locked = '';
+      return;
+    }
+
+    localStorage.removeItem('pookie_cart');
+    toast('Free Order Placed! 🎉', 'ok');
+    setTimeout(() => {
+      window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${sequentialId}&email=${encodeURIComponent(data.email)}`;
+    }, 1500);
+    return;
+  }
+
+  // 1. Call Python API to get Razorpay order_id
+  let razorOrderId = '';
+  let razorKey = '';
+  try {
+    const res = await fetch('/api/razorpay-order', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        order_amount: total,
+        customer_email: data.email,
+        customer_name: data.name
+      })
+    });
+    const result = await res.json();
+    if (result.success) {
+      razorOrderId = result.order_id;
+      razorKey = result.key_id;
+    } else {
+      throw new Error(result.error || 'Failed to generate payment session');
+    }
+  } catch (err) {
+    console.error("Payment Init Error:", err);
+    toast("Payment connection failed. Check API keys.", "err");
+    btn.innerHTML = `Proceed to Payment 💳`;
+    btn.disabled = false;
+    btn.dataset.locked = "";
+    return;
+  }
+
+  // 2. Save order to Firebase as pending
+  let sequentialId = 'PW-' + Date.now(); // safe default
+  if (window.fbReady) {
+    try {
+      const statRef = firebase.firestore().collection('counters').doc('stats');
+      const statDoc = await statRef.get();
+      const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
+      await statRef.set({ totalOrders: count }, { merge: true });
+      sequentialId = 'order' + count;
+    } catch(e) {
+      console.warn('Counter update failed, using timestamp ID:', e.message);
+    }
+
+    // Always save the order regardless of counter success
+    try {
+      await firebase.firestore().collection('orders').doc(sequentialId).set({
+        orderId: sequentialId,
+        razorpayOrderId: razorOrderId,
+        templateId: data.orders[0]?.templateId || 'sorry',
+        buyerName: data.name, buyerEmail: data.email,
+        orders: data.orders, totalAmount: total,
+        lifetime: isLifetime,
+        hostingExpiry: isLifetime ? null : firebase.firestore.Timestamp.fromDate(expiryDate),
+        status: 'pending_payment', deliveryStatus: 'pending',
+        gateway: 'razorpay',
+        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+      });
+      console.log('✅ Order saved to Firestore:', sequentialId);
+    } catch(e) {
+      console.error('❌ Order save failed:', e);
+    }
+  }
+
+  // 3. Open Razorpay Checkout
+  const options = {
+    "key": razorKey,
+    "amount": total * 100,
+    "currency": "INR",
+    "name": "Pookie Wishes",
+    "description": "Personalised Digital Greeting Service",
+    "order_id": razorOrderId,
+    "handler": function (response) {
+      // Clear cart
+      localStorage.removeItem('pookie_cart');
+      toast("Payment Successful! 🎉", "ok");
+      
+      // Update status in Firestore
+      if (window.fbReady) {
+        firebase.firestore().collection('orders').doc(sequentialId).update({
+          status: 'paid',
+          razorpay_payment_id: response.razorpay_payment_id
+        }).catch(e => console.warn('Firestore update failed:', e));
+      }
+
+      // Redirect to success form
+      window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${sequentialId}&email=${encodeURIComponent(data.email)}`;
+    },
+    "prefill": {
+      "name": data.name,
+      "email": data.email
+    },
+    "theme": { "color": "#ff7eb3" }
+  };
+  
+  const rzp = new Razorpay(options);
+  rzp.on('payment.failed', function (response){
+    toast("Payment Failed: " + response.error.description, "err");
+    btn.innerHTML = `Proceed to Payment 💳`;
+    btn.disabled = false;
+    btn.dataset.locked = "";
+  });
+  rzp.open();
+}
+</script>
+</body>
+</html>
