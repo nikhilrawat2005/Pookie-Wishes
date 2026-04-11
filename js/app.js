@@ -881,6 +881,12 @@ function renderDetailPage() {
             <button class="vc-btn" onclick="vidToggleMute()" id="vc-mute">🔊</button>
             <button class="vc-btn" onclick="vidFullscreen()">⛶</button>
           </div>` : ''}
+          ${!t.special ? `
+          <div style="margin-top: 15px;">
+            <a href="${ROOT}templates/${t.id}/index.html" target="_blank" class="btn btn-primary btn-full btn-lg" style="width:100%; gap:8px">
+              <span style="font-size:1.2rem">🚀</span> Try Live Demo
+            </a>
+          </div>` : ''}
         </div>
 
         <!-- Info -->
