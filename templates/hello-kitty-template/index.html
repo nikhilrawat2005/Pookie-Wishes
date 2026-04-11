@@ -60,7 +60,7 @@
             <img src="assets/eyes.gif"   class="eyes-gif" alt=""/>
           </div>
 
-          <button class="btn-pink" onclick="goToPage(2)">Let's Gooo 🎀</button>
+          <button class="btn-pink" onclick="goToPage(4)">Let's Gooo 🎀</button>
         </div>
       </div>
 
@@ -118,7 +118,7 @@
         </div>
         <button class="music-btn" id="letterMusicBtn" onclick="toggleLetterMusic()" title="Toggle music">🎵</button>
       </div>
-      <button class="btn-pink" onclick="goToPage(4)">Continue It ✨</button>
+      <button class="btn-pink" id="sealBtn" onclick="sealLetter()">Seal It With Love 🔒</button>
     </div>
   </div>
 
@@ -344,47 +344,11 @@
       <h3 class="modal-title">All Wishes Unlocked!</h3>
       <p class="modal-sub">Incredible, beautiful, perfect just as you are.</p>
       <p class="modal-body">Each wish carries my love and hopes for your amazing new year ahead. ✨</p>
-      <button class="btn-pink" onclick="goToPage(9); closeModal('wishesModal')">Open Final Letter 💌</button>
+      <button class="btn-pink" onclick="goToPage(2); closeModal('wishesModal')">Open Final Letter 💌</button>
       <p class="modal-skip" onclick="closeModal('wishesModal')">Enjoy a little longer</p>
     </div>
   </div>
 
-  <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
-       PAGE 9 — FINAL LETTER
-  ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░ -->
-  <div class="page" id="page9">
-    <div class="page-header">
-      <h2 class="page-title">Final Birthday Letter</h2>
-      <p class="page-sub">A special message sealed with love 💕</p>
-    </div>
-    <div class="card-container">
-      <div class="letter-card final-letter-card">
-        <div class="final-kitty-top">
-          <img src="assets/final_love_letter.png" class="final-letter-img" alt=""/>
-        </div>
-        <div class="letter-header">
-          <span>💌</span>
-          <span class="letter-to">Final Birthday Love Letter</span>
-        </div>
-        <div class="final-corner">
-          <img src="assets/hello-kitty-i-love-you.gif" alt=""/>
-        </div>
-        <div class="letter-body">
-          <p class="letter-greeting" id="finalLetterGreeting">My dearest birthday princess,</p>
-          <p class="letter-text"    id="finalLetterBody">May this new year bring you everything your heart desires...</p>
-          <p class="letter-pink"    id="finalLetterPink">Happy Birthday, my love. You deserve the world. 🎂✨</p>
-          <hr class="letter-divider"/>
-        </div>
-        <div class="final-actions">
-          <span class="seal-note">Sealing completes your birthday experience.</span>
-          <div class="final-btns">
-            <button class="btn-pink-light" id="sealBtn" onclick="sealLetter()">Seal The Letter 🔒</button>
-            <button class="btn-green"      onclick="restartExperience()">Experience Again</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
 
   <!-- ░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░
        PAGE 10 — SEALED / CELEBRATION
