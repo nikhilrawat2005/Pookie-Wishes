@@ -94,12 +94,7 @@
       "media": {
         "thumbnail": "media/hello-kitty/thumbnail.jpg",
         "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757215/hello_kityy_upzstg.mp4",
-        "gallery": [
-          "media/hello-kitty/img1.jpg",
-          "media/hello-kitty/img2.jpg",
-          "media/hello-kitty/img3.jpg",
-          "media/hello-kitty/img4.jpg"
-        ]
+        "gallery": []
       }
     },
     {
@@ -141,12 +136,7 @@
       "media": {
         "thumbnail": "media/harry-potter/thumbnail.jpg",
         "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775759936/harrypotter_yyg0fz.mp4",
-        "gallery": [
-          "media/harry-potter/img1.jpg",
-          "media/harry-potter/img2.jpg",
-          "media/harry-potter/img3.jpg",
-          "media/harry-potter/img4.jpg"
-        ]
+        "gallery": []
       }
     },
     {
@@ -182,11 +172,7 @@
       "media": {
         "thumbnail": "media/love-trap/thumbnail.jpg",
         "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757170/lovetrap_hsllk6.mp4",
-        "gallery": [
-          "media/love-trap/1.jpg",
-          "media/love-trap/2.jpg",
-          "media/love-trap/3.jpg"
-        ]
+        "gallery": []
       }
     },
     {
@@ -227,10 +213,7 @@
       "media": {
         "thumbnail": "media/celestial/thumbnail.jpg",
         "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757036/celestials_wi8iwi.mp4",
-        "gallery": [
-          "media/celestial/img1.jpg",
-          "media/celestial/img2.jpg"
-        ]
+        "gallery": []
       }
     },
     {
