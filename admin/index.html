@@ -234,6 +234,7 @@
     <div class="sb-link" data-tab="ranking" onclick="setTab('ranking',this)"><i data-lucide="bar-chart-2"></i> Analytics</div>
     <div class="sb-link" data-tab="templates" onclick="setTab('templates',this)"><i data-lucide="layout-template"></i> All Templates</div>
     <div class="sb-link" data-tab="suggestions" onclick="setTab('suggestions',this)"><i data-lucide="lightbulb"></i> Suggestions 💡</div>
+    <div class="sb-link" data-tab="users" onclick="setTab('users',this)"><i data-lucide="users"></i> Customers / Users</div>
     
     <div class="sb-foot">
       <div class="sb-user"><i data-lucide="user"></i> <span id="sb-email"></span></div>
@@ -282,6 +283,13 @@
 
     <div id="templates-grid" class="templates-grid" style="display:none;"></div>
     <div id="suggestions-grid" style="display:none; padding-bottom:40px;"></div>
+    
+    <div class="tbl" id="users-tbl" style="display:none;">
+      <div class="tbl-hd" style="grid-template-columns: 1fr 1fr 140px 100px;">
+        <div>Name</div><div>Email</div><div>Joined On</div><div>UID</div>
+      </div>
+      <div id="users-tbl-body"><div class="empty"><i data-lucide="loader" class="spin"></i> Loading...</div></div>
+    </div>
     
   </div>
 </div>
@@ -435,14 +443,53 @@ function setTab(filter, el) {
     if(rfBtn) rfBtn.style.display = 'none';
     hdr.textContent = "Theme Suggestions 💡";
     loadSuggestions();
+  } else if(filter === 'users') {
+    if(st) st.style.display = 'none';
+    if(tbl) tbl.style.display = 'none';
+    if(grid) grid.style.display = 'none';
+    if(sugGrid) sugGrid.style.display = 'none';
+    if(document.getElementById('users-tbl')) document.getElementById('users-tbl').style.display = 'block';
+    if(rfBtn) rfBtn.style.display = 'none';
+    hdr.textContent = "Registered Customers";
+    loadUsers();
   } else {
     if(st) st.style.display = 'grid';
     if(tbl) tbl.style.display = 'block';
     if(grid) grid.style.display = 'none';
     if(sugGrid) sugGrid.style.display = 'none';
+    if(document.getElementById('users-tbl')) document.getElementById('users-tbl').style.display = 'none';
     if(rfBtn) rfBtn.style.display = 'inline-flex';
     hdr.textContent = "Dashboard Overview";
     renderTable();
+  }
+}
+
+async function loadUsers() {
+  const b = document.getElementById('users-tbl-body');
+  if (!b) return;
+  b.innerHTML = '<div class="empty"><i data-lucide="loader" class="spin"></i> Fetching users...</div>';
+  lucide.createIcons();
+  
+  try {
+    const snap = await db.collection('users').orderBy('createdAt', 'desc').limit(200).get();
+    if (snap.empty) {
+      b.innerHTML = '<div class="empty">No registered users found.</div>';
+      return;
+    }
+    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+    b.innerHTML = items.map(u => {
+      const dt = u.createdAt?.toDate?.().toLocaleDateString('en-IN', { day:'2-digit', month: 'short', year:'2-digit' }) || '—';
+      return `
+        <div class="tbl-row" style="grid-template-columns: 1fr 1fr 140px 100px; cursor: default;">
+          <div class="tc">${u.name || '—'}</div>
+          <div class="tc" style="color:var(--pink);">${u.email || '—'}</div>
+          <div class="tc mono">${dt}</div>
+          <div class="tc mono" title="${u.id}" style="font-size:0.65rem; color:var(--dim);">${u.id.substring(0,8)}...</div>
+        </div>`;
+    }).join('');
+  } catch(e) {
+    b.innerHTML = '<div class="empty" style="color:#fca5a5;">Error loading users. (Firestore index may be required)</div>';
+    console.error(e);
   }
 }
 

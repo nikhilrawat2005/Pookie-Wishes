@@ -47,10 +47,15 @@
       <div class="wyg-h-item"><span>📱</span> Mobile & desktop access</div>
       <div class="wyg-h-item"><span>⏱️</span> Instant online delivery</div>
     </div>
-    <div class="search-wrap reveal">
-      <span class="search-ico">🔍</span>
-      <input class="search-inp" id="search-inp" type="text" placeholder="Search by moment — birthday, proposal, anniversary...">
-      <button class="search-clear hidden" id="search-clear" onclick="clearSearch()">✕</button>
+    <div class="offer-panel reveal" id="hero-offer-panel" style="display:none;">
+      <div class="offer-panel-left">
+        <div class="offer-badge" id="offer-badge-text">🎁 Calculating Offer...</div>
+        <div class="offer-desc" id="offer-desc-text">Fetching live data...</div>
+      </div>
+      <div class="offer-panel-right">
+        <div class="offer-count-lbl">Happy Customers</div>
+        <div class="offer-count-num" id="offer-customer-count">--</div>
+      </div>
     </div>
   </div>
 </section>

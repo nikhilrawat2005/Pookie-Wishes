@@ -34,6 +34,8 @@ const PAGE = (() => {
 
 // ── State ─────────────────────────────────────────────
 window.SITE      = null;
+window.ACTIVE_OFFER_LIMIT = 0; // Number of free templates allowed
+window.REAL_USERS = 0; // current valid users for offer
 let currentUser = null;
 let favSet      = new Set();
 let cart        = [];
@@ -61,7 +63,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (PAGE === 'home')     {
     renderTemplateCards();
     renderSuggestionBox();
-    // Wire up search input
+    
+    // Will fetch offer data when firebase is ready, but we also subscribe to it in initFirebase
+    
+    // Wire up search input (Search wrap might be replaced by offer panel, but keeping safe if input exists)
     const inp = document.getElementById('search-inp');
     if (inp) inp.addEventListener('input', e => handleSearch(e.target.value));
     // Re-trigger stagger on dynamically rendered content
@@ -158,6 +163,10 @@ function initFirebase() {
         else refreshFavBtns();
       }
     });
+    
+    // Fetch offer statistics (total orders)
+    fetchOfferStats();
+    
   } catch (e) {
     console.warn('[PW] Firebase init error:', e.message);
     fbReady = false;
@@ -165,6 +174,59 @@ function initFirebase() {
   }
 }
 
+// ── Offer Logic ──────────────────────────────────────
+async function fetchOfferStats() {
+  try {
+    const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
+    const totalOrders = statDoc.exists ? (statDoc.data().totalOrders || 0) : 0;
+    
+    const offset = 30; // offset due to early testing
+    window.REAL_USERS = Math.max(0, totalOrders - offset);
+    
+    // Calculate offer
+    // First 15 real users -> 5 templates free
+    // Next 15 real users (up to 30) -> 3 templates free
+    if (window.REAL_USERS < 15) {
+      window.ACTIVE_OFFER_LIMIT = 5;
+    } else if (window.REAL_USERS < 30) {
+      window.ACTIVE_OFFER_LIMIT = 3;
+    } else {
+      window.ACTIVE_OFFER_LIMIT = 0;
+    }
+    
+    updateOfferUI();
+    // Refresh cart display since prices might have dropped to free
+    if (cart.length > 0) syncCartWithSite(); 
+    if (PAGE === 'home') renderTemplateCards(); // re-render to show Free tags if needed
+  } catch(e) {
+    console.warn('[PW] Offer stats fetch failed:', e.message);
+  }
+}
+
+function updateOfferUI() {
+  const panel = document.getElementById('hero-offer-panel');
+  if (!panel) return;
+  
+  const bdg = document.getElementById('offer-badge-text');
+  const dsc = document.getElementById('offer-desc-text');
+  const cnt = document.getElementById('offer-customer-count');
+  
+  if (cnt) cnt.textContent = window.REAL_USERS;
+  
+  if (window.ACTIVE_OFFER_LIMIT === 5) {
+    if (bdg) bdg.textContent = '🎁 5 Templates Free!';
+    if (dsc) dsc.innerHTML = `First 15 customers get up to 5 templates absolutely free! <br>(<strong>${15 - window.REAL_USERS} left!</strong>)`;
+  } else if (window.ACTIVE_OFFER_LIMIT === 3) {
+    if (bdg) bdg.textContent = '🎁 3 Templates Free!';
+    if (dsc) dsc.innerHTML = `Next 15 customers get up to 3 templates absolutely free! <br>(<strong>${30 - window.REAL_USERS} left!</strong>)`;
+  } else {
+    // Offer ended
+    if (bdg) bdg.textContent = '🎉 First Month Sale';
+    if (dsc) dsc.textContent = 'Get 30% OFF on all premium templates for our launch month!';
+  }
+  
+  panel.style.display = 'flex';
+}
 
 // ═══════════════════════════════════════════════════════
 //  AUTH
@@ -378,6 +440,18 @@ function loadLocalCart() {
   updateCartBadge(); refreshCartBtns(); renderCartDrawer();
 }
 
+// ── Discount helpers ─────────────────────────────────
+const SALE_PRICE   = 49;   // First-month sale target price
+const SALE_LABEL   = '🎉 First Month Sale';
+
+function getEffectivePrice(tpl) {
+  if (!tpl) return 0;
+  if (tpl.special) return Number(tpl.price);
+  if (window.ACTIVE_OFFER_LIMIT > 0) return 0; // Free template offer
+  if (Number(tpl.price) > SALE_PRICE) return SALE_PRICE;
+  return Number(tpl.price);
+}
+
 // Keep cart item prices in sync with the latest template prices in `data/site.json`.
 function syncCartWithSite() {
   if (!SITE?.templates?.length || !Array.isArray(cart) || !cart.length) return false;
@@ -390,7 +464,7 @@ function syncCartWithSite() {
       ...item,
       name: tpl.name ?? item.name,
       emoji: tpl.emoji ?? item.emoji,
-      price: Number(tpl.price ?? item.price ?? 0),
+      price: getEffectivePrice(tpl),
       currency: tpl.currency || item.currency || '₹'
     };
 
@@ -415,13 +489,19 @@ function saveCart() {
 
 function addToCart(id, e) {
   if (e) e.stopPropagation();
+  
+  if (window.ACTIVE_OFFER_LIMIT > 0 && cart.length >= window.ACTIVE_OFFER_LIMIT && !cart.find(i => i.id === id)) {
+    toast(`Offer limit reached! Max ${window.ACTIVE_OFFER_LIMIT} items allowed.`, 'err');
+    return;
+  }
+  
   const tpl = window.SITE?.templates?.find(t => t.id === id);
   if (!tpl) return;
   if (cart.find(i => i.id === id)) { toast('Already in cart!', 'inf'); return; }
   cart.push({
     id,
     name: tpl.name,
-    price: Number(tpl.price),
+    price: getEffectivePrice(tpl),
     currency: tpl.currency || '₹',
     emoji: tpl.emoji
   });
@@ -505,8 +585,7 @@ function checkoutCart() {
 //  TEMPLATE CARDS
 // ═══════════════════════════════════════════════════════
 // ── Discount helpers ─────────────────────────────────
-const SALE_PRICE   = 49;   // First-month sale target price
-const SALE_LABEL   = '🎉 First Month Sale';
+// moved to top of file
 
 function getDiscountPct(originalPrice) {
   // e.g. 69 → 49 = Math.round((69-49)/69*100) = 29%
@@ -521,16 +600,29 @@ function buildCard(t) {
   const search = [t.name, ...(t.tags||[]), t.vibe||''].join(' ').toLowerCase();
   const detailUrl = `${ROOT}pages/template.html?t=${t.id}`;
   const addBtnLabel = inCart ? '🛒 In Cart' : '🛒 Add to Cart';
+  const effPrice = getEffectivePrice(t);
 
-  // Discount logic — show sale for templates priced > ₹49
-  const hasDiscount = !t.special && Number(t.price) > SALE_PRICE;
+  const isFreeOffer = window.ACTIVE_OFFER_LIMIT > 0 && !t.special;
+  const hasDiscount = !t.special && !isFreeOffer && Number(t.price) > SALE_PRICE;
   const discPct     = hasDiscount ? getDiscountPct(Number(t.price)) : 0;
-  const priceHTML   = hasDiscount
-    ? `<span class="t-price-wrap">
+  
+  let priceHTML = `<span class="t-price">${t.currency||'₹'}${effPrice}</span>`;
+  if (isFreeOffer) {
+    priceHTML = `<span class="t-price-wrap">
          <span class="t-price-orig">${t.currency||'₹'}${t.price}</span>
-         <span class="t-price sale">₹${SALE_PRICE}</span>
-       </span>`
-    : `<span class="t-price">${t.currency||'₹'}${t.price}</span>`;
+         <span class="t-price sale">FREE!</span>
+       </span>`;
+  } else if (hasDiscount) {
+    priceHTML = `<span class="t-price-wrap">
+         <span class="t-price-orig">${t.currency||'₹'}${t.price}</span>
+         <span class="t-price sale">₹${effPrice}</span>
+       </span>`;
+  }
+
+  const saleLabelHTML = isFreeOffer ? `<div class="t-sale-strip">🎁 Special Offer Active</div>` :
+                        (hasDiscount ? `<div class="t-sale-strip">${SALE_LABEL}</div>` : '');
+  const badgeHTML = isFreeOffer ? `<span class="t-sale-badge">100% OFF</span>` :
+                    (hasDiscount ? `<span class="t-sale-badge">-${discPct}% OFF</span>` : '');
 
   const imgHTML = t.media?.thumbnail
     ? `<img class="t-thumb" src="${ROOT}${t.media.thumbnail}" alt="${t.name}" loading="lazy"
@@ -544,7 +636,7 @@ function buildCard(t) {
       <div class="t-media">
         ${imgHTML}${phHTML}
         ${t.badge ? `<span class="t-badge ${t.badge.includes('New') ? 'new' : ''}">${t.badge}</span>` : ''}
-        ${hasDiscount ? `<span class="t-sale-badge">-${discPct}% OFF</span>` : ''}
+        ${badgeHTML}
         ${!t.special ? `
         <div class="t-card-actions" onclick="event.stopPropagation()">
           <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}"
@@ -556,7 +648,7 @@ function buildCard(t) {
           <span class="t-name">${t.emoji} ${t.name}</span>
           ${priceHTML}
         </div>
-        ${hasDiscount ? `<div class="t-sale-strip">${SALE_LABEL}</div>` : ''}
+        ${saleLabelHTML}
         <div class="t-tagline">${t.tagline}</div>
         <div class="t-card-btns" onclick="event.stopPropagation()">
           ${t.special 

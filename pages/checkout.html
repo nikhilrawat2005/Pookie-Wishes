@@ -178,13 +178,14 @@ let compressedFile = null;
 
 window.addEventListener('DOMContentLoaded', async () => {
   await waitForSite();
+  await waitForFb(); // Ensure fb is ready for offer fetch
 
   const upiId = SITE.payment?.upiId || '8700113731@fam';
   const upiPill = document.getElementById('upi-pill');
   if (upiPill) upiPill.textContent = upiId;
 
   // Sync cart prices with latest SITE data to avoid 0-price display bugs
-  syncCheckoutCart();
+  await syncCheckoutCart();
 
   const cartItems = JSON.parse(localStorage.getItem('pookie_cart') || '[]');
   if (!cartItems.length) { window.location.href = '../index.html'; return; }
@@ -192,14 +193,40 @@ window.addEventListener('DOMContentLoaded', async () => {
   renderSummary(cartItems);
 });
 
-function syncCheckoutCart() {
+function waitForFb() {
+  return new Promise(resolve => {
+    const t = setInterval(() => { if (window.fbReady) { clearInterval(t); resolve(); } }, 50);
+    setTimeout(() => { clearInterval(t); resolve(); }, 3000);
+  });
+}
+
+async function syncCheckoutCart() {
   const items = JSON.parse(localStorage.getItem('pookie_cart') || '[]');
   if (!items.length || !SITE?.templates) return;
+  
+  let offerLimit = 0;
+  if (window.fbReady) {
+    try {
+      const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
+      const totalOrders = statDoc.exists ? (statDoc.data().totalOrders || 0) : 0;
+      const realUsers = Math.max(0, totalOrders - 30);
+      if (realUsers < 15) offerLimit = 5;
+      else if (realUsers < 30) offerLimit = 3;
+    } catch(e) {}
+  }
   
   const updated = items.map(item => {
     const tpl = SITE.templates.find(t => t.id === item.id);
     if (tpl) {
-      item.price = Number(tpl.price);
+      if (tpl.special) {
+        item.price = Number(tpl.price);
+      } else if (offerLimit > 0) {
+        item.price = 0;
+      } else if (Number(tpl.price) > 49) {
+        item.price = 49;
+      } else {
+        item.price = Number(tpl.price);
+      }
       item.name = tpl.name;
       item.emoji = tpl.emoji;
     }
