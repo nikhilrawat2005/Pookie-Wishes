@@ -209,9 +209,9 @@ async function syncCheckoutCart() {
     try {
       const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
       const totalOrders = statDoc.exists ? (statDoc.data().totalOrders || 0) : 0;
-      const realUsers = Math.max(0, totalOrders - 30);
-      if (realUsers < 15) offerLimit = 5;
-      else if (realUsers < 30) offerLimit = 3;
+      const realUsers = Math.max(0, totalOrders); // Removed 30 offset
+      if (realUsers < 15) offerLimit = 3;
+      else if (realUsers < 30) offerLimit = 1;
     } catch(e) {}
   }
   

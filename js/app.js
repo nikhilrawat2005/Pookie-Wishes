@@ -180,16 +180,15 @@ async function fetchOfferStats() {
     const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
     const totalOrders = statDoc.exists ? (statDoc.data().totalOrders || 0) : 0;
     
-    const offset = 30; // offset due to early testing
+    const offset = 0; // Removed testing offset
     window.REAL_USERS = Math.max(0, totalOrders - offset);
     
-    // Calculate offer
-    // First 15 real users -> 5 templates free
-    // Next 15 real users (up to 30) -> 3 templates free
+    // First 15 real users -> 3 templates free
+    // Next 15 real users (up to 30) -> 1 template free
     if (window.REAL_USERS < 15) {
-      window.ACTIVE_OFFER_LIMIT = 5;
-    } else if (window.REAL_USERS < 30) {
       window.ACTIVE_OFFER_LIMIT = 3;
+    } else if (window.REAL_USERS < 30) {
+      window.ACTIVE_OFFER_LIMIT = 1;
     } else {
       window.ACTIVE_OFFER_LIMIT = 0;
     }
@@ -213,12 +212,12 @@ function updateOfferUI() {
   
   if (cnt) cnt.textContent = window.REAL_USERS;
   
-  if (window.ACTIVE_OFFER_LIMIT === 5) {
-    if (bdg) bdg.textContent = '🎁 5 Templates Free!';
-    if (dsc) dsc.innerHTML = `First 15 customers get up to 5 templates absolutely free! <br>(<strong>${15 - window.REAL_USERS} left!</strong>)`;
-  } else if (window.ACTIVE_OFFER_LIMIT === 3) {
+  if (window.ACTIVE_OFFER_LIMIT === 3) {
     if (bdg) bdg.textContent = '🎁 3 Templates Free!';
-    if (dsc) dsc.innerHTML = `Next 15 customers get up to 3 templates absolutely free! <br>(<strong>${30 - window.REAL_USERS} left!</strong>)`;
+    if (dsc) dsc.innerHTML = `First 15 customers get up to 3 templates absolutely free! <br>(<strong>${15 - window.REAL_USERS} left!</strong>)`;
+  } else if (window.ACTIVE_OFFER_LIMIT === 1) {
+    if (bdg) bdg.textContent = '🎁 1 Template Free!';
+    if (dsc) dsc.innerHTML = `Next 15 customers get 1 template absolutely free! <br>(<strong>${30 - window.REAL_USERS} left!</strong>)`;
   } else {
     // Offer ended
     if (bdg) bdg.textContent = '🎉 First Month Sale';

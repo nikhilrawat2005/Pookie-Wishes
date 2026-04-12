@@ -410,9 +410,12 @@ function updateStats() {
   document.getElementById('s-pend').textContent  = validOrders.filter(o=>o.status==='pending_verification').length;
   document.getElementById('s-done').textContent  = validOrders.filter(o=>o.deliveryStatus==='delivered').length;
   
-  // Optional: Update revenue to show Lifetime specifically if needed
-  const lifeRev = validOrders.filter(o=>o.lifetime).reduce((s,o)=>s+(o.totalAmount||0),0);
-  console.log('Lifetime Revenue:', lifeRev);
+  // Sync the exact number of valid orders back to public stats so offer logic is perfectly aligned!
+  try {
+    db.collection('counters').doc('stats').set({ totalOrders: validOrders.length }, { merge: true });
+  } catch (e) {
+    console.error('Failed to sync public counter:', e);
+  }
 }
 
 function setTab(filter, el) {
