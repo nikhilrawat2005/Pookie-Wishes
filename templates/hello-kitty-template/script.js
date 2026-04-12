@@ -106,7 +106,7 @@ function goToPage(num) {
 
   // Page hooks
   if (num === 2) resetEnvelope();
-  if (num === 5) startWishSlideshow(); else stopWishSlideshow();
+  if (num === 4) startWishSlideshow(); else stopWishSlideshow();
   if (num === 10) {
     [300, 900, 1500, 2200].forEach(t => setTimeout(() => launchConfetti(55), t));
   }
@@ -226,7 +226,7 @@ function endDraw(e) {
     if (msg)     msg.style.display = 'block';
     if (cakeImg) cakeImg.src = 'assets/candle_cake.png';
     launchConfetti(28);
-    setTimeout(() => goToPage(5), 3000);
+    setTimeout(() => goToPage(6), 3000);
   } else {
     cakeCtx.clearRect(0, 0, 280, 240);
   }
