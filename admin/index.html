@@ -285,8 +285,8 @@
     <div id="suggestions-grid" style="display:none; padding-bottom:40px;"></div>
     
     <div class="tbl" id="users-tbl" style="display:none;">
-      <div class="tbl-hd" style="grid-template-columns: 1fr 1fr 140px 100px;">
-        <div>Name</div><div>Email</div><div>Joined On</div><div>UID</div>
+      <div class="tbl-hd" style="grid-template-columns: 1fr 1.2fr 100px 140px;">
+        <div>Name</div><div>Email / Guest</div><div style="text-align:right">Templates</div><div>Last Active</div>
       </div>
       <div id="users-tbl-body"><div class="empty"><i data-lucide="loader" class="spin"></i> Loading...</div></div>
     </div>
@@ -470,28 +470,79 @@ function setTab(filter, el) {
 async function loadUsers() {
   const b = document.getElementById('users-tbl-body');
   if (!b) return;
-  b.innerHTML = '<div class="empty"><i data-lucide="loader" class="spin"></i> Fetching users...</div>';
+  b.innerHTML = '<div class="empty"><i data-lucide="loader" class="spin"></i> Fetching users & orders...</div>';
   lucide.createIcons();
   
   try {
-    const snap = await db.collection('users').orderBy('createdAt', 'desc').limit(200).get();
-    if (snap.empty) {
-      b.innerHTML = '<div class="empty">No registered users found.</div>';
+    // We fetch without 'orderBy' because older legacy accounts might omit the 'createdAt' field
+    const snap = await db.collection('users').limit(300).get();
+    const registered = snap.empty ? [] : snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
+    // Count templates per email using the loaded orders array
+    const emailData = {};
+    
+    // Process registered users first
+    registered.forEach(u => {
+      if (u.email) {
+        emailData[u.email.toLowerCase()] = {
+          name: u.name || 'Pookie User',
+          email: u.email,
+          createdAt: u.createdAt || u.lastLogin,
+          isUser: true,
+          count: 0
+        };
+      }
+    });
+
+    // Process all orders to count templates and dynamically capture Guest users
+    orders.forEach(o => {
+      if (!['paid', 'delivered', 'pending_verification'].includes(o.status)) return;
+      const em = (o.user?.email || o.buyerEmail || '').toLowerCase();
+      if (!em) return;
+
+      if (!emailData[em]) {
+        emailData[em] = {
+          name: o.user?.name || o.buyerName || 'Guest User',
+          email: em,
+          createdAt: o.createdAt,
+          isUser: false,
+          count: 0
+        };
+      }
+      
+      const tc = o.orders ? o.orders.length : (o.items ? o.items.length : 1);
+      emailData[em].count += tc;
+      
+      // Update most recent activity date if guest
+      if (!emailData[em].isUser && o.createdAt && (!emailData[em].createdAt || o.createdAt > emailData[em].createdAt)) {
+         emailData[em].createdAt = o.createdAt;
+      }
+    });
+
+    const items = Object.values(emailData).sort((a,b) => b.count - a.count);
+
+    if (items.length === 0) {
+      b.innerHTML = '<div class="empty">No customers found.</div>';
       return;
     }
-    const items = snap.docs.map(d => ({ id: d.id, ...d.data() }));
+
     b.innerHTML = items.map(u => {
       const dt = u.createdAt?.toDate?.().toLocaleDateString('en-IN', { day:'2-digit', month: 'short', year:'2-digit' }) || '—';
+      const badge = u.isUser ? '<span style="font-size:0.6rem; background:rgba(16,185,129,0.1); color:#10b981; padding:2px 6px; border-radius:100px; margin-left:8px;">Registered</span>' : '<span style="font-size:0.6rem; background:var(--bg3); color:var(--muted); padding:2px 6px; border-radius:100px; margin-left:8px;">Guest Order</span>';
+      
+      let highlight = '';
+      if (u.count >= 5) highlight = 'color: var(--pink); font-weight: bold;';
+      
       return `
-        <div class="tbl-row" style="grid-template-columns: 1fr 1fr 140px 100px; cursor: default;">
+        <div class="tbl-row" style="grid-template-columns: 1fr 1.2fr 100px 140px; cursor: default;">
           <div class="tc">${u.name || '—'}</div>
-          <div class="tc" style="color:var(--pink);">${u.email || '—'}</div>
+          <div class="tc" style="color:var(--text2);">${u.email || '—'} ${badge}</div>
+          <div class="tc mono" style="text-align:right; font-size:1.1rem; ${highlight}">${u.count}</div>
           <div class="tc mono">${dt}</div>
-          <div class="tc mono" title="${u.id}" style="font-size:0.65rem; color:var(--dim);">${u.id.substring(0,8)}...</div>
         </div>`;
     }).join('');
   } catch(e) {
-    b.innerHTML = '<div class="empty" style="color:#fca5a5;">Error loading users. (Firestore index may be required)</div>';
+    b.innerHTML = '<div class="empty" style="color:#fca5a5;">Error compiling user analytics.</div>';
     console.error(e);
   }
 }

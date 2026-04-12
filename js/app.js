@@ -123,6 +123,23 @@ function initFirebase() {
       currentUser = user;
       updateAuthUI(user);
       if (user) {
+        // Register or sync user tracking info
+        try {
+          await firebase.firestore().collection('users').doc(user.uid).set({
+            name: user.displayName || user.email?.split('@')[0] || 'Anonymous',
+            email: user.email,
+            lastLogin: firebase.firestore.FieldValue.serverTimestamp()
+          }, { merge: true });
+          
+          // Only set createdAt if the document doesn't exist already to preserve the first chronologial order
+          const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
+          if (!userDoc.data().createdAt) {
+             await firebase.firestore().collection('users').doc(user.uid).set({
+                createdAt: firebase.firestore.FieldValue.serverTimestamp()
+             }, { merge: true });
+          }
+        } catch(e) { console.warn("Failed to register user tracking record", e); }
+
         await syncFavs(user.uid);
         if (PAGE === 'favorites') renderFavPage();
         else refreshFavBtns();
