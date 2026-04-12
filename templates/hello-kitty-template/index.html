@@ -75,10 +75,27 @@
   <div class="page" id="page3">
     <div class="page-header">
       <h2 class="page-title">A Birthday Love Letter 💌</h2>
-      <p class="page-sub">From my heart to the birthday queen</p>
+      <p class="page-sub">Tap the envelope to open your letter!</p>
     </div>
     <div class="card-container">
-      <div class="letter-card">
+      
+      <!-- Interactive Envelope -->
+      <div class="envelope-wrapper" id="finalEnvelopeWrap">
+        <div class="envelope" id="finalEnvelope" onclick="openFinalLetterUI()">
+          <div class="envelope-body">
+            <div class="envelope-letter">
+               <p class="click-hint pulse-hint">Tap to open!</p>
+            </div>
+            <div class="env-sticker" style="position:absolute; bottom:15px; right:15px; z-index:3;">
+               <img src="assets/kitty.png" alt="Kitty" />
+            </div>
+          </div>
+          <div class="envelope-flap" id="finalFlap"></div>
+        </div>
+      </div>
+
+      <!-- The Expanded Paper Letter -->
+      <div class="letter-card expanded-paper-ui" id="expandedLetterUI" style="display:none; opacity:0; transform: translateY(30px);">
         <div class="letter-header">
           <span>💌</span>
           <span class="letter-to">To My Birthday Princess</span>
@@ -86,15 +103,18 @@
         <div class="letter-corner-img">
           <img src="assets/kitty_love_card.png" alt=""/>
         </div>
-        <div class="letter-body">
-          <p class="letter-greeting" id="letterGreeting">My dearest birthday girl,</p>
-          <p class="letter-text"    id="letterBody">Today marks another year of your incredible existence...</p>
-          <p class="letter-sign"    id="letterSign">Forever yours 💝</p>
-          <span class="letter-seal">✔</span>
+        <div class="nice-paper-bg">
+          <div class="letter-body">
+            <p class="letter-greeting" id="letterGreeting">My dearest birthday girl,</p>
+            <p class="letter-text"    id="letterBody">Today marks another year of your incredible existence...</p>
+            <p class="letter-sign"    id="letterSign">Forever yours 💝</p>
+            <span class="letter-seal">✔</span>
+          </div>
         </div>
         <button class="music-btn" id="letterMusicBtn" onclick="toggleLetterMusic()" title="Toggle music">🎵</button>
+        <button class="btn-pink" id="sealBtn" onclick="sealLetter()" style="margin-top: 20px;">Seal It With Love 🔒</button>
       </div>
-      <button class="btn-pink" id="sealBtn" onclick="sealLetter()">Seal It With Love 🔒</button>
+
     </div>
   </div>
 
