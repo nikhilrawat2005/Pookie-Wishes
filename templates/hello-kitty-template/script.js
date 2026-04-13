@@ -110,7 +110,7 @@ function goToPage(num) {
 
   // Page hooks
   if (num === 2) resetEnvelope();
-  if (num === 4) startWishSlideshow(); else stopWishSlideshow();
+  if (num === 5) startWishSlideshow(); else stopWishSlideshow();
   if (num === 10) {
     [300, 900, 1500, 2200].forEach(t => setTimeout(() => launchConfetti(55), t));
   }
@@ -230,7 +230,7 @@ function endDraw(e) {
     if (msg)     msg.style.display = 'block';
     if (cakeImg) cakeImg.src = 'assets/candle_cake.png';
     launchConfetti(28);
-    setTimeout(() => goToPage(6), 3000);
+    setTimeout(() => goToPage(5), 3000);
   } else {
     cakeCtx.clearRect(0, 0, 280, 240);
   }
@@ -521,41 +521,6 @@ function closeModal(id) {
 /* ──────────────────────────────────────────────────────
    § 14  FINAL LETTER + SEAL
 ────────────────────────────────────────────────────── */
-
-function openFinalLetterUI() {
-  const envWrap = document.getElementById('finalEnvelopeWrap');
-  const env     = document.getElementById('finalEnvelope');
-  const letter  = document.getElementById('expandedLetterUI');
-  const subtitle = document.querySelector('#page3 .page-sub');
-
-  if (env.classList.contains('open')) return;
-  
-  // 1. Open flap animation
-  env.classList.add('open');
-  if (subtitle) subtitle.textContent = 'A beautiful message just for you...';
-  
-  // 2. Hide envelope & show expanded letter after a short delay
-  setTimeout(() => {
-    envWrap.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-    envWrap.style.opacity = '0';
-    envWrap.style.transform = 'scale(0.8)';
-    
-    setTimeout(() => {
-      envWrap.style.display = 'none';
-      letter.style.display = 'block';
-      
-      // Trigger reflow
-      void letter.offsetWidth;
-      
-      letter.style.transition = 'opacity 0.8s ease, transform 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275)';
-      letter.style.opacity = '1';
-      letter.style.transform = 'translateY(0)';
-      
-      launchConfetti(20);
-    }, 600);
-  }, 1000);
-}
-
 function sealLetter() {
   const btn = document.getElementById('sealBtn');
   if (btn) { btn.textContent = 'Sealing... 💌'; btn.disabled = true; }

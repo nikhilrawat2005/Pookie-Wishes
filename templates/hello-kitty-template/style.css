@@ -323,52 +323,25 @@ button { cursor: pointer; font-family: inherit; }
 .click-hint { color: var(--pink); font-weight: 700; font-size: clamp(.85rem,2vw,.95rem); font-family: 'Fredoka One', cursive; animation: pulse 2s ease-in-out infinite; }
 @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
 
-/* ── PAGES 3 & 9 — LETTERS + INTERACTIVE ENVELOPE ───────────────────────────── */
-.envelope-wrapper { display: flex; justify-content: center; width: 100%; padding: 20px 0; }
-.env-sticker img { width: clamp(50px, 12vw, 80px); animation: heartbeat 2s infinite; filter: drop-shadow(0 4px 10px rgba(232,70,123,.3)); }
-.envelope-letter { text-align: center; }
-.pulse-hint { animation: pulse 1.5s infinite; }
-
+/* ── PAGES 3 & 9 — LETTERS ───────────────────────────── */
 .letter-card { position: relative; max-width: min(700px, 96vw); }
-
-.expanded-paper-ui {
-  background: #fff;
-  border-radius: 4px;
-  box-shadow: 0 10px 40px rgba(0,0,0,0.15), inset 0 0 40px rgba(235, 214, 222, 0.4);
-  padding: clamp(20px, 4vw, 40px) clamp(16px, 3.5vw, 36px);
-  background-image: 
-    linear-gradient(#f9e4e8 1px, transparent 1px),
-    linear-gradient(90deg, #f9e4e8 1px, transparent 1px);
-  background-size: 20px 20px;
-  border-left: 4px solid var(--pink-light);
-}
-
-.nice-paper-bg {
-  background-color: rgba(255, 255, 255, 0.6);
-  padding: 15px;
-  border-radius: 8px;
-}
-
-.letter-header { display: flex; align-items: center; gap: 10px; margin-bottom: 24px; padding-bottom: 12px; border-bottom: 2px dashed var(--pink-light); font-size: clamp(1rem,2.5vw,1.2rem); }
-.letter-to { font-family: 'Fredoka One', cursive; font-size: clamp(.85rem,2vw,1rem); color: #333; text-transform: uppercase; letter-spacing: 1px;}
+.letter-header { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 2px dashed var(--pink-light); font-size: clamp(1rem,2.5vw,1.2rem); }
+.letter-to { font-family: 'Fredoka One', cursive; font-size: clamp(.85rem,2vw,1rem); color: #333; }
 .letter-corner-img { position: absolute; top: 10px; right: 12px; width: clamp(55px,11vw,95px); height: clamp(55px,11vw,95px); animation: floatY 3s ease-in-out infinite; }
 .letter-corner-img img { width: 100%; height: 100%; object-fit: contain; filter: drop-shadow(0 4px 10px var(--pink-glow)); }
-
-.letter-body { padding-right: clamp(20px,13vw,60px); }
-.letter-greeting { font-family: 'Great Vibes', 'Dancing Script', cursive; color: var(--pink); font-size: clamp(1.6rem, 4vw, 2.2rem); margin-bottom: 16px; font-weight: 600; text-shadow: 1px 1px 2px rgba(232, 70, 123, 0.1); }
-.letter-text  { font-family: 'Dancing Script', cursive; font-size: clamp(1.2rem, 3vw, 1.6rem); line-height: 1.8; color: #444; font-weight: 600; letter-spacing: 0.5px; }
-.letter-pink  { font-family: 'Dancing Script', cursive; font-size: clamp(1.2rem, 3vw, 1.6rem); color: #56ab2f; margin-top: 12px; line-height: 1.8; font-weight: 600; }
-.letter-sign  { font-family: 'Great Vibes', 'Dancing Script', cursive; color: var(--pink); font-size: clamp(1.5rem, 3.5vw, 2rem); text-align: right; margin-top: 24px; font-weight: 600; }
-.letter-seal  { display: block; text-align: right; color: #28c840; font-size: 1.2rem; margin-top: 5px; }
-
+.letter-body { padding-right: clamp(55px,13vw,100px); }
+.letter-greeting { font-family: 'Great Vibes', 'Dancing Script', cursive; color: var(--pink); font-size: clamp(1.1rem,3vw,1.5rem); margin-bottom: 12px; }
+.letter-text  { font-family: 'Dancing Script', cursive; font-size: clamp(.85rem,2vw,1.05rem); line-height: 1.9; color: #555; text-indent: 16px; }
+.letter-pink  { font-family: 'Dancing Script', cursive; font-size: clamp(.85rem,2vw,1.05rem); color: #56ab2f; margin-top: 12px; line-height: 1.7; }
+.letter-sign  { font-family: 'Great Vibes', 'Dancing Script', cursive; color: var(--pink); font-size: clamp(.95rem,2.5vw,1.2rem); text-align: right; margin-top: 16px; }
+.letter-seal  { display: block; text-align: right; color: #28c840; font-size: 1rem; }
 .music-btn {
-  position: absolute; bottom: 20px; right: 20px; left: auto;
-  width: 45px; height: 45px; border-radius: 50%;
+  position: absolute; bottom: 18px; left: 18px;
+  width: 40px; height: 40px; border-radius: 50%;
   background: #fff; border: 2px solid var(--pink);
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.2rem; box-shadow: 0 4px 12px var(--pink-glow);
+  font-size: .95rem; box-shadow: 0 2px 8px var(--pink-glow);
   transition: background .2s, transform .2s;
-  z-index: 10;
 }
 .music-btn:hover { background: #ffe0ee; transform: scale(1.1); }
 .letter-divider { border: none; border-top: 1px dashed var(--pink-light); margin: 14px 0; }
