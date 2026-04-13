@@ -644,13 +644,7 @@ const R = {
   insect_q2: "../../assets/hoppers/asset_18.png",
   gif_comedy: "../../assets/hoppers/asset_19.gif",
   gif_wow: "../../assets/hoppers/asset_20.gif",
-<!-- Trimmed huge asset (Line 640) - Size: 612400 -->
   gif_insect: "../../assets/hoppers/asset_21.gif",
-<!-- Trimmed huge asset (Line 642) - Size: 1120982 -->
-<!-- Trimmed huge asset (Line 643) - Size: 1388567 -->
-<!-- Trimmed huge asset (Line 644) - Size: 1635929 -->
-<!-- Trimmed huge asset (Line 645) - Size: 1267072 -->
-<!-- Trimmed huge asset (Line 646) - Size: 1028318 -->
 };
 /* ═══════════════════════════════════════
    ★ CHANGE THE NAME HERE ★
@@ -690,7 +684,7 @@ function assignImages() {
   /* LOADER */
   set('ld-img', 'mabel_bv_sm');
 
-  <!-- Marketing Watermark -->
+  /* Marketing Watermark */
   set('c1l',  'ellen');          // left bottom — Ellen
   set('c1r',  'loaf');           // right bottom — Loaf group
   set('c1tr', 'bird_king');      // top right — Bird King
@@ -744,17 +738,7 @@ function assignImages() {
 /* ═══════════════════════════════════════
    LOAD
 ═══════════════════════════════════════ */
-window.addEventListener('load', () => {
-  assignImages();
-  injectName();
-  document.getElementById('p-body').innerHTML = LETTER.replace(/XYZ/g, NAME);
-  document.getElementById('p-salute').textContent = `Dear ${NAME},`;
-  document.getElementById('p-to').textContent = `To: ${NAME}`;
-  setTimeout(() => {
-    document.getElementById('loader').classList.add('gone');
-    document.getElementById('mbar').classList.add('show');
-  }, 3400);
-});
+// Initial setup moved to initTemplate for sync with data loader
 
 /* ═══════════════════════════════════════
    CURSOR
@@ -908,105 +892,61 @@ function spark(x,y){const b=document.createElement('div');b.className='sburst';b
 
 
 /* ═══════════════════════════════════════
-   DATA LOADER INTEGRATION (v3 - Global Fix)
+   DATA LOADER INTEGRATION
 ═══════════════════════════════════════ */
 async function initTemplate() {
   const data = await window.getPookieData('hoppers');
-  if (data) {
-    const newName = data.name || "Pookie";
-    
-    window.NAME = newName; // Override internal global
-    
-    // Case-insensitive replacement for XYZ/xyz throughout text nodes
-    function walkNodes(node) {
-      if (node.nodeType === 3) {
-        if (/XYZ/i.test(node.nodeValue)) {
-          node.nodeValue = node.nodeValue.replace(/XYZ/gi, newName);
-        }
-      } else if (node.nodeType === 1 && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') {
-        for (let child of node.childNodes) {
-          walkNodes(child);
-        }
-      }
-    }
-    walkNodes(document.body);
-
-    document.querySelectorAll('.n-span').forEach(el => el.textContent = newName);
-    const h1Name = document.getElementById('ch1-name');
-    if (h1Name) h1Name.textContent = newName;
-    
-    const pTo = document.getElementById('p-to');
-    if (pTo) pTo.textContent = `To: ${newName}`;
-    
-    const pSalute = document.getElementById('p-salute');
-    if (pSalute) pSalute.textContent = `Dear ${newName},`;
-    
-    if (data.message) {
-      const pBody = document.getElementById('p-body');
-      if (pBody) {
-        // Replace innerHTML but also handle placeholders inside the message itself
-        pBody.innerHTML = data.message.split('
-').filter(t => t.trim()).map(t => `<p>${t}</p>`).join('').replace(/XYZ/gi, newName);
+  const newName = (data && data.name) ? data.name : "Pookie";
+  
+  window.NAME = newName;
+  
+  // 1. Assign Images
+  if (typeof assignImages === 'function') assignImages();
+  
+  // 2. Inject Name throughout the page
+  if (typeof injectName === 'function') injectName(); 
+  document.querySelectorAll('.n-span').forEach(el => el.textContent = newName);
+  
+  const pTo = document.getElementById('p-to');
+  if (pTo) pTo.textContent = `To: ${newName}`;
+  
+  const pSalute = document.getElementById('p-salute');
+  if (pSalute) pSalute.textContent = `Dear ${newName},`;
+  
+  // 3. Handle Message
+  const pBody = document.getElementById('p-body');
+  if (pBody) {
+    if (data && data.message) {
+      pBody.innerHTML = data.message.split('\n')
+        .filter(t => t.trim())
+        .map(t => `<p>${t}</p>`)
+        .join('').replace(/XYZ/gi, newName);
+    } else {
+      // Fallback to internal LETTER constant
+      if (typeof LETTER !== 'undefined') {
+        pBody.innerHTML = LETTER.replace(/XYZ/g, newName);
       }
     }
   }
+
+  // 4. Dismiss Loader
+  setTimeout(() => {
+    const ldr = document.getElementById('loader');
+    const mbr = document.getElementById('mbar');
+    if (ldr) ldr.classList.add('gone');
+    if (mbr) mbr.classList.add('show');
+    
+    // Trigger scroll reveal refresh if needed
+    if (typeof obs !== 'undefined') {
+        document.querySelectorAll('.rv,.rvl,.rvr').forEach(el=>obs.observe(el));
+    }
+  }, 2200);
 }
 
-// Kick off loader
+// Start the sequence
 window.addEventListener('DOMContentLoaded', initTemplate);
 
 
-
-
-
-
-/* ═══════════════════════════════════════
-   DATA LOADER INTEGRATION (v3 - Global Fix)
-═══════════════════════════════════════ */
-async function initTemplate() {
-  const data = await window.getPookieData('hoppers');
-  if (data) {
-    const newName = data.name || "Pookie";
-    
-    window.NAME = newName; // Override internal global
-    
-    // Case-insensitive replacement for XYZ/xyz throughout text nodes
-    function walkNodes(node) {
-      if (node.nodeType === 3) {
-        if (/XYZ/i.test(node.nodeValue)) {
-          node.nodeValue = node.nodeValue.replace(/XYZ/gi, newName);
-        }
-      } else if (node.nodeType === 1 && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') {
-        for (let child of node.childNodes) {
-          walkNodes(child);
-        }
-      }
-    }
-    walkNodes(document.body);
-
-    document.querySelectorAll('.n-span').forEach(el => el.textContent = newName);
-    const h1Name = document.getElementById('ch1-name');
-    if (h1Name) h1Name.textContent = newName;
-    
-    const pTo = document.getElementById('p-to');
-    if (pTo) pTo.textContent = `To: ${newName}`;
-    
-    const pSalute = document.getElementById('p-salute');
-    if (pSalute) pSalute.textContent = `Dear ${newName},`;
-    
-    if (data.message) {
-      const pBody = document.getElementById('p-body');
-      if (pBody) {
-        // Replace innerHTML but also handle placeholders inside the message itself
-        pBody.innerHTML = data.message.split('
-').filter(t => t.trim()).map(t => `<p>${t}</p>`).join('').replace(/XYZ/gi, newName);
-      }
-    }
-  }
-}
-
-// Kick off loader
-window.addEventListener('DOMContentLoaded', initTemplate);
 
 
 </script>
