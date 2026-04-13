@@ -1,40 +1,51 @@
 Security Tips for Website Templates (Code Stealing Prevention)
 ============================================================
 
-Yahan kuch important points aur techniques hain jinke through hum templates ko secure bana sakte hain, taaki koi easily code na nikaal sake ya copy na kar sake:
+Yahan kuch important points aur techniques hain jinke through hum templates ko secure bana sakte hain, taaki koi easily code na nikaal sake ya copy na kar sake. Inko humari working affect kiye bina lagane ke liye 3 stages me divide kiya gaya hai:
 
-1. Code Obfuscation & Minification
-----------------------------------
-HTML, CSS, aur JS code ko minify (compress) aur obfuscate (garble) kar dena chahiye. Obfuscation se code unreadable ho jata hai, variables aur functions ke naam chote aur meaning-less ho jate hain, jisse agar koi source code copy bhi kar le to use pehchanne mein bahut dikkat aayegi.
+------------------------------------------------------------
+STAGE 1: BASIC (Immediate Frontend Deterrence)
+------------------------------------------------------------
+Ye changes chote hain, frontend-based hain, aur inko implement karne se web app break nahi hogi:
 
-2. Disable Right-Click (Context Menu) & Shortcuts
--------------------------------------------------
+1. Disable Right-Click (Context Menu) & Shortcuts
 JavaScript ka use karke hum Right-Click, `Ctrl+U` (View Source), aur `F12` / `Ctrl+Shift+I` (Developer Tools) disable kar sakte hain. Halanki ye 100% proof nahi hai (kyunki log aasaani se extensions se bypass kar sakte hain), but beginners aur casual copy karne walo ko rokne ke liye kaafi effective hai.
 
-3. Disable IFrame Embedding (Clickjacking Prevention)
------------------------------------------------------
-Agar hum chahte hain ki koi aur website pe hmare templates as iframe embed karke use na kare, toh hum `X-Frame-Options` (DENY/SAMEORIGIN) ya modern CORS Content Security Policies (CSP) header server se set kar sakte hain.
+2. Access Restriction via Domain Binding
+Hum scripts mein domain check daal sakte hain. Agar `window.location.hostname` hamara apna domain ('pookiewishes.com' ya 'localhost') nahi hai, to template chalna band ho jaye ya koi error show kar de. This stops people from hosting it elsewhere simply.
 
-4. Important Logic & Assets on Backend
---------------------------------------
-Template ka koi crucial calculation (e.g. price calculations, user dynamic text map generation) server-side ya Firebase functions mein hona chahiye na ki browser ke JavaScript mein. Browser mein frontend sirf UI dikhane ke liye rakho. Jisse actual logic frontend se copy na ho.
+3. Legal & Copyright Header
+Sare JS, CSS, aur HTML files ke top par apni company ka naam aur strict copyright notice add karein. Professional level par ye zaruri hota hai taki legal action valid ho sake against stealing.
 
-5. Dynamic Content Loading
---------------------------
-Templates ki saari HTML ek sath body me likhne ke bajaye JSON/API ke through data load karke JavaScript se DOM mein append kar sakte hain jisse page ke source mein khali `div` aur basic cheezein hi dikhein. (Pookie-v3 mein hum already javascript se render karte hain HTML nodes ko, which is good!)
+------------------------------------------------------------
+STAGE 2: MEDIUM (Server Config & Build Optimizations)
+------------------------------------------------------------
+Ye changes thode intermediate level ke hain, jisme firebase configurations or minification shamil hai:
+
+4. Disable IFrame Embedding (Clickjacking Prevention)
+Agar hum chahte hain ki koi aur website pe hmare templates as iframe embed karke use na kare, toh hum firebase.json mein `X-Frame-Options` (DENY/SAMEORIGIN) ya modern Content Security Policies (CSP) header server se set kar sakte hain.
+
+5. Code Minification
+HTML, CSS, aur JS code ko minify (compress) kar dena chahiye, jisse whitespace aur comments hat jaye aur code padhna thoda hard ho jaye.
 
 6. Watermarks
--------------
 Images and videos pe hamesha aapka watermark hona chahiye. Agar code copy ho bhi gaya toh assets copy karke duplicate template banana bohot obvious ho jayega ki unhone churaya hai. 
 
-7. Access Restriction via Domain Binding
-----------------------------------------
-Hum scripts mein domain check daal sakte hain. Agar `window.location.hostname` hamara apna domain ('pookiewishes.com') nahi hai, to template chalna band ho jaye ya koi error show kar de. This stops people from hosting it elsewhere simply.
+------------------------------------------------------------
+STAGE 3: HARDER (Deep Security & Architecture)
+------------------------------------------------------------
+Ye steps website architect me deep changes karenge, isliye isko dhyan se implement kiya jayega verify karne ke baad ki working impact na ho:
 
-8. Legal & Copyright Header
----------------------------
-Sare JS aur HTML files ke top par apni company ka naam aur strict copyright notice add karein. Professional level par ye zaruri hota hai taki legal action valid ho sake against stealing.
+7. Code Obfuscation
+JS code ko minify ke baad obfuscate (garble) kar dena chahiye. Obfuscation se code unreadable ho jata hai, variables aur functions ke naam chote aur meaning-less ho jate hain, jisse agar koi source code copy bhi kar le to use pehchanne mein bahut dikkat aayegi.
 
+8. Important Logic & Assets on Backend
+Template ka koi crucial calculation (e.g. price calculations, user dynamic text map generation) server-side ya Firebase functions mein hona chahiye na ki browser ke JavaScript mein. Browser mein frontend sirf UI dikhane ke liye rakho. Jisse actual logic frontend se copy na ho.
+
+9. Dynamic Content Loading
+Templates ki saari HTML ek sath body me likhne ke bajaye JSON/API ke through data load karke JavaScript se DOM mein append kar sakte hain jisse page ke source mein khali `div` aur basic cheezein hi dikhein. (Pookie-v3 mein hum already javascript se render karte hain HTML nodes ko, which is good!)
+
+------------------------------------------------------------
 Summary
 -------
 Frontend ko 100% copy hone se rokna mushkil hai kyunki browser ko code parhna hi hota hai page chalane ke liye, lekin in steps ka combined use karne se (khaaskar Obfuscation aur Domain Check) template copy karna itna hard ho jayega ki log aage try nahi karenge.

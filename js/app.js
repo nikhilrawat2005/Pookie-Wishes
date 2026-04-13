@@ -1,8 +1,24 @@
 // ═══════════════════════════════════════════════════════
 //  POOKIE WISHES — app.js  (v10 — Custom Backend)
 //  Custom email/upload backend · Firebase v9-compat
+//  © 2026 Pookie Wishes. All rights reserved.
+//  Unauthorized copying, reproduction, or deployment is strictly prohibited.
 // ═══════════════════════════════════════════════════════
 
+// ── Security Constraints (Anti-Copy & Domain Binding) ─
+(function() {
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U')) {
+      e.preventDefault();
+    }
+  });
+  const hn = window.location.hostname;
+  const valid = hn === 'localhost' || hn === '127.0.0.1' || hn.includes('vercel.app') || hn.includes('web.app') || hn.includes('firebaseapp.com') || hn.includes('pookiewishes');
+  if (hn && !valid) {
+    document.documentElement.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20%'>Unauthorized Domain</h1>";
+  }
+})();
 // ── Vercel Analytics (static site method) ─────────────
 // Injects the official Vercel analytics script once per page load.
 // The script is served by Vercel's edge at /_vercel/insights/script.js

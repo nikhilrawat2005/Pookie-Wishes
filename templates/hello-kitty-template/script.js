@@ -1,3 +1,7 @@
+/*
+  © 2026 Pookie Wishes. All rights reserved.
+  Unauthorized copying, reproduction, or deployment is strictly prohibited.
+*/
 /* ══════════════════════════════════════════════════════
    BIRTHDAY WEBSITE — SCRIPT.JS
    Sections:

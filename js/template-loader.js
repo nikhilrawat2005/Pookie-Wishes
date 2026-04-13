@@ -1,5 +1,22 @@
+// © 2026 Pookie Wishes. All rights reserved.
+// Unauthorized copying, reproduction, or deployment is strictly prohibited.
 // Universal zero-touch loader for Pookie Wishes templates.
 // This script intercepts local user data fetches and grabs real data from Firestore.
+
+// ── Security Constraints (Anti-Copy & Domain Binding) ─
+(function() {
+  document.addEventListener('contextmenu', e => e.preventDefault());
+  document.addEventListener('keydown', e => {
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U')) {
+      e.preventDefault();
+    }
+  });
+  const hn = window.location.hostname;
+  const valid = hn === 'localhost' || hn === '127.0.0.1' || hn.includes('vercel.app') || hn.includes('web.app') || hn.includes('firebaseapp.com') || hn.includes('pookiewishes');
+  if (hn && !valid) {
+    document.documentElement.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20%'>Unauthorized Domain</h1>";
+  }
+})();
 
 window.getPookieData = async function(templateId) {
     const urlParams = new URLSearchParams(window.location.search);
