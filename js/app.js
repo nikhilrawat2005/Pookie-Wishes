@@ -18,6 +18,16 @@
   if (hn && !valid) {
     document.documentElement.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20%'>Unauthorized Domain</h1>";
   }
+  
+  // Anti-DevTools: Freeze inspector if opened
+  setInterval(function() {
+    (function (a) {
+      return (function (a) { return (Function('Function(arguments[0]+"' + a + '")()')) });
+    })('bugger')('de', 0, 0, (0, 0));
+  }, 1000);
+  
+  // Clear console attempts
+  setInterval(() => { console.clear(); console.log('%cWait! This is a browser feature intended for developers. Do not paste any code here.', 'color:red;font-size:20px;font-weight:bold;'); }, 2000);
 })();
 // ── Vercel Analytics (static site method) ─────────────
 // Injects the official Vercel analytics script once per page load.
