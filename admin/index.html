@@ -549,24 +549,28 @@ async function loadUsers() {
 
 function createTemplateGrid() {
   const g = document.getElementById('templates-grid');
-  const templates = [
-    { id: 'sorry', name: 'The Apology (Sorry)', icon: '🥺' },
-    { id: 'hello-kitty', name: 'Hello Kitty', icon: '🎀' },
-    { id: 'harry-potter', name: 'Harry Potter', icon: '⚡' },
-    { id: 'love-trap', name: 'Love Trap', icon: '💘' },
-    { id: 'celestial', name: 'Celestial Moon', icon: '🌙' },
-    { id: 'among-us', name: 'Among Us', icon: '🚀' },
-    { id: 'hoppers', name: 'Hoppers 🌿', icon: '🌿' }
-  ];
-  g.innerHTML = templates.map(t => `
-    <div class="tpl-card">
-      <div class="tpl-icon-wrap">${t.icon}</div>
-      <div class="tpl-title">${t.name}</div>
-      <div class="tpl-id">ID: ${t.id}</div>
-      <div style="flex:1"></div>
-      <a href="../templates/${t.id}-template/index.html" target="_blank" class="btn btn-primary btn-full"><i data-lucide="external-link" style="width:16px;"></i> Visit Template</a>
-    </div>
-  `).join('');
+  if (!SITE || !SITE.templates) return;
+  
+  g.innerHTML = SITE.templates.map(t => {
+    // Determine the icon/emoji
+    const icon = t.emoji || t.icon || '✨';
+    const folder = t.id + '-template';
+    
+    // Hand-made usually doesn't have a local template folder for "Try Live Demo" 
+    // but the admin might want to visit the checkout flow or a placeholder
+    const link = t.id === 'hand-made' ? '../index.html#templates' : `../templates/${folder}/index.html`;
+
+    return `
+      <div class="tpl-card">
+        <div class="tpl-icon-wrap">${icon}</div>
+        <div class="tpl-title">${t.name}</div>
+        <div class="tpl-id">ID: ${t.id}</div>
+        <p style="font-size: 0.8rem; color: var(--muted); margin-bottom: 20px; line-height: 1.4;">${t.tagline || ''}</p>
+        <div style="flex:1"></div>
+        <a href="${link}" target="_blank" class="btn btn-primary btn-full"><i data-lucide="external-link" style="width:16px;"></i> Visit Template</a>
+      </div>
+    `;
+  }).join('');
   lucide.createIcons();
 }
 
