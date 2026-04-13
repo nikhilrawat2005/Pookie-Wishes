@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!-- 
+  © 2026 Pookie Wishes. All rights reserved.
+  Unauthorized copying, reproduction, or deployment is strictly prohibited.
+-->
 <html lang="en">
 
 <head>
@@ -70,11 +74,17 @@
       flex-direction: column;
       align-items: center;
       text-align: center;
-      overflow: hidden;
+      overflow-y: auto;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
       min-height: min(540px, 88vh);
-      max-height: 90vh;
-      justify-content: center;
+      max-height: 92vh;
+      justify-content: safe center;
       transition: box-shadow 0.4s ease;
+    }
+
+    #app::-webkit-scrollbar {
+      display: none;
     }
 
     #app:hover {
@@ -91,7 +101,10 @@
     }
 
     .stage.active {
-      display: flex
+      display: flex;
+      margin: auto 0;
+      flex-shrink: 0; /* Prevent squishing */
+      min-height: min-content;
     }
 
     .stage.in {
@@ -767,7 +780,9 @@
       color: var(--txt);
       line-height: 1.88;
       font-weight: 600;
-      min-height: 80px
+      min-height: 80px;
+      white-space: pre-wrap;
+      word-break: break-word;
     }
 
     .cursor {

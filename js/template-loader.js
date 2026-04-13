@@ -196,9 +196,27 @@ window.bindPookiePlaceholders = function(data) {
     
     // Recursive walker to replace hardcoded placeholders in text nodes
     function walk(node) {
+        // Skip marketing watermarks and specific static containers
+        if (node.nodeType === 1) {
+            if (node.classList.contains('pookie-watermark') || 
+                node.getAttribute('data-static') === 'true' ||
+                node.getAttribute('data-no-bind') === 'true') {
+                return; 
+            }
+        }
+
         if (node.nodeType === 3) { // Text node
             let val = node.nodeValue;
-            const placeholders = [/XYZ/gi, /NIKHIL/gi, /POOKIE/gi];
+            if (!val || val.trim().length === 0) return;
+
+            // PROTECT marketing brand names - don't replace if it's "Pookie Wishes"
+            if (val.toLowerCase().includes("pookie wishes")) {
+                // We leave the whole node alone or we could be more surgical
+                // But usually "Pookie Wishes" is a distinct unit
+                return;
+            }
+
+            const placeholders = [/XYZ/gi, /NIKHIL/gi, /POOKIE/gi, /RECIPIENT/gi];
             let changed = false;
             placeholders.forEach(regex => {
                 if (regex.test(val)) {
@@ -206,8 +224,9 @@ window.bindPookiePlaceholders = function(data) {
                     changed = true;
                 }
             });
-            if (val.includes("Friend") && recipient !== "Friend") {
-                val = val.replace(/Friend/g, recipient);
+            // Also handle "Friend" case-insensitively
+            if (/Friend/gi.test(val) && recipient.toLowerCase() !== "friend") {
+                val = val.replace(/Friend/gi, recipient);
                 changed = true;
             }
             if (changed) node.nodeValue = val;
