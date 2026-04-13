@@ -182,6 +182,21 @@ async function init() {
             targetName = userData.targetName;
         }
 
+        // 🌿 Global Placeholder Fix (v3)
+        if (window.bindPookiePlaceholders) {
+            window.bindPookiePlaceholders(userData);
+        }
+
+        // Show personal message if exists
+        if (userData && userData.message) {
+            const msgBox = document.getElementById('final-personal-message');
+            const msgText = document.getElementById('inject-msg-text');
+            if (msgBox && msgText) {
+                msgText.innerText = userData.message;
+                msgBox.style.display = 'block';
+            }
+        }
+
         document.querySelectorAll('.inject-name').forEach(el => el.textContent = targetName);
         initSetup();
     } catch (err) {

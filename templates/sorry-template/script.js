@@ -38,6 +38,11 @@ async function init() {
         setupParticles();
         setupCursor();
         setupGlobalListeners();
+
+        // 🌿 Global Placeholder Fix (v3)
+        if (window.bindPookiePlaceholders) {
+            window.bindPookiePlaceholders(userData);
+        }
     } catch (err) {
         console.error("Failed to load user data:", err);
     }

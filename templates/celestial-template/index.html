@@ -472,6 +472,11 @@ async function init() {
         if (userData.memoryPhotos) {
             memoryPhotos = userData.memoryPhotos;
         }
+
+        // 🌿 Global Placeholder Fix (v3)
+        if (window.bindPookiePlaceholders) {
+          window.bindPookiePlaceholders(userData);
+        }
       }
     } catch (e) {
       console.warn("Load error:", e);

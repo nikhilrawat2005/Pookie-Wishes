@@ -48,6 +48,11 @@ async function init() {
 
         if (userData) applyContent(userData);
 
+        // 🌿 Global Placeholder Fix (v3)
+        if (window.bindPookiePlaceholders) {
+            window.bindPookiePlaceholders(userData);
+        }
+
         spawnBgElements();
         initCakeCanvas();
         updateWishesProgress();

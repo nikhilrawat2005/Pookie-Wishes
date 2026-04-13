@@ -111,6 +111,15 @@ function boot() {
   buildStory();
   buildFlipCards();
 
+  // 🌿 Global Placeholder Fix (v3)
+  if (window.bindPookiePlaceholders) {
+    window.bindPookiePlaceholders({ 
+      name: N, 
+      sender: C.letter.signature, 
+      message: C.letter.body 
+    });
+  }
+
   // Scratch wish text
   const sw = document.getElementById('scWish');
   if (sw) {

@@ -147,7 +147,11 @@ window.getPookieData = async function(templateId) {
         }
 
         if (template === 'among-us') {
-            return { targetName: recipient };
+            return { 
+                targetName: recipient,
+                senderName: sender,
+                message: message
+            };
         }
 
         if (template === 'love-trap') {
@@ -179,10 +183,42 @@ window.getPookieData = async function(templateId) {
 
     } catch (err) {
         console.error("Loader Error:", err);
-        // Do not fail silently if they explicitly provided an ID but an error happened!
         showErrorSplash("Access Denied or Error 🚨", "We hit a snag loading your surprise. Please check your data connection or ensure the link hasn't expired. <br><br><small style='opacity:0.6'>" + err.message + "</small>");
-        throw err; // Stop execution
+        throw err;
     }
+};
+
+window.bindPookiePlaceholders = function(data) {
+    if (!data) return;
+    const recipient = data.name || data.recipientName || data.targetName || "Pookie";
+    const sender = data.sender || data.senderName || "Your Love";
+    const message = data.message || data.wishMessage || data.letterBody || "";
+    
+    // Recursive walker to replace hardcoded placeholders in text nodes
+    function walk(node) {
+        if (node.nodeType === 3) { // Text node
+            let val = node.nodeValue;
+            const placeholders = [/XYZ/gi, /NIKHIL/gi, /POOKIE/gi];
+            let changed = false;
+            placeholders.forEach(regex => {
+                if (regex.test(val)) {
+                    val = val.replace(regex, recipient);
+                    changed = true;
+                }
+            });
+            if (val.includes("Friend") && recipient !== "Friend") {
+                val = val.replace(/Friend/g, recipient);
+                changed = true;
+            }
+            if (changed) node.nodeValue = val;
+        } else if (node.nodeType === 1 && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') {
+            for (let child of node.childNodes) { walk(child); }
+        }
+    }
+    walk(document.body);
+    
+    document.querySelectorAll('.inject-sender,.p-sender').forEach(el => el.textContent = sender);
+    document.querySelectorAll('.inject-message,.p-message').forEach(el => el.textContent = message);
 };
 
 function showExpirySplash(orderId) {
@@ -208,7 +244,6 @@ function showExpirySplash(orderId) {
 }
 
 function showErrorSplash(title, subtext="") {
-    // Halts template execution and shows a beautiful error screen
     document.body.innerHTML = `
         <div style="height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#FFF5F7; text-align:center; padding:20px; font-family:sans-serif;">
             <div style="font-size:3rem; margin-bottom:10px;">✨</div>
@@ -216,5 +251,4 @@ function showErrorSplash(title, subtext="") {
             <p style="color:#4A1C24; opacity:0.7; max-width:400px; line-height:1.5;">${subtext}</p>
         </div>
     `;
-    throw new Error(title);
 }
