@@ -195,6 +195,17 @@ window.addEventListener('DOMContentLoaded', async () => {
   if (!cartItems.length) { window.location.href = '../index.html'; return; }
 
   renderSummary(cartItems);
+
+  // Dynamically update price live when user enters email
+  const emailField = document.getElementById('f-email');
+  if (emailField) {
+    emailField.addEventListener('blur', async () => {
+      if (emailField.value.includes('@')) {
+        await syncCheckoutCart();
+        renderSummary(JSON.parse(localStorage.getItem('pookie_cart') || '[]'));
+      }
+    });
+  }
 });
 
 function waitForFb() {
@@ -212,23 +223,32 @@ async function syncCheckoutCart() {
   if (window.fbReady) {
     try {
       const email = document.getElementById('f-email')?.value.trim().toLowerCase();
+      let usedQuota = 0;
       if (email && email.includes('@')) {
         const buyerDoc = await firebase.firestore().collection('buyers').doc(email).get();
         if (buyerDoc.exists) {
           const stage = buyerDoc.data().stage || 2;
           offerLimit = (stage === 1) ? 3 : 1;
         } else {
-          // If buyer doesn't exist yet, estimate based on current unique count
           const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
           const uniqueCount = statDoc.exists ? (statDoc.data().uniqueBuyersCount || 0) : 0;
           offerLimit = (uniqueCount < 15) ? 3 : (uniqueCount < 30 ? 1 : 0);
         }
+        
+        const ordersSnap = await firebase.firestore().collection('orders').where('buyerEmail', '==', email).get();
+        usedQuota = ordersSnap.docs.filter(d => {
+            const dData = d.data();
+            if (dData.trash) return false;
+            return ['paid', 'delivered', 'pending_verification'].includes(dData.status);
+        }).length;
+
       } else {
-        // Fallback for UI if email is not yet entered
         const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
         const uniqueCount = statDoc.exists ? (statDoc.data().uniqueBuyersCount || 0) : 0;
         offerLimit = (uniqueCount < 15) ? 3 : (uniqueCount < 30 ? 1 : 0);
       }
+      
+      offerLimit = Math.max(0, offerLimit - usedQuota);
     } catch(e) {
       console.warn("Quota sync failed:", e);
     }
@@ -240,8 +260,6 @@ async function syncCheckoutCart() {
       if (tpl.special) {
         item.price = Number(tpl.price);
       } else if (offerLimit > 0) {
-        // Here we'd ideally check delivered count too, but for simplicity 
-        // in checkout UI, we allow the cart to show 0 if they have ANY potential free quota
         item.price = 0;
       } else if (Number(tpl.price) > 49) {
         item.price = 49;
