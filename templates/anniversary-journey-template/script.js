@@ -142,12 +142,30 @@ function initDoodleEngine() {
 
     const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸', '🧿'];
 
-    // 1. Viewport Corner Accents (Fixed positions for "Special Frame" feel)
-    const corners = [
-        { top: '5vh', left: '5%' }, { top: '5vh', right: '5%' },
-        { top: '25vh', left: '2%' }, { top: '45vh', right: '2%' },
-        { top: '65vh', left: '5%' }, { top: '85vh', right: '5%' }
+    // 1. Background "Faded Memories" (Using user photos as watermarks in blank spaces)
+    const bgPhotos = (userData && userData.photos) ? userData.photos : [
+        'assets/1000121228.jpg.jpeg',
+        'assets/1000121229.jpg.jpeg',
+        'assets/1000121230.jpg.jpeg',
+        'assets/1000121232.jpg.jpeg'
     ];
+
+    bgPhotos.forEach((url, i) => {
+        spawnDecor(url, {
+            top: (20 + (i * 25)) + 'vh',
+            left: (i % 2 === 0 ? '5%' : '75%'),
+            layer: 'layer-deep',
+            size: 'size-lg',
+            isPhoto: true
+        });
+    });
+
+    // 2. Viewport Corner Accents
+    const corners = [
+        { top: '2vh', left: '2%' }, { top: '2vh', right: '2%' },
+        { top: '95vh', left: '2%' }, { top: '95vh', right: '2%' }
+    ];
+
     
     corners.forEach(pos => {
         spawnDecor(stickers[Math.floor(Math.random() * stickers.length)], {
@@ -157,24 +175,27 @@ function initDoodleEngine() {
         });
     });
 
-    // 2. Anchor to Content Moments
+    // 3. Anchor to Content Moments (Strict Left-Right Pattern)
     const moments = document.querySelectorAll('.photo-moment');
     moments.forEach((m, idx) => {
-        const rect = m.getBoundingClientRect();
         const yBase = m.offsetTop;
+        const isLeftMoment = (idx % 2 === 0); // Photo is left, Text is right
 
-        // Add 3 surrounding doodles for each photo/text pair
-        for(let i=0; i<4; i++) {
-            const isSticker = Math.random() > 0.3;
+        // Add clusters around the MOMENT (Left then Right)
+        for(let i=0; i<6; i++) {
+            const isSticker = Math.random() > 0.4;
+            const sideOffset = isLeftMoment ? (Math.random() * 25) : (75 + Math.random() * 15);
+            
             spawnDecor(isSticker ? stickers[Math.floor(Math.random() * stickers.length)] : icons[Math.floor(Math.random() * icons.length)], {
-                top: yBase + (Math.random() * 400 - 200) + 'px',
-                left: (idx % 2 === 0 ? (Math.random() * 20) : (80 + Math.random() * 15)) + '%',
-                layer: Math.random() > 0.5 ? 'layer-mid' : 'layer-deep',
-                size: i === 0 ? 'size-lg' : 'size-md',
+                top: yBase + (Math.random() * 600 - 300) + 'px',
+                left: sideOffset + '%',
+                layer: i < 2 ? 'layer-mid' : 'layer-deep',
+                size: i % 2 === 0 ? 'size-lg' : 'size-md',
                 isIcon: !isSticker
             });
         }
     });
+
 
     // 3. Random Sparkles (Fills the 'off-white' gaps)
     for(let i=0; i<15; i++) {
@@ -194,7 +215,7 @@ function initDoodleEngine() {
 function spawnDecor(content, config) {
     const container = document.getElementById('decor-container');
     const el = document.createElement('div');
-    el.className = `static-decor ${config.layer} ${config.size}`;
+    el.className = `static-decor ${config.layer} ${config.size} ${config.isPhoto ? 'bg-photo-decor' : ''}`;
     
     if (config.isIcon) {
         el.textContent = content;
@@ -203,6 +224,7 @@ function spawnDecor(content, config) {
         img.src = content;
         el.appendChild(img);
     }
+
 
     if (config.top) el.style.top = config.top;
     if (config.left) el.style.left = config.left;
