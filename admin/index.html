@@ -417,17 +417,16 @@ async function updateStats() {
   document.getElementById('s-total').textContent = validOrders.length;
   document.getElementById('s-rev').textContent   = '₹' + validOrders.reduce((s,o)=>s+(o.totalAmount||0),0);
   document.getElementById('s-pend').textContent  = validOrders.filter(o=>o.status==='pending_verification').length;
-  
-  try {
+    try {
     const statDoc = await db.collection('counters').doc('stats').get();
     if (statDoc.exists) {
       document.getElementById('s-unique').textContent = statDoc.data().uniqueBuyersCount || 0;
+      // NOTE: We deliberately do NOT overwrite totalOrders here.
+      // totalOrders is the sequential counter used to generate unique order IDs.
+      // Overwriting it would cause new orders to get duplicate IDs and overwrite existing orders.
     }
-    
-    // Sync valid orders count
-    await db.collection('counters').doc('stats').set({ totalOrders: validOrders.length }, { merge: true });
   } catch (e) {
-    console.error('Failed to sync public counter:', e);
+    console.error('Failed to fetch counters:', e);
   }
 }
 
@@ -594,7 +593,14 @@ async function loadSuggestions() {
   g.innerHTML = '<div class="empty"><i data-lucide="loader" class="spin"></i> Loading suggestions...</div>';
   lucide.createIcons();
   try {
-    const snap = await db.collection('suggestions').orderBy('createdAt', 'desc').limit(100).get();
+    let snap;
+    try {
+      snap = await db.collection('suggestions').orderBy('createdAt', 'desc').limit(100).get();
+    } catch(indexErr) {
+      // Fallback: fetch without ordering if index doesn't exist or createdAt missing
+      console.warn('orderBy failed, fetching without sort:', indexErr.message);
+      snap = await db.collection('suggestions').limit(100).get();
+    }
     if (snap.empty) {
       g.innerHTML = '<div class="empty">No suggestions yet — share the site to get ideas rolling! 🚀</div>';
       return;
@@ -623,7 +629,7 @@ async function loadSuggestions() {
       </div>`;
   } catch(e) {
     g.innerHTML = '<div class="empty" style="color:#fca5a5;">Error loading suggestions. Check console.</div>';
-    console.error(e);
+    console.error('loadSuggestions error:', e);
   }
 }
 

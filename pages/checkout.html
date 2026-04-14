@@ -377,12 +377,14 @@ async function checkoutSubmitOrder() {
           }, { merge: true });
         }
 
-        // Step 2: Get a sequential ID
-        const statRef = firebase.firestore().collection('counters').doc('stats');
-        const statDoc = await statRef.get();
-        const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
-        await statRef.set({ totalOrders: count }, { merge: true });
-        sequentialId = 'order' + count;
+        // Step 2: Get a sequential ID atomically (prevents race conditions)
+        sequentialId = await firebase.firestore().runTransaction(async (tx) => {
+          const statRef = firebase.firestore().collection('counters').doc('stats');
+          const statDoc = await tx.get(statRef);
+          const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
+          tx.set(statRef, { totalOrders: count }, { merge: true });
+          return 'order' + count;
+        });
 
         // Step 3: Save the order
         await firebase.firestore().collection('orders').doc(sequentialId).set({
@@ -469,11 +471,14 @@ async function checkoutSubmitOrder() {
         }, { merge: true });
       }
 
-      const statRef = firebase.firestore().collection('counters').doc('stats');
-      const statDoc = await statRef.get();
-      const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
-      await statRef.set({ totalOrders: count }, { merge: true });
-      sequentialId = 'order' + count;
+      // Get sequential ID atomically (prevents race conditions / order overwriting)
+      sequentialId = await firebase.firestore().runTransaction(async (tx) => {
+        const statRef = firebase.firestore().collection('counters').doc('stats');
+        const statDoc = await tx.get(statRef);
+        const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
+        tx.set(statRef, { totalOrders: count }, { merge: true });
+        return 'order' + count;
+      });
     } catch(e) {
       console.warn('Registration/Counter failed:', e.message);
     }
