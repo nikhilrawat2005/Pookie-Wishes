@@ -48,17 +48,29 @@ body {
 .float-el {
     position: absolute;
     font-size: 1.5rem;
-    opacity: 0.3;
+    opacity: 0.2;
     pointer-events: none;
     animation: float var(--float-speed) infinite linear;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+}
+
+.float-el img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    opacity: 0.15;
 }
 
 @keyframes float {
-    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
-    10% { opacity: 0.3; }
-    90% { opacity: 0.3; }
-    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+    0% { transform: translateY(110vh) translateX(0) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.2; }
+    90% { opacity: 0.2; }
+    100% { transform: translateY(-10vh) translateX(20px) rotate(360deg); opacity: 0; }
 }
+
 
 
 .intro-bg-mask {
@@ -256,10 +268,11 @@ body {
 }
 
 .text-card p {
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     color: var(--text);
-    line-height: 1.6;
-    max-width: 320px;
+    line-height: 1.8;
+    max-width: 500px; /* Wider for long romantic paragraphs */
+    font-weight: 300;
 }
 
 .photo-moment:nth-child(even) .text-card p { margin-left: auto; }

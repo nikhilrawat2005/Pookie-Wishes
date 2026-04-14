@@ -48,35 +48,39 @@ async function initExperience() {
     container.innerHTML = '';
 
     const stickers = [
-        'assets/sticker-bow.png',
-        'assets/sticker-kitty.png',
-        'assets/sticker-cat-couple.png',
         'assets/11289829e92f9243e9d2b959ab2f3623.jpg',
         'assets/2e310d8c00d8ebc6465efe3ab9e1ffad.jpg',
         'assets/40fc469d09c8f18f1033068caf6745fd.jpg',
         'assets/936161586f96a5da464d1a67da62bb02.jpg',
+        'assets/9cb65cee24e5e5ab12abb85675752e38.jpg',
+        'assets/9dbd2fc1b9e194daa8e8c4b8d5020658.jpg',
+        'assets/bf371a9022ef74145a505937ee051c48.jpg',
+        'assets/c0fa93882918f515144cfaa5d20f8a17.jpg',
+        'assets/cda44050-2819-4986-b6c8-05c59c7f8e57.webp',
         'assets/spidy-kitty.png',
-        'assets/sticker-heart-kitty.webp'
+        'assets/sticker-heart-kitty.webp',
+        'assets/sticker-cat-couple.png'
     ];
 
     const messages = [
         { 
             title: "The Beginning of Us ✨", 
-            body: "Thinking back to the very first moment we met, I never realized I was looking at my entire future. It wasn’t just a meeting; it was the start of a beautiful symphony that only we can hear. You walked into my life and suddenly everything made sense—the songs, the poems, the stars. You are the best thing that ever happened to me, and I’ll cherish this 'beginning' for the rest of my life. Jis din hamari nazar pehli baar mili, wahi se meri duniya badal gayi. 🧿💖" 
+            body: "Thinking back to the very first moment we met, I never realized I was looking at my entire future. It wasn’t just a meeting; it was the start of a beautiful symphony that only we can hear. You walked into my life and suddenly everything made sense—the songs, the poems, the stars. You are the best thing that ever happened to me, and I’ll cherish this 'beginning' for the rest of my life. Every time I see this photo, I'm reminded of that magical spark that changed my world forever. I love you to the moon and back! 🧿💖" 
         },
         { 
             title: "Every Laugh & Date 🍭", 
-            body: "From our nervous first dates to the countless hours we spent laughing until our stomachs hurt, every second with you has been a treasure. It’s the way you look at me when you think I’m not watching, and the way you hold my hand like you’re never letting go. Thank you for making even the most ordinary days feel like a scene from a movie. You are my constant source of joy and my favorite adventure. Just us against the world! 🍬🌸" 
+            body: "From our nervous first dates to the countless hours we spent laughing until our stomachs hurt, every second with you has been a treasure. It’s the way you look at me when you think I’m not watching, and the way you hold my hand like you’re never letting go. Thank you for making even the most ordinary days feel like a scene from a movie. You are my constant source of joy and my favorite adventure. Looking at these memories makes me realize how lucky I am to have you as my partner in crime. Just us against the world! 🍬🌸" 
         },
         { 
             title: "My Rock & My Home 🏡", 
-            body: "Life isn't always easy, but having you by my side makes every challenge feel small. You’ve been my rock through every storm and my biggest cheerleader in every success. In your arms, I found a home that I never want to leave. Thank you for loving me at my best and especially when I wasn't at my easiest. You are the peace in my chaos and the love of my life. Chahe ups ho ya downs, tum hamesha mere saath khade rahe. ⚓❤️🌟" 
+            body: "Life isn't always easy, but having you by my side makes every challenge feel small. You’ve been my rock through every storm and my biggest cheerleader in every success. In your arms, I found a home that I never want to leave. Thank you for loving me at my best and especially when I wasn't at my easiest. You are the peace in my chaos and the love of my life. This journey with you is my most sacred blessing, and I'm so grateful for every high and low we've weathered together. ⚓❤️🌟" 
         },
         { 
             title: "Today & Forever ♾️", 
-            body: "And here we are today, stronger and more in love than ever before. This journey has been more beautiful than I ever dreamed possible, and yet I feel like we’re only just getting started. I promise to keep choosing you, day after day, year after year. Here’s to many more anniversaries, more laughs, and a lifetime of 'us'. I love you more than words could ever describe, my pookie. Yeh toh bas shuruat hai! 💍🧸✨" 
+            body: "And here we are today, stronger and more in love than ever before. This journey has been more beautiful than I ever dreamed possible, and yet I feel like we’re only just getting started. I promise to keep choosing you, day after day, year after year. Here’s to many more anniversaries, more laughs, and a lifetime of 'us'. I love you more than words could ever describe, my pookie. You are my forever, my always, and my everything. Let's make the future even more magical than our past! 💍🧸✨" 
         }
     ];
+
 
     photos.slice(0, 4).forEach((url, i) => {
         const moment = document.createElement('div');
@@ -117,19 +121,37 @@ async function initExperience() {
 function spawnFloaters() {
     const container = document.getElementById('bg-floaters');
     if (!container) return;
-    const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸'];
+    const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸', '✨', '💕', '🧿'];
     
-    for (let i = 0; i < 15; i++) {
+    // Mix stickers into the background
+    const bgStickers = [
+        'assets/sticker-heart-kitty.webp',
+        'assets/2e310d8c00d8ebc6465efe3ab9e1ffad.jpg',
+        'assets/40fc469d09c8f18f1033068caf6745fd.jpg',
+        'assets/sticker-cat-couple.png'
+    ];
+    
+    for (let i = 0; i < 40; i++) {
         const el = document.createElement('div');
         el.className = 'float-el';
-        el.textContent = icons[Math.floor(Math.random() * icons.length)];
+        
+        if (Math.random() > 0.4) {
+            el.textContent = icons[Math.floor(Math.random() * icons.length)];
+        } else {
+            const img = document.createElement('img');
+            img.src = bgStickers[Math.floor(Math.random() * bgStickers.length)];
+            el.appendChild(img);
+        }
+        
         el.style.left = Math.random() * 100 + 'vw';
         el.style.top = Math.random() * 100 + 'vh';
-        el.style.animationDelay = (Math.random() * 10) + 's';
-        el.style.fontSize = (0.5 + Math.random() * 1.5) + 'rem';
+        el.style.animationDelay = (Math.random() * 15) + 's';
+        el.style.animationDuration = (10 + Math.random() * 15) + 's';
+        el.style.fontSize = (0.8 + Math.random() * 2) + 'rem';
         container.appendChild(el);
     }
 }
+
 
 function initScrollPath() {
     gsap.registerPlugin(ScrollTrigger);
