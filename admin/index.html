@@ -359,7 +359,12 @@ window.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function adminLogin() {
-  try { await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); } catch(e) {}
+  try { 
+    await firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider()); 
+  } catch(e) {
+    console.error("Admin Login Error:", e);
+    alert("Login Failed: " + e.message + "\n\n(Note: Google Sign-in requires a local server like Live Server, it will not work on file:/// protocol)");
+  }
 }
 async function adminLogout() { await firebase.auth().signOut(); }
 
