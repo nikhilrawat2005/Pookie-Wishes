@@ -314,18 +314,19 @@ body {
     width: 100%;
     height: auto;
     display: block;
-    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
+    filter: drop-shadow(4px 8px 15px rgba(0,0,0,0.18));
 }
 
-.layer-deep { opacity: 0.15; z-index: -1; transform: scale(1.2); }
-.layer-mid { opacity: 0.4; z-index: 0; }
-.layer-accent { opacity: 0.8; z-index: 5; }
+.layer-deep { opacity: 0.12; z-index: -1; }
+.layer-mid { opacity: 0.5; z-index: 1; }
+.layer-accent { opacity: 0.85; z-index: 5; }
 
-.size-sm { width: 40px; }
+/* Senior UI Size Scale */
+.size-sm { width: 45px; }
+.size-md { width: 90px; }
+.size-lg { width: 170px; }
+.size-xl { width: 240px; }
 
-
-.size-md { width: 80px; }
-.size-lg { width: 140px; }
 
 
 

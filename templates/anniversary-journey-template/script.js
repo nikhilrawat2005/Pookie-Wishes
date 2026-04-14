@@ -115,93 +115,96 @@ async function initExperience() {
     });
 
 
-    // 4. Initialize Scroll Path Animation & Visuals
-    initScrollPath();
-    initDoodleEngine();
-}
-
-function initDoodleEngine() {
-    const container = document.getElementById('decor-container');
-    if (!container) return;
-    
     const stickers = [
         'assets/11289829e92f9243e9d2b959ab2f3623.jpg',
+        'assets/1f53934470de723c2d4e00b485cf2b1c.jpg',
         'assets/2e310d8c00d8ebc6465efe3ab9e1ffad.jpg',
+        'assets/2f003936880dc18062afc9fa027817f5.jpg',
         'assets/40fc469d09c8f18f1033068caf6745fd.jpg',
+        'assets/41b59051592f8c3e6895bdbc82253951.jpg',
+        'assets/703cfb6a218e7cc38f20945f96773b80.jpg',
         'assets/936161586f96a5da464d1a67da62bb02.jpg',
         'assets/9cb65cee24e5e5ab12abb85675752e38.jpg',
         'assets/9dbd2fc1b9e194daa8e8c4b8d5020658.jpg',
+        'assets/b93eb0795e835e24acc1005a5730ab6e.jpg',
         'assets/bf371a9022ef74145a505937ee051c48.jpg',
         'assets/c0fa93882918f515144cfaa5d20f8a17.jpg',
         'assets/cda44050-2819-4986-b6c8-05c59c7f8e57.webp',
+        'assets/df43202e2601d00d42c7c860275ec1fc.jpg',
         'assets/download (1).png',
-        'assets/spidy-kitty.png',
-        'assets/sticker-kitty.png',
-        'assets/sticker-cat-couple.png'
+        'assets/download (2).png',
+        'assets/download (3).png',
+        'assets/download.png',
+        'assets/e333b24e51156155df8c09c04b58de4c.jpg',
+        'assets/ecebf0f82d04adcb77e985242faba22b.jpg',
+        'assets/eyes.gif',
+        'assets/f52d01dc3787797a0efca1cb6ba3f433.jpg',
+        'assets/sticker-bow.png',
+        'assets/sticker-cat-couple.png',
+        'assets/sticker-heart-kitty.webp',
+        'assets/sticker-kitty.png'
     ];
 
     const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸', '🧿'];
 
-    // 1. Viewport Corner Accents
+    // Senior UI Design Categorization
+    const heroStickers = stickers.filter(s => s.includes('sticker-cat') || s.includes('couple') || s.includes('kitty'));
+    const accentStickers = stickers.filter(s => s.includes('jpg') || s.includes('download'));
+    const fillerIcons = icons;
+
+    // 1. Anchor Point: Viewport Corners (Design Framing)
     const corners = [
         { top: '2vh', left: '2%' }, { top: '2vh', right: '2%' },
-        { top: '95vh', left: '2%' }, { top: '95vh', right: '2%' }
+        { top: '98vh', left: '2%' }, { top: '98vh', right: '2%' }
     ];
-
-    
     corners.forEach(pos => {
-        spawnDecor(stickers[Math.floor(Math.random() * stickers.length)], {
-            ...pos,
-            layer: 'layer-mid',
-            size: 'size-lg'
+        spawnDecor(heroStickers[Math.floor(Math.random() * heroStickers.length)], {
+            ...pos, layer: 'layer-mid', size: 'size-xl'
         });
     });
 
-    // 2. Anchor to Content Moments (Strict Left-Right Pattern)
+    // 2. Anchor Point: Moments (Composition Flow)
     const moments = document.querySelectorAll('.photo-moment');
     moments.forEach((m, idx) => {
         const yBase = m.offsetTop;
         const isLeftMoment = (idx % 2 === 0);
 
-        // Halo cluster around the MOMENT
-        for(let i=0; i<8; i++) {
-            const isSticker = Math.random() > 0.4;
-            // Spread stickers in a wide margin around the content
-            const sideOffset = isLeftMoment ? (Math.random() * 35) : (65 + Math.random() * 25);
-            
-            spawnDecor(isSticker ? stickers[Math.floor(Math.random() * stickers.length)] : icons[Math.floor(Math.random() * icons.length)], {
-                top: yBase + (Math.random() * 800 - 400) + 'px',
-                left: sideOffset + '%',
+        // A. Hero Anchor: Slightly overlapping the Wood Mount for "Pasted" look
+        spawnDecor(heroStickers[Math.floor(Math.random() * heroStickers.length)], {
+            top: yBase + (100 + Math.random() * 50) + 'px',
+            left: isLeftMoment ? '15%' : '75%',
+            layer: 'layer-mid',
+            size: 'size-xl'
+        });
+
+        // B. Contextual Clusters: Around the text/content margin
+        for(let i=0; i<6; i++) {
+            const stickerUrl = accentStickers[Math.floor(Math.random() * accentStickers.length)];
+            const side = isLeftMoment ? (65 + Math.random() * 25) : (5 + Math.random() * 25);
+            spawnDecor(stickerUrl, {
+                top: yBase + (Math.random() * 600 - 300) + 'px',
+                left: side + '%',
                 layer: i < 3 ? 'layer-mid' : 'layer-deep',
-                size: i % 2 === 0 ? 'size-lg' : 'size-md',
-                isIcon: !isSticker
+                size: i % 2 === 0 ? 'size-lg' : 'size-md'
             });
         }
     });
 
-    // 3. Vertical Gap Fillers (Fills the space between moments)
-    const trackHeight = document.querySelector('.journey-track').offsetHeight;
-    for(let i=0; i<15; i++) {
-        spawnDecor(stickers[Math.floor(Math.random() * stickers.length)], {
+    // 3. Spreading "Filler" Sprinkles (Off-white gap filling)
+    const track = document.querySelector('.journey-track');
+    const trackHeight = track ? track.offsetHeight : 2000;
+    for(let i=0; i<30; i++) {
+        const isIcon = Math.random() > 0.6;
+        spawnDecor(isIcon ? fillerIcons[Math.floor(Math.random() * fillerIcons.length)] : accentStickers[Math.floor(Math.random() * accentStickers.length)], {
             top: (Math.random() * trackHeight) + 'px',
-            left: (Math.random() * 90 + 5) + '%',
+            left: (Math.random() * 95) + '%',
             layer: 'layer-deep',
             size: 'size-sm',
-            isIcon: false
-        });
-    }
-
-    // 4. Random Sparkles
-    for(let i=0; i<15; i++) {
-        spawnDecor(icons[Math.floor(Math.random() * icons.length)], {
-            top: (Math.random() * 100) + '%',
-            left: (Math.random() * 100) + '%',
-            layer: 'layer-accent',
-            size: 'size-sm',
-            isIcon: true
+            isIcon: isIcon
         });
     }
 }
+
 
 
 function spawnDecor(content, config) {
