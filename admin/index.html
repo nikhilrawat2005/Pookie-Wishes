@@ -231,7 +231,7 @@
     <div class="sb-divider"></div>
     
     <div class="sb-link on" data-tab="all" onclick="setTab('all',this)"><i data-lucide="layers"></i> All Orders</div>
-    <div class="sb-link" data-tab="incoming" onclick="setTab('incoming',this)"><i data-lucide="inbox"></i> Incoming</div>
+    <div class="sb-link" data-tab="trash" onclick="setTab('trash',this)"><i data-lucide="trash-2"></i> Trash / Recovery</div>
     <div class="sb-link" data-tab="delivered" onclick="setTab('delivered',this)"><i data-lucide="check-circle"></i> Delivered</div>
     <div class="sb-link" data-tab="lifetime" onclick="setTab('lifetime',this)"><i data-lucide="gem"></i> Lifetime</div>
     <div class="sb-divider"></div>
@@ -257,9 +257,14 @@
 
     <div class="stats" id="stats-panel">
       <div class="stat-c">
+        <i data-lucide="users"></i>
+        <div class="stat-n" id="s-unique" style="color:var(--pink);">0</div>
+        <div class="stat-l">Unique Customers</div>
+      </div>
+      <div class="stat-c">
         <i data-lucide="hash"></i>
         <div class="stat-n" id="s-total">0</div>
-        <div class="stat-l">Total Processes</div>
+        <div class="stat-l">Total Orders (Paid)</div>
       </div>
       <div class="stat-c">
         <i data-lucide="indian-rupee"></i>
@@ -269,12 +274,7 @@
       <div class="stat-c">
         <i data-lucide="clock"></i>
         <div class="stat-n" id="s-pend" style="color:#fcd34d;">0</div>
-        <div class="stat-l">Awaiting Manual</div>
-      </div>
-      <div class="stat-c">
-        <i data-lucide="zap"></i>
-        <div class="stat-n" id="s-done" style="color:#6ee7b7;">0</div>
-        <div class="stat-l">Zero-Touch & Delivered</div>
+        <div class="stat-l">Paid / Verifying</div>
       </div>
     </div>
 
@@ -407,16 +407,20 @@ async function loadOrders(isLoadMore = false) {
   }
 }
 
-function updateStats() {
-  const validOrders = orders.filter(o => ['paid', 'delivered', 'pending_verification'].includes(o.status));
+async function updateStats() {
+  const validOrders = orders.filter(o => ['paid', 'delivered', 'pending_verification'].includes(o.status) && !o.trash);
   document.getElementById('s-total').textContent = validOrders.length;
   document.getElementById('s-rev').textContent   = '₹' + validOrders.reduce((s,o)=>s+(o.totalAmount||0),0);
   document.getElementById('s-pend').textContent  = validOrders.filter(o=>o.status==='pending_verification').length;
-  document.getElementById('s-done').textContent  = validOrders.filter(o=>o.deliveryStatus==='delivered').length;
   
-  // Sync the exact number of valid orders back to public stats so offer logic is perfectly aligned!
   try {
-    db.collection('counters').doc('stats').set({ totalOrders: validOrders.length }, { merge: true });
+    const statDoc = await db.collection('counters').doc('stats').get();
+    if (statDoc.exists) {
+      document.getElementById('s-unique').textContent = statDoc.data().uniqueBuyersCount || 0;
+    }
+    
+    // Sync valid orders count
+    await db.collection('counters').doc('stats').set({ totalOrders: validOrders.length }, { merge: true });
   } catch (e) {
     console.error('Failed to sync public counter:', e);
   }
@@ -431,6 +435,7 @@ function setTab(filter, el) {
   const tbl = document.getElementById('orders-tbl');
   const grid = document.getElementById('templates-grid');
   const sugGrid = document.getElementById('suggestions-grid');
+  const trashGrid = document.getElementById('trash-grid');
   const hdr = document.getElementById('main-title');
   const rfBtn = document.querySelector('.main-hd .btn-soft');
   
@@ -500,7 +505,7 @@ async function loadUsers() {
 
     // Process all orders to count templates and dynamically capture Guest users
     orders.forEach(o => {
-      if (!['paid', 'delivered', 'pending_verification'].includes(o.status)) return;
+      if (!['paid', 'delivered', 'pending_verification'].includes(o.status) || o.trash) return;
       const em = (o.user?.email || o.buyerEmail || '').toLowerCase();
       if (!em) return;
 
@@ -618,11 +623,12 @@ async function loadSuggestions() {
 }
 
 function renderTable() {
-  const validOrders = orders.filter(o => ['paid', 'delivered', 'pending_verification'].includes(o.status));
-  let list = validOrders;
-  if(curFilter==='delivered') list = validOrders.filter(o=>o.deliveryStatus==='delivered' || o.status==='delivered');
-  if(curFilter==='incoming')  list = validOrders.filter(o=>o.status==='pending_verification' || o.status==='paid');
-  if(curFilter==='lifetime')  list = validOrders.filter(o=>o.lifetime === true);
+  const visibleOrders = orders.filter(o => !o.trash);
+  let list = visibleOrders.filter(o => ['paid', 'delivered', 'pending_verification', 'delivered'].includes(o.status));
+  
+  if(curFilter==='delivered') list = visibleOrders.filter(o=>o.deliveryStatus==='delivered' || o.status==='delivered');
+  if(curFilter==='trash')     list = orders.filter(o=>o.trash === true);
+  if(curFilter==='lifetime')  list = visibleOrders.filter(o=>o.lifetime === true);
   
   if(!list.length) {
     document.getElementById('tbl-body').innerHTML = '<div class="empty">No orders found.</div>';
@@ -773,9 +779,13 @@ function openDrawer(oid) {
     ${legacyPhotos}
 
 
-    <div class="sec-title"><i data-lucide="settings"></i> Danger Zone</div>
-    <div class="inf-box" style="border-color: rgba(239, 68, 68, 0.3);">
-      <button class="btn btn-soft btn-full" style="color:#fca5a5;" onclick="deleteOrder('${oid}')"><i data-lucide="trash-2"></i> Permanently Delete Order</button>
+    <div class="sec-title"><i data-lucide="settings"></i> Management</div>
+    <div class="inf-box" style="border-color: ${o.trash ? 'var(--mint)' : 'rgba(239, 68, 68, 0.3)'};">
+      ${o.trash ? 
+        `<button class="btn btn-primary btn-full" onclick="toggleTrashOrder('${oid}', false)"><i data-lucide="refresh-cw"></i> Restore Order to Dashboard</button>` :
+        `<button class="btn btn-soft btn-full" style="color:#fca5a5;" onclick="toggleTrashOrder('${oid}', true)"><i data-lucide="trash-2"></i> Move to Trash</button>`
+      }
+      ${o.trash ? `<button class="btn btn-ghost btn-full" style="color:var(--dim); font-size:0.75rem; margin-top:10px;" onclick="permanentlyDeleteOrder('${oid}')">Permanently Delete from Database</button>` : ''}
     </div>
   `;
   lucide.createIcons();
@@ -827,36 +837,53 @@ async function sendManual(oid) {
   } catch(e) { toast('Error delivering','err'); }
 }
 
-async function deleteOrder(oid) {
-  if (!confirm('Permanently delete this order from database AND remove its media? This cannot be undone.')) return;
-  toast('Deleting order and media...', 'inf');
+async function toggleTrashOrder(oid, shouldTrash) {
+  const msg = shouldTrash ? 'Move this order to trash? It will be hidden from the user.' : 'Restore this order? It will be visible to the user again.';
+  if (!confirm(msg)) return;
+  
+  toast(shouldTrash ? 'Moving to trash...' : 'Restoring...', 'inf');
+  try {
+    await db.collection('orders').doc(oid).update({ trash: !!shouldTrash });
+    const o = orders.find(x => (x.orderId || x._docId) === oid);
+    if(o) o.trash = !!shouldTrash;
+    
+    closeDrawer();
+    renderTable();
+    updateStats();
+    toast(shouldTrash ? 'Moved to Trash 🗑️' : 'Order Restored ✨', 'ok');
+  } catch(e) {
+    toast('Action failed', 'err');
+    console.error(e);
+  }
+}
+
+async function permanentlyDeleteOrder(oid) {
+  if (!confirm('CRITICAL: This will permanently delete the order and ALL media from the database. This CANNOT be undone. Proceed?')) return;
+  toast('Deleting forever...', 'inf');
   
   try {
-    // 1. Attempt Cloudinary Media Deletion via Vercel Function
+    // 1. Media Deletion
     try {
-      const apiRes = await fetch('/api/delete-media', {
+      await fetch('/api/delete-media', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ order_id: oid })
       });
-      if (!apiRes.ok) {
-        console.warn('Media deletion proxy returned status', apiRes.status);
-      }
-    } catch(apiErr) {
-      console.warn("Cloudinary media deletion network warning:", apiErr);
-      // We don't block the actual Firestore doc deletion if this fails, 
-      // since the api might be unavailable in local dev without env vars.
-    }
+    } catch(e) { console.warn("Media deletion failed", e); }
 
-    // 2. Delete Firestore Document
+    // 2. Firestore Deletion
     await db.collection('orders').doc(oid).delete();
     orders = orders.filter(x => (x.orderId || x._docId) !== oid);
     
-    closeDrawer(); 
-    if (curFilter !== 'templates') renderTable(); 
+    closeDrawer();
+    renderTable();
     updateStats();
-    
-    toast('Order & Media Deleted ✅', 'ok');
+    toast('Order deleted permanently.', 'ok');
+  } catch(e) {
+    toast('Failed to delete', 'err');
+  }
+}
+
   } catch(e) { 
     toast('Failed to delete order', 'err'); 
     console.error(e); 

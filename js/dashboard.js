@@ -56,7 +56,16 @@ async function loadOrders(email) {
       return;
     }
 
-    const orders = snap.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    const orders = snap.docs
+      .map(doc => ({ id: doc.id, ...doc.data() }))
+      .filter(o => !o.trash);
+
+    if (orders.length === 0) {
+      if (listEl) listEl.style.display = 'none';
+      if (emptyEl) emptyEl.style.display = 'block';
+      return;
+    }
+
     renderOrders(orders);
 
     if (listEl) listEl.style.display = 'grid';
@@ -123,15 +132,14 @@ async function updateQuotaUI() {
   const countEl = document.getElementById('quota-count');
   if (!panel || !countEl) return;
 
-  // Use the logic from app.js via global window vars if they exist, or fetch again
   const waitQuota = setInterval(() => {
-    if (window.ACTIVE_OFFER_LIMIT !== undefined) {
+    if (window.USER_QUOTA_FETCHED) {
       clearInterval(waitQuota);
-      if (window.ACTIVE_OFFER_LIMIT > 0) {
+      const limit = (window.USER_MAX_QUOTA !== undefined) ? window.USER_MAX_QUOTA : (window.ACTIVE_OFFER_LIMIT || 0);
+      if (limit > 0) {
         panel.style.display = 'flex';
-        // We calculate usage based on orders (approximate)
-        // In a real app, we'd have a specific counter per user
-        countEl.textContent = `${3 - window.ACTIVE_OFFER_LIMIT}/3`;
+        // count = delivered items
+        countEl.textContent = `${window.USER_DELIVERED_COUNT}/${limit}`;
       }
     }
   }, 500);

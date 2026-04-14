@@ -106,7 +106,7 @@
       <div class="dash-nav-btn active" data-dash-tab="orders">
         <i data-lucide="package"></i> My Wishes
       </div>
-      <div class="dash-nav-btn" data-dash-tab="favs" onclick="location.href='favorites.html'">
+      <div class="dash-nav-btn" data-dash-tab="favs">
         <i data-lucide="heart"></i> Saved Favorites
       </div>
       <div class="dash-nav-btn" data-dash-tab="profile">
@@ -130,12 +130,22 @@
       <div id="quota-panel" class="quota-card" style="display:none;">
         <div class="quota-info">
           <div class="quota-title">Founding Member Offer ✨</div>
-          <div class="quota-desc">You're one of our first customers! Enjoy your personalized surprises on us.</div>
+          <div class="quota-desc">You're one of our first customers! [Note: Only delivered orders count toward your quota.]</div>
         </div>
         <div class="quota-bar-wrap">
           <div id="quota-count" class="quota-count">0/3</div>
-          <div class="quota-label">Templates Used</div>
+          <div class="quota-label">Templates Delivered</div>
         </div>
+      </div>
+    </section>
+
+    <!-- FAVS SECTION -->
+    <section id="favs-sec" style="display:none;">
+      <div class="dash-sec-hd">
+        <div class="dash-sec-title"><i data-lucide="heart"></i> My Favourites</div>
+      </div>
+      <div id="fav-cont" class="order-grid">
+        <!-- Rendered by app.js/dashboard.js -->
       </div>
     </section>
 
@@ -178,12 +188,20 @@
 <script>
   lucide.createIcons();
   
-  // Tab Switching (UI only for now)
+  // Tab Switching
   document.querySelectorAll('.dash-nav-btn[data-dash-tab]').forEach(btn => {
     btn.addEventListener('click', () => {
-      if (btn.dataset.dashTab === 'favs') return; // Handled by link
+      const tab = btn.dataset.dashTab;
       document.querySelectorAll('.dash-nav-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
+      
+      // Toggle sections
+      document.getElementById('orders-sec').style.display = (tab === 'orders') ? 'block' : 'none';
+      document.getElementById('favs-sec').style.display = (tab === 'favs') ? 'block' : 'none';
+      
+      if (tab === 'favs') {
+        if (window.renderFavPage) window.renderFavPage();
+      }
     });
   });
 </script>

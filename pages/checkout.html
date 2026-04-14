@@ -211,12 +211,27 @@ async function syncCheckoutCart() {
   let offerLimit = 0;
   if (window.fbReady) {
     try {
-      const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
-      const totalOrders = statDoc.exists ? (statDoc.data().totalOrders || 0) : 0;
-      const realUsers = Math.max(0, totalOrders); // Removed 30 offset
-      if (realUsers < 15) offerLimit = 3;
-      else if (realUsers < 30) offerLimit = 1;
-    } catch(e) {}
+      const email = document.getElementById('f-email')?.value.trim().toLowerCase();
+      if (email && email.includes('@')) {
+        const buyerDoc = await firebase.firestore().collection('buyers').doc(email).get();
+        if (buyerDoc.exists) {
+          const stage = buyerDoc.data().stage || 2;
+          offerLimit = (stage === 1) ? 3 : 1;
+        } else {
+          // If buyer doesn't exist yet, estimate based on current unique count
+          const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
+          const uniqueCount = statDoc.exists ? (statDoc.data().uniqueBuyersCount || 0) : 0;
+          offerLimit = (uniqueCount < 15) ? 3 : (uniqueCount < 30 ? 1 : 0);
+        }
+      } else {
+        // Fallback for UI if email is not yet entered
+        const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
+        const uniqueCount = statDoc.exists ? (statDoc.data().uniqueBuyersCount || 0) : 0;
+        offerLimit = (uniqueCount < 15) ? 3 : (uniqueCount < 30 ? 1 : 0);
+      }
+    } catch(e) {
+      console.warn("Quota sync failed:", e);
+    }
   }
   
   const updated = items.map(item => {
@@ -225,6 +240,8 @@ async function syncCheckoutCart() {
       if (tpl.special) {
         item.price = Number(tpl.price);
       } else if (offerLimit > 0) {
+        // Here we'd ideally check delivered count too, but for simplicity 
+        // in checkout UI, we allow the cart to show 0 if they have ANY potential free quota
         item.price = 0;
       } else if (Number(tpl.price) > 49) {
         item.price = 49;
@@ -329,26 +346,45 @@ async function checkoutSubmitOrder() {
   const expiryDate = new Date();
   expiryDate.setDate(expiryDate.getDate() + 30);
 
-  // --- 0-PRICE BYPASS (For Testing) ---
+  // --- 0-PRICE BYPASS (For Testing/Promotional) ---
   if (total === 0) {
     btn.innerHTML = `<span class="loading-spinner"></span> Processing Free Order...`;
 
-    let sequentialId = 'TEST-' + Date.now(); // safe default
+    let sequentialId = 'TEST-' + Date.now();
     if (window.fbReady) {
       try {
-        // Step 1: Try to get a sequential ID (may fail if counters collection is blocked)
+        const email = data.email.toLowerCase();
+        const buyerRef = firebase.firestore().collection('buyers').doc(email);
+        const buyerSnap = await buyerRef.get();
+        let currentStage = 1;
+
+        // Step 1: Handle Unique Buyer Tracking
+        if (!buyerSnap.exists) {
+          const statRef = firebase.firestore().collection('counters').doc('stats');
+          const statDoc = await statRef.get();
+          const uniqueCount = statDoc.exists ? (statDoc.data().uniqueBuyersCount || 0) : 0;
+          
+          currentStage = (uniqueCount < 15) ? 1 : 2;
+          
+          await buyerRef.set({
+            email: email,
+            stage: currentStage,
+            createdAt: firebase.firestore.FieldValue.serverTimestamp()
+          });
+          
+          await statRef.set({ 
+            uniqueBuyersCount: firebase.firestore.FieldValue.increment(1) 
+          }, { merge: true });
+        }
+
+        // Step 2: Get a sequential ID
         const statRef = firebase.firestore().collection('counters').doc('stats');
         const statDoc = await statRef.get();
         const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
         await statRef.set({ totalOrders: count }, { merge: true });
         sequentialId = 'order' + count;
-      } catch(e) {
-        console.warn('Counter update failed (rules?), using timestamp ID:', e.message);
-        // sequentialId stays as 'TEST-' + timestamp — still valid
-      }
 
-      // Step 2: ALWAYS save the order — this is the critical part
-      try {
+        // Step 3: Save the order
         await firebase.firestore().collection('orders').doc(sequentialId).set({
           orderId: sequentialId, buyerName: data.name, buyerEmail: data.email,
           templateId: data.orders[0]?.templateId || 'sorry',
@@ -359,18 +395,14 @@ async function checkoutSubmitOrder() {
         });
         console.log('✅ Order saved to Firestore:', sequentialId);
       } catch(e) {
-        console.error('❌ CRITICAL: Order save failed!', e);
-        alert('Order could not be saved to database: ' + e.message + '\n\nCheck your Firestore Security Rules.');
-        btn.innerHTML = originalHTML;
-        btn.disabled = false;
-        btn.dataset.locked = '';
+        console.error('❌ order save/tracking failed!', e);
+        alert('Order could not be saved: ' + e.message);
+        btn.innerHTML = originalHTML; btn.disabled = false; btn.dataset.locked = '';
         return;
       }
     } else {
-      alert('Firebase not ready. Order cannot be placed.');
-      btn.innerHTML = originalHTML;
-      btn.disabled = false;
-      btn.dataset.locked = '';
+      alert('Firebase not ready.');
+      btn.innerHTML = originalHTML; btn.disabled = false; btn.dataset.locked = '';
       return;
     }
 
@@ -415,13 +447,35 @@ async function checkoutSubmitOrder() {
   let sequentialId = 'PW-' + Date.now(); // safe default
   if (window.fbReady) {
     try {
+      const email = data.email.toLowerCase();
+      const buyerRef = firebase.firestore().collection('buyers').doc(email);
+      const buyerSnap = await buyerRef.get();
+
+      // Handle Unique Buyer Tracking
+      if (!buyerSnap.exists) {
+        const statRef = firebase.firestore().collection('counters').doc('stats');
+        const statDoc = await statRef.get();
+        const uniqueCount = statDoc.exists ? (statDoc.data().uniqueBuyersCount || 0) : 0;
+        const currentStage = (uniqueCount < 15) ? 1 : 2;
+        
+        await buyerRef.set({
+          email: email,
+          stage: currentStage,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+        
+        await statRef.set({ 
+          uniqueBuyersCount: firebase.firestore.FieldValue.increment(1) 
+        }, { merge: true });
+      }
+
       const statRef = firebase.firestore().collection('counters').doc('stats');
       const statDoc = await statRef.get();
       const count = statDoc.exists ? (statDoc.data().totalOrders || 0) + 1 : 1;
       await statRef.set({ totalOrders: count }, { merge: true });
       sequentialId = 'order' + count;
     } catch(e) {
-      console.warn('Counter update failed, using timestamp ID:', e.message);
+      console.warn('Registration/Counter failed:', e.message);
     }
 
     // Always save the order regardless of counter success
