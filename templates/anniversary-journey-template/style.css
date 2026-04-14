@@ -303,12 +303,12 @@ body {
 .static-decor {
     position: absolute;
     pointer-events: none;
-    transition: transform 0.1s linear; /* Smooth Parallax */
     display: flex;
     align-items: center;
     justify-content: center;
     z-index: 0;
 }
+
 
 .static-decor img {
     width: 100%;
@@ -321,14 +321,8 @@ body {
 .layer-mid { opacity: 0.4; z-index: 0; }
 .layer-accent { opacity: 0.8; z-index: 5; }
 
-.bg-photo-decor {
-    filter: grayscale(1) sepia(0.5) brightness(1.2);
-    border-radius: 4px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-    opacity: 0.1 !important; /* Extremely faint watermark */
-}
-
 .size-sm { width: 40px; }
+
 
 .size-md { width: 80px; }
 .size-lg { width: 140px; }

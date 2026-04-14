@@ -142,25 +142,7 @@ function initDoodleEngine() {
 
     const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸', '🧿'];
 
-    // 1. Background "Faded Memories" (Using user photos as watermarks in blank spaces)
-    const bgPhotos = (userData && userData.photos) ? userData.photos : [
-        'assets/1000121228.jpg.jpeg',
-        'assets/1000121229.jpg.jpeg',
-        'assets/1000121230.jpg.jpeg',
-        'assets/1000121232.jpg.jpeg'
-    ];
-
-    bgPhotos.forEach((url, i) => {
-        spawnDecor(url, {
-            top: (20 + (i * 25)) + 'vh',
-            left: (i % 2 === 0 ? '5%' : '75%'),
-            layer: 'layer-deep',
-            size: 'size-lg',
-            isPhoto: true
-        });
-    });
-
-    // 2. Viewport Corner Accents
+    // 1. Viewport Corner Accents
     const corners = [
         { top: '2vh', left: '2%' }, { top: '2vh', right: '2%' },
         { top: '95vh', left: '2%' }, { top: '95vh', right: '2%' }
@@ -175,29 +157,41 @@ function initDoodleEngine() {
         });
     });
 
-    // 3. Anchor to Content Moments (Strict Left-Right Pattern)
+    // 2. Anchor to Content Moments (Strict Left-Right Pattern)
     const moments = document.querySelectorAll('.photo-moment');
     moments.forEach((m, idx) => {
         const yBase = m.offsetTop;
-        const isLeftMoment = (idx % 2 === 0); // Photo is left, Text is right
+        const isLeftMoment = (idx % 2 === 0);
 
-        // Add clusters around the MOMENT (Left then Right)
-        for(let i=0; i<6; i++) {
+        // Halo cluster around the MOMENT
+        for(let i=0; i<8; i++) {
             const isSticker = Math.random() > 0.4;
-            const sideOffset = isLeftMoment ? (Math.random() * 25) : (75 + Math.random() * 15);
+            // Spread stickers in a wide margin around the content
+            const sideOffset = isLeftMoment ? (Math.random() * 35) : (65 + Math.random() * 25);
             
             spawnDecor(isSticker ? stickers[Math.floor(Math.random() * stickers.length)] : icons[Math.floor(Math.random() * icons.length)], {
-                top: yBase + (Math.random() * 600 - 300) + 'px',
+                top: yBase + (Math.random() * 800 - 400) + 'px',
                 left: sideOffset + '%',
-                layer: i < 2 ? 'layer-mid' : 'layer-deep',
+                layer: i < 3 ? 'layer-mid' : 'layer-deep',
                 size: i % 2 === 0 ? 'size-lg' : 'size-md',
                 isIcon: !isSticker
             });
         }
     });
 
+    // 3. Vertical Gap Fillers (Fills the space between moments)
+    const trackHeight = document.querySelector('.journey-track').offsetHeight;
+    for(let i=0; i<15; i++) {
+        spawnDecor(stickers[Math.floor(Math.random() * stickers.length)], {
+            top: (Math.random() * trackHeight) + 'px',
+            left: (Math.random() * 90 + 5) + '%',
+            layer: 'layer-deep',
+            size: 'size-sm',
+            isIcon: false
+        });
+    }
 
-    // 3. Random Sparkles (Fills the 'off-white' gaps)
+    // 4. Random Sparkles
     for(let i=0; i<15; i++) {
         spawnDecor(icons[Math.floor(Math.random() * icons.length)], {
             top: (Math.random() * 100) + '%',
@@ -207,15 +201,14 @@ function initDoodleEngine() {
             isIcon: true
         });
     }
-
-    // Initialize Parallax
-    initParallax();
 }
+
 
 function spawnDecor(content, config) {
     const container = document.getElementById('decor-container');
+    if (!container) return;
     const el = document.createElement('div');
-    el.className = `static-decor ${config.layer} ${config.size} ${config.isPhoto ? 'bg-photo-decor' : ''}`;
+    el.className = `static-decor ${config.layer} ${config.size}`;
     
     if (config.isIcon) {
         el.textContent = content;
@@ -224,7 +217,6 @@ function spawnDecor(content, config) {
         img.src = content;
         el.appendChild(img);
     }
-
 
     if (config.top) el.style.top = config.top;
     if (config.left) el.style.left = config.left;
@@ -235,23 +227,6 @@ function spawnDecor(content, config) {
     container.appendChild(el);
 }
 
-function initParallax() {
-    gsap.utils.toArray('.static-decor').forEach(decor => {
-        // Deep layer moves slower for more perceived distance
-        const movement = decor.classList.contains('layer-deep') ? -150 : -300;
-        
-        gsap.to(decor, {
-            y: movement,
-            ease: "none",
-            scrollTrigger: {
-                trigger: decor,
-                start: "top bottom",
-                end: "bottom top",
-                scrub: true
-            }
-        });
-    });
-}
 
 
 
