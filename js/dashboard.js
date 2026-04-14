@@ -120,7 +120,8 @@ function renderOrders(orders) {
         </div>
         <div class="order-actions">
           ${needsDetails ? `
-            <a href="${successLink}" class="btn btn-primary btn-full" style="grid-column: span 2;">Complete Details 🚀</a>
+            <button class="btn btn-soft" style="color:var(--err);" onclick="deleteOrder('${o.id}')">Delete</button>
+            <a href="${successLink}" class="btn btn-primary">Complete Details 🚀</a>
           ` : `
             <button class="btn btn-soft" onclick="copyLink('${deliveryLink}')"><i data-lucide="copy" style="width:14px;"></i> Copy Link</button>
             <a href="${deliveryLink}" target="_blank" class="btn btn-primary">View Surprise</a>
@@ -167,3 +168,33 @@ function toast(msg, type = 'inf') {
     alert(msg);
   }
 }
+
+async function deleteOrder(id) {
+  if (!confirm('Are you certain you want to delete this incomplete order? This cannot be undone.')) return;
+  try {
+    const btn = event.currentTarget;
+    const oldText = btn.innerHTML;
+    btn.innerHTML = 'Deleting...';
+    btn.disabled = true;
+
+    // Soft delete via update since normal users typically can't hard delete
+    await db.collection('orders').doc(id).update({
+      trash: true,
+      status: 'deleted_by_user',
+      deletedAt: firebase.firestore.FieldValue.serverTimestamp()
+    });
+    
+    // Reload dashboard
+    if (currentUser && currentUser.email) {
+      loadOrders(currentUser.email);
+    }
+  } catch (e) {
+    console.error(e);
+    alert("Could not delete. Check internet or permissions.");
+    event.currentTarget.innerHTML = 'Delete';
+    event.currentTarget.disabled = false;
+  }
+}
+
+// Make globally accessible
+window.deleteOrder = deleteOrder;
