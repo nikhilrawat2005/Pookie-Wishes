@@ -288,6 +288,33 @@ body {
     color: #333;
 }
 
+/* Static Background Decoration */
+.decor-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+}
+
+.static-decor {
+    position: absolute;
+    width: auto;
+    height: auto;
+    opacity: 0.6;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+    z-index: 0;
+}
+
+.static-decor img {
+    max-width: 80px;
+    height: auto;
+    display: block;
+}
+
+
 .journey-end-trigger {
     margin: 100px 0;
     padding: 40px;
@@ -311,8 +338,29 @@ body {
     box-shadow: var(--shadow);
     text-align: left;
     position: relative;
-    overflow: hidden;
+    overflow: visible;
 }
+
+.letter-accent {
+    position: absolute;
+    pointer-events: none;
+    z-index: 5;
+}
+
+.accent-eyes {
+    top: -40px;
+    right: -20px;
+    width: 100px;
+    opacity: 0.8;
+}
+
+.accent-heart {
+    bottom: -30px;
+    left: -30px;
+    width: 80px;
+    transform: rotate(-15deg);
+}
+
 
 .letter-header {
     display: flex;

@@ -95,29 +95,12 @@ async function initExperience() {
         const rot = (i % 2 === 0 ? '-1' : '1'); 
         const msg = messages[i] || messages[0];
 
-        // Pick 3 random stickers for this frame
-        let stickersHtml = '';
-        const usedIndexes = new Set();
-        while(usedIndexes.size < 3) {
-            const rIdx = Math.floor(Math.random() * stickers.length);
-            if(!usedIndexes.has(rIdx)) {
-                usedIndexes.add(rIdx);
-                const sUrl = stickers[rIdx];
-                const top = Math.random() * 80;
-                const left = Math.random() * 80;
-                const sRot = Math.random() * 40 - 20;
-                const size = 40 + Math.random() * 40;
-                stickersHtml += `<img src="${sUrl}" class="sticker" style="top:${top}%; left:${left}%; transform: rotate(${sRot}deg); width:${size}px;" alt="sticker">`;
-            }
-        }
-
         moment.innerHTML = `
             <div class="moment-photo-wrap">
                 <div class="wood-mount">
                     <div class="photo-frame" style="transform: rotate(${rot}deg)">
                         <img src="${url}" alt="Memory ${i+1}" loading="lazy">
                         <div class="photo-caption">Moment #${i+1}</div>
-                        ${stickersHtml}
                     </div>
                 </div>
             </div>
@@ -134,15 +117,14 @@ async function initExperience() {
 
     // 4. Initialize Scroll Path Animation & Background Vibe
     initScrollPath();
-    spawnFloaters();
+    populateDecorations();
 }
 
-function spawnFloaters() {
-    const container = document.getElementById('bg-floaters');
+function populateDecorations() {
+    const container = document.getElementById('decor-container');
     if (!container) return;
-    const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸', '✨', '💕', '🧿'];
     
-    // Exhaustive stickers list for background variety
+    // Stickers intended for background decoration
     const bgStickers = [
         'assets/11289829e92f9243e9d2b959ab2f3623.jpg',
         'assets/2e310d8c00d8ebc6465efe3ab9e1ffad.jpg',
@@ -155,30 +137,45 @@ function spawnFloaters() {
         'assets/cda44050-2819-4986-b6c8-05c59c7f8e57.webp',
         'assets/download (1).png',
         'assets/spidy-kitty.png',
-        'assets/sticker-heart-kitty.webp',
+        'assets/sticker-kitty.png',
         'assets/sticker-cat-couple.png'
     ];
+
+    const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸', '✨', '💕', '🧿'];
     
-    for (let i = 0; i < 50; i++) {
+    // Get track height to space things out
+    const track = document.querySelector('.journey-track');
+    if (!track) return;
+    const trackHeight = track.offsetHeight;
+    const numItems = 25; // Good density without clutter
+
+    for (let i = 0; i < numItems; i++) {
         const el = document.createElement('div');
-        el.className = 'float-el';
+        el.className = 'static-decor';
         
-        if (Math.random() > 0.5) {
-            el.textContent = icons[Math.floor(Math.random() * icons.length)];
-        } else {
+        // Vertical spacing based on total height
+        const topPos = (i / numItems * trackHeight) + (Math.random() * 200);
+        // Alternate sides and add variation
+        const side = i % 2 === 0 ? 'left' : 'right';
+        const offset = Math.random() * 8 + 2; // 2% to 10% from edge
+
+        if (Math.random() > 0.4) {
             const img = document.createElement('img');
             img.src = bgStickers[Math.floor(Math.random() * bgStickers.length)];
             el.appendChild(img);
+        } else {
+            el.textContent = icons[Math.floor(Math.random() * icons.length)];
+            el.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
         }
+
+        el.style.top = `${topPos}px`;
+        el.style[side] = `${offset}%`;
+        el.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
         
-        el.style.left = Math.random() * 100 + 'vw';
-        el.style.top = Math.random() * 100 + 'vh';
-        el.style.animationDelay = (Math.random() * 10) + 's';
-        el.style.animationDuration = (8 + Math.random() * 12) + 's';
-        el.style.fontSize = (1 + Math.random() * 2) + 'rem';
         container.appendChild(el);
     }
 }
+
 
 
 
