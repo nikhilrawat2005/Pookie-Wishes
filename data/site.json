@@ -324,31 +324,5 @@
         "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757177/sorry_ydt96k.mp4"
       }
     }
-  ],
-  "comingSoon": [
-    {
-      "id": "minecraft",
-      "name": "Minecraft",
-      "emoji": "⛏️",
-      "tagline": "A Blocky Birthday Adventure"
-    },
-    {
-      "id": "barbie",
-      "name": "Barbie",
-      "emoji": "💅",
-      "tagline": "Life in Plastic, It's Fantastic!"
-    },
-    {
-      "id": "retro",
-      "name": "Retro Gaming",
-      "emoji": "🕹️",
-      "tagline": "Press Start to Celebrate"
-    },
-    {
-      "id": "anime",
-      "name": "Anime Vibes",
-      "emoji": "🌸",
-      "tagline": "Sugoi Birthday Surprise!"
-    }
   ]
 }
