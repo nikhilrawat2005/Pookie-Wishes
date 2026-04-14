@@ -115,11 +115,6 @@ async function initExperience() {
     });
 
 
-    // 4. Initialize Scroll Path Animation & Background Vibe
-    initScrollPath();
-    populateDecorations();
-}
-
     // 4. Initialize Scroll Path Animation & Visuals
     initScrollPath();
     initDoodleEngine();
@@ -220,19 +215,22 @@ function spawnDecor(content, config) {
 
 function initParallax() {
     gsap.utils.toArray('.static-decor').forEach(decor => {
-        const speed = decor.classList.contains('layer-deep') ? 0.2 : 0.5;
+        // Deep layer moves slower for more perceived distance
+        const movement = decor.classList.contains('layer-deep') ? -150 : -300;
+        
         gsap.to(decor, {
-            y: (i, target) => -ScrollTrigger.maxScroll(window) * speed,
+            y: movement,
             ease: "none",
             scrollTrigger: {
-                trigger: "body",
-                start: "top top",
-                end: "bottom bottom",
+                trigger: decor,
+                start: "top bottom",
+                end: "bottom top",
                 scrub: true
             }
         });
     });
 }
+
 
 
 
