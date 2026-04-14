@@ -57,10 +57,15 @@ async function initExperience() {
         'assets/bf371a9022ef74145a505937ee051c48.jpg',
         'assets/c0fa93882918f515144cfaa5d20f8a17.jpg',
         'assets/cda44050-2819-4986-b6c8-05c59c7f8e57.webp',
+        'assets/download (1).png',
+        'assets/eyes.gif',
         'assets/spidy-kitty.png',
+        'assets/sticker-bow.png',
+        'assets/sticker-cat-couple.png',
         'assets/sticker-heart-kitty.webp',
-        'assets/sticker-cat-couple.png'
+        'assets/sticker-kitty.png'
     ];
+
 
     const messages = [
         { 
@@ -86,12 +91,25 @@ async function initExperience() {
         const moment = document.createElement('div');
         moment.className = 'photo-moment reveal';
         
-        // Subtle tilt instead of full rotation
+        // Subtle tilt
         const rot = (i % 2 === 0 ? '-1' : '1'); 
-        
-        // One sticker per photo for a cleaner look
-        const stick = stickers[i % stickers.length];
         const msg = messages[i] || messages[0];
+
+        // Pick 3 random stickers for this frame
+        let stickersHtml = '';
+        const usedIndexes = new Set();
+        while(usedIndexes.size < 3) {
+            const rIdx = Math.floor(Math.random() * stickers.length);
+            if(!usedIndexes.has(rIdx)) {
+                usedIndexes.add(rIdx);
+                const sUrl = stickers[rIdx];
+                const top = Math.random() * 80;
+                const left = Math.random() * 80;
+                const sRot = Math.random() * 40 - 20;
+                const size = 40 + Math.random() * 40;
+                stickersHtml += `<img src="${sUrl}" class="sticker" style="top:${top}%; left:${left}%; transform: rotate(${sRot}deg); width:${size}px;" alt="sticker">`;
+            }
+        }
 
         moment.innerHTML = `
             <div class="moment-photo-wrap">
@@ -99,7 +117,7 @@ async function initExperience() {
                     <div class="photo-frame" style="transform: rotate(${rot}deg)">
                         <img src="${url}" alt="Memory ${i+1}" loading="lazy">
                         <div class="photo-caption">Moment #${i+1}</div>
-                        <img src="${stick}" class="sticker sticker-bow" alt="sticker">
+                        ${stickersHtml}
                     </div>
                 </div>
             </div>
@@ -113,6 +131,7 @@ async function initExperience() {
         container.appendChild(moment);
     });
 
+
     // 4. Initialize Scroll Path Animation & Background Vibe
     initScrollPath();
     spawnFloaters();
@@ -123,19 +142,28 @@ function spawnFloaters() {
     if (!container) return;
     const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸', '✨', '💕', '🧿'];
     
-    // Mix stickers into the background
+    // Exhaustive stickers list for background variety
     const bgStickers = [
-        'assets/sticker-heart-kitty.webp',
+        'assets/11289829e92f9243e9d2b959ab2f3623.jpg',
         'assets/2e310d8c00d8ebc6465efe3ab9e1ffad.jpg',
         'assets/40fc469d09c8f18f1033068caf6745fd.jpg',
+        'assets/936161586f96a5da464d1a67da62bb02.jpg',
+        'assets/9cb65cee24e5e5ab12abb85675752e38.jpg',
+        'assets/9dbd2fc1b9e194daa8e8c4b8d5020658.jpg',
+        'assets/bf371a9022ef74145a505937ee051c48.jpg',
+        'assets/c0fa93882918f515144cfaa5d20f8a17.jpg',
+        'assets/cda44050-2819-4986-b6c8-05c59c7f8e57.webp',
+        'assets/download (1).png',
+        'assets/spidy-kitty.png',
+        'assets/sticker-heart-kitty.webp',
         'assets/sticker-cat-couple.png'
     ];
     
-    for (let i = 0; i < 40; i++) {
+    for (let i = 0; i < 50; i++) {
         const el = document.createElement('div');
         el.className = 'float-el';
         
-        if (Math.random() > 0.4) {
+        if (Math.random() > 0.5) {
             el.textContent = icons[Math.floor(Math.random() * icons.length)];
         } else {
             const img = document.createElement('img');
@@ -145,12 +173,13 @@ function spawnFloaters() {
         
         el.style.left = Math.random() * 100 + 'vw';
         el.style.top = Math.random() * 100 + 'vh';
-        el.style.animationDelay = (Math.random() * 15) + 's';
-        el.style.animationDuration = (10 + Math.random() * 15) + 's';
-        el.style.fontSize = (0.8 + Math.random() * 2) + 'rem';
+        el.style.animationDelay = (Math.random() * 10) + 's';
+        el.style.animationDuration = (8 + Math.random() * 12) + 's';
+        el.style.fontSize = (1 + Math.random() * 2) + 'rem';
         container.appendChild(el);
     }
 }
+
 
 
 function initScrollPath() {
