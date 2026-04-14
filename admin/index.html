@@ -886,12 +886,7 @@ async function permanentlyDeleteOrder(oid) {
     toast('Order deleted permanently.', 'ok');
   } catch(e) {
     toast('Failed to delete', 'err');
-  }
-}
-
-  } catch(e) { 
-    toast('Failed to delete order', 'err'); 
-    console.error(e); 
+    console.error(e);
   }
 }
 
