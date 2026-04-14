@@ -51,16 +51,31 @@ async function initExperience() {
         'assets/sticker-bow.png',
         'assets/sticker-kitty.png',
         'assets/sticker-cat-couple.png',
-        'assets/sticker-love.webp',
-        'assets/sticker-heart-kitty.webp',
-        'assets/sticker-extra.png'
+        'assets/11289829e92f9243e9d2b959ab2f3623.jpg',
+        'assets/2e310d8c00d8ebc6465efe3ab9e1ffad.jpg',
+        'assets/40fc469d09c8f18f1033068caf6745fd.jpg',
+        'assets/936161586f96a5da464d1a67da62bb02.jpg',
+        'assets/spidy-kitty.png',
+        'assets/sticker-heart-kitty.webp'
     ];
 
     const messages = [
-        { title: "The Beginning", body: "Where it all began. The day the stars aligned and our paths finally crossed." },
-        { title: "Sweet Days", body: "Every laugh we shared and every date we went on only made us stronger." },
-        { title: "My Constant", body: "Through every high and low, you have been my rock and my safest home." },
-        { title: "Today & Always", body: "And here we are today, still writing our beautiful forever story together." }
+        { 
+            title: "The Beginning of Us ✨", 
+            body: "Thinking back to the very first moment we met, I never realized I was looking at my entire future. It wasn’t just a meeting; it was the start of a beautiful symphony that only we can hear. You walked into my life and suddenly everything made sense—the songs, the poems, the stars. You are the best thing that ever happened to me, and I’ll cherish this 'beginning' for the rest of my life. Jis din hamari nazar pehli baar mili, wahi se meri duniya badal gayi. 🧿💖" 
+        },
+        { 
+            title: "Every Laugh & Date 🍭", 
+            body: "From our nervous first dates to the countless hours we spent laughing until our stomachs hurt, every second with you has been a treasure. It’s the way you look at me when you think I’m not watching, and the way you hold my hand like you’re never letting go. Thank you for making even the most ordinary days feel like a scene from a movie. You are my constant source of joy and my favorite adventure. Just us against the world! 🍬🌸" 
+        },
+        { 
+            title: "My Rock & My Home 🏡", 
+            body: "Life isn't always easy, but having you by my side makes every challenge feel small. You’ve been my rock through every storm and my biggest cheerleader in every success. In your arms, I found a home that I never want to leave. Thank you for loving me at my best and especially when I wasn't at my easiest. You are the peace in my chaos and the love of my life. Chahe ups ho ya downs, tum hamesha mere saath khade rahe. ⚓❤️🌟" 
+        },
+        { 
+            title: "Today & Forever ♾️", 
+            body: "And here we are today, stronger and more in love than ever before. This journey has been more beautiful than I ever dreamed possible, and yet I feel like we’re only just getting started. I promise to keep choosing you, day after day, year after year. Here’s to many more anniversaries, more laughs, and a lifetime of 'us'. I love you more than words could ever describe, my pookie. Yeh toh bas shuruat hai! 💍🧸✨" 
+        }
     ];
 
     photos.slice(0, 4).forEach((url, i) => {
