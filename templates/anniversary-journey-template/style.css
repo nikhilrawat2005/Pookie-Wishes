@@ -15,6 +15,7 @@
     --glass: rgba(255, 255, 255, 0.85);
     --font-main: 'Outfit', sans-serif;
     --font-script: 'Dancing Script', cursive;
+    --float-speed: 15s;
 }
 
 * {
@@ -41,7 +42,24 @@ body {
     height: 100%;
     z-index: -1;
     background: var(--cream);
+    overflow: hidden;
 }
+
+.float-el {
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0.3;
+    pointer-events: none;
+    animation: float var(--float-speed) infinite linear;
+}
+
+@keyframes float {
+    0% { transform: translateY(110vh) rotate(0deg); opacity: 0; }
+    10% { opacity: 0.3; }
+    90% { opacity: 0.3; }
+    100% { transform: translateY(-10vh) rotate(360deg); opacity: 0; }
+}
+
 
 .intro-bg-mask {
     position: absolute;
@@ -203,16 +221,16 @@ body {
 .photo-frame {
     background: #fff;
     padding: 12px 12px 50px 12px;
-    border-radius: 1px;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    border-radius: 2px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
     display: block;
-    width: 250px; /* Fixed Polaroid Width */
+    width: 320px; /* Landscape Width */
     transition: transform 0.3s ease;
 }
 
 .photo-frame img {
     width: 100%;
-    height: 250px; /* Square Polaroid Image */
+    height: 220px; /* Landscape Height */
     object-fit: cover;
     display: block;
     border: 1px solid #eee;

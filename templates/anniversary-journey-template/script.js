@@ -67,7 +67,10 @@ async function initExperience() {
         const moment = document.createElement('div');
         moment.className = 'photo-moment reveal';
         
-        const rot = (Math.random() * 6 - 3).toFixed(1);
+        // Subtle tilt instead of full rotation
+        const rot = (i % 2 === 0 ? '-1' : '1'); 
+        
+        // One sticker per photo for a cleaner look
         const stick = stickers[i % stickers.length];
         const msg = messages[i] || messages[0];
 
@@ -91,8 +94,26 @@ async function initExperience() {
         container.appendChild(moment);
     });
 
-    // 4. Initialize Scroll Path Animation
+    // 4. Initialize Scroll Path Animation & Background Vibe
     initScrollPath();
+    spawnFloaters();
+}
+
+function spawnFloaters() {
+    const container = document.getElementById('bg-floaters');
+    if (!container) return;
+    const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸'];
+    
+    for (let i = 0; i < 15; i++) {
+        const el = document.createElement('div');
+        el.className = 'float-el';
+        el.textContent = icons[Math.floor(Math.random() * icons.length)];
+        el.style.left = Math.random() * 100 + 'vw';
+        el.style.top = Math.random() * 100 + 'vh';
+        el.style.animationDelay = (Math.random() * 10) + 's';
+        el.style.fontSize = (0.5 + Math.random() * 1.5) + 'rem';
+        container.appendChild(el);
+    }
 }
 
 function initScrollPath() {
