@@ -114,8 +114,17 @@ async function initExperience() {
         container.appendChild(moment);
     });
 
+    // 4. Initialize Scroll Path Animation & Visuals
+    initScrollPath();
+    initDoodleEngine();
+}
+
+function initDoodleEngine() {
+    const container = document.getElementById('decor-container');
+    if (!container) return;
 
     const stickers = [
+
         'assets/11289829e92f9243e9d2b959ab2f3623.jpg',
         'assets/1f53934470de723c2d4e00b485cf2b1c.jpg',
         'assets/2e310d8c00d8ebc6465efe3ab9e1ffad.jpg',
