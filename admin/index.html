@@ -702,38 +702,76 @@ function openDrawer(oid) {
     `;
   }
 
-  const pData = o.detailsSubmitted ? `
-    <div class="inf-row"><div class="inf-k">Recipient</div><div class="inf-v">${o.recipientName||'—'} <button class="copy-btn" onclick="copy('${o.recipientName}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
-    <div class="inf-row"><div class="inf-k">Date Event</div><div class="inf-v">${o.eventDate||'—'}</div></div>
-    <div class="inf-row"><div class="inf-k">Message</div><div class="inf-v" style="background:var(--bg3);padding:10px;border-radius:var(--rs);margin-top:4px;">${o.wishMessage||'—'}</div></div>
-  ` : '<div class="tc-sub" style="color:var(--pink);">User has not submitted form details yet.</div>';
+  let pData = '';
+  if (o.detailsSubmitted) {
+    if (o.personalizations && Array.isArray(o.personalizations) && o.personalizations.length > 0) {
+      pData = o.personalizations.map((p, idx) => {
+        const photosHtml = (p.photos && p.photos.length) ? `
+          <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--bdr);">
+            ${p.photos.map((url, i) => `
+              <div style="text-align:center;">
+                <a href="${url}" target="_blank" style="display:block;width:60px;height:60px;border-radius:var(--rs);overflow:hidden;border:1px solid var(--bdr);margin-bottom:4px;">
+                  <img src="${url}" style="width:100%;height:100%;object-fit:cover;">
+                </a>
+                <span style="font-size:0.6rem;color:var(--dim);">Img ${i+1}</span>
+              </div>
+            `).join('')}
+          </div>
+        ` : '';
 
-  const photosList = (o.photos && o.photos.length) ? `
-    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px;">
-      ${o.photos.map((p,i) => `
-        <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--rs);padding:10px;text-align:center;">
-          <div style="font-size:0.75rem;color:var(--dim);margin-bottom:6px;">Photo ${i+1}</div>
-          <a href="${p}" target="_blank" class="btn btn-soft" style="font-size:0.7rem;padding:4px 8px;">View Image</a>
-        </div>
-      `).join('')}
+        return `
+          <div style="margin-bottom:20px; padding:16px; background:rgba(255,255,255,0.02); border:1px solid var(--bdr); border-radius:var(--r);">
+            <div style="font-family:var(--fd); font-size:0.75rem; font-weight:700; color:var(--pink); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
+              <i data-lucide="sparkles" style="width:14px;"></i> #${idx+1} — ${p.templateId || 'Template'}
+            </div>
+            <div class="inf-row"><div class="inf-k">Recipient</div><div class="inf-v">${p.recipientName||'—'} <button class="copy-btn" onclick="copy('${p.recipientName}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+            <div class="inf-row"><div class="inf-k">Date Event</div><div class="inf-v">${p.eventDate||'—'}</div></div>
+            <div class="inf-row"><div class="inf-k">Message</div><div class="inf-v" style="background:var(--bg3);padding:10px;border-radius:var(--rs);margin-top:4px;white-space:pre-wrap;">${p.wishMessage||'—'}</div></div>
+            ${photosHtml}
+          </div>
+        `;
+      }).join('');
+    } else {
+      // Legacy single-item fallback
+      pData = `
+        <div class="inf-row"><div class="inf-k">Recipient</div><div class="inf-v">${o.recipientName||'—'} <button class="copy-btn" onclick="copy('${o.recipientName}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+        <div class="inf-row"><div class="inf-k">Date Event</div><div class="inf-v">${o.eventDate||'—'}</div></div>
+        <div class="inf-row"><div class="inf-k">Message</div><div class="inf-v" style="background:var(--bg3);padding:10px;border-radius:var(--rs);margin-top:4px;white-space:pre-wrap;">${o.wishMessage||'—'}</div></div>
+      `;
+    }
+  } else {
+    pData = '<div class="tc-sub" style="color:var(--pink);">User has not submitted form details yet.</div>';
+  }
+
+  const legacyPhotos = (!o.personalizations && o.photos && o.photos.length) ? `
+    <div class="sec-title"><i data-lucide="image"></i> Legacy Photos</div>
+    <div class="inf-box">
+      <div style="display:flex;gap:10px;flex-wrap:wrap;">
+        ${o.photos.map((p,i) => `
+          <div style="background:var(--bg3);border:1px solid var(--bdr);border-radius:var(--rs);padding:10px;text-align:center;">
+            <div style="font-size:0.75rem;color:var(--dim);margin-bottom:6px;">Photo ${i+1}</div>
+            <a href="${p}" target="_blank" class="btn btn-soft" style="font-size:0.7rem;padding:4px 8px;">View Image</a>
+          </div>
+        `).join('')}
+      </div>
     </div>
-  ` : '<div class="tc-sub" style="margin-top:10px;">No photos provided (Stickers used).</div>';
+  ` : '';
 
   document.getElementById('drw-body').innerHTML = `
     ${deliveryBlock}
     
     <div class="sec-title"><i data-lucide="user"></i> Core Info</div>
     <div class="inf-box">
-      <div class="tc-sub">${o.user?.name || o.buyerName || '—'} <button class="copy-btn" onclick="copy('${o.user?.name || o.buyerName || '—'}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
+      <div class="inf-row"><div class="inf-k">Customer Name</div><div class="inf-v">${o.user?.name || o.buyerName || '—'} <button class="copy-btn" onclick="copy('${o.user?.name || o.buyerName || '—'}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
       <div class="inf-row"><div class="inf-k">Customer Email</div><div class="inf-v">${o.user?.email || o.buyerEmail || '—'} <button class="copy-btn" onclick="copy('${o.user?.email || o.buyerEmail || '—'}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
       <div class="inf-row"><div class="inf-k">Total Revenue</div><div class="inf-v" style="color:var(--mint);">₹${o.totalAmount || o.total || 0}</div></div>
     </div>
     
     <div class="sec-title"><i data-lucide="message-square"></i> Personalisation</div>
-    <div class="inf-box">${pData}</div>
+    <div>${pData}</div>
     
-    <div class="sec-title"><i data-lucide="image"></i> Uploaded Media</div>
-    <div class="inf-box">${photosList}</div>
+    ${legacyPhotos}
+
 
     <div class="sec-title"><i data-lucide="settings"></i> Danger Zone</div>
     <div class="inf-box" style="border-color: rgba(239, 68, 68, 0.3);">
