@@ -120,12 +120,16 @@ async function initExperience() {
     populateDecorations();
 }
 
-function populateDecorations() {
+    // 4. Initialize Scroll Path Animation & Visuals
+    initScrollPath();
+    initDoodleEngine();
+}
+
+function initDoodleEngine() {
     const container = document.getElementById('decor-container');
     if (!container) return;
     
-    // Stickers intended for background decoration
-    const bgStickers = [
+    const stickers = [
         'assets/11289829e92f9243e9d2b959ab2f3623.jpg',
         'assets/2e310d8c00d8ebc6465efe3ab9e1ffad.jpg',
         'assets/40fc469d09c8f18f1033068caf6745fd.jpg',
@@ -141,40 +145,95 @@ function populateDecorations() {
         'assets/sticker-cat-couple.png'
     ];
 
-    const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸', '✨', '💕', '🧿'];
+    const icons = ['❤️', '💖', '✨', '🌟', '🍭', '🌸', '🧿'];
+
+    // 1. Viewport Corner Accents (Fixed positions for "Special Frame" feel)
+    const corners = [
+        { top: '5vh', left: '5%' }, { top: '5vh', right: '5%' },
+        { top: '25vh', left: '2%' }, { top: '45vh', right: '2%' },
+        { top: '65vh', left: '5%' }, { top: '85vh', right: '5%' }
+    ];
     
-    // Get track height to space things out
-    const track = document.querySelector('.journey-track');
-    if (!track) return;
-    const trackHeight = track.offsetHeight;
-    const numItems = 25; // Good density without clutter
+    corners.forEach(pos => {
+        spawnDecor(stickers[Math.floor(Math.random() * stickers.length)], {
+            ...pos,
+            layer: 'layer-mid',
+            size: 'size-lg'
+        });
+    });
 
-    for (let i = 0; i < numItems; i++) {
-        const el = document.createElement('div');
-        el.className = 'static-decor';
-        
-        // Vertical spacing based on total height
-        const topPos = (i / numItems * trackHeight) + (Math.random() * 200);
-        // Alternate sides and add variation
-        const side = i % 2 === 0 ? 'left' : 'right';
-        const offset = Math.random() * 8 + 2; // 2% to 10% from edge
+    // 2. Anchor to Content Moments
+    const moments = document.querySelectorAll('.photo-moment');
+    moments.forEach((m, idx) => {
+        const rect = m.getBoundingClientRect();
+        const yBase = m.offsetTop;
 
-        if (Math.random() > 0.4) {
-            const img = document.createElement('img');
-            img.src = bgStickers[Math.floor(Math.random() * bgStickers.length)];
-            el.appendChild(img);
-        } else {
-            el.textContent = icons[Math.floor(Math.random() * icons.length)];
-            el.style.fontSize = (1.5 + Math.random() * 1.5) + 'rem';
+        // Add 3 surrounding doodles for each photo/text pair
+        for(let i=0; i<4; i++) {
+            const isSticker = Math.random() > 0.3;
+            spawnDecor(isSticker ? stickers[Math.floor(Math.random() * stickers.length)] : icons[Math.floor(Math.random() * icons.length)], {
+                top: yBase + (Math.random() * 400 - 200) + 'px',
+                left: (idx % 2 === 0 ? (Math.random() * 20) : (80 + Math.random() * 15)) + '%',
+                layer: Math.random() > 0.5 ? 'layer-mid' : 'layer-deep',
+                size: i === 0 ? 'size-lg' : 'size-md',
+                isIcon: !isSticker
+            });
         }
+    });
 
-        el.style.top = `${topPos}px`;
-        el.style[side] = `${offset}%`;
-        el.style.transform = `rotate(${Math.random() * 40 - 20}deg)`;
-        
-        container.appendChild(el);
+    // 3. Random Sparkles (Fills the 'off-white' gaps)
+    for(let i=0; i<15; i++) {
+        spawnDecor(icons[Math.floor(Math.random() * icons.length)], {
+            top: (Math.random() * 100) + '%',
+            left: (Math.random() * 100) + '%',
+            layer: 'layer-accent',
+            size: 'size-sm',
+            isIcon: true
+        });
     }
+
+    // Initialize Parallax
+    initParallax();
 }
+
+function spawnDecor(content, config) {
+    const container = document.getElementById('decor-container');
+    const el = document.createElement('div');
+    el.className = `static-decor ${config.layer} ${config.size}`;
+    
+    if (config.isIcon) {
+        el.textContent = content;
+    } else {
+        const img = document.createElement('img');
+        img.src = content;
+        el.appendChild(img);
+    }
+
+    if (config.top) el.style.top = config.top;
+    if (config.left) el.style.left = config.left;
+    if (config.right) el.style.right = config.right;
+    if (config.bottom) el.style.bottom = config.bottom;
+    
+    el.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
+    container.appendChild(el);
+}
+
+function initParallax() {
+    gsap.utils.toArray('.static-decor').forEach(decor => {
+        const speed = decor.classList.contains('layer-deep') ? 0.2 : 0.5;
+        gsap.to(decor, {
+            y: (i, target) => -ScrollTrigger.maxScroll(window) * speed,
+            ease: "none",
+            scrollTrigger: {
+                trigger: "body",
+                start: "top top",
+                end: "bottom bottom",
+                scrub: true
+            }
+        });
+    });
+}
+
 
 
 

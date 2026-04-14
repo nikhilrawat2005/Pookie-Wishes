@@ -286,9 +286,10 @@ body {
     font-family: var(--font-script);
     font-size: 1.5rem;
     color: #333;
+    pointer-events: none;
 }
 
-/* Static Background Decoration */
+/* Scrapbook Layering System */
 .decor-container {
     position: absolute;
     top: 0;
@@ -301,18 +302,29 @@ body {
 
 .static-decor {
     position: absolute;
-    width: auto;
-    height: auto;
-    opacity: 0.6;
-    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.1));
+    pointer-events: none;
+    transition: transform 0.1s linear; /* Smooth Parallax */
+    display: flex;
+    align-items: center;
+    justify-content: center;
     z-index: 0;
 }
 
 .static-decor img {
-    max-width: 80px;
+    width: 100%;
     height: auto;
     display: block;
+    filter: drop-shadow(0 4px 8px rgba(0,0,0,0.1));
 }
+
+.layer-deep { opacity: 0.15; z-index: -1; transform: scale(1.2); }
+.layer-mid { opacity: 0.4; z-index: 0; }
+.layer-accent { opacity: 0.8; z-index: 5; }
+
+.size-sm { width: 40px; }
+.size-md { width: 80px; }
+.size-lg { width: 140px; }
+
 
 
 .journey-end-trigger {
