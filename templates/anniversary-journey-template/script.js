@@ -7,9 +7,10 @@ const DEFAULT_DATA = {
     letter: "Happy Anniversary my pookie! \n\nLooking back at these photos reminds me of how far we've come. Every scroll represents a step we took together. Thank you for being by my side and making every moment feel like a movie. \n\nI love you to the moon and back!",
     signature: "Sahil",
     photos: [
-        "https://images.unsplash.com/photo-1511739001486-6bfe10ce785f?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1518199266791-bd004246875d?auto=format&fit=crop&q=80&w=800",
-        "https://images.unsplash.com/photo-1522673607200-1648832cee98?auto=format&fit=crop&q=80&w=800"
+        "assets/1000121228.jpg.jpeg",
+        "assets/1000121229.jpg.jpeg",
+        "assets/1000121230.jpg.jpeg",
+        "assets/1000121232.jpg.jpeg"
     ],
     song: "Perfect - Ed Sheeran"
 };
@@ -34,8 +35,15 @@ async function initExperience() {
     document.getElementById('display-letter').textContent = userData.letter || userData.wishMessage || DEFAULT_DATA.letter;
     document.getElementById('display-signature').textContent = userData.signature || userData.senderName || DEFAULT_DATA.signature;
 
-    // 3. Inject Photos & Stickers
-    const photos = (userData.photos && userData.photos.length) ? userData.photos : DEFAULT_DATA.photos;
+    // 3. Inject 4 Staggered Moments
+    const defaultPhotos = [
+        'assets/1000121228.jpg.jpeg',
+        'assets/1000121229.jpg.jpeg',
+        'assets/1000121230.jpg.jpeg',
+        'assets/1000121232.jpg.jpeg'
+    ];
+    
+    const photos = (userData.photos && userData.photos.length >= 4) ? userData.photos : defaultPhotos;
     const container = document.getElementById('photo-container');
     container.innerHTML = '';
 
@@ -48,22 +56,36 @@ async function initExperience() {
         'assets/sticker-extra.png'
     ];
 
-    photos.forEach((url, i) => {
+    const messages = [
+        { title: "The Beginning", body: "Where it all began. The day the stars aligned and our paths finally crossed." },
+        { title: "Sweet Days", body: "Every laugh we shared and every date we went on only made us stronger." },
+        { title: "My Constant", body: "Through every high and low, you have been my rock and my safest home." },
+        { title: "Today & Always", body: "And here we are today, still writing our beautiful forever story together." }
+    ];
+
+    photos.slice(0, 4).forEach((url, i) => {
         const moment = document.createElement('div');
         moment.className = 'photo-moment reveal';
         
-        // Random Rotation for Polaroid Feel
-        const rot = (Math.random() * 6 - 3).toFixed(1); // -3 to +3 deg
-        
-        // Pick a random sticker
-        const stickerUrl = stickers[i % stickers.length];
-        const stickerClass = i % 2 === 0 ? 'sticker-bow' : 'sticker-heart';
+        const rot = (Math.random() * 6 - 3).toFixed(1);
+        const stick = stickers[i % stickers.length];
+        const msg = messages[i] || messages[0];
 
         moment.innerHTML = `
-            <div class="photo-frame" style="transform: rotate(${rot}deg)">
-                <img src="${url}" alt="Memory ${i+1}" loading="lazy">
-                <div class="photo-caption">Moment #${i+1}</div>
-                <img src="${stickerUrl}" class="sticker ${stickerClass}" alt="sticker">
+            <div class="moment-photo-wrap">
+                <div class="wood-mount">
+                    <div class="photo-frame" style="transform: rotate(${rot}deg)">
+                        <img src="${url}" alt="Memory ${i+1}" loading="lazy">
+                        <div class="photo-caption">Moment #${i+1}</div>
+                        <img src="${stick}" class="sticker sticker-bow" alt="sticker">
+                    </div>
+                </div>
+            </div>
+            <div class="moment-text-wrap">
+                <div class="text-card">
+                    <h3>${msg.title}</h3>
+                    <p>${msg.body}</p>
+                </div>
             </div>
         `;
         container.appendChild(moment);
@@ -71,24 +93,20 @@ async function initExperience() {
 
     // 4. Initialize Scroll Path Animation
     initScrollPath();
-
-    // 5. Wood Background Check (Local & Data)
-    const journeySec = document.getElementById('section-journey');
-    if (userData.woodBackground) {
-        journeySec.style.backgroundImage = `url(${userData.woodBackground})`;
-    } else {
-        // Check if local wood-board.jpg exists (using an image object to verify)
-        const img = new Image();
-        img.src = 'assets/wood-board.jpg';
-        img.onload = () => journeySec.style.backgroundImage = `url('assets/wood-board.jpg')`;
-    }
 }
 
 function initScrollPath() {
     gsap.registerPlugin(ScrollTrigger);
 
     const path = document.querySelector('.main-path');
-    const length = 1000; // SVG coordinate units
+    if (!path) return;
+    
+    // Dynamically set path length based on container height
+    const track = document.querySelector('.journey-track');
+    const length = track.offsetHeight - 200;
+    
+    // Update SVG path data to match height
+    path.setAttribute('d', `M 1 0 L 1 ${length}`);
 
     gsap.fromTo(path, 
         { strokeDashoffset: length, strokeDasharray: length },

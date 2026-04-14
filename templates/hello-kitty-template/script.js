@@ -89,24 +89,21 @@ function applyContent(c) {
     `<span class="name-highlight">${name}!</span>` +
     `<span class="title-cake">🎂</span>`;
 
-  // Page 3 — used as the FINAL letter now (High Quality Envelope sequence leads here)
-  setEl('letterGreeting', c.finalLetterGreeting || c.letterGreeting || 'My dearest birthday girl,');
-  setEl('letterBody',     c.finalLetterBody     || c.letterBody     || 'Today marks another year of your incredible existence...');
-  setEl('letterSign',     c.finalLetterPink     || c.letterSign     || 'Forever yours 💝');
+  // Page 3 & Page 9 — Letter Content Support (Dashboard Common)
+  const greeting = c.finalLetterGreeting || c.letterGreeting || c.caption || 'My dearest birthday girl,';
+  const body     = c.finalLetterBody     || c.letterBody     || c.letterContent || c.wishMessage || c.letter || 'Today marks another year of your incredible existence...';
+  const sign     = c.finalLetterPink     || c.letterSign || c.senderName  || 'Forever yours 💝';
+
+  setEl('letterGreeting', greeting);
+  setEl('letterBody',     body);
+  setEl('letterSign',     sign);
+
+  setEl('finalLetterGreeting', greeting);
+  setEl('finalLetterBody',     body);
+  setEl('finalLetterPink',     sign);
 
   // Page 10 — sealed subtitle
   setEl('sealedSub', `Happy Birthday, ${name}! 🎂✨`);
-
-  // Inject User Gallery into Wish Slideshow if available
-  const slideshow = document.getElementById('wishSlideshow');
-  if (slideshow && c.wishes && c.wishes.length > 0) {
-      const userImgs = c.wishes.map(w => w.memory).filter(Boolean);
-      if (userImgs.length > 0) {
-          slideshow.innerHTML = userImgs.map((src, i) => 
-              `<img class="wish-img ${i===0?'active':''}" src="${src}" alt="Memory" onerror="this.src='assets/hello_kitty_intro.png'"/>`
-          ).join('');
-      }
-  }
 }
 
 function setEl(id, value) {
