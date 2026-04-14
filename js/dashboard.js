@@ -40,12 +40,11 @@ async function loadOrders(email) {
   const emptyEl = document.getElementById('orders-empty');
 
   try {
-    // We search both buyerEmail and user.email (just in case)
-    // Firestore doesn't support OR queries easily without separate queries or collection group
-    // So we'll fetch where buyerEmail matches.
+    // NOTE: We intentionally do NOT use .orderBy() here to avoid requiring
+    // a composite Firestore index (buyerEmail + createdAt) which causes errors
+    // if not manually created in Firebase Console. We sort client-side instead.
     const snap = await db.collection('orders')
       .where('buyerEmail', '==', email)
-      .orderBy('createdAt', 'desc')
       .get();
 
     if (loader) loader.style.display = 'none';
@@ -56,9 +55,15 @@ async function loadOrders(email) {
       return;
     }
 
+    // Filter trash and sort by createdAt descending (client-side)
     const orders = snap.docs
       .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(o => !o.trash);
+      .filter(o => !o.trash)
+      .sort((a, b) => {
+        const ta = a.createdAt?.toMillis?.() || 0;
+        const tb = b.createdAt?.toMillis?.() || 0;
+        return tb - ta;
+      });
 
     if (orders.length === 0) {
       if (listEl) listEl.style.display = 'none';
@@ -73,7 +78,8 @@ async function loadOrders(email) {
 
   } catch (e) {
     console.error("Dashboard Load Error:", e);
-    if (loader) loader.innerHTML = `<p style="color:var(--pink)">Error loading surprises. Please refresh.</p>`;
+    // Show a more helpful error message with the actual error
+    if (loader) loader.innerHTML = `<p style="color:var(--pink);font-size:0.85rem;">Could not load your orders. Check your internet connection and refresh.<br><span style="color:var(--dim);font-size:0.75rem;">${e.message}</span></p>`;
   }
 }
 
