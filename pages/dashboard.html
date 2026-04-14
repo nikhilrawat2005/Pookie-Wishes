@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<!-- 
+  © 2026 Pookie Wishes. All rights reserved.
+  Unauthorized copying, reproduction, or deployment is strictly prohibited.
+-->
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Dashboard — Pookie Wishes ✨</title>
+  <link rel="icon" type="image/png" href="../favicon.png">
+  <link rel="stylesheet" href="../css/style.css">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    :root {
+      --dash-bg: var(--bg);
+      --dash-card: var(--card);
+      --dash-bdr: var(--bdr);
+    }
+
+    body { background: var(--dash-bg); color: var(--text); }
+
+    .dash-container { max-width: 1200px; margin: 0 auto; padding: 120px 20px 60px; display: grid; grid-template-columns: 280px 1fr; gap: 40px; }
+
+    /* DASH SIDEBAR */
+    .dash-side { position: sticky; top: 110px; height: fit-content; z-index: 10; }
+    .dash-user-card { background: var(--dash-card); border: 1px solid var(--dash-bdr); border-radius: var(--rx); padding: 32px 24px; text-align: center; margin-bottom: 24px; box-shadow: var(--sh-md); }
+    .dash-av { width: 90px; height: 90px; border-radius: 50%; margin: 0 auto 16px; border: 3px solid var(--pink-s); padding: 4px; background: white; object-fit: cover; transition: transform 0.3s; }
+    .dash-av:hover { transform: scale(1.05); border-color: var(--pink); }
+    .dash-uname { font-family: var(--fd); font-size: 1.35rem; font-weight: 700; color: var(--text); margin-bottom: 4px; }
+    .dash-umail { font-size: 0.8rem; color: var(--muted); word-break: break-all; }
+
+    .dash-nav { background: var(--dash-card); border: 1px solid var(--dash-bdr); border-radius: var(--rx); overflow: hidden; box-shadow: var(--sh); }
+    .dash-nav-btn { display: flex; align-items: center; gap: 14px; padding: 16px 24px; color: var(--muted); font-size: 0.92rem; font-weight: 600; cursor: pointer; transition: all 0.22s; border-bottom: 1px solid var(--dash-bdr); }
+    .dash-nav-btn:last-child { border-bottom: none; }
+    .dash-nav-btn i { width: 18px; height: 18px; }
+    .dash-nav-btn:hover { color: var(--pink); background: var(--bg2); }
+    .dash-nav-btn.active { color: var(--pink); background: var(--pink-s); position: relative; }
+    .dash-nav-btn.active::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; background: var(--g-main); }
+
+    /* DASH CONTENT */
+    .dash-main { display: flex; flex-direction: column; gap: 40px; }
+    .dash-sec-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+    .dash-sec-title { font-family: var(--fd); font-size: 1.6rem; font-weight: 700; color: var(--text); display: flex; align-items: center; gap: 12px; }
+
+    /* ORDER REFINEMENTS (Extending style.css) */
+    .order-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 24px; }
+    .order-status { position: absolute; top: 0; right: 0; padding: 8px 16px; border-bottom-left-radius: 16px; font-family: var(--fm); font-size: 0.68rem; font-weight: 800; }
+    
+    .order-id { font-family: var(--fm); font-size: 0.72rem; color: var(--dim); margin-bottom: 14px; }
+    .order-body { display: flex; gap: 18px; margin-bottom: 24px; align-items: center; }
+    .order-thumb { width: 72px; height: 72px; border-radius: 18px; background: var(--bg2); flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 2.2rem; border: 1px solid var(--dash-bdr); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
+    .order-info { flex: 1; min-width: 0; }
+    .order-name { font-family: var(--fd); font-size: 1.25rem; font-weight: 700; color: var(--text); margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .order-for { font-size: 0.9rem; color: var(--muted); }
+
+    .order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+    @media (max-width: 1000px) {
+      .dash-container { grid-template-columns: 1fr; padding-top: 100px; gap: 32px; }
+      .dash-side { position: static; }
+      .dash-user-card { display: flex; align-items: center; text-align: left; gap: 24px; padding: 24px; }
+      .dash-av { margin: 0; width: 70px; height: 70px; }
+      .dash-nav { display: flex; overflow-x: auto; scrollbar-width: none; }
+      .dash-nav::-webkit-scrollbar { display: none; }
+      .dash-nav-btn { border-bottom: none; border-right: 1px solid var(--dash-bdr); white-space: nowrap; flex: 1; justify-content: center; padding: 14px 20px; }
+      .dash-nav-btn.active::after { left: 0; right: 0; top: auto; bottom: 0; height: 3px; width: 100%; }
+    }
+
+    @media (max-width: 600px) {
+      .order-grid { grid-template-columns: 1fr; }
+      .order-body { flex-direction: column; text-align: center; gap: 12px; }
+      .order-info { width: 100%; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="navbar scrolled">
+  <div class="nav-inner">
+    <a href="../index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a>
+    <div class="nav-links">
+      <a href="../index.html" class="btn btn-ghost hide-mobile">All Templates</a>
+      <a href="favorites.html" class="btn btn-ghost"><i data-lucide="heart" style="width:18px;"></i></a>
+      <div id="u-wrap" class="u-wrap">
+        <div class="u-av-wrap" onclick="toggleDd()">
+          <img id="u-av" class="u-av" src="" alt="avatar">
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<div class="dash-container reveal">
+  <!-- SIDEBAR -->
+  <aside class="dash-side">
+    <div class="dash-user-card">
+      <img id="dash-av" class="dash-av" src="https://api.dicebear.com/7.x/fun-emoji/svg?seed=Pookie" alt="User Avatar">
+      <div>
+        <div id="dash-name" class="dash-dash-uname">Pookie ✨</div>
+        <div id="dash-email" class="dash-umail">email@example.com</div>
+      </div>
+    </div>
+
+    <nav class="dash-nav">
+      <div class="dash-nav-btn active" data-dash-tab="orders">
+        <i data-lucide="package"></i> My Wishes
+      </div>
+      <div class="dash-nav-btn" data-dash-tab="favs" onclick="location.href='favorites.html'">
+        <i data-lucide="heart"></i> Saved Favorites
+      </div>
+      <div class="dash-nav-btn" data-dash-tab="profile">
+        <i data-lucide="user"></i> Account Settings
+      </div>
+      <div class="dash-nav-btn" onclick="doLogout()">
+        <i data-lucide="log-out"></i> Sign Out
+      </div>
+    </nav>
+  </aside>
+
+  <!-- MAIN CONTENT -->
+  <main class="dash-main">
+    
+    <!-- WELCOME & QUOTA -->
+    <section>
+      <div class="dash-sec-hd">
+        <div class="dash-sec-title">Welcome back, <span id="welcome-name" style="color:var(--pink);">Pookie</span>! 🪄</div>
+      </div>
+      
+      <div id="quota-panel" class="quota-card" style="display:none;">
+        <div class="quota-info">
+          <div class="quota-title">Founding Member Offer ✨</div>
+          <div class="quota-desc">You're one of our first customers! Enjoy your personalized surprises on us.</div>
+        </div>
+        <div class="quota-bar-wrap">
+          <div id="quota-count" class="quota-count">0/3</div>
+          <div class="quota-label">Templates Used</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ORDERS LIST -->
+    <section id="orders-sec">
+      <div class="dash-sec-hd">
+        <div class="dash-sec-title"><i data-lucide="gift"></i> My Surprises</div>
+      </div>
+      
+      <div id="orders-loader" style="text-align:center; padding:40px;">
+        <div class="loading-spinner" style="width:30px; height:30px; border-width:3px; border-top-color:var(--pink);"></div>
+      </div>
+
+      <div id="orders-list" class="order-grid" style="display:none;">
+        <!-- Orders will be injected here -->
+      </div>
+
+      <!-- Empty State -->
+      <div id="orders-empty" class="dash-empty" style="display:none;">
+        <div class="dash-empty-ico">💝</div>
+        <div class="dash-empty-title">No surprises yet!</div>
+        <div class="dash-empty-desc">Create your first personalized digital card and bring a smile to someone's face today.</div>
+        <a href="../index.html" class="btn btn-primary">Browse Templates</a>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<div id="toasts"></div>
+
+<!-- Firebase & Scripts -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+
+<script src="../js/app.js"></script>
+<script src="../js/dashboard.js"></script>
+
+<script>
+  lucide.createIcons();
+  
+  // Tab Switching (UI only for now)
+  document.querySelectorAll('.dash-nav-btn[data-dash-tab]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.dataset.dashTab === 'favs') return; // Handled by link
+      document.querySelectorAll('.dash-nav-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>

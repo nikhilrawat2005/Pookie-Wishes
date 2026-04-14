@@ -243,7 +243,8 @@
 
       if (dReq.exists) {
         orderData = dReq.data();
-        if (orderData.detailsSubmitted) {
+        const forceEdit = p.get('edit') === 'true';
+        if (orderData.detailsSubmitted && !forceEdit) {
           showFinalSuccess(orderData.deliveryLinks || [orderData.deliveryLink]);
           return;
         }

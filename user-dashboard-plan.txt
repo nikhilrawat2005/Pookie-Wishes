@@ -1,0 +1,61 @@
+Pookie Wishes - User Dashboard (My Account) Planning
+===================================================
+
+This document outlines the blueprint for the Pookie Wishes User Dashboard, designed to provide a premium, seamless experience for our customers.
+
+1. VISION & OBJECTIVE
+---------------------
+The User Dashboard will be the "Central Command" for every customer. It solves the problem of users losing their links, forgetting which templates they liked, or not knowing the status of their manual orders.
+
+2. CORE FEATURES (The "What")
+----------------------------- 
+A. MY SURPRISES (Most Important)
+   - A list of all orders tied to the user's email.
+   - Status Tracking:
+     * [🔴] Payment Pending (Expired/Failed)
+     * [🟡] Action Needed (User needs to fill the personalization form)
+     * [🟢] Ready to Share (Link is live and active)
+   - Action Buttons:
+     * "Copy Secret Link" - One-tap copy to share with their loved one.
+     * "Customise Now" - Quick redirect to the form if details are missing.
+     * "View Surprise" - Open the final digital card directly.
+
+B. FAVORITES HUB
+   - Integrated access to their liked templates.
+   - Users can quickly buy their favorites from here without searching the home page again.
+
+C. PROMO QUOTA TRACKER
+   - A visual indicator showing their "Free Template" status.
+   - E.g., "You are a Founding Pookie! 1/3 Free Templates used."
+
+D. PROFILE & SECURITY
+   - Display their registered Name and Email.
+   - Logout button.
+
+E. QUICK SUPPORT
+   - A "Help with Order" button next to every order that opens WhatsApp with the Order ID pre-filled.
+
+3. HOW IT WORKS (The "Logic")
+-----------------------------
+- AUTHENTICATION: The dashboard is protected. If a guest visits, they are prompted to Sign In with Google.
+- DATABASE: We will fetch orders from the 'orders' collection in Firestore, filtered by the logged-in user's email.
+- REAL-TIME: Using Firestore Snapshots, if the Admin updates an order status, the User Dashboard will update instantly without refreshing.
+- STORAGE: We use LocalStorage for favorites syncing (current logic) but can now persist them to Firestore for multi-device access.
+
+4. USER INTERFACE (The "Look")
+------------------------------
+- Aesthetic: Modern, glassmorphic, and vibrant (consistent with Pookie Zenith branding).
+- Layout: 
+  * Sidebar on Desktop for easy navigation.
+  * Bottom Navigation bar on Mobile.
+- Animations: Smooth entry transitions for order cards using GSAP or CSS Keyframes.
+
+5. BENEFITS
+-----------
+- Customer Retention: Users who have an account are 3x more likely to return for the next birthday/occasion.
+- Reduced Support Load: Users can find their own links anytime without WhatsApping the team.
+- Trust: Having a "My Account" area makes the brand feel more professional and permanent.
+
+---------------------------------------------------
+Prepared by Antigravity (Assistant)
+Date: 2026-04-14
