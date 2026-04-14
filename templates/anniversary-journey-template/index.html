@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Our Anniversary Journey 💝</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+    <!-- Background Decoration -->
+    <div class="bg-blobs">
+        <div class="intro-bg-mask"></div>
+    </div>
+
+    <!-- Pookie Watermark -->
+    <div class="pookie-watermark">
+        <span class="pw-text">pookiewishes.com</span>
+    </div>
+
+    <!-- 1. Opening Screen -->
+    <section id="section-intro" class="section active">
+        <div class="intro-content reveal">
+            <div class="heart-icon">💝</div>
+            <h1 class="names-title" id="display-names">Sahil & Priya</h1>
+            <p class="tagline">Welcome to a trip down memory lane...</p>
+            <button class="btn-start" onclick="startJourney()">Start Our Journey ✨</button>
+        </div>
+    </section>
+
+    <!-- 2. The Journey (Scroll Container) -->
+    <section id="section-journey" class="section">
+        <div class="journey-track">
+            <!-- Animated Dotted Line -->
+            <div class="scroll-path-container">
+                <svg class="scroll-path-svg" preserveAspectRatio="none">
+                    <path class="main-path" d="M 1 0 L 1 1000" id="travel-path"></path>
+                </svg>
+            </div>
+            
+            <div id="photo-container">
+                <!-- Photos & Stickers will be injected here -->
+            </div>
+            
+            <div class="journey-end-trigger reveal">
+                <h2>Our journey doesn't end here...</h2>
+                <p>I still have something special for you.</p>
+                <button class="btn-reveal" onclick="revealLetter()">Open Your Surprise 💌</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- 3. The Letter -->
+    <section id="section-letter" class="section">
+        <div class="letter-wrap reveal">
+            <div class="letter-content">
+                <div class="letter-header">
+                    <i data-lucide="heart" class="heart-pulse"></i>
+                    <span>A Heartfelt Note</span>
+                </div>
+                <div class="letter-body" id="display-letter">
+                    <!-- Letter content goes here -->
+                </div>
+                <div class="letter-footer">
+                    <p>Yours forever,</p>
+                    <p class="signature" id="display-signature"></p>
+                </div>
+            </div>
+            <button class="btn-next" onclick="showEnding()">Continuue ✨</button>
+        </div>
+    </section>
+
+    <!-- 4. Ending Page -->
+    <section id="section-ending" class="section">
+        <div class="ending-content reveal">
+            <div class="sparkle-ico">✨</div>
+            <h2>Let's make our future years even more special.</h2>
+            <p>Every moment with you is a gift.</p>
+            <div class="end-actions">
+                <button class="btn-restart" onclick="restartJourney()">Restart Journey 🔄</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Audio Player (Optional) -->
+    <div id="music-player" class="hidden">
+        <audio id="bg-music" loop></audio>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

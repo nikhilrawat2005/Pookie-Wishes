@@ -323,6 +323,38 @@
         "thumbnail": "media/sorry/thumbnail.jpg",
         "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1775757177/sorry_ydt96k.mp4"
       }
+    },
+    {
+      "id": "anniversary-journey",
+      "name": "Anniversary Journey",
+      "tagline": "Relive your best moments together 💝",
+      "badge": "Testing Stage",
+      "emoji": "🔄",
+      "price": 49,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "hasPhotos": true,
+      "testing": true,
+      "tags": ["anniversary", "journey", "memories", "romantic", "scroll"],
+      "shortDesc": "An emotional scroll-based journey through your most precious memories, ending with a surprise heartfelt letter.",
+      "longDesc": "Take your pookie on a trip down memory lane. This interactive template uses smooth scroll animations to reveal your favorite photos one by one, culminating in a beautiful letter reveal. Perfect for anniversaries or milestones.",
+      "vibe": "Emotional & Journey",
+      "features": [
+        "🔄 Scroll-based memory reveal",
+        "🖼️ Dynamic photo frames",
+        "💌 Surprise letter at the journey's end",
+        "✨ Cinematic intro & exit",
+        "🎵 Atmospheric background music"
+      ],
+      "submitDetails": [
+        { "icon": "💝", "label": "Your Names", "required": true, "desc": "E.g. Sahil & Priya — appears on the welcome screen" },
+        { "icon": "📸", "label": "3 Special Photos", "required": true, "desc": "Key moments from your journey (First date, Vacations, etc.)" },
+        { "icon": "💌", "label": "Long Letter", "required": true, "desc": "Write everything you feel — this is the finale surprise" },
+        { "icon": "🎵", "label": "Background Song", "required": false, "desc": "Specify a song name for the journey's mood" }
+      ],
+      "media": {
+        "thumbnail": "media/anniversary-journey/thumbnail.jpg"
+      }
     }
   ]
 }
