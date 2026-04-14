@@ -79,8 +79,6 @@ async function init() {
 
 document.addEventListener('DOMContentLoaded', init);
 
-// (Removed old loadContent as it is replaced by init)
-
 function applyContent(c) {
   const name = c.name || 'Beautiful';
 
@@ -91,18 +89,24 @@ function applyContent(c) {
     `<span class="name-highlight">${name}!</span>` +
     `<span class="title-cake">🎂</span>`;
 
-  // Page 3 — love letter
-  setEl('letterGreeting', c.letterGreeting);
-  setEl('letterBody',     c.letterBody);
-  setEl('letterSign',     c.letterSign);
-
-  // Page 9 — final letter
-  setEl('finalLetterGreeting', c.finalLetterGreeting);
-  setEl('finalLetterBody',     c.finalLetterBody);
-  setEl('finalLetterPink',     c.finalLetterPink);
+  // Page 3 — used as the FINAL letter now (High Quality Envelope sequence leads here)
+  setEl('letterGreeting', c.finalLetterGreeting || c.letterGreeting || 'My dearest birthday girl,');
+  setEl('letterBody',     c.finalLetterBody     || c.letterBody     || 'Today marks another year of your incredible existence...');
+  setEl('letterSign',     c.finalLetterPink     || c.letterSign     || 'Forever yours 💝');
 
   // Page 10 — sealed subtitle
   setEl('sealedSub', `Happy Birthday, ${name}! 🎂✨`);
+
+  // Inject User Gallery into Wish Slideshow if available
+  const slideshow = document.getElementById('wishSlideshow');
+  if (slideshow && c.wishes && c.wishes.length > 0) {
+      const userImgs = c.wishes.map(w => w.memory).filter(Boolean);
+      if (userImgs.length > 0) {
+          slideshow.innerHTML = userImgs.map((src, i) => 
+              `<img class="wish-img ${i===0?'active':''}" src="${src}" alt="Memory" onerror="this.src='assets/hello_kitty_intro.png'"/>`
+          ).join('');
+      }
+  }
 }
 
 function setEl(id, value) {
@@ -242,7 +246,8 @@ function endDraw(e) {
     if (msg)     msg.style.display = 'block';
     if (cakeImg) cakeImg.src = 'assets/candle_cake.png';
     launchConfetti(28);
-    setTimeout(() => goToPage(5), 3000);
+    // Cake cutting now leads to Memory Game (Page 6)
+    setTimeout(() => goToPage(6), 3000);
   } else {
     cakeCtx.clearRect(0, 0, 280, 240);
   }
@@ -573,6 +578,9 @@ function restartExperience() {
   // Memory game
   initMemoryGame();
 
+  // Reset Envelope (now at the end)
+  resetEnvelope();
+  
   goToPage(1);
 }
 
