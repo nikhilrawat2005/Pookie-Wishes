@@ -6,6 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 // ── DATA ──────────────────────────────────
 const DATA = {
     names: "Sahil & Priya",
+    recipient: "Priya",
     date: "March 27, 2026",
     letter: `Happy Anniversary my pookie! ✨
 
@@ -83,9 +84,17 @@ async function initData() {
         try {
             const userData = await window.getPookieData('anniversary-journey-template');
             if (userData) {
-                if (userData.recipientName) DATA.names = userData.recipientName;
+                if (userData.recipientName) DATA.recipient = userData.recipientName;
                 if (userData.message) DATA.letter = userData.message;
                 if (userData.senderName) DATA.signature = userData.senderName;
+                
+                // Combine names for welcome screen
+                if (DATA.signature && DATA.recipient) {
+                    DATA.names = `${DATA.signature} & ${DATA.recipient}`;
+                } else if (DATA.recipient) {
+                    DATA.names = DATA.recipient;
+                }
+
                 if (userData.photos && userData.photos.length > 0) {
                     DATA.photos = userData.photos;
                 }
@@ -96,8 +105,8 @@ async function initData() {
                 // 🌿 Global Placeholder Fix (v3)
                 if (window.bindPookiePlaceholders) {
                     window.bindPookiePlaceholders({
-                        name: DATA.names,
-                        sender: DATA.signature || "Your Pookie",
+                        name: DATA.recipient,
+                        sender: DATA.signature || "Your Love",
                         message: DATA.letter
                     });
                 }
@@ -113,9 +122,17 @@ async function initData() {
             const res = await fetch('./user_content/config.json');
             if (res.ok) {
                 const localData = await res.json();
-                if (localData.recipientName) DATA.names = localData.recipientName;
+                if (localData.recipientName) DATA.recipient = localData.recipientName;
                 if (localData.message) DATA.letter = localData.message;
                 if (localData.senderName) DATA.signature = localData.senderName;
+                
+                // Combine names for welcome screen
+                if (DATA.signature && DATA.recipient) {
+                    DATA.names = `${DATA.signature} & ${DATA.recipient}`;
+                } else if (DATA.recipient) {
+                    DATA.names = DATA.recipient;
+                }
+
                 if (localData.photos && localData.photos.length > 0) {
                     DATA.photos = localData.photos;
                 }
@@ -125,7 +142,7 @@ async function initData() {
 
                 if (window.bindPookiePlaceholders) {
                     window.bindPookiePlaceholders({
-                        name: DATA.names,
+                        name: DATA.recipient,
                         sender: DATA.signature || "Your Love",
                         message: DATA.letter
                     });

@@ -339,7 +339,7 @@
         "🎵 Atmospheric background music"
       ],
       "submitDetails": [
-        { "icon": "💝", "label": "Your Names", "key": "recipient_name", "type": "text", "required": true, "desc": "E.g. Sahil & Priya — appears on the welcome screen" },
+        { "icon": "💝", "label": "Special One's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "Who is this surprise for?" },
         { "icon": "📅", "label": "Anniversary Date", "key": "eventDate", "type": "date", "required": true, "desc": "The special date to highlight at the beginning of the journey" },
         { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Your name to sign off the surprise letter" },
         { "icon": "📸", "label": "4 Special Photos", "key": "photos", "type": "photo", "required": true, "desc": "Key moments from your journey (First date, Vacations, etc.)" },
