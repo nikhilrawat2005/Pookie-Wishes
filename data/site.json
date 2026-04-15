@@ -384,7 +384,7 @@
         { "icon": "💌", "label": "Final Parchment Letter", "required": true, "desc": "The grand finale heartfelt message" }
       ],
       "media": {
-        "thumbnail": "templates/ninja-game/backs/scroll-animation.gif"
+        "thumbnail": "templates/ninja-game-template/backs/scroll-animation.gif"
       }
     }
   ]
