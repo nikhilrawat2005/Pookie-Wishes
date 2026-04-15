@@ -352,60 +352,67 @@
       transform: translateY(-1px);
     }
 
-    /* ─── POOKIE WATERMARK ─── */
+    /* ─── POOKIE WATERMARK (Corner Placement) ─── */
     .pookie-watermark {
-      margin-top: 30px;
+      position: absolute;
+      right: 25px;
+      bottom: 25px;
       display: flex;
       flex-direction: column;
-      align-items: center;
-      gap: 12px;
+      align-items: flex-end;
+      gap: 10px;
       font-family: sans-serif;
-      padding-bottom: 20px;
-      flex-shrink: 0;
+      z-index: 100;
+      pointer-events: auto;
     }
 
     .watermark-cloud {
-      background: rgba(255, 255, 255, 0.9);
+      background: rgba(255, 255, 255, 0.95);
       backdrop-filter: blur(8px);
       color: #2e1a06;
-      padding: 10px 16px;
-      border-radius: 16px 16px 0 16px;
-      font-size: 0.75rem;
+      padding: 8px 14px;
+      border-radius: 16px 16px 4px 16px;
+      font-size: 0.7rem;
       font-weight: 600;
-      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.15);
       border: 1px solid rgba(154, 96, 32, 0.2);
-      max-width: 240px;
-      text-align: center;
+      max-width: 200px;
+      text-align: right;
       line-height: 1.4;
+      animation: floatBadge 3s ease-in-out infinite;
+    }
+
+    @keyframes floatBadge {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
     }
 
     .watermark-btn {
       background: #ff2a85;
       color: #fff;
       text-decoration: none;
-      padding: 12px 24px;
+      padding: 10px 20px;
       border-radius: 30px;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       font-weight: 700;
-      letter-spacing: 1px;
+      letter-spacing: 0.5px;
       text-transform: uppercase;
-      box-shadow: 0 4px 12px rgba(255, 42, 133, 0.3);
+      box-shadow: 0 4px 15px rgba(255, 42, 133, 0.3);
       transition: all 0.3s ease;
       display: flex;
       align-items: center;
       gap: 8px;
-      pointer-events: auto;
     }
 
     .watermark-btn:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 18px rgba(255, 42, 133, 0.4);
+      transform: translateY(-2px) scale(1.03);
+      box-shadow: 0 6px 20px rgba(255, 42, 133, 0.4);
       background: #e02574;
     }
 
     @media screen and (max-height: 500px) {
-      .pookie-watermark { margin-top: 15px; gap: 8px; }
-      .watermark-cloud { font-size: 0.6rem; padding: 6px 10px; }
+      .pookie-watermark { right: 15px; bottom: 15px; gap: 6px; }
+      .watermark-cloud { font-size: 0.55rem; padding: 6px 10px; max-width: 160px; }
       .watermark-btn { font-size: 0.55rem; padding: 6px 14px; }
     }
 
@@ -695,16 +702,16 @@
       </p>
       <p class="letter-sign">Happy Birthday. Here's to you. ✨</p>
       <button id="replay-btn" onclick="location.reload()">↺ Play Again</button>
+    </div>
 
-      <!-- Marketing Watermark -->
-      <div class="pookie-watermark">
-          <div class="watermark-cloud">
-              Want to create such a fun game for someone? ❤️
-          </div>
-          <a href="https://pookie-wishes.vercel.app" target="_blank" class="watermark-btn">
-              <span>🎁</span> Visit Pookie Wishes
-          </a>
-      </div>
+    <!-- Marketing Watermark (Fixed to corner) -->
+    <div class="pookie-watermark">
+        <div class="watermark-cloud">
+            Want to create such a fun game for someone? ❤️
+        </div>
+        <a href="https://pookie-wishes.vercel.app" target="_blank" class="watermark-btn">
+            <span>🎁</span> Visit Pookie Wishes
+        </a>
     </div>
   </div>
 </div>
