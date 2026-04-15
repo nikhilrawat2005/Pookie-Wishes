@@ -360,6 +360,7 @@
       "currency": "₹",
       "currencyCode": "INR",
       "hasPhotos": false,
+      "testing": true,
       "tags": ["gaming", "retro", "ninja", "interactive", "arcade"],
       "shortDesc": "A retro arcade-style ninja adventure where you collect scrolls to reveal hidden messages.",
       "longDesc": "Run, jump, and slash through the Ninja Path! This retro 8-bit adventure lets your pookie play as a ninja on a quest. Collect coins to unlock hidden scrolls containing your messages, avoid obstacles, and reach the final sanctuary to read a beautiful parchment letter. Perfect for the gaming fan in your life.",
