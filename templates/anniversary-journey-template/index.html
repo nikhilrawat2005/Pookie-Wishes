@@ -3,105 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Our Anniversary Journey 💝</title>
-    
-    <!-- Fonts -->
+    <title>Sahil & Priya — Our Story 💝</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
-    
-    <!-- Styles -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Great+Vibes&family=Jost:wght@200;300;400;500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    
-    <!-- Icons -->
-    <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
 
-    <!-- Background Decoration -->
-    <div class="bg-blobs">
-        <div class="intro-bg-mask"></div>
-        <div id="bg-floaters"></div>
+<canvas id="petal-canvas"></canvas>
+<div class="noise-overlay"></div>
+
+<!-- SCREEN 1: INTRO -->
+<section id="section-intro" class="section active">
+    <div class="intro-bg-gradient"></div>
+    <div class="corner-decor tl"></div>
+    <div class="corner-decor tr"></div>
+    <div class="corner-decor bl"></div>
+    <div class="corner-decor br"></div>
+
+    <div class="intro-content">
+        <div class="intro-date-badge">March 27, 2026</div>
+        <div class="intro-heart-row">
+            <span class="intro-line-left"></span>
+            <span class="intro-heart-icon">♥</span>
+            <span class="intro-line-right"></span>
+        </div>
+        <h1 class="names-title" id="display-names">Sahil &amp; Priya</h1>
+        <p class="intro-sub">A love story worth remembering</p>
+        <button class="btn-cinematic" onclick="startJourney()">
+            <span class="btn-inner">Begin Our Journey</span>
+            <span class="btn-shimmer"></span>
+        </button>
     </div>
+</section>
 
-    <!-- Pookie Watermark -->
-    <div class="pookie-watermark">
-        <span class="pw-text">pookiewishes.com</span>
+<!-- SCREEN 2: JOURNEY -->
+<section id="section-journey" class="section">
+    <div class="journey-wrap">
+        <div class="timeline-line">
+            <div class="timeline-line-fill" id="timeline-fill"></div>
+        </div>
+        <div id="photo-container"></div>
+        <div class="journey-end reveal">
+            <div class="end-ornament">✦ ✦ ✦</div>
+            <h2 class="end-heading">Our journey doesn't end here...</h2>
+            <p class="end-sub">I still have something special for you.</p>
+            <button class="btn-cinematic" onclick="revealLetter()">
+                <span class="btn-inner">Open Your Surprise 💌</span>
+                <span class="btn-shimmer"></span>
+            </button>
+        </div>
     </div>
+    <div id="decor-container" class="decor-container"></div>
+</section>
 
-    <!-- 1. Opening Screen -->
-    <section id="section-intro" class="section active">
-        <div class="intro-content reveal">
-            <div class="heart-icon">💝</div>
-            <h1 class="names-title" id="display-names">Sahil & Priya</h1>
-            <p class="tagline">Welcome to a trip down memory lane...</p>
-            <button class="btn-start" onclick="startJourney()">Start Our Journey ✨</button>
-        </div>
-    </section>
-
-    <section id="section-journey" class="section">
-        <div class="journey-track">
-            <div id="decor-container" class="decor-container"></div>
-            <!-- Animated Dotted Line -->
-            <div class="scroll-path-container">
-                <svg class="scroll-path-svg" preserveAspectRatio="none">
-                    <path class="main-path" d="M 1 0 L 1 1000" id="travel-path"></path>
-                </svg>
-            </div>
-            
-            <div id="photo-container">
-                <!-- Photos & Stickers will be injected here -->
-            </div>
-            
-            <div class="journey-end-trigger reveal">
-                <h2>Our journey doesn't end here...</h2>
-                <p>I still have something special for you.</p>
-                <button class="btn-reveal" onclick="revealLetter()">Open Your Surprise 💌</button>
-            </div>
-        </div>
-    </section>
-
-    <section id="section-letter" class="section">
-        <div class="letter-wrap reveal">
-            <div class="letter-content">
-                <img src="assets/eyes.gif" class="letter-accent accent-eyes" alt="">
-                <img src="assets/sticker-heart-kitty.webp" class="letter-accent accent-heart" alt="">
-                <div class="letter-header">
-                    <i data-lucide="heart" class="heart-pulse"></i>
-                    <span>A Heartfelt Note</span>
-                </div>
-                <div class="letter-body" id="display-letter">
-                    <!-- Letter content goes here -->
-                </div>
-                <div class="letter-footer">
-                    <p>Yours forever,</p>
-                    <p class="signature" id="display-signature"></p>
+<!-- SCREEN 3: LETTER -->
+<section id="section-letter" class="section">
+    <div class="letter-scene">
+        <div class="envelope-wrap" id="envelope-wrap">
+            <div class="envelope">
+                <div class="env-flap"></div>
+                <div class="env-body">
+                    <div class="env-seal">♥</div>
                 </div>
             </div>
-            <button class="btn-next" onclick="showEnding()">Continuue ✨</button>
         </div>
-    </section>
 
-    <!-- 4. Ending Page -->
-    <section id="section-ending" class="section">
+        <div class="letter-card reveal" id="letter-card">
+            <div class="letter-paper">
+                <img src="assets/sticker-heart-kitty.webp" class="letter-sticker s1" alt="">
+                <img src="assets/eyes.gif" class="letter-sticker s2" alt="">
+                <img src="assets/sticker-kitty.png" class="letter-sticker s3" alt="">
+                <div class="letter-ruling"></div>
+                <div class="letter-top">
+                    <span class="letter-dear">Dearest Priya,</span>
+                </div>
+                <div class="letter-body" id="display-letter">Happy Anniversary my pookie! ✨
+
+Looking back at these photos reminds me of how far we've come. Every scroll represents a step we took together. Thank you for being by my side and making every moment feel like a movie.
+
+I love you to the moon and back! 🌙</div>
+                <div class="letter-sign">
+                    <div class="letter-sign-line"></div>
+                    <p class="letter-forever">Yours forever,</p>
+                    <p class="signature" id="display-signature">Sahil</p>
+                </div>
+            </div>
+            <button class="btn-cinematic letter-btn" onclick="showEnding()">
+                <span class="btn-inner">Continue ✨</span>
+                <span class="btn-shimmer"></span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<!-- SCREEN 4: ENDING -->
+<section id="section-ending" class="section">
+    <div class="ending-wrap">
+        <div class="ending-ring ring1"></div>
+        <div class="ending-ring ring2"></div>
+        <div class="ending-ring ring3"></div>
         <div class="ending-content reveal">
-            <div class="sparkle-ico">✨</div>
-            <h2>Let's make our future years even more special.</h2>
-            <p>Every moment with you is a gift.</p>
-            <div class="end-actions">
-                <button class="btn-restart" onclick="restartJourney()">Restart Journey 🔄</button>
+            <div class="ending-ornament">✦</div>
+            <h2 class="ending-title">Always &amp; Forever</h2>
+            <p class="ending-quote">"Let's make our future years even more magical than our past."</p>
+            <div class="ending-hearts">
+                <span>♥</span><span>♥</span><span>♥</span>
             </div>
+            <p class="ending-sub">Every moment with you is the greatest gift.</p>
+            <button class="btn-restart" onclick="restartJourney()">↺ Replay Our Story</button>
         </div>
-    </section>
-
-    <!-- Audio Player (Optional) -->
-    <div id="music-player" class="hidden">
-        <audio id="bg-music" loop></audio>
     </div>
+</section>
 
-    <!-- Scripts -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
-    <script src="script.js"></script>
+<div class="pookie-watermark">pookiewishes.com</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+<script src="script.js"></script>
 </body>
 </html>
