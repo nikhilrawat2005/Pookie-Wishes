@@ -70,17 +70,43 @@ const STICKERS_BG = [
 ];
 
 // ── INIT ─────────────────────────────────
-document.addEventListener('DOMContentLoaded', () => {
-    initData();
+document.addEventListener('DOMContentLoaded', async () => {
+    await initData();
     initPetalCanvas();
     initReveals();
     buildPhotoMoments();
 });
 
-function initData() {
+async function initData() {
+    if (window.getPookieData) {
+        try {
+            const userData = await window.getPookieData('anniversary-journey-template');
+            if (userData) {
+                if (userData.recipientName) DATA.names = userData.recipientName;
+                if (userData.message) DATA.letter = userData.message;
+                if (userData.senderName) DATA.signature = userData.senderName;
+                if (userData.photos && userData.photos.length > 0) {
+                    DATA.photos = userData.photos;
+                }
+
+                // 🌿 Global Placeholder Fix (v3)
+                if (window.bindPookiePlaceholders) {
+                    window.bindPookiePlaceholders({
+                        name: DATA.names,
+                        sender: DATA.signature || "Your Pookie",
+                        message: DATA.letter
+                    });
+                }
+            }
+        } catch (e) {
+            console.warn("Load error:", e);
+        }
+    }
+
     document.getElementById('display-names').textContent   = DATA.names;
     document.getElementById('display-letter').textContent  = DATA.letter;
     document.getElementById('display-signature').textContent = DATA.signature;
+    document.title = `${DATA.names} — Our Story 💝`;
 }
 
 // ── PETAL CANVAS ─────────────────────────

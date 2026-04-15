@@ -32,6 +32,26 @@
 }
 
 /* ─────────────────────────────────
+   HOUSE THEMES
+───────────────────────────────── */
+body.house-gryffindor {
+  --gold: #ae0001; --gl: #e25c5c; --gd: #740001;
+  --gg: 0 0 22px rgba(174,0,1,.9), 0 0 50px rgba(174,0,1,.4);
+}
+body.house-slytherin {
+  --gold: #2a623d; --gl: #5cb87c; --gd: #1a472a;
+  --gg: 0 0 22px rgba(42,98,61,.9), 0 0 50px rgba(42,98,61,.4);
+}
+body.house-hufflepuff {
+  --gold: #ecb939; --gl: #f0c75e; --gd: #726237;
+  --gg: 0 0 22px rgba(236,185,57,.9), 0 0 50px rgba(236,185,57,.4);
+}
+body.house-ravenclaw {
+  --gold: #222f5b; --gl: #5d5d8d; --gd: #0e1a40;
+  --gg: 0 0 22px rgba(34,47,91,.9), 0 0 50px rgba(34,47,91,.4);
+}
+
+/* ─────────────────────────────────
    BASE RESET
 ───────────────────────────────── */
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }

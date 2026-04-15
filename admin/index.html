@@ -723,6 +723,38 @@ function openDrawer(oid) {
   if (o.detailsSubmitted) {
     if (o.personalizations && Array.isArray(o.personalizations) && o.personalizations.length > 0) {
       pData = o.personalizations.map((p, idx) => {
+        // Build generic fields dynamically
+        const skipKeys = ['photos', 'templateId', 'recipientName', 'wishMessage', 'eventDate', 'message', 'house', 'dob', 'zodiacSign', 'senderName', 'signature', 'voucher'];
+        
+        // Define specific important keys to show first with labels
+        const importantKeys = [
+          { key: 'recipientName', label: 'Recipient' },
+          { key: 'senderName', label: 'Sender' },
+          { key: 'house', label: 'House' },
+          { key: 'dob', label: 'Birthday' },
+          { key: 'zodiacSign', label: 'Zodiac' },
+          { key: 'eventDate', label: 'Event Date' },
+          { key: 'voucher', label: 'Voucher' },
+          { key: 'signature', label: 'Signature' }
+        ];
+
+        let fieldHtml = importantKeys.map(k => {
+          if (!p[k.key]) return '';
+          return `<div class="inf-row"><div class="inf-k">${k.label}</div><div class="inf-v">${p[k.key]} <button class="copy-btn" onclick="copy('${p[k.key]}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>`;
+        }).join('');
+
+        // Add any other dynamic keys from site.json
+        Object.keys(p).forEach(key => {
+          if (!skipKeys.includes(key) && p[key]) {
+            const label = key.charAt(0).toUpperCase() + key.slice(1).replace(/([A-Z])/g, ' $1');
+            fieldHtml += `<div class="inf-row"><div class="inf-k">${label}</div><div class="inf-v">${p[key]} <button class="copy-btn" onclick="copy('${p[key]}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>`;
+          }
+        });
+
+        // Message field (usually the biggest)
+        const msg = p.message || p.wishMessage || p.wish_message || '';
+        const msgHtml = msg ? `<div class="sec-title" style="margin-top:12px; font-size:0.65rem;"><i data-lucide="message-square"></i> Message</div><div class="inf-v" style="background:var(--bg3);padding:10px;border-radius:var(--rs);margin-top:4px;white-space:pre-wrap;font-size:0.8rem;">${msg}</div>` : '';
+
         const photosHtml = (p.photos && p.photos.length) ? `
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--bdr);">
             ${p.photos.map((url, i) => `
@@ -741,9 +773,8 @@ function openDrawer(oid) {
             <div style="font-family:var(--fd); font-size:0.75rem; font-weight:700; color:var(--pink); text-transform:uppercase; margin-bottom:12px; display:flex; align-items:center; gap:8px;">
               <i data-lucide="sparkles" style="width:14px;"></i> #${idx+1} — ${p.templateId || 'Template'}
             </div>
-            <div class="inf-row"><div class="inf-k">Recipient</div><div class="inf-v">${p.recipientName||'—'} <button class="copy-btn" onclick="copy('${p.recipientName}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
-            <div class="inf-row"><div class="inf-k">Date Event</div><div class="inf-v">${p.eventDate||'—'}</div></div>
-            <div class="inf-row"><div class="inf-k">Message</div><div class="inf-v" style="background:var(--bg3);padding:10px;border-radius:var(--rs);margin-top:4px;white-space:pre-wrap;">${p.wishMessage||'—'}</div></div>
+            ${fieldHtml}
+            ${msgHtml}
             ${photosHtml}
           </div>
         `;

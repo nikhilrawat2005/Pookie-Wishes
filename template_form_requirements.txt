@@ -1,0 +1,98 @@
+POOKIE WISHES - FINALIZED TEMPLATE FORM REQUIREMENTS
+======================================================
+
+Note: Photo requirements are now standardized for automated processing.
+- Standard templates: Exactly 3 Photos.
+- Anniversary template: Exactly 4 Photos.
+- Optional/Song fields: Removed.
+- Among Us/Ninja Game: Streamlined for better UX.
+
+1. HELLO KITTY (🎀 Kawaii Birthday Vibes)
+------------------------------------------
+• NAMES: 
+    - Birthday Person's Name
+    - Your Name / Sender
+• TEXT: 
+    - Personal Birthday Letter
+• PHOTOS: 
+    - Exactly 3 Photos
+
+2. HARRY POTTER (⚡ Magical Birthday Wishes)
+--------------------------------------------
+• NAMES: 
+    - Witch / Wizard's Name
+    - Your Name / Sender
+• TEXT: 
+    - Birthday Wish Message
+• PHOTOS: 
+    - Exactly 3 Photos
+• EXTRA: 
+    - Hogwarts House Selection (Gryffindor, Slytherin, Hufflepuff, or Ravenclaw)
+
+3. LOVE TRAP (💘 Catch them in a web of love)
+---------------------------------------------
+• NAMES: 
+    - Their Name
+    - Your Name
+• TEXT: 
+    - Love Confession Letter
+• PHOTOS: 
+    - Exactly 3 Photos
+
+4. CELESTIAL UNIVERSE (🌌 Interstellar Birthday Journey)
+--------------------------------------------------------
+• NAMES: 
+    - Birthday Person's Name
+    - Your Name / Sender
+• TEXT: 
+    - Star Message
+• EXTRA: 
+    - Their Date of Birth
+
+5. AMONG US (🚀 You're Kinda Sus... But I Love You)
+---------------------------------------------------
+• NAMES: 
+    - Crewmate's Name
+    - Your Name
+• Note: This template focuses on humorous accusations and the final verdict reveal.
+
+6. HOPPERS (🌿 A Pixar-Inspired Glade Adventure)
+------------------------------------------------
+• NAMES: 
+    - Birthday Person's Name
+    - Your Name / Sender
+• TEXT: 
+    - Birthday Message
+
+7. THE APOLOGY (🥺 Because Sorry Needs More Than Just Words)
+------------------------------------------------------------
+• NAMES: 
+    - Their Name
+    - Your Name
+• TEXT: 
+    - Apology Letter
+• PHOTOS: 
+    - Exactly 3 Photos
+• EXTRA: 
+    - Pookie Voucher Wish (e.g., 'One free hug anytime')
+
+8. ANNIVERSARY JOURNEY (💝 Relive your best moments)
+----------------------------------------------------
+• NAMES: 
+    - Your Names (e.g., "Sahil & Priya")
+• TEXT: 
+    - Long Letter
+• PHOTOS: 
+    - Exactly 4 Photos
+
+9. NINJA PATH ADVENTURE (🥷 Run, Jump, and Collect Love!)
+---------------------------------------------------------
+• NAMES: 
+    - Ninja's Name
+• TEXT: 
+    - Final Parchment Letter (The grand finale)
+• Note: Scroll messages 1 & 2 are now heartwarming system-generated content.
+
+10. FULLY CUSTOM THEME (🎨 Your Vision, Our Digital Magic)
+---------------------------------------------------------
+• Managed manually via direct collaboration.

@@ -474,19 +474,40 @@ async function init() {
     try {
       userData = await window.getPookieData('celestial');
       if (userData) {
-        if (userData.wishMessage) FINALE_BODY = userData.wishMessage;
         if (userData.recipientName) {
             RECIPIENT_NAME = userData.recipientName;
             const h = document.querySelector('.finale-heading');
             if(h) h.textContent = `HAPPY BIRTHDAY ${RECIPIENT_NAME}!`;
+            document.title = `Happy Birthday ${RECIPIENT_NAME} ✨`;
         }
-        if (userData.memoryPhotos) {
-            memoryPhotos = userData.memoryPhotos;
+        
+        // Personalization for Header
+        if (userData.senderName) {
+            const hdr = document.querySelector('.hdr-name');
+            if(hdr) hdr.textContent = `${userData.senderName} 💖`;
+        }
+
+        // Zodiac & Finale Logic
+        if (userData.zodiacSign) {
+            const zMsg = `As a ${userData.zodiacSign}, you've always carried the magic of the stars within you. `;
+            FINALE_BODY = zMsg + (userData.message || "Wishing you a birthday as vast and beautiful as the cosmos itself. May every star in the sky bring you a reason to smile today.");
+        } else if (userData.message) {
+            FINALE_BODY = userData.message;
+        }
+
+        if (userData.signature) FINALE_FOOTER = userData.signature;
+
+        if (userData.photos && userData.photos.length > 0) {
+            memoryPhotos = userData.photos;
         }
 
         // 🌿 Global Placeholder Fix (v3)
         if (window.bindPookiePlaceholders) {
-          window.bindPookiePlaceholders(userData);
+          window.bindPookiePlaceholders({
+            name: RECIPIENT_NAME,
+            sender: userData.senderName || "Your Pookie",
+            message: FINALE_BODY
+          });
         }
       }
     } catch (e) {

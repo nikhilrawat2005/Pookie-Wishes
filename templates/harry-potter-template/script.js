@@ -73,6 +73,7 @@ async function init() {
 
 function applyDataToConfig(d) {
   if (d.name) C.name = d.name;
+  if (d.house) C.house = d.house;
   if (d.intro) C.intro = { ...C.intro, ...d.intro };
   if (d.wishCards) C.wishCards = d.wishCards;
   if (d.storyPanels) {
@@ -105,6 +106,13 @@ function boot() {
   document.getElementById('iName').textContent = N;
   const ey = document.getElementById('iEy');
   if (ey) ey.textContent = C.intro.badge || '✦ A Magical Birthday Experience ✦';
+
+  // Apply House Theme
+  if (C.house) {
+    document.body.classList.add(`house-${C.house.toLowerCase()}`);
+    const tag = document.querySelector('.sec#s1 .it3');
+    if (tag) tag.textContent = `The Sorting Hat has spoken: You belong in ${C.house}! ⚡`;
+  }
 
   // All name placeholders
   document.querySelectorAll('.n2,.n4,.n5,.n7,.n7a,.n8,.n8p').forEach(e => e.textContent = N);

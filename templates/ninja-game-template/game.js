@@ -24,10 +24,10 @@ const TYPEWRITER_MS = 50;
 
 // Scroll messages — one per scroll item found in the level
 const SCROLL_MESSAGES = [
-  "I don't think you realize how easy you make things feel when you're around.",
-  "Even on your worst days… you still show up.",
-  "You've been the reason I smiled more times than I said.",
-  "Some people exist. You leave impact."
+  "Pause the game. Just for a second. Know that someone thinks about you every single day. ✨",
+  "You're the main character of my life, not just this game. Everything's better with you in it. 💖",
+  "Okay you're actually kind of unbeatable — at games, at life, at making me smile. I'm obsessed 🥷",
+  "Last scroll, I promise... just wanted to say: Happy Birthday. You deserve the whole world. 🎂💕"
 ];
 
 // ── MAIN SCENE ───────────────────────────────────────────────────

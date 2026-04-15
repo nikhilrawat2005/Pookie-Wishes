@@ -697,10 +697,11 @@
         even notice. I notice. I've always noticed.
       </p>
       <p class="letter-body">
-        Today is a reminder that the universe did something wonderful when it made you.
-        I'm grateful — every single day — that you exist in mine.
+        Today is a reminder that the universe did something right when it made you.
+        You are someone's favourite person, their reason to smile, their safe place.
+        I'm grateful — every single day — that you exist in this world.
       </p>
-      <p class="letter-sign">Happy Birthday. Here's to you. ✨</p>
+      <p class="letter-sign" id="letter-sign-el">Happy Birthday. Here's to you. ✨</p>
       <button id="replay-btn" onclick="location.reload()">↺ Play Again</button>
     </div>
 
@@ -716,10 +717,61 @@
   </div>
 </div>
 
+<!-- ─── Firebase + Pookie Data Engine ─── -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="../../js/template-loader.js"></script>
+
 <!-- ─── PHASER GAME ─── -->
 <div id="game-container"></div>
 
 <script>
+// ── DATA BINDING ──────────────────────────────────────────────
+let userData = null;
+let recipientName = "Ninja";
+let finalMessage = "";
+
+async function initData() {
+  if (window.getPookieData) {
+    userData = await window.getPookieData('ninja-game');
+    if (userData) {
+      if (userData.recipientName) {
+        recipientName = userData.recipientName;
+        // Update intro lines
+        document.getElementById('line3').textContent = `HAPPY BIRTHDAY ${recipientName.toUpperCase()}`;
+        document.title = `Ninja Path — ${recipientName}'s Journey ✨`;
+      }
+      if (userData.message) {
+        finalMessage = userData.message;
+        // Inject final letter body
+        const bodies = document.querySelectorAll('.letter-body');
+        if (bodies.length > 0) {
+          // Replace multiple bodies with one if long message
+          const container = document.getElementById('letter-scroll-content');
+          const firstBody = bodies[0];
+          Array.from(bodies).slice(1).forEach(el => el.remove());
+          firstBody.textContent = finalMessage;
+        }
+      }
+      
+      // Update sign
+      const sign = document.querySelector('#letter-sign-el, .letter-sign');
+      if (sign) sign.textContent = userData.senderName ? `Happy Birthday, From ${userData.senderName} ✨` : "Happy Birthday. Here's to you. ✨";
+
+      // 🌿 Global Placeholder Fix (v3)
+      if (window.bindPookiePlaceholders) {
+        window.bindPookiePlaceholders({
+          name: recipientName,
+          sender: userData.senderName || "Your Pookie",
+          message: finalMessage
+        });
+      }
+    }
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initData);
+
 // ══════════════════════════════════════════════════════════════
 //  makeScrollAnimator(canvasId, popupId, contentId, fps)
 //  Generic factory — drives any scroll popup using the spritesheet.

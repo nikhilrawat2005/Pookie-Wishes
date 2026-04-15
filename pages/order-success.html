@@ -63,39 +63,14 @@
     <!-- Personalisation Form (Hidden Initially) -->
     <div id="post-payment-form" style="display:none;">
       <div id="form-step-indicator" style="font-size: 0.8rem; color: var(--pink); font-weight: 700; margin-bottom: 10px; text-transform: uppercase; letter-spacing: 1px;">Step 1 of 1</div>
+      
       <div class="f-group" style="margin-bottom:12px;">
         <label class="f-label">Template Selected</label>
         <input class="f-inp" id="f-template-name" type="text" readonly disabled style="background:var(--bg2); cursor:not-allowed; border-color:var(--bdr); color:var(--text); font-weight:600;">
       </div>
-      <div class="f-group">
-        <label class="f-label">Recipient's Name *</label>
-        <input class="f-inp" id="f-recip" type="text" placeholder="Who is this surprise for?">
-      </div>
 
-      <div class="f-group">
-        <label class="f-label">Wish Message / Letter *</label>
-        <textarea class="f-inp" id="f-msg" rows="3" placeholder="Write your heartfelt message here..."></textarea>
-      </div>
-
-      <div class="f-row" style="display:flex; gap:16px;">
-        <div class="f-group" style="flex:1;">
-          <label class="f-label">Date <span class="opt">(Optional)</span></label>
-          <input class="f-inp" id="f-date" type="date">
-        </div>
-      </div>
-
-      <div class="f-group" id="photo-upload-sec">
-        <label class="f-label">Photos (Max 3) <span class="opt" id="f-photos-opt">(Required)</span></label>
-        <div class="img-note">
-          Please upload 1-3 photos to make your surprise magical! ✨
-        </div>
-        <label class="upload-zone">
-          <div style="font-size:1.5rem;margin-bottom:5px;">📸</div>
-          <div style="font-size:0.85rem;color:var(--text);">Click to select up to 3 photos</div>
-          <input type="file" id="f-photos" multiple accept="image/*" onchange="updateFileList(this)">
-        </label>
-        <div class="file-list" id="file-list-display">No files selected</div>
-      </div>
+      <!-- Dynamic Fields Container -->
+      <div id="dynamic-fields"></div>
 
       <button class="btn btn-primary btn-xl btn-full btn-shimmer" id="submit-details-btn" onclick="submitPersonalisation()">Complete Order 🚀</button>
     </div>
@@ -217,7 +192,7 @@
     }
   }
 
-  async function uploadToCloudinary(file, index) {
+  async function uploadToCloudinary(file) {
     const formData = new FormData();
     formData.append("file", file);
     formData.append("upload_preset", CLOUDINARY_UPLOAD_PRESET);
@@ -271,43 +246,108 @@
     
     // Look up template metadata
     const tMeta = SITE.templates.find(t => t.id === currentItem.templateId);
-    const photoSec = document.getElementById('photo-upload-sec');
-    
-    if (tMeta && tMeta.hasPhotos === false) {
-      photoSec.style.display = 'none';
-    } else {
-      photoSec.style.display = 'block';
-    }
+    if (!tMeta) return;
 
-    // Reset fields
-    document.getElementById('f-recip').value = "";
-    document.getElementById('f-msg').value = "";
-    document.getElementById('f-date').value = "";
-    selectedFiles = [];
-    document.getElementById('file-list-display').textContent = "No files selected";
-    document.getElementById('f-photos').value = "";
+    const container = document.getElementById('dynamic-fields');
+    container.innerHTML = ""; // Clear
+    selectedFiles = []; // Reset photos for each step
+
+    tMeta.submitDetails.forEach((detail, idx) => {
+      const fieldId = `field-${detail.key}`;
+      let fieldHTML = "";
+
+      if (detail.type === "photo") {
+        const count = detail.label.match(/\d+/)?.[0] || 3;
+        fieldHTML = `
+          <div class="f-group" id="photo-upload-sec">
+            <label class="f-label">${detail.label} ${detail.required ? '*' : '<span class="opt">(Optional)</span>'}</label>
+            <div class="img-note">${detail.desc}</div>
+            <label class="upload-zone">
+              <div style="font-size:1.5rem;margin-bottom:5px;">${detail.icon || '📸'}</div>
+              <div style="font-size:0.85rem;color:var(--text);">Select exactly ${count} photos</div>
+              <input type="file" id="${fieldId}" data-key="${detail.key}" data-max="${count}" multiple accept="image/*" onchange="updateFileList(this, ${count})">
+            </label>
+            <div class="file-list" id="file-list-display">No files selected</div>
+          </div>
+        `;
+      } else if (detail.type === "textarea") {
+        fieldHTML = `
+          <div class="f-group">
+            <label class="f-label">${detail.label} ${detail.required ? '*' : '<span class="opt">(Optional)</span>'}</label>
+            <textarea class="f-inp dynamic-input" id="${fieldId}" data-key="${detail.key}" rows="4" placeholder="${detail.desc}"></textarea>
+          </div>
+        `;
+      } else if (detail.type === "select") {
+        const options = (detail.options || []).map(o => `<option value="${o}">${o}</option>`).join('');
+        fieldHTML = `
+          <div class="f-group">
+            <label class="f-label">${detail.label} ${detail.required ? '*' : '<span class="opt">(Optional)</span>'}</label>
+            <select class="f-inp dynamic-input" id="${fieldId}" data-key="${detail.key}">
+              <option value="">-- Select Option --</option>
+              ${options}
+            </select>
+          </div>
+        `;
+      } else {
+        // text, date, etc.
+        fieldHTML = `
+          <div class="f-group">
+            <label class="f-label">${detail.label} ${detail.required ? '*' : '<span class="opt">(Optional)</span>'}</label>
+            <input class="f-inp dynamic-input" id="${fieldId}" data-key="${detail.key}" type="${detail.type || 'text'}" placeholder="${detail.desc}">
+          </div>
+        `;
+      }
+      container.innerHTML += fieldHTML;
+    });
 
     // Change button text for final step
     const btn = document.getElementById('submit-details-btn');
     btn.textContent = (currentOrderIndex === totalItems - 1) ? "Complete Order 🚀" : "Next Template ➡️";
   }
 
-  async function submitPersonalisation() {
-    const recip = document.getElementById('f-recip').value.trim();
-    const msg = document.getElementById('f-msg').value.trim();
-    const date = document.getElementById('f-date').value;
-
-    if (!recip || !msg) {
-      toast("Recipient Name and Wish Message are required!", "err");
+  function updateFileList(input, max) {
+    if (input.files.length > max) {
+      toast(`You can only select up to ${max} photos`, "err");
+      input.value = ""; 
+      selectedFiles = [];
+      document.getElementById('file-list-display').textContent = "No files selected";
       return;
     }
+    selectedFiles = Array.from(input.files);
+    if(selectedFiles.length === 0) {
+      document.getElementById('file-list-display').textContent = "No files selected";
+    } else {
+      document.getElementById('file-list-display').textContent = selectedFiles.map(f => f.name).join(', ');
+    }
+  }
 
+  async function submitPersonalisation() {
     const currentItem = orderData.orders[currentOrderIndex];
     const tMeta = SITE.templates.find(t => t.id === currentItem.templateId);
-    if (tMeta?.hasPhotos !== false && selectedFiles.length === 0) {
-      toast("Please upload at least 1 photo for this template!", "err");
-      return;
-    }
+    if (!tMeta) return;
+
+    const data = {};
+    let missing = false;
+
+    // Collect Dynamic Fields
+    tMeta.submitDetails.forEach(detail => {
+      if (detail.type === "photo") {
+        const max = parseInt(detail.label.match(/\d+/)?.[0] || 3);
+        if (detail.required && selectedFiles.length !== max) {
+          toast(`Please select exactly ${max} photos for this template!`, "err");
+          missing = true;
+        }
+      } else {
+        const val = document.querySelector(`[data-key="${detail.key}"]`).value.trim();
+        if (detail.required && !val) {
+          toast(`${detail.label} is required!`, "err");
+          missing = true;
+        }
+        data[detail.key] = val;
+      }
+    });
+
+    if (missing) return;
 
     const btn = document.getElementById('submit-details-btn');
     if (btn.dataset.locked) return;
@@ -319,34 +359,37 @@
     try {
       let photoLinks = [];
       if (selectedFiles.length > 0) {
-        toast(`Uploading photos for ${currentItem.templateId}...`, "inf");
+        toast(`Uploading photos... ✨`, "inf");
         for (let i = 0; i < selectedFiles.length; i++) {
-          const url = await uploadToCloudinary(selectedFiles[i], i);
+          const url = await uploadToCloudinary(selectedFiles[i]);
           photoLinks.push(url);
         }
       }
 
-      // Save this item's data
-      personalizations.push({
+      // Final Data for this item
+      const itemData = {
         templateId: currentItem.templateId,
-        recipientName: recip,
-        wishMessage: msg,
-        eventDate: date || null,
+        ...data,
         photos: photoLinks
-      });
+      };
+
+      // Compatibility Mappings (Legacy support for older templates)
+      if (data.recipient_name) itemData.recipientName = data.recipient_name;
+      if (data.sender_name) itemData.senderName = data.sender_name;
+      if (data.message) itemData.wishMessage = data.message;
+
+      personalizations.push(itemData);
 
       if (currentOrderIndex < orderData.orders.length - 1) {
-        // Move to next form
         currentOrderIndex++;
         btn.dataset.locked = "";
         btn.innerHTML = originalText;
         btn.disabled = false;
         adaptForm();
         window.scrollTo({ top: 0, behavior: 'smooth' });
-        toast("Step saved! Next one... ✨", "ok");
+        toast("Saved! Next step... 🪄", "ok");
       } else {
-        // Final Submission
-        toast("Finalizing your surprises... 🪄", "inf");
+        toast("Finalizing your highlights... ✨", "inf");
         await finalizeOrder();
       }
 

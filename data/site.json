@@ -84,11 +84,10 @@
         "📬 Final letter sealed with love"
       ],
       "submitDetails": [
-        { "icon": "🎀", "label": "Birthday Person's Name", "required": true, "desc": "Their real name or nickname — appears on the opening screen" },
-        { "icon": "✍️", "label": "Your Name (Sender)", "required": true, "desc": "How you want to sign this surprise" },
-        { "icon": "💌", "label": "Personal Birthday Letter", "required": true, "desc": "A heartfelt birthday message — revealed step by step in the flip cards" },
-        { "icon": "📸", "label": "3–10 Photos Together", "required": true, "desc": "Your favourite memories — shown in the animated photo gallery" },
-        { "icon": "🎵", "label": "Favourite Song Name", "required": false, "desc": "A song to play softly in the background (just type the YouTube search name)" }
+        { "icon": "🎀", "label": "Birthday Person's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "Their real name or nickname — appears on the opening screen" },
+        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "How you want to sign this surprise" },
+        { "icon": "💌", "label": "Personal Birthday Letter", "key": "message", "type": "textarea", "required": true, "desc": "A heartfelt birthday message — revealed step by step in the flip cards" },
+        { "icon": "📸", "label": "3 Favorite Photos", "key": "photos", "type": "photo", "required": true, "desc": "Your favorite memories — shown in the animated photo gallery" }
       ],
       "media": {
         "thumbnail": "media/hello-kitty/thumbnail.jpg",
@@ -125,11 +124,11 @@
         "✉️ Final Hogwarts letter by owl"
       ],
       "submitDetails": [
-        { "icon": "⚡", "label": "Witch / Wizard's Name", "required": true, "desc": "The birthday person's name for their official Hogwarts letter" },
-        { "icon": "✍️", "label": "Your Name (Sender)", "required": true, "desc": "Who is sending this magical surprise" },
-        { "icon": "🏠", "label": "Hogwarts House", "required": true, "desc": "Gryffindor, Slytherin, Hufflepuff, or Ravenclaw — or say 'let the Hat decide!'" },
-        { "icon": "💌", "label": "Birthday Wish Message", "required": true, "desc": "A heartfelt note — revealed at the end inside their Hogwarts letter" },
-        { "icon": "📸", "label": "3–10 Photos Together", "required": false, "desc": "Memories shown in the enchanted photo gallery section" }
+        { "icon": "⚡", "label": "Witch / Wizard's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The birthday person's name for their official Hogwarts letter" },
+        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this magical surprise" },
+        { "icon": "🏠", "label": "Hogwarts House", "key": "house", "type": "select", "options": ["Gryffindor", "Slytherin", "Hufflepuff", "Ravenclaw"], "required": true, "desc": "Which house do they belong to?" },
+        { "icon": "💌", "label": "Birthday Wish Message", "key": "message", "type": "textarea", "required": true, "desc": "A heartfelt note — revealed at the end inside their Hogwarts letter" },
+        { "icon": "📸", "label": "3 Favorite Photos", "key": "photos", "type": "photo", "required": true, "desc": "Memories shown in the enchanted photo gallery section" }
       ],
       "media": {
         "thumbnail": "media/harry-potter/thumbnail.jpg",
@@ -154,11 +153,10 @@
         "🎁 Hidden surprises throughout"
       ],
       "submitDetails": [
-        { "icon": "💘", "label": "Their Name", "required": true, "desc": "The person you're surprising — appears throughout the love experience" },
-        { "icon": "✍️", "label": "Your Name", "required": true, "desc": "Your name or nickname to sign the love letter" },
-        { "icon": "💬", "label": "Love Confession Letter", "required": true, "desc": "Tell them how you feel — it becomes the centrepiece of the entire experience" },
-        { "icon": "📸", "label": "3–10 Photos Together", "required": true, "desc": "Your favourite moments shown in the love gallery" },
-        { "icon": "🎵", "label": "Your Song", "required": false, "desc": "A song that means something to both of you (YouTube search name)" }
+        { "icon": "💘", "label": "Their Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The person you're surprising — appears throughout the love experience" },
+        { "icon": "✍️", "label": "Your Name", "key": "sender_name", "type": "text", "required": true, "desc": "Your name or nickname to sign the love letter" },
+        { "icon": "💬", "label": "Love Confession Letter", "key": "message", "type": "textarea", "required": true, "desc": "Tell them how you feel — it becomes the centrepiece of the entire experience" },
+        { "icon": "📸", "label": "3 Best Photos", "key": "photos", "type": "photo", "required": true, "desc": "Your favourite moments shown in the love gallery" }
       ],
       "tags": [
         "romance",
@@ -201,11 +199,10 @@
         "🚀 Celebrate again replay button"
       ],
       "submitDetails": [
-        { "icon": "🌙", "label": "Birthday Person's Name", "required": true, "desc": "Their name for the celestial title screen and star dedication" },
-        { "icon": "✍️", "label": "Your Name (Sender)", "required": true, "desc": "Who is sending this cosmic surprise" },
-        { "icon": "📅", "label": "Their Date of Birth", "required": true, "desc": "Used to display their zodiac sign and celestial birth profile" },
-        { "icon": "💌", "label": "Star Message", "required": true, "desc": "A personal birthday wish — revealed via typewriter animation in the stars" },
-        { "icon": "📸", "label": "3–8 Photos Together", "required": false, "desc": "Memories shown in the Memory Orbit photo galaxy" }
+        { "icon": "🌙", "label": "Birthday Person's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "Their name for the celestial title screen and star dedication" },
+        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this cosmic surprise" },
+        { "icon": "📅", "label": "Their Date of Birth", "key": "dob", "type": "date", "required": true, "desc": "Used to display their zodiac sign and celestial birth profile" },
+        { "icon": "💌", "label": "Star Message", "key": "message", "type": "textarea", "required": true, "desc": "A personal birthday wish — revealed via typewriter animation in the stars" }
       ],
       "media": {
         "thumbnail": "media/celestial/thumbnail.jpg",
@@ -240,11 +237,8 @@
         "🌌 Ejected into space romantic ending"
       ],
       "submitDetails": [
-        { "icon": "🚀", "label": "Crewmate's Name", "required": true, "desc": "The birthday person's name — shown on the crew roster and mission briefing" },
-        { "icon": "✍️", "label": "Your Name", "required": true, "desc": "Your crewmate nickname for signing the message" },
-        { "icon": "🎨", "label": "Favourite Crewmate Color", "required": false, "desc": "Their Among Us color (red, blue, purple, cyan, etc.)" },
-        { "icon": "💌", "label": "Birthday Message", "required": true, "desc": "A fun or heartfelt message — shown during the Emergency Meeting reveal" },
-        { "icon": "📸", "label": "2–8 Squad Photos", "required": false, "desc": "Memories shown in the crew photo log section" }
+        { "icon": "🚀", "label": "Crewmate's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The birthday person's name — shown on the crew roster and mission briefing" },
+        { "icon": "✍️", "label": "Your Name", "key": "sender_name", "type": "text", "required": true, "desc": "Your crewmate nickname for signing the message" }
       ],
       "media": {
         "thumbnail": "media/among us/thumbnail.jpg",
@@ -280,10 +274,9 @@
         "🌳 Grand glade celebration finale"
       ],
       "submitDetails": [
-        { "icon": "🌿", "label": "Birthday Person's Name", "required": true, "desc": "Their name for the forest adventure welcome and parchment letter" },
-        { "icon": "✍️", "label": "Your Name (Sender)", "required": true, "desc": "Who wrote this adventure letter — delivered by the beaver" },
-        { "icon": "💌", "label": "Birthday Message", "required": true, "desc": "A warm personal message revealed on the magical forest parchment" },
-        { "icon": "📸", "label": "3–10 Photos Together", "required": false, "desc": "Your favourite memories shown in the forest photo glade" }
+        { "icon": "🌿", "label": "Birthday Person's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "Their name for the forest adventure welcome and parchment letter" },
+        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who wrote this adventure letter — delivered by the beaver" },
+        { "icon": "💌", "label": "Birthday Message", "key": "message", "type": "textarea", "required": true, "desc": "A warm personal message revealed on the magical forest parchment" }
       ],
       "media": {
         "thumbnail": "media/hoppers/thumbnail.jpg",
@@ -313,11 +306,11 @@
         "🔄 Replay & share anytime"
       ],
       "submitDetails": [
-        { "icon": "🥺", "label": "Their Name", "required": true, "desc": "The person you're apologising to — appears in the opening and letter" },
-        { "icon": "✍️", "label": "Your Name", "required": true, "desc": "Your name — it signs the apology letter" },
-        { "icon": "💌", "label": "Apology Letter", "required": true, "desc": "What you want to say — written from the heart (100–300 words works best)" },
-        { "icon": "🎟️", "label": "Pookie Voucher Wish", "required": true, "desc": "What the voucher entitles them to (e.g. 'One free hug anytime' or 'You choose the next date night')" },
-        { "icon": "📸", "label": "2–6 Happy Photos", "required": false, "desc": "Memories shown in the memory lane section" }
+        { "icon": "🥺", "label": "Their Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The person you're apologising to — appears in the opening and letter" },
+        { "icon": "✍️", "label": "Your Name", "key": "sender_name", "type": "text", "required": true, "desc": "Your name — it signs the apology letter" },
+        { "icon": "💌", "label": "Apology Letter", "key": "message", "type": "textarea", "required": true, "desc": "What you want to say — written from the heart (100–300 words works best)" },
+        { "icon": "🎟️", "label": "Pookie Voucher Wish", "key": "voucher", "type": "text", "required": true, "desc": "What the voucher entitles them to (e.g. 'One free hug anytime')" },
+        { "icon": "📸", "label": "3 Happy Photos", "key": "photos", "type": "photo", "required": true, "desc": "Memories shown in the memory lane section" }
       ],
       "media": {
         "thumbnail": "media/sorry/thumbnail.jpg",
@@ -347,10 +340,9 @@
         "🎵 Atmospheric background music"
       ],
       "submitDetails": [
-        { "icon": "💝", "label": "Your Names", "required": true, "desc": "E.g. Sahil & Priya — appears on the welcome screen" },
-        { "icon": "📸", "label": "3 Special Photos", "required": true, "desc": "Key moments from your journey (First date, Vacations, etc.)" },
-        { "icon": "💌", "label": "Long Letter", "required": true, "desc": "Write everything you feel — this is the finale surprise" },
-        { "icon": "🎵", "label": "Background Song", "required": false, "desc": "Specify a song name for the journey's mood" }
+        { "icon": "💝", "label": "Your Names", "key": "recipient_name", "type": "text", "required": true, "desc": "E.g. Sahil & Priya — appears on the welcome screen" },
+        { "icon": "📸", "label": "4 Special Photos", "key": "photos", "type": "photo", "required": true, "desc": "Key moments from your journey (First date, Vacations, etc.)" },
+        { "icon": "💌", "label": "Long Letter", "key": "message", "type": "textarea", "required": true, "desc": "Write everything you feel — this is the finale surprise" }
       ],
       "media": {
         "thumbnail": "media/anniversary-journey/thumbnail.jpg"
@@ -378,10 +370,8 @@
         "💌 Grand finale parchment letter reveal"
       ],
       "submitDetails": [
-        { "icon": "🥷", "label": "Ninja's Name", "required": true, "desc": "The username for the hero" },
-        { "icon": "📜", "label": "Scroll Message 1", "required": true, "desc": "First message hidden in the forest" },
-        { "icon": "📜", "label": "Scroll Message 2", "required": true, "desc": "Second message hidden near the gate" },
-        { "icon": "💌", "label": "Final Parchment Letter", "required": true, "desc": "The grand finale heartfelt message" }
+        { "icon": "🥷", "label": "Ninja's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The username for the hero" },
+        { "icon": "💌", "label": "Final Parchment Letter", "key": "message", "type": "textarea", "required": true, "desc": "The grand finale heartfelt message" }
       ],
       "media": {
         "thumbnail": "templates/ninja-game-template/backs/scroll-animation.gif"
