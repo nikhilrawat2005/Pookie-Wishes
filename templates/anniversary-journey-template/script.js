@@ -6,6 +6,7 @@ gsap.registerPlugin(ScrollTrigger);
 // ── DATA ──────────────────────────────────
 const DATA = {
     names: "Sahil & Priya",
+    date: "March 27, 2026",
     letter: `Happy Anniversary my pookie! ✨
 
 Looking back at these photos reminds me of how far we've come together. Every scroll, every moment — it's been the most beautiful adventure of my life.
@@ -88,6 +89,7 @@ async function initData() {
                 if (userData.photos && userData.photos.length > 0) {
                     DATA.photos = userData.photos;
                 }
+                if (userData.date) DATA.date = userData.date;
 
                 // 🌿 Global Placeholder Fix (v3)
                 if (window.bindPookiePlaceholders) {
@@ -106,6 +108,18 @@ async function initData() {
     document.getElementById('display-names').textContent   = DATA.names;
     document.getElementById('display-letter').textContent  = DATA.letter;
     document.getElementById('display-signature').textContent = DATA.signature;
+    
+    const dateEl = document.getElementById('display-date');
+    if (dateEl) {
+        // Render raw date string beautifully, or parse if it's "YYYY-MM-DD"
+        let displayDate = DATA.date;
+        if (displayDate.length === 10 && displayDate.includes('-')) {
+            const d = new Date(displayDate);
+            if (!isNaN(d)) displayDate = d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+        }
+        dateEl.textContent = displayDate;
+    }
+
     document.title = `${DATA.names} — Our Story 💝`;
 }
 

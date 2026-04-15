@@ -634,12 +634,12 @@ async function loadSuggestions() {
 }
 
 function renderTable() {
-  const visibleOrders = orders.filter(o => !o.trash);
-  let list = visibleOrders.filter(o => ['paid', 'delivered', 'pending_verification', 'delivered'].includes(o.status));
+  const validOrders = orders.filter(o => !o.trash && ['paid', 'delivered', 'pending_verification'].includes(o.status));
+  let list = validOrders;
   
-  if(curFilter==='delivered') list = visibleOrders.filter(o=>o.deliveryStatus==='delivered' || o.status==='delivered');
+  if(curFilter==='delivered') list = validOrders.filter(o=>o.deliveryStatus==='delivered' || o.status==='delivered');
   if(curFilter==='trash')     list = orders.filter(o=>o.trash === true);
-  if(curFilter==='lifetime')  list = visibleOrders.filter(o=>o.lifetime === true);
+  if(curFilter==='lifetime')  list = validOrders.filter(o=>o.lifetime === true);
   
   if(!list.length) {
     document.getElementById('tbl-body').innerHTML = '<div class="empty">No orders found.</div>';

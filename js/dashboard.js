@@ -55,10 +55,10 @@ async function loadOrders(email) {
       return;
     }
 
-    // Filter trash and sort by createdAt descending (client-side)
+    // Filter trash, only include valid statuses, and sort by createdAt descending (client-side)
     const orders = snap.docs
       .map(doc => ({ id: doc.id, ...doc.data() }))
-      .filter(o => !o.trash)
+      .filter(o => !o.trash && ['paid', 'delivered', 'pending_verification'].includes(o.status))
       .sort((a, b) => {
         const ta = a.createdAt?.toMillis?.() || 0;
         const tb = b.createdAt?.toMillis?.() || 0;
