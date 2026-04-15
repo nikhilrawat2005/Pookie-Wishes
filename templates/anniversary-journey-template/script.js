@@ -90,6 +90,8 @@ async function initData() {
                     DATA.photos = userData.photos;
                 }
                 if (userData.date) DATA.date = userData.date;
+                if (userData.eventDate) DATA.date = userData.eventDate;
+                DATA.customized = true;
 
                 // 🌿 Global Placeholder Fix (v3)
                 if (window.bindPookiePlaceholders) {
@@ -101,7 +103,36 @@ async function initData() {
                 }
             }
         } catch (e) {
-            console.warn("Load error:", e);
+            console.warn("Load error from PookieData:", e);
+        }
+    }
+
+    // Local fallback for manual/testing
+    if (!DATA.customized) {
+        try {
+            const res = await fetch('./user_content/config.json');
+            if (res.ok) {
+                const localData = await res.json();
+                if (localData.recipientName) DATA.names = localData.recipientName;
+                if (localData.message) DATA.letter = localData.message;
+                if (localData.senderName) DATA.signature = localData.senderName;
+                if (localData.photos && localData.photos.length > 0) {
+                    DATA.photos = localData.photos;
+                }
+                if (localData.date) DATA.date = localData.date;
+                if (localData.eventDate) DATA.date = localData.eventDate;
+                DATA.customized = true;
+
+                if (window.bindPookiePlaceholders) {
+                    window.bindPookiePlaceholders({
+                        name: DATA.names,
+                        sender: DATA.signature || "Your Love",
+                        message: DATA.letter
+                    });
+                }
+            }
+        } catch(e) {
+            console.warn("No local config.json found or failed to load");
         }
     }
 
