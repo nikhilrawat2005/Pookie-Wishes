@@ -57,20 +57,34 @@
     .order-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
 
     @media (max-width: 1000px) {
-      .dash-container { grid-template-columns: 1fr; padding-top: 100px; gap: 32px; }
+      .dash-container { grid-template-columns: 1fr; padding: 100px 16px 60px; gap: 32px; }
       .dash-side { position: static; }
-      .dash-user-card { display: flex; align-items: center; text-align: left; gap: 24px; padding: 24px; }
-      .dash-av { margin: 0; width: 70px; height: 70px; }
-      .dash-nav { display: flex; overflow-x: auto; scrollbar-width: none; }
+      .dash-user-card { display: flex; align-items: center; text-align: left; gap: 20px; padding: 20px; margin-bottom: 20px; }
+      .dash-av { margin: 0; width: 64px; height: 64px; border-width: 2px; }
+      .dash-nav { display: flex; overflow-x: auto; scrollbar-width: none; border-radius: 16px; }
       .dash-nav::-webkit-scrollbar { display: none; }
-      .dash-nav-btn { border-bottom: none; border-right: 1px solid var(--dash-bdr); white-space: nowrap; flex: 1; justify-content: center; padding: 14px 20px; }
+      .dash-nav-btn { border-bottom: none; border-right: 1px solid var(--dash-bdr); white-space: nowrap; flex: 1; justify-content: center; padding: 12px 16px; font-size: 0.85rem; }
+      .dash-nav-btn i { width: 16px; height: 16px; }
       .dash-nav-btn.active::after { left: 0; right: 0; top: auto; bottom: 0; height: 3px; width: 100%; }
     }
 
-    @media (max-width: 600px) {
-      .order-grid { grid-template-columns: 1fr; }
-      .order-body { flex-direction: column; text-align: center; gap: 12px; }
-      .order-info { width: 100%; }
+    @media (max-width: 650px) {
+      .dash-sec-hd { flex-direction: column; align-items: flex-start; gap: 8px; }
+      .dash-sec-title { font-size: 1.4rem; }
+      .order-grid { grid-template-columns: 1fr; gap: 16px; }
+      .order-body { flex-direction: row; text-align: left; gap: 14px; margin-bottom: 16px; }
+      .order-thumb { width: 60px; height: 60px; font-size: 1.8rem; border-radius: 14px; }
+      .order-name { font-size: 1.1rem; }
+      .order-actions { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 480px) {
+      .dash-user-card { padding: 16px; gap: 14px; }
+      .dash-av { width: 50px; height: 50px; }
+      .dash-uname { font-size: 1.1rem; }
+      .dash-nav-btn { padding: 10px 12px; gap: 8px; }
+      .dash-nav-btn span { display: none; } /* Hide text on very small screens, keep icons? No, user might prefer text. Let's keep icons and text but smaller. */
+      /* Actually, let's keep the text but it scrolls. */
     }
   </style>
 </head>

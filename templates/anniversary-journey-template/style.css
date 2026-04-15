@@ -166,7 +166,7 @@ body {
 
 .names-title {
     font-family: var(--font-display);
-    font-size: clamp(3.5rem, 10vw, 6.5rem);
+    font-size: clamp(2.8rem, 12vw, 6.5rem);
     color: var(--charcoal);
     line-height: 1;
     margin-bottom: 16px;
@@ -176,7 +176,7 @@ body {
 .intro-sub {
     font-family: var(--font-body);
     font-style: italic;
-    font-size: 1.1rem;
+    font-size: clamp(0.9rem, 2.5vw, 1.15rem);
     color: var(--warm-grey);
     font-weight: 300;
     letter-spacing: 1px;
@@ -388,7 +388,7 @@ body {
 
 .moment-title {
     font-family: var(--font-display);
-    font-size: 2.4rem;
+    font-size: clamp(1.8rem, 6vw, 2.5rem);
     color: var(--rouge);
     line-height: 1.1;
     margin-bottom: 16px;
@@ -644,7 +644,7 @@ body {
 
 .ending-title {
     font-family: var(--font-display);
-    font-size: clamp(3rem, 8vw, 5rem);
+    font-size: clamp(2.5rem, 10vw, 5rem);
     color: var(--rouge);
     margin-bottom: 24px;
     line-height: 1;
@@ -712,30 +712,76 @@ body {
 
 /* ── WATERMARK ── */
 .pookie-watermark {
-    position: fixed;
-    bottom: 16px; right: 20px;
-    z-index: 1000;
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
     font-family: var(--font-ui);
-    font-size: 0.65rem;
+}
+
+.watermark-cloud {
+    background: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(8px);
+    color: var(--charcoal);
+    padding: 12px 20px;
+    border-radius: 20px 20px 0 20px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+    border: 1px solid rgba(201,168,76,0.2);
+}
+
+.watermark-btn {
+    background: var(--rouge);
+    color: var(--gold-light);
+    text-decoration: none;
+    padding: 12px 28px;
+    border-radius: 30px;
+    font-family: var(--font-ui);
+    font-size: 0.75rem;
+    font-weight: 600;
     letter-spacing: 2px;
     text-transform: uppercase;
-    color: var(--rouge);
-    opacity: 0.4;
-    pointer-events: none;
+    box-shadow: 0 8px 20px rgba(155,35,53,0.3);
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    pointer-events: auto;
+}
+
+.watermark-btn:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(155,35,53,0.4);
+    background: var(--rouge-dark);
 }
 
 /* ── MOBILE ── */
 @media (max-width: 700px) {
+    .journey-wrap { padding: 100px 20px 60px; }
     .photo-moment {
         grid-template-columns: 1fr;
         grid-template-rows: auto auto auto;
-        margin-bottom: 80px;
+        margin-bottom: 70px;
+        gap: 20px;
     }
     .photo-moment > * { order: unset !important; }
     .timeline-line { display: none; }
-    .polaroid { transform: rotate(-1deg) !important; }
-    .moment-text-side { text-align: left !important; }
-    .moment-number, .moment-title, .moment-body { text-align: left; }
+    .polaroid { transform: rotate(-1deg) !important; max-width: 290px; margin: 0 auto; }
+    .moment-text-side { text-align: center !important; }
+    .moment-number, .moment-title, .moment-body { text-align: center; }
     .timeline-node { display: none; }
-    .letter-paper { padding: 36px 28px; }
+    .letter-paper { padding: 36px 20px; width: 95%; }
+    .letter-body { font-size: 0.95rem; }
+    .letter-dear { font-size: 1.5rem; }
+    .signature { font-size: 2rem; }
+    .corner-decor { width: 50px; height: 50px; }
+    .intro-date-badge { margin-bottom: 20px; font-size: 0.65rem; }
+}
+
+@media (max-width: 400px) {
+    .names-title { font-size: 2.8rem; }
+    .ending-title { font-size: 2.5rem; }
+    .polaroid { max-width: 260px; padding: 10px 10px 48px; }
 }
