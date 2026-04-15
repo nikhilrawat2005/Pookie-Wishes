@@ -355,6 +355,37 @@
       "media": {
         "thumbnail": "media/anniversary-journey/thumbnail.jpg"
       }
+    },
+    {
+      "id": "ninja-game",
+      "name": "Ninja Path Adventure",
+      "tagline": "Run, Jump, and Collect Love! 🥷",
+      "badge": "New ✨",
+      "emoji": "🥷",
+      "price": 79,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "hasPhotos": false,
+      "tags": ["gaming", "retro", "ninja", "interactive", "arcade"],
+      "shortDesc": "A retro arcade-style ninja adventure where you collect scrolls to reveal hidden messages.",
+      "longDesc": "Run, jump, and slash through the Ninja Path! This retro 8-bit adventure lets your pookie play as a ninja on a quest. Collect coins to unlock hidden scrolls containing your messages, avoid obstacles, and reach the final sanctuary to read a beautiful parchment letter. Perfect for the gaming fan in your life.",
+      "vibe": "Action & Nostalgic",
+      "features": [
+        "🕹️ Retro 8-bit platforming gameplay",
+        "🪙 Collect coins to unlock story scrolls",
+        "📜 Personalised messages hidden in-game",
+        "🥷 Smooth ninja animations & arcade physics",
+        "💌 Grand finale parchment letter reveal"
+      ],
+      "submitDetails": [
+        { "icon": "🥷", "label": "Ninja's Name", "required": true, "desc": "The username for the hero" },
+        { "icon": "📜", "label": "Scroll Message 1", "required": true, "desc": "First message hidden in the forest" },
+        { "icon": "📜", "label": "Scroll Message 2", "required": true, "desc": "Second message hidden near the gate" },
+        { "icon": "💌", "label": "Final Parchment Letter", "required": true, "desc": "The grand finale heartfelt message" }
+      ],
+      "media": {
+        "thumbnail": "templates/ninja-game/backs/scroll-animation.gif"
+      }
     }
   ]
 }

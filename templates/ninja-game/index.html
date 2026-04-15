@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ninja Path — A Journey Through Words</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #5fb8f5;
+      font-family: 'Press Start 2P', monospace;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #game-container { position: relative; }
+
+    /* ─── SCROLL POPUP OVERLAY (in-game messages) ─── */
+    #scroll-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 5, 2, 0.6);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      z-index: 100;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #scroll-popup {
+      position: relative;
+      width: min(680px, 90vw);
+      aspect-ratio: 2 / 1;
+      opacity: 0;
+      transform: scale(0.82);
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    #scroll-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    #scroll-content {
+      position: absolute;
+      inset: 20% 12% 18%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      pointer-events: none;
+    }
+
+    .scroll-title {
+      font-size: 0.42rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #5a3205;
+      margin-bottom: 10px;
+      opacity: 0.75;
+    }
+
+    .scroll-divider {
+      width: 50%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #9a6020, transparent);
+      margin: 0 auto 12px;
+    }
+
+    #scroll-message {
+      font-size: clamp(0.42rem, 0.9vw, 0.58rem);
+      line-height: 2;
+      color: #2e1a06;
+      text-align: center;
+      letter-spacing: 0.04em;
+      margin-bottom: 0;
+      min-height: 2.5em;
+    }
+
+    #scroll-cursor {
+      display: inline-block;
+      width: 1px;
+      height: 0.9em;
+      background: #5a3205;
+      margin-left: 1px;
+      vertical-align: text-bottom;
+      opacity: 0;
+    }
+    #scroll-cursor.blinking {
+      opacity: 1;
+      animation: blink-cursor 0.65s step-end infinite;
+    }
+
+    #scroll-close-btn {
+      display: block;
+      pointer-events: auto;
+      margin-top: 12px;
+      padding: 8px 24px;
+      background: linear-gradient(135deg, #c49a3a 0%, #a8781e 100%);
+      border: 1px solid #7a5010;
+      border-radius: 3px;
+      color: #fff8e8;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.45rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(140, 90, 10, 0.4);
+      transition: all 0.2s ease;
+      opacity: 0;
+      pointer-events: none;
+    }
+    #scroll-close-btn.btn-ready {
+      opacity: 1;
+      pointer-events: auto;
+      animation: fadeInUp 0.3s ease forwards;
+    }
+    #scroll-close-btn:hover {
+      background: linear-gradient(135deg, #d4aa44 0%, #b88828 100%);
+      transform: translateY(-1px);
+      box-shadow: 0 4px 14px rgba(160, 110, 10, 0.5);
+    }
+    #scroll-close-btn:active { transform: translateY(0); }
+
+    /* ─── END SCENE OVERLAY ─── */
+    #end-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(5, 5, 15, 0.0);
+      z-index: 200;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      animation: fadeInEnd 2.5s ease forwards;
+    }
+    #end-overlay.active { display: flex; }
+
+    #end-text-container {
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    #moving-lines {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      /* Animates BOTH lines up together */
+      animation: linesGoUp 1s cubic-bezier(0.25, 1, 0.5, 1) 8.0s forwards;
+    }
+    @keyframes linesGoUp {
+      from { transform: translateY(0); }
+      to   { transform: translateY(-40px); }
+    }
+
+    /* Each intro text line slides slowly from slightly right */
+    .intro-line {
+      display: block;
+      font-size: 1rem;
+      color: #ffffff;
+      line-height: 1.5;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      opacity: 0;
+      transform: translateX(50px);
+    }
+    #line1 { animation: slideFromRight 3.5s ease-out 1.0s forwards; margin-bottom: 16px; }
+    #line2 { animation: slideFromRight 3.5s ease-out 4.5s forwards; margin-bottom: 50px; }
+
+    @keyframes slideFromRight {
+      0%   { opacity: 0; transform: translateX(50px); }
+      30%  { opacity: 1; }
+      100% { opacity: 1; transform: translateX(0); }
+    }
+
+    #line3 {
+      font-size: 1.8rem;
+      margin-bottom: 28px;
+      text-transform: uppercase;
+      color: transparent !important;
+      -webkit-text-stroke: 2.5px #c35555;
+      opacity: 0;
+      /* Fades in slowly at T=9.0s without moving */
+      animation: slowReveal 3s ease 9.0s forwards, arcadeStroke 4s infinite linear;
+    }
+    @keyframes slowReveal {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+
+    /* Cake gif — appears below text as its own big element */
+    #end-cake {
+      width: 250px;
+      height: 250px;
+      object-fit: contain;
+      opacity: 0;
+      animation: popIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 12.0s forwards;
+      margin-bottom: 36px;
+    }
+
+    #open-letter-btn {
+      display: block;
+      padding: 14px 44px;
+      background: transparent;
+      border: 2px solid rgba(255, 255, 255, 0.5);
+      border-radius: 2px;
+      color: rgba(255, 255, 255, 0.9);
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.5rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      opacity: 0;
+      /* Appears at T=13.0s */
+      animation: fadeIn 0.8s ease 13.0s forwards;
+      transition: all 0.3s ease;
+    }
+    #open-letter-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+      border-color: rgba(255, 255, 255, 0.9);
+      box-shadow: 0 0 30px rgba(255, 255, 255, 0.15);
+    }
+
+    /* ─── FINAL LETTER OVERLAY (scroll-based) ─── */
+    #letter-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 5, 2, 0.72);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      z-index: 300;
+      justify-content: center;
+      align-items: center;
+      animation: fadeIn 0.6s ease;
+    }
+    #letter-overlay.active { display: flex; }
+
+    #letter-popup {
+      position: relative;
+      width: min(1600px, 98vw);
+      height: min(900px, 94vh);
+      /* no aspect-ratio — explicit height lets parchment be taller */
+      opacity: 0;
+      transform: scale(0.82);
+      transition: opacity 0.5s ease, transform 0.5s ease; /* slower fade in */
+    }
+
+    #letter-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      image-rendering: pixelated;
+      image-rendering: crisp-edges;
+    }
+
+    /* Letter text sits inside the scroll parchment */
+    #letter-scroll-content {
+      position: absolute;
+      inset: 12% 16% 10%;   /* 16% horizontal margins squeeze the text neatly between the curled paper edges */
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;     /* vertically centre content */
+      gap: 12px;
+      overflow-y: auto;
+      scrollbar-width: none;
+      pointer-events: auto;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    #letter-scroll-content::-webkit-scrollbar { display: none; }
+
+    .letter-title {
+      font-size: 0.6rem;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #5a3205;
+      margin-bottom: 12px;
+      opacity: 0.8;
+      flex-shrink: 0;
+    }
+
+    .letter-divider {
+      width: 60%;
+      height: 1px;
+      background: linear-gradient(to right, transparent, #9a6020, transparent);
+      margin: 0 auto 16px;
+      flex-shrink: 0;
+    }
+
+    .letter-body {
+      font-size: clamp(0.55rem, 1vw, 0.75rem);
+      line-height: 2.2;
+      color: #2e1a06;
+      text-align: center;
+      letter-spacing: 0.03em;
+      margin-bottom: 12px;
+      flex-shrink: 0;
+    }
+
+    .letter-sign {
+      font-size: clamp(0.5rem, 0.9vw, 0.65rem);
+      color: #7a4a10;
+      margin-top: 10px;
+      margin-bottom: 8px;
+      opacity: 0.85;
+      flex-shrink: 0;
+    }
+
+    #replay-btn {
+      margin-top: 12px;
+      display: inline-block;
+      padding: 12px 32px;
+      background: linear-gradient(135deg, #c49a3a 0%, #a8781e 100%);
+      border: 1px solid #7a5010;
+      border-radius: 3px;
+      color: #fff8e8;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 0.55rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      cursor: pointer;
+      box-shadow: 0 2px 8px rgba(140, 90, 10, 0.4);
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+      pointer-events: auto;
+    }
+    #replay-btn:hover {
+      background: linear-gradient(135deg, #d4aa44 0%, #b88828 100%);
+      transform: translateY(-1px);
+    }
+
+    /* ─── POOKIE WATERMARK ─── */
+    .pookie-watermark {
+      margin-top: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+      font-family: sans-serif;
+      padding-bottom: 20px;
+      flex-shrink: 0;
+    }
+
+    .watermark-cloud {
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(8px);
+      color: #2e1a06;
+      padding: 10px 16px;
+      border-radius: 16px 16px 0 16px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      box-shadow: 0 6px 15px rgba(0,0,0,0.1);
+      border: 1px solid rgba(154, 96, 32, 0.2);
+      max-width: 240px;
+      text-align: center;
+      line-height: 1.4;
+    }
+
+    .watermark-btn {
+      background: #ff2a85;
+      color: #fff;
+      text-decoration: none;
+      padding: 12px 24px;
+      border-radius: 30px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(255, 42, 133, 0.3);
+      transition: all 0.3s ease;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: auto;
+    }
+
+    .watermark-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 18px rgba(255, 42, 133, 0.4);
+      background: #e02574;
+    }
+
+    @media screen and (max-height: 500px) {
+      .pookie-watermark { margin-top: 15px; gap: 8px; }
+      .watermark-cloud { font-size: 0.6rem; padding: 6px 10px; }
+      .watermark-btn { font-size: 0.55rem; padding: 6px 14px; }
+    }
+
+    /* ─── COIN COUNTER HUD ─── */
+    #coin-hud {
+      position: fixed;
+      top: 16px;
+      left: 18px;
+      z-index: 50;
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      background: rgba(255, 255, 255, 0.22);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+      border: 1.5px solid rgba(220, 170, 40, 0.55);
+      border-radius: 24px;
+      padding: 8px 18px 8px 13px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.4);
+    }
+    #coin-hud .coin-icon { font-size: 17px; line-height: 1; }
+    #coin-count {
+      font-size: 0.6rem;
+      color: #5a3a00;
+      letter-spacing: 0.06em;
+      min-width: 22px;
+    }
+
+    /* ─── KEYFRAME ANIMATIONS ─── */
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to   { opacity: 1; }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeInEnd {
+      0%   { background: rgba(5, 5, 15, 0); }
+      40%  { background: rgba(5, 5, 15, 0.5); }
+      100% { background: rgba(5, 5, 15, 0.92); }
+    }
+    @keyframes revealLine {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); color: #ffffff; }
+    }
+    @keyframes popIn {
+      0%   { opacity: 0; transform: scale(0.4) rotate(-8deg); }
+      70%  { transform: scale(1.1) rotate(3deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    @keyframes blink-cursor {
+      50% { opacity: 0; }
+    }
+    @keyframes arcadeStroke {
+      0%   { -webkit-text-stroke-color: #c35555; }
+      25%  { -webkit-text-stroke-color: #55a855; }
+      50%  { -webkit-text-stroke-color: #b8a038; }
+      75%  { -webkit-text-stroke-color: #4f7db8; }
+      100% { -webkit-text-stroke-color: #c35555; }
+    }
+
+    #party-particles {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      overflow: hidden;
+      pointer-events: none;
+    }
+    .party-particle {
+      position: absolute;
+      width: var(--w); height: var(--h);
+      background: var(--c);
+      opacity: 0;
+      border-radius: 2px;
+      pointer-events: none;
+      /* 4.0s animation duration; with a delay up to 5.0s, ends tightly at T=9.0s */
+      animation: popperFlight 4.0s cubic-bezier(0.15, 1, 0.4, 1) forwards;
+    }
+    @keyframes popperFlight {
+      0%   { opacity: 1; transform: translate(0, 0) scale(0.5) rotate(0deg); }
+      70%  { opacity: 1; }
+      100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(1.5) rotate(var(--rot)); }
+    }
+
+    /* nth-child(3) starts transparent — revealLine overrides to white */
+    .end-line:nth-child(3) { color: rgba(255, 255, 255, 0); }
+    /* ─── MOBILE CONTROLS & WARNING ─── */
+    #rotate-warning {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(10, 5, 2, 0.95);
+      z-index: 9999;
+      color: #fff;
+      flex-direction: column;
+      justify-content: center; align-items: center;
+      text-align: center;
+      font-size: 0.7rem;
+      line-height: 1.8;
+      letter-spacing: 0.05em;
+    }
+    #rotate-warning span { font-size: 2rem; margin-top: 20px; }
+
+    @media screen and (orientation: portrait) {
+      #rotate-warning { display: flex; }
+    }
+
+    #mobile-controls {
+      display: none;
+      position: fixed;
+      bottom: 20px;
+      left: 0; right: 0;
+      padding: 0 20px;
+      z-index: 80;
+      justify-content: space-between;
+      pointer-events: none;
+    }
+    @media (hover: none) and (pointer: coarse) {
+      #mobile-controls { display: flex; }
+    }
+
+    #mobile-controls .controls-left { display: flex; gap: 15px; }
+    #mobile-controls button {
+      pointer-events: auto;
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      color: rgba(255, 255, 255, 0.8);
+      width: 65px; height: 65px;
+      border-radius: 50%;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 1.2rem;
+      backdrop-filter: blur(4px);
+      -webkit-backdrop-filter: blur(4px);
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+      outline: none;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+    #mobile-controls button:active {
+      background: rgba(255, 255, 255, 0.35);
+      border-color: rgba(255, 255, 255, 0.6);
+      color: #fff;
+    }
+    /* ─── MOBILE LANDSCAPE RESPONSIVE (ending screen) ─── */
+    @media screen and (max-height: 500px) {
+      /* End overlay text */
+      .intro-line {
+        font-size: 0.7rem;
+        margin-bottom: 8px !important;
+      }
+      #line2 { margin-bottom: 20px !important; }
+
+      #moving-lines {
+        animation: linesGoUp 1s cubic-bezier(0.25, 1, 0.5, 1) 8.0s forwards;
+      }
+      @keyframes linesGoUp {
+        from { transform: translateY(0); }
+        to   { transform: translateY(-20px); }
+      }
+
+      #line3 {
+        font-size: 1rem;
+        -webkit-text-stroke: 1.8px #c35555;
+        margin-bottom: 12px;
+      }
+
+      #end-cake {
+        width: 100px;
+        height: 100px;
+        margin-bottom: 12px;
+      }
+
+      #open-letter-btn {
+        padding: 8px 24px;
+        font-size: 0.35rem;
+      }
+
+      /* Letter popup */
+      #letter-popup {
+        width: 96vw;
+        height: 90vh;
+      }
+
+      #letter-scroll-content {
+        inset: 10% 10% 8%;
+        gap: 6px;
+      }
+
+      .letter-title {
+        font-size: 0.4rem;
+        margin-bottom: 6px;
+      }
+
+      .letter-body {
+        font-size: 0.38rem;
+        line-height: 1.8;
+        margin-bottom: 6px;
+      }
+
+      .letter-sign {
+        font-size: 0.35rem;
+        margin-top: 4px;
+        margin-bottom: 4px;
+      }
+
+      #replay-btn {
+        padding: 6px 18px;
+        font-size: 0.35rem;
+      }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ─── MOBILE ROTATE WARNING ─── -->
+<div id="rotate-warning">
+  Rotate your phone to play
+  <span>📱🔄</span>
+</div>
+
+<!-- ─── MOBILE CONTROLS ─── -->
+<div id="mobile-controls">
+  <div class="controls-left">
+    <button id="btn-left">◀</button>
+    <button id="btn-right">▶</button>
+  </div>
+  <div class="controls-right">
+    <button id="btn-jump">▲</button>
+  </div>
+</div>
+
+<!-- ─── COIN HUD ─── -->
+<div id="coin-hud">
+  <span class="coin-icon">🪙</span>
+  <span id="coin-count">0</span>
+</div>
+
+<!-- ─── IN-GAME SCROLL POPUP ─── -->
+<div id="scroll-overlay">
+  <div id="scroll-popup">
+    <canvas id="scroll-canvas"></canvas>
+    <div id="scroll-content">
+      <div class="scroll-title">A message for you</div>
+      <div class="scroll-divider"></div>
+      <p id="scroll-message"><span id="scroll-cursor"></span></p>
+      <button id="scroll-close-btn">Continue ›</button>
+    </div>
+  </div>
+</div>
+
+<!-- ─── END SCENE OVERLAY ─── -->
+<div id="end-overlay">
+  <div id="party-particles"></div>
+  <div id="end-text-container">
+    <div id="moving-lines">
+      <span class="intro-line" id="line1">You made it!</span>
+      <span class="intro-line" id="line2">Like you always do...</span>
+    </div>
+    <span id="line3">HAPPY BIRTHDAY</span>
+  </div>
+  <!-- Cake gif appears below text as a big separate element -->
+  <img id="end-cake" src="backs/cake.gif" alt="🎂">
+  <button id="open-letter-btn">Open Final Letter</button>
+</div>
+
+<!-- ─── FINAL LETTER OVERLAY (scroll-based) ─── -->
+<div id="letter-overlay">
+  <div id="letter-popup">
+    <canvas id="letter-canvas"></canvas>
+    <div id="letter-scroll-content">
+      <div class="letter-title">— A letter for you —</div>
+      <div class="letter-divider"></div>
+      <p class="letter-body">
+        There's something rare about a person who makes the world feel softer
+        just by being in it. That's you. Not because you try to — but because
+        that's just who you are at your core.
+      </p>
+      <p class="letter-body">
+        You carry things quietly, show up fully, and give more than most people
+        even notice. I notice. I've always noticed.
+      </p>
+      <p class="letter-body">
+        Today is a reminder that the universe did something wonderful when it made you.
+        I'm grateful — every single day — that you exist in mine.
+      </p>
+      <p class="letter-sign">Happy Birthday. Here's to you. ✨</p>
+      <button id="replay-btn" onclick="location.reload()">↺ Play Again</button>
+
+      <!-- Marketing Watermark -->
+      <div class="pookie-watermark">
+          <div class="watermark-cloud">
+              Want to create such a fun game for someone? ❤️
+          </div>
+          <a href="https://pookie-wishes.vercel.app" target="_blank" class="watermark-btn">
+              <span>🎁</span> Visit Pookie Wishes
+          </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ─── PHASER GAME ─── -->
+<div id="game-container"></div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+//  makeScrollAnimator(canvasId, popupId, contentId, fps)
+//  Generic factory — drives any scroll popup using the spritesheet.
+//  Returns { open(onReady), close(onDone) }
+// ══════════════════════════════════════════════════════════════
+function makeScrollAnimator(canvasEl, popupEl, contentEl, fps = 30) {
+  const SHEET_SRC  = 'backs/scroll_spritesheet.png';
+  const FRAME_W    = 1024;
+  const FRAME_H    = 512;
+  const STOP_FRAME = 24;
+  const FRAME_MS   = 1000 / fps;
+
+  let cachedW = 0, cachedH = 0;
+  const ctx = canvasEl.getContext('2d');
+  let sheet = null;
+  let rafId = null;
+
+  const img = new Image();
+  img.src = SHEET_SRC;
+  img.onload = () => { sheet = img; };
+
+  function resizeCanvas() {
+    cachedW = popupEl.offsetWidth  || 680;
+    cachedH = popupEl.offsetHeight || 340;
+    canvasEl.width  = cachedW;
+    canvasEl.height = cachedH;
+  }
+
+  function drawFrame(frame) {
+    if (!sheet) return;
+    ctx.clearRect(0, 0, cachedW, cachedH);
+    ctx.drawImage(sheet, frame * FRAME_W, 0, FRAME_W, FRAME_H, 0, 0, cachedW, cachedH);
+  }
+
+  function animate(fromFrame, toFrame, onDone) {
+    if (rafId) cancelAnimationFrame(rafId);
+    let current = fromFrame;
+    const step  = toFrame > fromFrame ? 1 : -1;
+    let lastTime = null;
+
+    function tick(ts) {
+      if (!lastTime) lastTime = ts;
+      if (ts - lastTime >= FRAME_MS) {
+        drawFrame(current);
+        lastTime = ts;
+        if (current === toFrame) {
+          rafId = null;
+          if (onDone) onDone();
+          return;
+        }
+        current += step;
+      }
+      rafId = requestAnimationFrame(tick);
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+
+  return {
+    open(onReady) {
+      popupEl.style.opacity   = '0';
+      popupEl.style.transform = 'scale(0.82)';
+      if (contentEl) contentEl.style.opacity = '0';
+
+      resizeCanvas();
+      drawFrame(0);
+
+      requestAnimationFrame(() => {
+        popupEl.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+        popupEl.style.opacity    = '1';
+        popupEl.style.transform  = 'scale(1)';
+      });
+
+      animate(0, STOP_FRAME, () => {
+        if (contentEl) {
+          contentEl.style.transition = 'opacity 0.5s ease';
+          contentEl.style.opacity    = '1';
+        }
+        if (onReady) onReady();
+      });
+    },
+
+    close(onDone) {
+      if (contentEl) contentEl.style.opacity = '0';
+
+      animate(STOP_FRAME, 0, () => {
+        popupEl.style.transition = 'opacity 0.12s ease';
+        popupEl.style.opacity    = '0';
+        setTimeout(() => { if (onDone) onDone(); }, 130);
+      });
+    }
+  };
+}
+
+// ── In-game scroll animator (in-world collectible popups) ──────
+window.scrollAnim = (() => {
+  const overlay  = document.getElementById('scroll-overlay');
+  const popup    = document.getElementById('scroll-popup');
+  const canvas   = document.getElementById('scroll-canvas');
+  const content  = document.getElementById('scroll-content');
+  const msgEl    = document.getElementById('scroll-message');
+  const cursorEl = document.getElementById('scroll-cursor');
+
+  const anim = makeScrollAnimator(canvas, popup, content);
+
+  return {
+    open(msg, onTextReady) {
+      msgEl.textContent = '';
+      msgEl.appendChild(cursorEl);
+      cursorEl.classList.add('blinking');
+
+      overlay.style.display = 'flex';
+
+      anim.open(() => {
+        cursorEl.classList.add('blinking');
+        if (onTextReady) onTextReady();
+      });
+    },
+
+    close(onDone) {
+      cursorEl.classList.remove('blinking');
+      anim.close(() => {
+        overlay.style.display = 'none';
+        if (onDone) onDone();
+      });
+    }
+  };
+})();
+
+// ── Final letter scroll animator ───────────────────────────────
+window.letterAnim = (() => {
+  const overlay = document.getElementById('letter-overlay');
+  const popup   = document.getElementById('letter-popup');
+  const canvas  = document.getElementById('letter-canvas');
+  const content = document.getElementById('letter-scroll-content');
+
+  // Use 18 FPS instead of 30 for a weighty, cinematic 1.3-second unroll
+  const anim = makeScrollAnimator(canvas, popup, content, 18);
+
+  return {
+    open() {
+      overlay.style.display = 'flex';
+      anim.open();
+    }
+  };
+})();
+
+// ── Wire "Open Final Letter" button ───────────────────────────
+document.getElementById('open-letter-btn').addEventListener('click', () => {
+  document.getElementById('end-overlay').style.display = 'none';
+  window.letterAnim.open();
+});
+
+// ── Wire Mobile Controls ──────────────────────────────────────
+window.mobileInput = { left: false, right: false, up: false };
+
+function bindMobileBtn(id, key) {
+  const btn = document.getElementById(id);
+  if (!btn) return;
+  const press = (e) => { e.preventDefault(); window.mobileInput[key] = true; };
+  const release = (e) => { e.preventDefault(); window.mobileInput[key] = false; };
+  btn.addEventListener('touchstart', press, { passive: false });
+  btn.addEventListener('touchend', release, { passive: false });
+  btn.addEventListener('touchcancel', release, { passive: false });
+  // Fallbacks for testing clicking on desktop if forced to show
+  btn.addEventListener('mousedown', press);
+  btn.addEventListener('mouseup', release);
+  btn.addEventListener('mouseleave', release);
+}
+
+bindMobileBtn('btn-left', 'left');
+bindMobileBtn('btn-right', 'right');
+bindMobileBtn('btn-jump', 'up');
+
+// ── Generate Party Particles ──────────────────────────────────
+const pContainer = document.getElementById('party-particles');
+const colors = ['#ff2a2a', '#2aff2a', '#ffea2a', '#2a2aff', '#ff00ff', '#00ffff'];
+
+// Spawn 400 particles perfectly filling the edges
+for (let i = 0; i < 400; i++) {
+  const p = document.createElement('div');
+  p.className = 'party-particle';
+  
+  // Decide what edge to spawn on (0: top, 1: right, 2: bottom, 3: left)
+  const edge = Math.floor(Math.random() * 4);
+  let startX, startY, angleBase;
+  
+  if (edge === 0) { // Top
+    startX = Math.random() * 100; startY = -5;
+    angleBase = Math.PI / 2; // Point down
+  } else if (edge === 1) { // Right
+    startX = 105; startY = Math.random() * 100;
+    angleBase = Math.PI; // Point left
+  } else if (edge === 2) { // Bottom
+    startX = Math.random() * 100; startY = 105;
+    angleBase = -Math.PI / 2; // Point up
+  } else { // Left
+    startX = -5; startY = Math.random() * 100;
+    angleBase = 0; // Point right
+  }
+  
+  // Spread burst across 180 inward-facing degrees
+  const angle = angleBase + (Math.random() * Math.PI - Math.PI / 2); 
+  const velocity = 50 + Math.random() * 400; 
+  
+  p.style.left = `${startX}vw`;
+  p.style.top = `${startY}vh`;
+  
+  const tx = Math.cos(angle) * velocity * 2.5;
+  const ty = Math.sin(angle) * velocity * 2.5 + 100; // gravity arcs it down slightly
+  
+  p.style.setProperty('--tx', tx + 'px');
+  p.style.setProperty('--ty', ty + 'px');
+  p.style.setProperty('--w', (4 + Math.random()*8) + 'px');
+  p.style.setProperty('--h', (4 + Math.random()*8) + 'px');
+  p.style.setProperty('--c', colors[Math.floor(Math.random() * colors.length)]);
+  p.style.setProperty('--rot', (Math.random() * 1440 - 720) + 'deg');
+  
+  const delay = (8.9 + Math.random() * 0.4).toFixed(2);
+  p.style.animationDelay = `${delay}s`;
+  
+  pContainer.appendChild(p);
+}
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/phaser@3.87.0/dist/phaser.min.js"></script>
+<script src="game.js"></script>
+
+</body>
+</html>
