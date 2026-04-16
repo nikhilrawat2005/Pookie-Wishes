@@ -102,6 +102,8 @@ function renderOrders(orders) {
     const templateName = o.templateName || (o.orders?.[0]?.templateName) || (o.items?.[0]?.name) || 'Pookie Surprise';
     const emoji = o.emoji || (o.orders?.[0]?.templateEmoji) || (o.items?.[0]?.emoji) || '🎁';
     const recipient = o.recipientName || (o.personalizations?.[0]?.recipientName) || 'Someone Special';
+    const firstTemplateId = o.orders?.[0]?.templateId || 'default';
+    const firstTheme = o.personalizations?.[0]?.theme || 'Default';
 
     // Link logic
     const successLink = `order-success.html?id=${o.id}&email=${encodeURIComponent(o.buyerEmail)}`;
@@ -125,7 +127,7 @@ function renderOrders(orders) {
           ` : `
              <button class="btn btn-soft" onclick="copyLink('${deliveryLink}')"><i data-lucide="copy" style="width:14px;"></i> Copy Link</button>
              <a href="${deliveryLink}" target="_blank" class="btn btn-primary">View Surprise</a>
-             <button class="btn btn-soft" onclick="toggleQR('${o.id}', '${deliveryLink}', '${o.orders?.[0]?.templateId || 'default'}')" style="grid-column: span 2;"><i data-lucide="qr-code" style="width:14px;"></i> Generate QR Code</button>
+             <button class="btn btn-soft" onclick="toggleQR('${o.id}', '${deliveryLink}', '${firstTemplateId}', '${firstTheme}')" style="grid-column: span 2;"><i data-lucide="qr-code" style="width:14px;"></i> Generate QR Code</button>
           `}
         </div>
         ${!needsDetails ? `
@@ -210,7 +212,7 @@ async function deleteOrder(id) {
 // Make globally accessible
 window.deleteOrder = deleteOrder;
 
-window.toggleQR = function(id, link, templateId) {
+window.toggleQR = function(id, link, templateId, themeName) {
     const panel = document.getElementById('qr-container-' + id);
     const qrDiv = document.getElementById('qr-' + id);
     if (!panel || !qrDiv) return;
@@ -219,7 +221,7 @@ window.toggleQR = function(id, link, templateId) {
         panel.style.display = 'block';
         // Generate if not already present
         if (!qrDiv.hasChildNodes()) {
-            const theme = window.getTemplateQRTheme(templateId || 'default');
+            const theme = window.getTemplateQRTheme(templateId || 'default', themeName || 'Default');
             new QRCode(qrDiv, {
                 text: link,
                 width: 140,

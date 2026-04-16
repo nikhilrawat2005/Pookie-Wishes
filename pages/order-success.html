@@ -450,7 +450,9 @@
     let linksHtml = links.map((link, i) => {
         const orderItem = orderData?.orders?.[i] || {};
         const templateId = orderItem.templateId || 'default';
-        const theme = window.getTemplateQRTheme(templateId);
+        const persp = personalizations[i] || {};
+        const selectedTheme = persp.theme || 'Default';
+        const theme = window.getTemplateQRTheme(templateId, selectedTheme);
         const qrId = `qr-code-${i}`;
 
         return `
@@ -474,7 +476,7 @@
                  </div>
             </div>
             <!-- Decorative Theme Background -->
-            <div style="position:absolute; right:-20px; top:-20px; width:100px; height:100px; background:${theme.dotColor}; filter:blur(60px); opacity:0.1; pointer-events:none;"></div>
+            <div style="position:absolute; right:-20px; top:-20px; width:100px; height:100px; background:${theme.dotColor}; filter:blur(60px); opacity:0.15; pointer-events:none;"></div>
         </div>
         `;
     }).join('');
@@ -504,7 +506,9 @@
     links.forEach((link, i) => {
         const orderItem = orderData?.orders?.[i] || {};
         const templateId = orderItem.templateId || 'default';
-        const theme = window.getTemplateQRTheme(templateId);
+        const persp = personalizations[i] || {};
+        const selectedTheme = persp.theme || 'Default';
+        const theme = window.getTemplateQRTheme(templateId, selectedTheme);
         
         new QRCode(document.getElementById(`qr-code-${i}`), {
             text: link,
@@ -519,6 +523,7 @@
             dotScale: 0.8
         });
     });
+
   }
 
   function toast(msg, type='inf') {

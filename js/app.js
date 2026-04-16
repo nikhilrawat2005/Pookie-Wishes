@@ -33,7 +33,6 @@ window.downloadQRCode = function(containerId, filename = 'pookie-qr-code.png') {
     const container = document.getElementById(containerId);
     const canvas = container ? container.querySelector('canvas') : null;
     if (!canvas) {
-        // Fallback for img based QR if canvas not found
         const img = container ? container.querySelector('img') : null;
         if (img && img.src.startsWith('data:')) {
             const link = document.createElement('a');
