@@ -221,6 +221,7 @@
         orderData = dReq.data();
         const forceEdit = p.get('edit') === 'true';
         if (orderData.detailsSubmitted && !forceEdit) {
+          personalizations = orderData.personalizations || [];
           showFinalSuccess(orderData.deliveryLinks || [orderData.deliveryLink]);
           return;
         }
