@@ -185,6 +185,7 @@ function initPetalCanvas() {
     const petals = [];
     const COLORS = ['#f5c6c6','#f9d5d5','#fce4d6','#f8bbd0','#c4847a'];
 
+
     for (let i = 0; i < 28; i++) {
         petals.push({
             x: Math.random() * canvas.width,
@@ -299,6 +300,7 @@ function buildDecorLayer() {
         el.style.left = (Math.random() * 92) + '%';
         el.style.fontSize = (10 + Math.random() * 14) + 'px';
         el.style.color = Math.random() > 0.5 ? '#9B2335' : '#C9A84C';
+
         el.style.opacity = String(0.06 + Math.random() * 0.1);
         el.style.transform = `rotate(${Math.random() * 60 - 30}deg)`;
         el.textContent = emojis[Math.floor(Math.random() * emojis.length)];

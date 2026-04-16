@@ -108,7 +108,7 @@ function renderOrders(orders) {
     const deliveryLink = o.deliveryLink || (o.deliveryLinks ? o.deliveryLinks[0] : '#');
 
     return `
-      <div class="order-card">
+      <div class="order-card" id="order-card-${o.id}">
         <div class="order-status ${statusCls}">${statusTxt}</div>
         <div class="order-id">ID: ${o.id}</div>
         <div class="order-body">
@@ -120,13 +120,24 @@ function renderOrders(orders) {
         </div>
         <div class="order-actions">
           ${needsDetails ? `
-            <button class="btn btn-soft" style="color:var(--err);" onclick="deleteOrder('${o.id}')">Delete</button>
-            <a href="${successLink}" class="btn btn-primary">Complete Details 🚀</a>
+             <button class="btn btn-soft" style="color:var(--err);" onclick="deleteOrder('${o.id}')">Delete</button>
+             <a href="${successLink}" class="btn btn-primary">Complete Details 🚀</a>
           ` : `
-            <button class="btn btn-soft" onclick="copyLink('${deliveryLink}')"><i data-lucide="copy" style="width:14px;"></i> Copy Link</button>
-            <a href="${deliveryLink}" target="_blank" class="btn btn-primary">View Surprise</a>
+             <button class="btn btn-soft" onclick="copyLink('${deliveryLink}')"><i data-lucide="copy" style="width:14px;"></i> Copy Link</button>
+             <a href="${deliveryLink}" target="_blank" class="btn btn-primary">View Surprise</a>
+             <button class="btn btn-soft" onclick="toggleQR('${o.id}', '${deliveryLink}', '${o.orders?.[0]?.templateId || 'default'}')" style="grid-column: span 2;"><i data-lucide="qr-code" style="width:14px;"></i> Generate QR Code</button>
           `}
         </div>
+        ${!needsDetails ? `
+        <div id="qr-container-${o.id}" class="qr-panel" style="display:none; margin-top:16px; background:var(--bg2); padding:16px; border-radius:var(--r); text-align:center; border:1px solid var(--bdr-pink); width:100%; position:relative; overflow:hidden;">
+           <div id="qr-${o.id}" style="background:white; padding:12px; border-radius:12px; display:inline-block; margin-bottom:12px; box-shadow:var(--sh-md);"></div>
+           <div style="font-size:0.85rem; color:var(--text); font-weight:700; margin-bottom:4px; position:relative; z-index:1;">Ready to Scan! ✨</div>
+           <p style="font-size:0.7rem; color:var(--muted); margin-bottom:12px; position:relative; z-index:1;">Use any phone camera to scan and view the surprise.</p>
+           <button class="btn btn-ghost btn-sm" style="width:100%; color:var(--pink); background:rgba(255,105,180,0.05);" onclick="window.downloadQRCode('qr-${o.id}', 'PookieSurprise-${o.id}.png')">
+                <i data-lucide="download" style="width:12px; margin-right:4px;"></i> Download HQ Image
+           </button>
+        </div>
+        ` : ''}
       </div>
     `;
   }).join('');
@@ -198,3 +209,31 @@ async function deleteOrder(id) {
 
 // Make globally accessible
 window.deleteOrder = deleteOrder;
+
+window.toggleQR = function(id, link, templateId) {
+    const panel = document.getElementById('qr-container-' + id);
+    const qrDiv = document.getElementById('qr-' + id);
+    if (!panel || !qrDiv) return;
+
+    if (panel.style.display === 'none') {
+        panel.style.display = 'block';
+        // Generate if not already present
+        if (!qrDiv.hasChildNodes()) {
+            const theme = window.getTemplateQRTheme(templateId || 'default');
+            new QRCode(qrDiv, {
+                text: link,
+                width: 140,
+                height: 140,
+                colorDark: theme.dotColor,
+                colorLight: theme.bgColor,
+                correctLevel: QRCode.CorrectLevel.H,
+                quietZone: 10,
+                dotScale: 0.8
+            });
+            if (window.lucide) lucide.createIcons();
+        }
+    } else {
+        panel.style.display = 'none';
+    }
+};
+

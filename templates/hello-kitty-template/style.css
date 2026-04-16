@@ -170,8 +170,8 @@ button { cursor: pointer; font-family: inherit; }
 
 .btn-outline {
   background: transparent;
-  color: var(--pink);
-  border: 2px solid var(--pink-light);
+  color: #e0457b;
+  border: 2px solid #ffb3cf;
   border-radius: 50px;
   padding: clamp(9px,1.8vw,13px) clamp(18px,3.2vw,32px);
   font-family: 'Fredoka One', cursive;
@@ -179,7 +179,7 @@ button { cursor: pointer; font-family: inherit; }
   transition: background .2s, transform .2s;
   white-space: nowrap;
 }
-.btn-outline:hover { background: var(--pink-pale); transform: scale(1.04); }
+.btn-outline:hover { background: #fff0f7; transform: scale(1.04); }
 
 /* ── PAGE 1 ──────────────────────────────────────────── */
 .page1-wrapper {

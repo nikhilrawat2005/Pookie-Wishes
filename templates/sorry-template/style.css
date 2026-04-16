@@ -59,12 +59,12 @@ body:hover #custom-cursor {
     justify-content: center;
 }
 .heart-glow {
-    filter: drop-shadow(0 0 8px rgba(255, 107, 129, 0.8));
+    filter: drop-shadow(0 0 8px #FF6B81);
     animation: heart-pulse 1.5s ease-in-out infinite;
 }
 @keyframes heart-pulse {
-    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px rgba(255, 107, 129, 0.8)); }
-    50% { transform: scale(1.15); filter: drop-shadow(0 0 20px rgba(255, 107, 129, 1)); }
+    0%, 100% { transform: scale(1); filter: drop-shadow(0 0 8px #FF6B81); }
+    50% { transform: scale(1.15); filter: drop-shadow(0 0 20px #FF6B81); }
 }
 .game-cell:active {
     transform: scale(0.9);
@@ -110,6 +110,7 @@ body:hover #custom-cursor {
     transition: transform 0.6s ease;
     transform-origin: top;
 }
+
 .envelope-wrapper.open .envelope-flap {
     transform: rotateX(180deg);
     z-index: 0;
@@ -192,7 +193,7 @@ body:hover #custom-cursor {
     right: 20px;
     bottom: 20px;
     transform: rotate(-15deg);
-    border: 4px double #FF6B81;
+    border: 4px double var(--primary);
     color: #FF6B81;
     padding: 10px;
     border-radius: 10px;
@@ -203,6 +204,7 @@ body:hover #custom-cursor {
     scale: 2;
     pointer-events: none;
 }
+
 .handwriting {
     font-family: 'Quicksand', sans-serif;
     font-weight: 500;
