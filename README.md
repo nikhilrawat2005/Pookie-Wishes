@@ -18,6 +18,7 @@ In a world of boring greeting cards, **Pookie Wishes** offers an immersive exper
 - **Modern Aesthetics**: Glassmorphism, smooth GSAP animations, and responsive design for all devices.
 
 ---
+---
 
 ## 🛠️ Tech Stack & Integrations
 
@@ -74,6 +75,18 @@ service cloud.firestore {
   }
 }
 ```
+
+### 6️⃣ Email Marketing Setup (Broadcast)
+To use the **Broadcast / Email Center** in the Admin Panel, you must configure Gmail SMTP:
+1.  Go to your [Google Account Settings](https://myaccount.google.com/).
+2.  Enable **2-Step Verification**.
+3.  Search for **App Passwords**.
+4.  Generate a new app password (e.g., named "Pookie Marketing").
+5.  Add these to your **Vercel Environment Variables**:
+    - `GMAIL_USER`: `teamcipher.work@gmail.com`
+    - `GMAIL_APP_PASS`: Paste the 16-character code you generated.
+
+---
 
 ---
 

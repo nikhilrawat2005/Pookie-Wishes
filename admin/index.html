@@ -239,6 +239,7 @@
     <div class="sb-link" data-tab="templates" onclick="setTab('templates',this)"><i data-lucide="layout-template"></i> All Templates</div>
     <div class="sb-link" data-tab="suggestions" onclick="setTab('suggestions',this)"><i data-lucide="lightbulb"></i> Suggestions 💡</div>
     <div class="sb-link" data-tab="users" onclick="setTab('users',this)"><i data-lucide="users"></i> Customers / Users</div>
+    <div class="sb-link" data-tab="broadcast" onclick="setTab('broadcast',this)"><i data-lucide="send"></i> Broadcast / Email</div>
     
     <div class="sb-foot">
       <div class="sb-user"><i data-lucide="user"></i> <span id="sb-email"></span></div>
@@ -293,6 +294,41 @@
         <div>Name</div><div>Email / Guest</div><div style="text-align:right">Templates</div><div>Last Active</div>
       </div>
       <div id="users-tbl-body"><div class="empty"><i data-lucide="loader" class="spin"></i> Loading...</div></div>
+    </div>
+
+    <!-- BROADCAST SECTION -->
+    <div id="broadcast-sec" style="display:none; padding-bottom:60px;">
+      <div class="stats" style="grid-template-columns: 1fr 2fr; gap:20px;">
+        <div class="stat-c" style="height:fit-content;">
+          <div class="sec-title" style="margin-top:0;"><i data-lucide="users"></i> 1. Select Recipients</div>
+          <div style="display:flex;gap:10px;margin-bottom:12px;">
+            <button class="btn btn-soft btn-full" onclick="toggleSelectAll(true)">Select All</button>
+            <button class="btn btn-soft btn-full" onclick="toggleSelectAll(false)">None</button>
+          </div>
+          <div id="broadcast-user-list" style="max-height: 480px; overflow-y:auto; border: 1px solid var(--bdr); border-radius: var(--r); background: var(--bg);">
+            <div class="empty">Loading customers...</div>
+          </div>
+          <div style="margin-top:12px; font-size:0.75rem; color:var(--dim);" id="selected-count">0 users selected</div>
+        </div>
+        
+        <div class="stat-c">
+          <div class="sec-title" style="margin-top:0;"><i data-lucide="pen-tool"></i> 2. Compose Email</div>
+          <div style="margin-bottom:16px;">
+            <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:6px;">Subject</label>
+            <input type="text" id="bc-subject" class="f-inp" placeholder="e.g. ✨ Magic awaits inside! New templates released">
+          </div>
+          <div>
+            <label style="font-size:0.75rem;color:var(--muted);display:block;margin-bottom:6px;">Message Body (HTML Supported)</label>
+            <textarea id="bc-body" class="f-inp" style="min-height:300px; resize:vertical; font-family:var(--fm); line-height:1.6;" placeholder="Dear Pookie, <br><br>We have something special for you..."></textarea>
+          </div>
+          <div style="margin-top:24px; padding-top:20px; border-top:1px solid var(--bdr); display:flex; align-items:center; justify-content:space-between;">
+             <div style="font-size:0.75rem; color:var(--dim);">Sending via <span style="color:var(--text2);">teamcipher.work@gmail.com</span></div>
+             <button class="btn btn-primary" id="bc-send-btn" onclick="sendBroadcast()" style="padding:12px 32px;">
+                <i data-lucide="send" style="width:16px;"></i> Send Broadcast NOW
+             </button>
+          </div>
+        </div>
+      </div>
     </div>
     
   </div>
@@ -468,15 +504,136 @@ function setTab(filter, el) {
     if(rfBtn) rfBtn.style.display = 'none';
     hdr.textContent = "Registered Customers";
     loadUsers();
+  } else if(filter === 'broadcast') {
+    if(st) st.style.display = 'none';
+    if(tbl) tbl.style.display = 'none';
+    if(grid) grid.style.display = 'none';
+    if(sugGrid) sugGrid.style.display = 'none';
+    if(document.getElementById('users-tbl')) document.getElementById('users-tbl').style.display = 'none';
+    if(document.getElementById('broadcast-sec')) document.getElementById('broadcast-sec').style.display = 'block';
+    if(rfBtn) rfBtn.style.display = 'none';
+    hdr.textContent = "Broadcast / Email Center";
+    loadBroadcastUsers();
   } else {
     if(st) st.style.display = 'grid';
     if(tbl) tbl.style.display = 'block';
     if(grid) grid.style.display = 'none';
     if(sugGrid) sugGrid.style.display = 'none';
     if(document.getElementById('users-tbl')) document.getElementById('users-tbl').style.display = 'none';
+    if(document.getElementById('broadcast-sec')) document.getElementById('broadcast-sec').style.display = 'none';
     if(rfBtn) rfBtn.style.display = 'inline-flex';
     hdr.textContent = "Dashboard Overview";
     renderTable();
+  }
+}
+
+let broadcastEmails = [];
+async function loadBroadcastUsers() {
+  const container = document.getElementById('broadcast-user-list');
+  if(!container) return;
+  
+  // We can reuse the logic from loadUsers to get all unique emails
+  // For simplicity here, we'll fetch them specifically for the broadcaster
+  container.innerHTML = '<div class="empty">Scanning database...</div>';
+  
+  try {
+    const emailData = {};
+    
+    // 1. Registered Users
+    const registeredSnap = await db.collection('users').get();
+    registeredSnap.forEach(doc => {
+      const u = doc.data();
+      if(u.email) {
+        emailData[u.email.toLowerCase()] = { name: u.name || 'User', email: u.email.toLowerCase(), isUser: true };
+      }
+    });
+    
+    // 2. Buyers / Guests (from orders)
+    // Note: 'orders' is already globally populated in the admin panel
+    orders.forEach(o => {
+      const em = (o.user?.email || o.buyerEmail || '').toLowerCase();
+      if(em && !emailData[em]) {
+        emailData[em] = { name: o.user?.name || o.buyerName || 'Guest', email: em, isUser: false };
+      }
+    });
+    
+    broadcastEmails = Object.values(emailData).sort((a,b) => a.email.localeCompare(b.email));
+    
+    if(broadcastEmails.length === 0) {
+      container.innerHTML = '<div class="empty">No customers found.</div>';
+      return;
+    }
+    
+    container.innerHTML = broadcastEmails.map((u, i) => `
+      <label style="display:flex; align-items:center; gap:10px; padding:10px 15px; border-bottom:1px solid var(--bdr); cursor:pointer; font-size:0.8rem;">
+        <input type="checkbox" class="bc-user-chk" value="${u.email}" onchange="updateSelectedCount()">
+        <div style="flex:1;">
+          <div style="color:var(--text2); font-weight:500;">${u.name}</div>
+          <div style="color:var(--dim); font-size:0.7rem;">${u.email}</div>
+        </div>
+        ${u.isUser ? '<span style="font-size:0.6rem; color:#10b981;">Reg</span>' : ''}
+      </label>
+    `).join('');
+    updateSelectedCount();
+  } catch(e) {
+    container.innerHTML = '<div class="empty" style="color:#fca5a5;">Failed to load user list.</div>';
+    console.error(e);
+  }
+}
+
+function toggleSelectAll(on) {
+  document.querySelectorAll('.bc-user-chk').forEach(c => c.checked = on);
+  updateSelectedCount();
+}
+
+function updateSelectedCount() {
+  const n = document.querySelectorAll('.bc-user-chk:checked').length;
+  const el = document.getElementById('selected-count');
+  if(el) el.textContent = `${n} user${n!==1?'s':''} selected`;
+}
+
+async function sendBroadcast() {
+  const selected = Array.from(document.querySelectorAll('.bc-user-chk:checked')).map(c => c.value);
+  const subject = document.getElementById('bc-subject').value.trim();
+  const body = document.getElementById('bc-body').value.trim();
+  const btn = document.getElementById('bc-send-btn');
+  
+  if(!selected.length) return toast('Select at least one recipient!', 'err');
+  if(!subject || !body) return toast('Subject and Message are required!', 'err');
+  
+  if(!confirm(`Are you sure you want to send this email to ${selected.length} people?`)) return;
+  
+  btn.disabled = true;
+  btn.innerHTML = '<i data-lucide="loader" class="spin" style="width:16px;"></i> Sending...';
+  lucide.createIcons();
+  
+  try {
+    const res = await fetch('../api/send-email.js', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        recipients: selected,
+        subject: subject,
+        html: body.replace(/\n/g, '<br>') // Convert newlines to breaks for basic HTML support
+      })
+    });
+    
+    const data = await res.json();
+    if(data.success) {
+      toast(`Success! Broadcast sent to ${selected.length} users. 🚀`, 'ok');
+      document.getElementById('bc-subject').value = '';
+      document.getElementById('bc-body').value = '';
+      toggleSelectAll(false);
+    } else {
+      throw new Error(data.error || 'Failed to send emails');
+    }
+  } catch(e) {
+    console.error(e);
+    toast('Error: ' + e.message, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '<i data-lucide="send" style="width:16px;"></i> Send Broadcast NOW';
+    lucide.createIcons();
   }
 }
 
