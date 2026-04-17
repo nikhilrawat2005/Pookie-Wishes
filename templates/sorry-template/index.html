@@ -88,7 +88,7 @@
             const forgivenessBtn = document.getElementById('btn-forgive');
             if (forgivenessBtn) {
                 const wm = document.getElementById('global-watermark');
-                wm.classList.remove('opacity-0');
+                wm.classList.add('show-wm'); // Trigger the sliding animation
             }
         });
         observer.observe(document.getElementById('scene-container'), { childList: true, subtree: true });

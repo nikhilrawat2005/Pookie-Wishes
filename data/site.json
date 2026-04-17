@@ -144,6 +144,7 @@
       "currency": "₹",
       "emoji": "💘",
       "tagline": "Catch them in a web of love",
+      "hasPhotos": false,
       "shortDesc": "A sneaky, romantic surprise that will make them fall all over again. Interactive love-themed games and sweet messages.",
       "longDesc": "Set the perfect love trap with this playful yet heartfelt website. Includes romantic animations, a 'truth or dare' style game, and personalised love notes. Perfect for proposals, anniversaries, or just because.",
       "vibe": "Romantic & Playful",
@@ -157,7 +158,6 @@
         { "icon": "💘", "label": "Their Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The person you're surprising — appears throughout the love experience" },
         { "icon": "✍️", "label": "Your Name", "key": "sender_name", "type": "text", "required": true, "desc": "Your name or nickname to sign the love letter" },
         { "icon": "💬", "label": "Love Confession Letter", "key": "message", "type": "textarea", "required": true, "desc": "Tell them how you feel — it becomes the centrepiece of the entire experience" },
-        { "icon": "📸", "label": "3 Best Photos", "key": "photos", "type": "photo", "required": true, "desc": "Your favourite moments shown in the love gallery" },
         { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": true, "desc": "Choose a color palette for your premium QR code ✨" }
       ],
       "tags": [

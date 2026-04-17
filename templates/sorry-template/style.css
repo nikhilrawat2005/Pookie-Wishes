@@ -211,6 +211,10 @@ body:hover #custom-cursor {
 }
 
 /* Marketing Watermark - Special Relative Version for Sorry Template */
+.pookie-watermark.show-wm {
+    animation: slideUpCloud 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
 .pookie-watermark {
     position: relative; /* Change from fixed to relative */
     margin-top: 40px;
@@ -221,7 +225,6 @@ body:hover #custom-cursor {
     gap: 10px;
     font-family: 'Inter', 'Nunito', sans-serif;
     pointer-events: none;
-    animation: slideUpCloud 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
     opacity: 0;
     z-index: 10;
     width: 100%;
