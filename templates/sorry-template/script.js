@@ -166,6 +166,8 @@ function updateProgressBar(index) {
 }
 
 function updateNav(index) {
+    // Ensure nav is interactive
+    nav.style.pointerEvents = "auto";
     gsap.to(nav, { opacity: (index === 0 || index === 1) ? 1 : 1, duration: 1 });
     btnBack.style.visibility = (index === 0 || index === 1) ? "hidden" : "visible";
 }
@@ -189,26 +191,26 @@ function renderWelcome() {
     // Set dynamic properties
     const welcomePhoto = (safeData.photos && safeData.photos[0]) 
         ? safeData.photos[0] 
-        : './sorry image/738ffeb8-05d8-45d7-831e-4a849554b810.webp';
+        : './sorry-image/738ffeb8-05d8-45d7-831e-4a849554b810.webp';
     app.innerHTML = `
-        <div class="space-y-8 py-6 scale-[var(--card-scale)]">
+        <div class="space-y-4 md:space-y-8 py-2 md:py-6 scale-[var(--card-scale)]">
             <div class="relative inline-block">
-                <span class="absolute -top-10 -left-10 text-4xl animate-bounce">✨</span>
-                <h2 class="text-secondary font-cursive text-3xl mb-2 opacity-0 welcome-fade-in">${safeData.welcomeTitle || 'Hello!'}</h2>
+                <span class="absolute -top-6 -left-6 text-2xl animate-bounce">✨</span>
+                <h2 class="text-secondary font-cursive text-2xl md:text-3xl mb-1 opacity-0 welcome-fade-in">${safeData.welcomeTitle || 'Hello!'}</h2>
             </div>
             <div class="relative group">
-                <h1 class="text-6xl md:text-8xl font-black text-dark tracking-tighter leading-none mb-4 uppercase italic">
+                <h1 class="text-4xl md:text-8xl font-black text-dark tracking-tighter leading-none mb-2 uppercase italic">
                     I am <span class="text-secondary drop-shadow-xl">SORRY</span>
                 </h1>
-                <div class="h-2 w-24 bg-secondary mx-auto rounded-full group-hover:w-48 transition-all duration-500"></div>
+                <div class="h-1.5 w-16 md:w-24 bg-secondary mx-auto rounded-full group-hover:w-48 transition-all duration-500"></div>
             </div>
-            <p class="text-gray-500 max-w-sm mx-auto text-lg leading-relaxed handwriting font-medium">
+            <p class="text-gray-500 max-w-[280px] md:max-w-sm mx-auto text-sm md:text-lg leading-relaxed handwriting font-medium">
                 ${safeData.welcomeSubText || 'A little surprise for you...'}
             </p>
-            <div class="relative mt-4">
-                <img src="${welcomePhoto}" class="w-56 h-56 object-cover mx-auto rounded-3xl shadow-2xl animate-float border-8 border-white" onerror="this.src='./sorry image/738ffeb8-05d8-45d7-831e-4a849554b810.webp'">
-                <div class="absolute -top-4 -right-4 bg-secondary text-white p-3 rounded-full shadow-lg rotate-12">
-                    <i data-lucide="heart" class="w-6 h-6 fill-current"></i>
+            <div class="relative mt-2">
+                <img src="${welcomePhoto}" class="w-40 h-40 md:w-56 md:h-56 object-cover mx-auto rounded-3xl shadow-2xl animate-float border-4 md:border-8 border-white" onerror="this.src='./sorry-image/738ffeb8-05d8-45d7-831e-4a849554b810.webp'">
+                <div class="absolute -top-3 -right-3 bg-secondary text-white p-2 rounded-full shadow-lg rotate-12">
+                    <i data-lucide="heart" class="w-4 h-4 md:w-6 md:h-6 fill-current"></i>
                 </div>
             </div>
         </div>
