@@ -166,9 +166,7 @@ function updateProgressBar(index) {
 }
 
 function updateNav(index) {
-    // Ensure nav is interactive
-    nav.style.pointerEvents = "auto";
-    gsap.to(nav, { opacity: (index === 0 || index === 1) ? 1 : 1, duration: 1 });
+    gsap.to(nav, { opacity: 1, duration: 1 });
     btnBack.style.visibility = (index === 0 || index === 1) ? "hidden" : "visible";
 }
 
