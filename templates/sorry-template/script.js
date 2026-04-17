@@ -245,8 +245,8 @@ function renderGame() {
             </div>
             <p id="game-tip" class="text-secondary font-medium px-4 leading-relaxed">Now it's your turn to fill the heart in this game okaay</p>
             <div class="flex justify-center gap-4 mt-4">
-                <img src="./sorry image/f1186fc3-ffe4-4895-9ed2-2766500c2e19.webp" class="w-12 h-12 rounded-xl shadow-md rotate-[-12deg]">
-                <img src="./sorry image/9b6f5dbb-20d9-4434-bac2-bfc09301bc80.webp" class="w-12 h-12 rounded-xl shadow-md rotate-[12deg]">
+                <img src="./sorry-image/f1186fc3-ffe4-4895-9ed2-2766500c2e19.webp" class="w-12 h-12 rounded-xl shadow-md rotate-[-12deg]">
+                <img src="./sorry-image/9b6f5dbb-20d9-4434-bac2-bfc09301bc80.webp" class="w-12 h-12 rounded-xl shadow-md rotate-[12deg]">
             </div>
         </div>
     `;
@@ -276,8 +276,8 @@ function renderSuccess() {
             <div class="relative">
                 <div class="absolute inset-0 bg-secondary blur-[100px] opacity-30 animate-pulse"></div>
                 <div class="relative z-10">
-                    <img src="./sorry image/005b68c3-bce1-4310-9a6c-acc90ce77199.webp" class="w-48 h-48 object-cover rounded-[40px] shadow-2xl border-4 border-white rotate-[-3deg]">
-                    <img src="./sorry image/3d743400-810b-4249-846c-0b21541281e9.webp" class="absolute -bottom-6 -left-6 w-20 h-20 animate-bounce">
+                    <img src="./sorry-image/005b68c3-bce1-4310-9a6c-acc90ce77199.webp" class="w-48 h-48 object-cover rounded-[40px] shadow-2xl border-4 border-white rotate-[-3deg]">
+                    <img src="./sorry-image/3d743400-810b-4249-846c-0b21541281e9.webp" class="absolute -bottom-6 -left-6 w-20 h-20 animate-bounce">
                 </div>
                 <div class="absolute -top-5 -right-5 transform rotate-12 bg-white px-3 py-1 rounded-full shadow-lg border-2 border-secondary/20 font-black text-secondary">WON!</div>
             </div>
@@ -318,7 +318,7 @@ function renderLetter() {
             <div id="envelope" class="envelope-wrapper relative group" onclick="openEnvelope()">
                 <div class="envelope-flap flex items-center justify-center">
                     <div class="wax-seal w-20 h-20 bg-secondary rounded-full flex items-center justify-center shadow-xl border-4 border-white z-20 group-hover:scale-110 transition-transform">
-                        <img src="./sorry image/738ffeb8-05d8-45d7-831e-4a849554b810.webp" class="w-12 h-12 rounded-full object-cover">
+                        <img src="./sorry-image/738ffeb8-05d8-45d7-831e-4a849554b810.webp" class="w-12 h-12 rounded-full object-cover">
                     </div>
                 </div>
                 <div class="envelope-letter shadow-2xl rounded-xl">
@@ -326,8 +326,8 @@ function renderLetter() {
                         <div class="flex justify-between items-start mb-6 border-b-2 border-accent pb-4">
                             <h3 class="text-secondary font-black text-2xl">${d.letterTitle || 'A Special Note'}</h3>
                             <div class="relative">
-                                <img src="./sorry image/kitty.jpg" class="w-12 h-12 rounded-lg rotate-12 border-2 border-accent">
-                                <img src="./sorry image/280a31ad-3ac2-46dc-a266-8974d5160df9.webp" class="absolute -top-2 -right-2 w-6 h-6 rotate-12">
+                                <img src="./sorry-image/kitty.jpg" class="w-12 h-12 rounded-lg rotate-12 border-2 border-accent">
+                                <img src="./sorry-image/280a31ad-3ac2-46dc-a266-8974d5160df9.webp" class="absolute -top-2 -right-2 w-6 h-6 rotate-12">
                             </div>
                         </div>
                         <div class="text-left text-dark space-y-4 handwriting text-xl leading-relaxed">
@@ -387,7 +387,7 @@ function renderCards() {
                 </div>
 
                 <!-- Floating Sticker -->
-                <img src="./sorry image/cda44050-2819-4986-b6c8-05c59c7f8e57.webp" class="absolute top-2 right-2 w-10 opacity-40 rotate-[15deg]">
+                <img src="./sorry-image/cda44050-2819-4986-b6c8-05c59c7f8e57.webp" class="absolute top-2 right-2 w-10 opacity-40 rotate-[15deg]">
             </div>
 
             <div id="voucher-controls" class="flex flex-col gap-3">
@@ -436,7 +436,7 @@ function renderMusic() {
             </div>
             <div id="player" class="bg-white rounded-[40px] p-6 shadow-2xl space-y-6 relative overflow-hidden border border-accent/20">
                 <div id="album-art-container" class="w-48 h-48 mx-auto rounded-[30px] shadow-2xl ring-1 ring-black/5 overflow-hidden transform transition-all duration-700 hover:scale-105 relative group">
-                    <img id="album-art" src="./sorry image/ac221a99-510d-43d6-b91b-2a432b0a602f.webp" class="w-full h-full object-cover">
+                    <img id="album-art" src="./sorry-image/ac221a99-510d-43d6-b91b-2a432b0a602f.webp" class="w-full h-full object-cover">
                     <div class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
                         <div class="visualizer">${Array(5).fill(0).map(() => '<div class="v-bar"></div>').join('')}</div>
                     </div>
@@ -468,7 +468,7 @@ function renderMusic() {
             </div>
             
             <div class="mt-4 animate-float">
-                <img src="./sorry image/hello-kitty-i-love-you.gif" class="w-16 h-16 object-contain opacity-60">
+                <img src="./sorry-image/hello-kitty-i-love-you.gif" class="w-16 h-16 object-contain opacity-60">
             </div>
         </div>
     `;
@@ -498,7 +498,7 @@ function setupMusicLogic(songs) {
             title.innerText = songs[idx].title;
             artist.innerText = songs[idx].artist;
             if (songs[idx].cover) {
-                art.src = songs[idx].cover.includes('/') ? songs[idx].cover : `./sorry image/${songs[idx].cover}`;
+                art.src = songs[idx].cover.includes('/') ? songs[idx].cover : `./sorry-image/${songs[idx].cover}`;
             }
             pBar.style.width = '0%';
             isPlaying = false;
@@ -511,7 +511,7 @@ function setupMusicLogic(songs) {
 
     const initialCover = songs[0].cover;
     if (initialCover) {
-        art.src = initialCover.includes('/') ? initialCover : `./sorry image/${initialCover}`;
+        art.src = initialCover.includes('/') ? initialCover : `./sorry-image/${initialCover}`;
     }
     audio.src = songs[0].url || `${songs[0].title}.mp3`;
 
