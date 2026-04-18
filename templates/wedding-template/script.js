@@ -1,6 +1,6 @@
 /**
- * Royal Nuptials Template Script
- * Handles animations, dynamic content loading, and the DoodleEngine (stickers)
+ * Royal Nuptials — Polished Script
+ * Smart sticker injection, enhanced content, all sections
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -8,22 +8,42 @@ document.addEventListener('DOMContentLoaded', () => {
     initPetals();
     initScrollReveal();
     initDoodleEngine();
+    initWisdom();
 });
+
+// --- WISDOM QUOTES (built-in) ---
+function initWisdom() {
+    const quotes = [
+        { text: "A successful marriage requires falling in love many times, always with the same person.", author: "Mignon McLaughlin" },
+        { text: "The best thing to hold onto in life is each other.", author: "Audrey Hepburn" },
+        { text: "You don't marry someone you can live with — you marry the person you cannot live without.", author: "Anonymous" },
+        { text: "Whatever our souls are made of, his and hers are the same.", author: "Emily Brontë" },
+    ];
+    const grid = document.getElementById('wisdom-grid');
+    if (!grid) return;
+    grid.innerHTML = quotes.map(q => `
+        <div class="wisdom-card reveal">
+            <blockquote>"${q.text}"</blockquote>
+            <cite>— ${q.author}</cite>
+        </div>
+    `).join('');
+    // re-observe newly created elements
+    initScrollReveal();
+}
 
 // --- DATA LOADING ---
 async function loadConfig() {
     try {
         const response = await fetch('user_content/config.json');
         const data = await response.json();
-        
-        // Update DOM elements with config data
-        if (data.brideName) document.querySelector('.bride-name').textContent = data.brideName;
-        if (data.groomName) document.querySelector('.groom-name').textContent = data.groomName;
-        if (data.weddingDate) document.querySelector('.wedding-date').textContent = data.weddingDate;
-        if (data.location) document.querySelector('.location-text').textContent = data.location;
-        if (data.heroText) document.querySelector('.hero-subtitle').textContent = data.heroText;
-        
-        // Timeline loading
+
+        if (data.brideName) document.querySelectorAll('.bride-name').forEach(el => el.textContent = data.brideName);
+        if (data.groomName) document.querySelectorAll('.groom-name').forEach(el => el.textContent = data.groomName);
+        if (data.weddingDate) document.querySelectorAll('.wedding-date').forEach(el => el.textContent = data.weddingDate);
+        if (data.location) document.querySelectorAll('.location-text').forEach(el => el.textContent = data.location);
+        if (data.heroText) document.querySelector('.hero-subtitle') && (document.querySelector('.hero-subtitle').textContent = data.heroText);
+
+        // Timeline
         const timelineContent = document.getElementById('timeline-content');
         if (timelineContent && data.timeline) {
             timelineContent.innerHTML = data.timeline.map(item => `
@@ -35,25 +55,30 @@ async function loadConfig() {
             `).join('');
         }
 
-        // Wishes loading
+        // Wishes
         const wishesContainer = document.getElementById('wishes-container');
+        const flowers = [
+            'images/af01c37c8da6dfd3d0330a1fbdbd761e.jpg',
+            'images/f98c75359b3aab99ec29651b703df9b9.jpg',
+            'images/d35faf4c47f312f0c0ea3e636a2f6a43.jpg',
+            'images/1f1782224d76bfb1b7d3e803a538900c.jpg',
+        ];
         if (wishesContainer && data.wishes) {
             wishesContainer.innerHTML = data.wishes.map((wish, index) => `
                 <div class="wish-item ${index % 2 === 0 ? 'left' : 'right'} reveal">
                     <div class="wish-empty"></div>
                     <div class="wish-dot"><div class="wish-dot-inner"></div></div>
                     <div class="wish-content">
-                        <h3>${wish.title}</h3>
+                        <img src="${flowers[index % flowers.length]}" class="wish-flower" alt="flower">
+                        <h4>${wish.title}</h4>
                         <p>${wish.text}</p>
                     </div>
                 </div>
             `).join('');
         }
 
-        // Initialize Typewriter after config is loaded
-        if (data.letterContent) {
-            initTypewriter(data.letterContent);
-        }
+        if (data.letterContent) initTypewriter(data.letterContent);
+        initScrollReveal();
 
     } catch (error) {
         console.error('Error loading config:', error);
@@ -64,19 +89,19 @@ async function loadConfig() {
 function initPetals() {
     const layer = document.getElementById('petalLayer');
     if (!layer) return;
-    const colors = ['#f8d7da', '#fdf2f2', '#ffc107', '#fff'];
-    for (let i = 0; i < 40; i++) {
+    const colors = ['#f8d7da', '#fdf2f2', '#ffeaa0', '#fff', '#fce4ec', '#f3e5f5'];
+    for (let i = 0; i < 50; i++) {
         const p = document.createElement('div');
         p.className = 'petal';
-        const size = 10 + Math.random() * 16;
+        const size = 8 + Math.random() * 16;
         p.style.cssText = `
             left:${Math.random() * 100}%;
-            width:${size}px;height:${size}px;
+            width:${size}px; height:${size}px;
             background:${colors[Math.floor(Math.random() * colors.length)]};
             animation-duration:${10 + Math.random() * 14}s;
-            animation-delay:${Math.random() * 18}s;
+            animation-delay:${Math.random() * 20}s;
             border-radius:${Math.random() > .5 ? '0 80% 0 80%' : '80% 0 80% 0'};
-            opacity:.8;
+            opacity:.85;
         `;
         layer.appendChild(p);
     }
@@ -88,8 +113,10 @@ function initScrollReveal() {
         entries.forEach(e => {
             if (e.isIntersecting) e.target.classList.add('in');
         });
-    }, { threshold: .1 });
-    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => revObs.observe(el));
+    }, { threshold: .08 });
+    document.querySelectorAll('.reveal, .reveal-left, .reveal-right').forEach(el => {
+        if (!el.classList.contains('in')) revObs.observe(el);
+    });
 }
 
 // --- TYPEWRITER ---
@@ -112,8 +139,8 @@ function initTypewriter(content) {
             let i = 0;
             function tick() {
                 if (i < msg1.length) {
-                    letterEl.textContent += msg1[i++];
-                    setTimeout(tick, 18);
+                    if (letterEl) letterEl.textContent += msg1[i++];
+                    setTimeout(tick, 16);
                 } else {
                     setTimeout(() => {
                         if (p2) p2.style.cssText = 'opacity:1;transition:opacity 1.5s';
@@ -133,47 +160,28 @@ function initTypewriter(content) {
     if (target) letterObs.observe(target);
 }
 
-// --- DOODLE ENGINE (Sticker Injection) ---
+// --- DOODLE ENGINE — Smart Data-Attribute Sticker System ---
 function initDoodleEngine() {
-    const stickerList = [
-        "00b3bd8d1e6aafbe6d44754fa630306e.jpg",
-        "19af0e09011f87d5b54ae1362bd22638.jpg",
-        "1f1782224d76bfb1b7d3e803a538900c.jpg",
-        "29f8ada0158a4fc2d9e167106e489aa2.jpg",
-        "4993b813df12fa1952cd58b6ccc08238.jpg",
-        "4b6890a49cf0f64452f0065b003521e9.jpg",
-        "5118b880b87d768007f12f641968d6ee.jpg",
-        "551084a7dfd6d720535c958d061db0c2.jpg",
-        "6d4d8df79b99daee79f0473d3b3fee06.jpg",
-        "9b8f7dc6603d2ac5004462176edf084b.jpg",
-        "af01c37c8da6dfd3d0330a1fbdbd761e.jpg",
-        "c1f23f217b8da8f3d0583523187ba486.jpg",
-        "d2a27d435abe0d9fd75eccfbeb4f9eb1.jpg",
-        "d35faf4c47f312f0c0ea3e636a2f6a43.jpg",
-        "download (2).png",
-        "download (3).png",
-        "download (5).png",
-        "download.png",
-        "e30935609ccc365b82aaf24914708c2b.jpg",
-        "e3ded39ecf73129b0137f2b8c0599293.jpg",
-        "f473af62bf608409ecda7a0844c3dc00.jpg",
-        "f98c75359b3aab99ec29651b703df9b9.jpg"
-    ];
+    const slots = document.querySelectorAll('.doodle-slot[data-sticker]');
+    slots.forEach(slot => {
+        const file    = slot.getAttribute('data-sticker');
+        const size    = parseInt(slot.getAttribute('data-size')) || 120;
+        const rotate  = parseFloat(slot.getAttribute('data-rotate')) || 0;
 
-    const slots = document.querySelectorAll('.doodle-slot');
-    slots.forEach((slot, index) => {
-        if (index < stickerList.length) {
-            const img = document.createElement('img');
-            img.src = `images/${stickerList[index]}`;
-            img.className = 'sticker';
-            
-            // Random variation
-            const rotate = (Math.random() - 0.5) * 20; // -10 to 10 deg
-            const scale = 0.8 + Math.random() * 0.4; // 0.8 to 1.2
-            img.style.transform = `rotate(${rotate}deg) scale(${scale})`;
-            
-            slot.appendChild(img);
-        }
+        const img = document.createElement('img');
+        img.src = `images/${file}`;
+        img.className = 'sticker';
+        img.style.cssText = `
+            width:${size}px;
+            --r:${rotate}deg;
+        `;
+        img.style.transform = `rotate(${rotate}deg)`;
+
+        // Add slight random bob offset so they don't all bob in sync
+        const delay = (Math.random() * 4).toFixed(1);
+        img.style.animationDelay = `${delay}s`;
+
+        slot.appendChild(img);
     });
 }
 
@@ -182,30 +190,19 @@ let lockOpen = false;
 function unlockHeart() {
     if (lockOpen) return;
     lockOpen = true;
-    
     const stage = document.getElementById('lockStage');
     stage.classList.add('unlocked');
-    
-    // First wave of confetti on tap
-    launchConfetti(30);
-    
-    // Second bigger wave after the pop animation finishes
-    setTimeout(() => {
-        launchConfetti(40);
-    }, 600);
-
-    // Scroll the revealed quote into view smoothly
+    launchConfetti(35);
+    setTimeout(() => launchConfetti(45), 700);
     setTimeout(() => {
         const reveal = document.getElementById('lockReveal');
-        if (reveal) {
-            reveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
-    }, 1200);
+        if (reveal) reveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }, 1400);
 }
 
 // --- CONFETTI ---
 function launchConfetti(n = 60) {
-    const emojis = ['💍', '🌸', '💛', '✨', '🤍', '💐', '🎊', '💫', '🌺', '❤️', '💒', '🥂'];
+    const emojis = ['💍', '🌸', '💛', '✨', '🤍', '💐', '🎊', '💫', '🌺', '❤️', '💒', '🥂', '🌼', '🌹'];
     for (let i = 0; i < n; i++) {
         setTimeout(() => {
             const el = document.createElement('div');
@@ -214,10 +211,9 @@ function launchConfetti(n = 60) {
             const size = 14 + Math.random() * 16;
             el.style.cssText = `left:${Math.random() * 100}vw;font-size:${size}px;animation-duration:${2.5 + Math.random() * 3}s`;
             document.body.appendChild(el);
-            setTimeout(() => el.remove(), 6000);
+            setTimeout(() => el.remove(), 6500);
         }, i * 40);
     }
 }
 
-// Make globally accessible for onClick handlers
 window.unlockHeart = unlockHeart;

@@ -803,3 +803,334 @@ footer p{
   margin-top:8px;
   animation:fadeUp 1.4s 1s both;
 }
+
+/* ══════════════════════════════
+   DOODLE SLOT POSITIONING (Polished)
+   ══════════════════════════════ */
+
+/* Hero corners */
+.doodle-slot.corner-tl { position:absolute; top:20px; left:20px; }
+.doodle-slot.corner-tr { position:absolute; top:20px; right:20px; }
+.doodle-slot.corner-bl { position:absolute; bottom:80px; left:20px; }
+.doodle-slot.corner-br { position:absolute; bottom:80px; right:20px; }
+
+/* Section side floaters */
+.doodle-slot.side-left  { position:absolute; left:-20px; top:50%; transform:translateY(-50%); }
+.doodle-slot.side-right { position:absolute; right:-20px; top:50%; transform:translateY(-50%); }
+
+/* Free-float within sections */
+.doodle-slot.floating-mid      { position:absolute; top:20%; right:5%; }
+.doodle-slot.floating-top-left { position:absolute; top:-50px; left:-40px; }
+.doodle-slot.floating-bot-right{ position:absolute; bottom:-50px; right:-40px; }
+
+/* Footer floaters */
+.doodle-slot.footer-fl-left  { position:absolute; top:-40px; left:8%; }
+.doodle-slot.footer-fl-right { position:absolute; top:-40px; right:8%; }
+
+/* ══════════════════════════════
+   SECTION 4 — PRE-WEDDING RITUALS
+   ══════════════════════════════ */
+#rituals {
+  position: relative; z-index: 1;
+  padding: 100px 24px;
+  max-width: 1000px; margin: 0 auto;
+  overflow: hidden;
+}
+#rituals h2 {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  color: var(--gold-d);
+  text-align: center;
+  margin-bottom: 16px;
+}
+#rituals .section-sub {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(.85rem, 1.5vw, 1rem);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 60px;
+}
+
+.rituals-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 36px;
+}
+@media(max-width:640px) {
+  .rituals-grid { grid-template-columns: 1fr; }
+}
+
+.ritual-card {
+  background: white;
+  border: 1px solid var(--gold-l);
+  border-radius: 16px;
+  padding: 44px 32px;
+  text-align: center;
+  box-shadow: 0 8px 30px rgba(0,0,0,.05);
+  position: relative;
+  transition: transform .4s ease, box-shadow .4s ease;
+  overflow: hidden;
+}
+.ritual-card::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(201,169,110,.05) 0%, transparent 60%);
+  pointer-events: none;
+}
+.ritual-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 20px 50px rgba(139,105,20,.14);
+}
+.ritual-icon {
+  font-size: 2.4rem;
+  margin-bottom: 18px;
+  display: block;
+  animation: floatSlow 5s ease-in-out infinite;
+}
+.ritual-card h3 {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(1.8rem, 3.5vw, 2.5rem);
+  color: var(--gold-d);
+  margin-bottom: 12px;
+}
+.ritual-card p {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1rem, 1.7vw, 1.15rem);
+  line-height: 1.9;
+  color: var(--text-l);
+  font-style: italic;
+}
+
+/* ══════════════════════════════
+   SECTION 7 — CHERISHED MEMORIES
+   ══════════════════════════════ */
+#memories {
+  position: relative; z-index: 1;
+  padding: 100px 24px;
+  max-width: 1000px; margin: 0 auto;
+  overflow: hidden;
+}
+#memories h2 {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  color: var(--gold-d);
+  text-align: center;
+  margin-bottom: 16px;
+}
+#memories .section-sub {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(.85rem, 1.5vw, 1rem);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 60px;
+}
+
+.memories-mosaic {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 30px;
+}
+@media(max-width:600px) {
+  .memories-mosaic { grid-template-columns: 1fr; }
+}
+.mem-card { cursor: default; }
+.mem-inner {
+  text-align: center;
+}
+.mem-img-frame {
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 16px;
+  border-radius: 16px;
+  overflow: hidden;
+  border: 3px solid var(--gold-l);
+  box-shadow: 0 12px 40px rgba(0,0,0,.08);
+  transition: transform .5s ease, box-shadow .5s ease;
+  position: relative;
+}
+.mem-img-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to top, rgba(139,105,20,.15) 0%, transparent 50%);
+  pointer-events: none;
+}
+.mem-img-frame:hover {
+  transform: translateY(-6px) rotate(1deg);
+  box-shadow: 0 20px 60px rgba(139,105,20,.18);
+}
+.mem-img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
+  transition: transform .6s ease;
+}
+.mem-img-frame:hover .mem-img { transform: scale(1.05); }
+.mem-caption {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(1.4rem, 2.5vw, 1.9rem);
+  color: var(--gold-d);
+  margin-top: 8px;
+}
+
+/* ══════════════════════════════
+   SECTION 9 — VOWS & PROMISES
+   ══════════════════════════════ */
+#vows {
+  position: relative; z-index: 1;
+  padding: 100px 24px;
+  max-width: 1000px; margin: 0 auto;
+  overflow: hidden;
+}
+#vows h2 {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(2.8rem, 6vw, 5rem);
+  color: var(--gold-d);
+  text-align: center;
+  margin-bottom: 16px;
+}
+#vows .section-sub {
+  text-align: center;
+  font-family: 'Playfair Display', serif;
+  font-style: italic;
+  font-size: clamp(.85rem, 1.5vw, 1rem);
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 60px;
+}
+
+.vows-container {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 40px;
+  align-items: start;
+}
+@media(max-width:700px) {
+  .vows-container { grid-template-columns: 1fr; gap: 50px; }
+  .vow-divider { display: flex; flex-direction: row; align-items: center; gap: 20px; }
+  .vow-line { width: 100%; height: 1px; }
+}
+
+.vow-side {
+  text-align: center;
+  padding: 40px 28px;
+  background: white;
+  border: 1px solid var(--gold-l);
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,.05);
+  position: relative;
+  transition: transform .4s ease;
+}
+.vow-side:hover { transform: translateY(-4px); }
+.vow-label {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(1.6rem, 3vw, 2.2rem);
+  margin-bottom: 20px;
+  display: block;
+}
+.vow-text p {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1rem, 1.7vw, 1.15rem);
+  line-height: 2;
+  color: var(--text-l);
+  font-style: italic;
+}
+.vow-flower-wrap {
+  margin-top: 24px;
+  display: flex;
+  justify-content: center;
+}
+.vow-flower {
+  width: 80px;
+  filter: drop-shadow(0 4px 12px rgba(201,169,110,.3));
+  animation: floatSlow 5s ease-in-out infinite;
+}
+.vow-divider {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding-top: 20px;
+}
+.vow-heart {
+  width: 80px;
+  filter: drop-shadow(0 4px 14px rgba(201,169,110,.4));
+  animation: lockBreathe 3s ease-in-out infinite;
+}
+.vow-line {
+  width: 1px;
+  flex: 1;
+  min-height: 80px;
+  background: linear-gradient(to bottom, var(--gold-l), transparent);
+}
+
+/* ══════════════════════════════
+   TIMELINE (enhanced)
+   ══════════════════════════════ */
+.timeline-item {
+  display: grid;
+  grid-template-columns: 80px 24px 1fr;
+  align-items: start;
+  gap: 0 20px;
+  margin-bottom: 56px;
+}
+.time-year {
+  font-family: 'Playfair Display', serif;
+  font-size: 1rem;
+  letter-spacing: .2em;
+  color: var(--gold);
+  text-transform: uppercase;
+  text-align: right;
+  padding-top: 2px;
+}
+.time-mark {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+.time-mark::before {
+  content: '';
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--gold-d);
+  border: 3px solid var(--ivory);
+  box-shadow: 0 0 0 2px var(--gold-l);
+  flex-shrink: 0;
+}
+.time-mark::after {
+  content: '';
+  flex: 1;
+  width: 1px;
+  background: linear-gradient(to bottom, var(--gold-l), transparent);
+  min-height: 60px;
+}
+.time-desc {
+  font-family: 'EB Garamond', serif;
+  font-size: clamp(1rem, 1.7vw, 1.2rem);
+  line-height: 1.8;
+  color: var(--text-l);
+  font-style: italic;
+  padding-bottom: 16px;
+}
+@media(max-width:500px){
+  .timeline-item { grid-template-columns: 60px 20px 1fr; }
+  .time-year { font-size: .85rem; }
+}
+
+/* Wish items get flowers back */
+.wish-content h4, .wish-content h3 {
+  font-family: 'Alex Brush', cursive;
+  font-size: clamp(1.8rem, 3.5vw, 2.4rem);
+  color: var(--gold-d);
+  margin-bottom: 8px;
+}
