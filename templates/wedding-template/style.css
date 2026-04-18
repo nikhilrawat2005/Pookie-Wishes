@@ -733,9 +733,10 @@ footer p{
 }
 .wisdom-grid{
   display:grid;
-  grid-template-columns:1fr;
+  grid-template-columns:1fr 1fr;
   gap:40px;
 }
+@media(max-width: 640px) { .wisdom-grid { grid-template-columns: 1fr; } }
 .wisdom-card{
   background:white;
   border:1px solid var(--gold-l);
@@ -1407,7 +1408,7 @@ footer p{
 }
 .blessings-grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    grid-template-columns: 1fr 1fr;
     gap: 28px;
 }
 @media(max-width: 640px) { .blessings-grid { grid-template-columns: 1fr; } }
@@ -1745,9 +1746,10 @@ footer p{
 }
 .blessings-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  grid-template-columns:1fr 1fr;
   gap:40px;
 }
+@media(max-width: 640px) { .blessings-grid { grid-template-columns: 1fr; } }
 .blessing-card{
   background:white;
   border-radius:16px;
@@ -1804,9 +1806,10 @@ footer p{
 }
 .rituals-grid{
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+  grid-template-columns:1fr 1fr;
   gap:40px;
 }
+@media(max-width: 640px) { .rituals-grid { grid-template-columns: 1fr; } }
 .ritual-card{
   text-align:center;
 }
