@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Royal Nuptials | A Wedding Surprise</title>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <!-- CSS -->
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="petalLayer"></div>
+
+<!-- ════════ HERO SECTION ════════ -->
+<section id="hero">
+    <!-- Doodle Slots for Hero -->
+    <div class="doodle-slot" style="top: 5%; left: 5%;"></div>
+    <div class="doodle-slot" style="top: 10%; right: 5%;"></div>
+    <div class="doodle-slot" style="bottom: 15%; left: 10%;"></div>
+    <div class="doodle-slot" style="bottom: 10%; right: 10%;"></div>
+
+    <div class="hero-eyebrow">A Journey of Love</div>
+    <div class="hero-names">
+        <span class="bride-name">Anya</span>
+        <span class="hero-ampersand">&</span>
+        <span class="groom-name">Aryan</span>
+    </div>
+    <div class="hero-date">JANUARY 24, 2026</div>
+    <div class="hero-tagline hero-subtitle">Together, they begin a new chapter of forever.</div>
+    
+    <div class="scroll-hint">
+        <span>Scroll to Explore</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- ════════ STORY / TIMELINE SECTION ════════ -->
+<section id="engagement" class="reveal">
+    <!-- Doodle Slots for Story -->
+    <div class="doodle-slot" style="top: 20%; left: -20px;"></div>
+    <div class="doodle-slot" style="top: 40%; right: -20px;"></div>
+
+    <h2>Our Beautiful Journey</h2>
+    <div class="section-sub">Milestones of Heart</div>
+
+    <div class="wish-timeline" id="timeline-content">
+        <!-- Dynamically loaded timeline items -->
+    </div>
+</section>
+
+<div class="sec-divider">
+    <div class="sec-divider-icon">💍</div>
+</div>
+
+<!-- ════════ WISHES SECTION ════════ -->
+<section id="wishes">
+    <!-- Doodle Slots for Wishes -->
+    <div class="doodle-slot" style="top: 0; left: 10%;"></div>
+    <div class="doodle-slot" style="bottom: 0; right: 10%;"></div>
+    <div class="doodle-slot" style="top: 50%; left: 5%;"></div>
+    <div class="doodle-slot" style="top: 30%; right: 5%;"></div>
+
+    <h2 class="reveal">Heartfelt Wishes</h2>
+    <div class="wish-timeline" id="wishes-container">
+        <!-- Dynamically loaded wishes -->
+    </div>
+</section>
+
+<!-- ════════ LOVE LETTER SECTION ════════ -->
+<section id="love-letter">
+    <!-- Doodle Slots for Letter -->
+    <div class="doodle-slot" style="top: -50px; left: -50px;"></div>
+    <div class="doodle-slot" style="bottom: -50px; right: -50px;"></div>
+    
+    <h2 class="reveal">A Message for You</h2>
+    <div class="letter-paper reveal">
+        <div class="letter-salutation">Dearest Couple,</div>
+        <div class="letter-body">
+            <p id="letter-typed"></p>
+            <p id="letter-p2" style="opacity:0"></p>
+            <p id="letter-p3" style="opacity:0"></p>
+            <p id="letter-p4" style="opacity:0"></p>
+        </div>
+        <div class="letter-signature">With Love</div>
+    </div>
+</section>
+
+<!-- ════════ LOVE LOCK SECTION ════════ -->
+<section id="love-lock">
+    <!-- Doodle Slots for Lock -->
+    <div class="doodle-slot" style="top: 10%; right: 15%;"></div>
+    <div class="doodle-slot" style="bottom: 15%; left: 15%;"></div>
+
+    <h2 class="reveal">Seal the Promise</h2>
+    <div class="lock-sub reveal">Click the heart to unlock their future</div>
+
+    <div class="lock-stage reveal" id="lockStage">
+        <svg class="lock-svg" viewBox="0 0 200 260" onclick="unlockHeart()">
+            <path class="lock-shackle" d="M50,110 V60 A50,50 0 0,1 150,60 V110" fill="none" stroke="#c9a96e" stroke-width="15" stroke-linecap="round"/>
+            <rect x="30" y="100" width="140" height="120" rx="15" fill="#c9a96e"/>
+            <path d="M100,135 A15,15 0 1,1 99.9,135 Z" fill="#fdf8f0"/>
+            <rect x="95" y="145" width="10" height="25" fill="#fdf8f0"/>
+            <text x="100" y="200" text-anchor="middle" class="lock-engraving">Forever</text>
+        </svg>
+    </div>
+
+    <div class="lock-msg">
+        <div class="lock-reveal" id="lockReveal">
+            <div class="final-quote">
+                <p>"Love is not just looking at each other, it's looking in the same direction."</p>
+                <cite>— Antoine de Saint-Exupéry</cite>
+            </div>
+        </div>
+    </div>
+    
+    <span class="lock-cta" id="lockCta">Touch to Unlock</span>
+</section>
+
+<!-- ════════ FOOTER ════════ -->
+<footer>
+    <!-- Doodle Slots for Footer -->
+    <div class="doodle-slot" style="top: -30px; left: 20%;"></div>
+    <div class="doodle-slot" style="top: -30px; right: 20%;"></div>
+    <div class="doodle-slot" style="bottom: 10px; left: 5%;"></div>
+    <div class="doodle-slot" style="bottom: 10px; right: 5%;"></div>
+
+    <div class="foot-names bride-name">Anya</div>
+    <div class="foot-names groom-name">Aryan</div>
+    <p>Celebrating a Beautiful Union</p>
+    
+    <div class="calli-strip reveal">
+        <div class="calli-tag">Happiness</div>
+        <div class="calli-tag">Eternity</div>
+        <div class="calli-tag">Devotion</div>
+    </div>
+</footer>
+
+<!-- JS -->
+<script src="script.js"></script>
+
+</body>
+</html>

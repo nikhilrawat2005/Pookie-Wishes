@@ -88,7 +88,7 @@
         { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "How you want to sign this surprise" },
         { "icon": "💌", "label": "Personal Birthday Letter", "key": "message", "type": "textarea", "required": true, "desc": "A heartfelt birthday message — revealed step by step in the flip cards" },
         { "icon": "📸", "label": "3 Favorite Photos", "key": "photos", "type": "photo", "required": true, "desc": "Your favorite memories — shown in the animated photo gallery" },
-        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": true, "desc": "Choose a color palette for your premium QR code ✨" }
+        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": false, "desc": "Choose a color palette for your premium QR code ✨" }
       ],
       "media": {
         "thumbnail": "media/hello-kitty/thumbnail.jpg",
@@ -127,9 +127,9 @@
       "submitDetails": [
         { "icon": "⚡", "label": "Witch / Wizard's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The birthday person's name for their official Hogwarts letter" },
         { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this magical surprise" },
-        { "icon": "🏠", "label": "Hogwarts House", "key": "house", "type": "select", "options": ["Gryffindor", "Slytherin", "Hufflepuff", "Ravenclaw"], "required": true, "desc": "Which house do they belong to?" },
         { "icon": "💌", "label": "Birthday Wish Message", "key": "message", "type": "textarea", "required": true, "desc": "A heartfelt note — revealed at the end inside their Hogwarts letter" },
-        { "icon": "📸", "label": "3 Favorite Photos", "key": "photos", "type": "photo", "required": true, "desc": "Memories shown in the enchanted photo gallery section" }
+        { "icon": "📸", "label": "3 Favorite Photos", "key": "photos", "type": "photo", "required": true, "desc": "Memories shown in the enchanted photo gallery section" },
+        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": false, "desc": "Choose a color palette for your premium QR code ✨" }
       ],
       "media": {
         "thumbnail": "media/harry-potter/thumbnail.jpg",
@@ -158,7 +158,7 @@
         { "icon": "💘", "label": "Their Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The person you're surprising — appears throughout the love experience" },
         { "icon": "✍️", "label": "Your Name", "key": "sender_name", "type": "text", "required": true, "desc": "Your name or nickname to sign the love letter" },
         { "icon": "💬", "label": "Love Confession Letter", "key": "message", "type": "textarea", "required": true, "desc": "Tell them how you feel — it becomes the centrepiece of the entire experience" },
-        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": true, "desc": "Choose a color palette for your premium QR code ✨" }
+        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": false, "desc": "Choose a color palette for your premium QR code ✨" }
       ],
       "tags": [
         "romance",
@@ -203,8 +203,8 @@
       "submitDetails": [
         { "icon": "🌙", "label": "Birthday Person's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "Their name for the celestial title screen and star dedication" },
         { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this cosmic surprise" },
-        { "icon": "📅", "label": "Their Date of Birth", "key": "dob", "type": "date", "required": true, "desc": "Used to display their zodiac sign and celestial birth profile" },
-        { "icon": "💌", "label": "Star Message", "key": "message", "type": "textarea", "required": true, "desc": "A personal birthday wish — revealed via typewriter animation in the stars" }
+        { "icon": "💌", "label": "Star Message", "key": "message", "type": "textarea", "required": true, "desc": "A personal birthday wish — revealed via typewriter animation in the stars" },
+        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": false, "desc": "Choose a color palette for your premium QR code ✨" }
       ],
       "media": {
         "thumbnail": "media/celestial/thumbnail.jpg",
@@ -311,9 +311,8 @@
         { "icon": "🥺", "label": "Their Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The person you're apologising to — appears in the opening and letter" },
         { "icon": "✍️", "label": "Your Name", "key": "sender_name", "type": "text", "required": true, "desc": "Your name — it signs the apology letter" },
         { "icon": "💌", "label": "Apology Letter", "key": "message", "type": "textarea", "required": true, "desc": "What you want to say — written from the heart (100–300 words works best)" },
-        { "icon": "🎟️", "label": "Pookie Voucher Wish", "key": "voucher", "type": "text", "required": true, "desc": "What the voucher entitles them to (e.g. 'One free hug anytime')" },
         { "icon": "📸", "label": "3 Happy Photos", "key": "photos", "type": "photo", "required": true, "desc": "Memories shown in the memory lane section" },
-        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": true, "desc": "Choose a color palette for your premium QR code ✨" }
+        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": false, "desc": "Choose a color palette for your premium QR code ✨" }
       ],
       "media": {
         "thumbnail": "media/sorry/thumbnail.jpg",
@@ -345,7 +344,7 @@
         { "icon": "💝", "label": "Special One's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "Who is this surprise for?" },
         { "icon": "📅", "label": "Anniversary Date", "key": "eventDate", "type": "date", "required": true, "desc": "The special date to highlight at the beginning of the journey" },
         { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Your name to sign off the surprise letter" },
-        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": true, "desc": "Choose a color palette for your premium QR code ✨" },
+        { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": false, "desc": "Choose a color palette for your premium QR code ✨" },
         { "icon": "💌", "label": "Long Letter", "key": "message", "type": "textarea", "required": true, "desc": "Write everything you feel — this is the finale surprise" }
 
       ],
@@ -382,6 +381,39 @@
       ],
       "media": {
         "thumbnail": "templates/ninja-game-template/backs/scroll-animation.gif"
+      }
+    },
+    {
+      "id": "wedding",
+      "name": "Royal Nuptials",
+      "tagline": "A Grand Wedding Celebration ✨",
+      "badge": "Premium",
+      "emoji": "💍",
+      "price": 99,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "hasPhotos": false,
+      "tags": ["wedding", "congrats", "marriage", "royal", "romantic"],
+      "shortDesc": "A majestic wedding surprise with floral animations, a personalized love letter, and a symbolic heart lock.",
+      "longDesc": "Celebrate their union with the 'Royal Nuptials' template. Featuring a grand hero entrance, a timeline of their journey, heartfelt wishes, a signature typewriter love letter, and an interactive 'Love Lock' to seal their promise. Decorated with 24 custom stickers for a scrapbook feel.",
+      "vibe": "Majestic & Romantic",
+      "features": [
+        "💍 Grand Royal Hero Entrance",
+        "📜 Animated Journey Timeline",
+        "🌸 Heartfelt Floral Wishes",
+        "✍️ Typewriter Signature Letter",
+        "🔒 Interactive Love Lock Reveal",
+        "🎨 24 Dynamic Sticker Decorations"
+      ],
+      "submitDetails": [
+        { "icon": "👰", "label": "Bride's Name", "key": "brideName", "type": "text", "required": true, "desc": "The bride's name — appears on the hero screen" },
+        { "icon": "🤵", "label": "Groom's Name", "key": "groomName", "type": "text", "required": true, "desc": "The groom's name — appears on the hero screen" },
+        { "icon": "📅", "label": "Wedding Date", "key": "weddingDate", "type": "text", "required": true, "desc": "The special day to remember" },
+        { "icon": "📍", "label": "Wedding Location", "key": "location", "type": "text", "required": true, "desc": "Where the magic happened" },
+        { "icon": "💌", "label": "Main Love Letter", "key": "message", "type": "textarea", "required": true, "desc": "A heartfelt letter to the couple — revealed with a typewriter effect" }
+      ],
+      "media": {
+        "thumbnail": "templates/wedding-template/preview.png"
       }
     }
   ]

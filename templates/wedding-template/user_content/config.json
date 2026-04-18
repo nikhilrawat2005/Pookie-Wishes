@@ -1,0 +1,41 @@
+{
+  "brideName": "Anya",
+  "groomName": "Aryan",
+  "weddingDate": "January 24th, 2026",
+  "location": "The Royal Palace, Jaipur",
+  "heroText": "A Journey of Love Begins",
+  "letterContent": {
+    "msg1": "From the moment the two of you found each other, something in the universe shifted. Love — real, deep, enduring love — has a way of doing that. It rearranges the stars. It softens the edges of the world. It makes ordinary days feel like something sacred.",
+    "p2": "May your life together be a masterpiece of shared dreams and gentle understanding. May you always be each other's sanctuary, a place where you are fully seen, fully known, and completely loved.",
+    "p3": "Today, as you stand hand in hand, looking toward a future built together, remember that the greatest magic isn't in the grand gestures, but in the quiet shared glances and the strength you give one another.",
+    "p4": "With all my love and heartiest congratulations on your beautiful union."
+  },
+  "wishes": [
+    {
+      "title": "Always Hand in Hand",
+      "text": "May your path be easy and your burdens light. Walk together with grace."
+    },
+    {
+      "title": "A Home of Joy",
+      "text": "May your home be filled with laughter and your hearts with peace."
+    },
+    {
+      "title": "Endless Love",
+      "text": "May your love grow stronger with every sunrise and deeper with every moon."
+    }
+  ],
+  "timeline": [
+    {
+      "year": "2021",
+      "event": "First Encounter"
+    },
+    {
+      "year": "2023",
+      "event": "The Proposal"
+    },
+    {
+      "year": "2026",
+      "event": "The Big Day"
+    }
+  ]
+}

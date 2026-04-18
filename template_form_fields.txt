@@ -1,0 +1,83 @@
+✨ POOKIE WISHES - TEMPLATE PERSONALIZATION GUIDE ✨
+==================================================
+
+This document lists all the fields required from users to personalize their surprise templates.
+Fields marked as (Optional) will use premium defaults if left empty.
+
+--------------------------------------------------
+🎀 HELLO KITTY (hello-kitty)
+--------------------------------------------------
+- Birthday Person's Name: Their name or nickname
+- Your Name (Sender): How you want to sign the surprise
+- Personal Birthday Letter: A heartfelt message (shown in flip cards)
+- 3 Favorite Photos: Memories for the animated gallery
+- QR Code Theme (Optional): Default is "Romantic Red" (Kawaii Pink style)
+
+--------------------------------------------------
+⚡ HARRY POTTER (harry-potter)
+--------------------------------------------------
+- Witch / Wizard's Name: Name for the official Hogwarts letter
+- Your Name (Sender): Who is sending this magical surprise
+- Birthday Wish Message: Heartfelt note revealed at the end
+- 3 Favorite Photos: Memories for the enchanted photo gallery
+- QR Code Theme (Optional): Default is "Magical Red" (Gryffindor style)
+
+--------------------------------------------------
+💘 LOVE TRAP (love-trap)
+--------------------------------------------------
+- Their Name: The person you're surprising
+- Your Name: Your name or nickname
+- Love Confession Letter: The centrepiece of the experience
+- QR Code Theme (Optional): Default is "Romantic Red"
+
+--------------------------------------------------
+🌌 CELESTIAL UNIVERSE (celestial)
+--------------------------------------------------
+- Birthday Person's Name: Name for the celestial title screen
+- Your Name (Sender): Who is sending this cosmic surprise
+- Star Message: Heartfelt message revealed via typewriter animation
+- QR Code Theme (Optional): Default is "Cosmic Blue"
+
+--------------------------------------------------
+🚀 AMONG US (among-us)
+--------------------------------------------------
+- Crewmate's Name: Name for the crew roster
+- Your Name: Your crewmate nickname
+
+--------------------------------------------------
+🌿 HOPPERS (hoppers)
+--------------------------------------------------
+- Birthday Person's Name: Name for the forest adventure
+- Your Name (Sender): Who wrote the adventure letter
+- Birthday Message: Message revealed on the magical parchment
+
+--------------------------------------------------
+🥺 THE APOLOGY (sorry)
+--------------------------------------------------
+- Their Name: The person you're apologising to
+- Your Name: Your name (signs the apology letter)
+- Apology Letter: Heartfelt sorry note (100–300 words recommended)
+- 3 Happy Photos: Memories for the "Memory Lane" section
+- QR Code Theme (Optional): Default is "Romantic Red"
+
+--------------------------------------------------
+💝 ANNIVERSARY JOURNEY (anniversary-journey)
+--------------------------------------------------
+- Special One's Name: Who is this surprise for?
+- Anniversary Date: The date to highlight at the start
+- Your Name (Sender): Your name to sign off the letter
+- Long Letter: The final heartfelt surprise
+- QR Code Theme (Optional): Default is "Elegant Gold"
+
+--------------------------------------------------
+🥷 NINJA PATH ADVENTURE (ninja-game)
+--------------------------------------------------
+- Ninja's Name: Username for the hero
+- Final Parchment Letter: The grand finale message
+
+--------------------------------------------------
+🎨 FULLY CUSTOM THEME (hand-made)
+--------------------------------------------------
+*This is a bespoke service handled manually via WhatsApp/Instagram.*
+- WhatsApp: 918700113731
+- Instagram: @pookiewish
