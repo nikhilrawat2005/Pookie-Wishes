@@ -144,10 +144,8 @@ function initDoodleEngine() {
         "4b6890a49cf0f64452f0065b003521e9.jpg",
         "5118b880b87d768007f12f641968d6ee.jpg",
         "551084a7dfd6d720535c958d061db0c2.jpg",
-        "56176ac49782b1a2ea8d33d3c41e26fd.jpg",
         "6d4d8df79b99daee79f0473d3b3fee06.jpg",
         "9b8f7dc6603d2ac5004462176edf084b.jpg",
-        "aa915da345bb5913d745b170196dc672.jpg",
         "af01c37c8da6dfd3d0330a1fbdbd761e.jpg",
         "c1f23f217b8da8f3d0583523187ba486.jpg",
         "d2a27d435abe0d9fd75eccfbeb4f9eb1.jpg",
@@ -184,29 +182,40 @@ let lockOpen = false;
 function unlockHeart() {
     if (lockOpen) return;
     lockOpen = true;
-    document.getElementById('lockStage').classList.add('unlocked');
-    const lockCta = document.getElementById('lockCta');
-    if (lockCta) lockCta.style.display = 'none';
-    const lockReveal = document.getElementById('lockReveal');
-    if (lockReveal) {
-        lockReveal.style.maxHeight = '1000px';
-        lockReveal.style.opacity = '1';
-    }
-    launchConfetti(50);
+    
+    const stage = document.getElementById('lockStage');
+    stage.classList.add('unlocked');
+    
+    // First wave of confetti on tap
+    launchConfetti(30);
+    
+    // Second bigger wave after the pop animation finishes
+    setTimeout(() => {
+        launchConfetti(40);
+    }, 600);
+
+    // Scroll the revealed quote into view smoothly
+    setTimeout(() => {
+        const reveal = document.getElementById('lockReveal');
+        if (reveal) {
+            reveal.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+    }, 1200);
 }
 
 // --- CONFETTI ---
 function launchConfetti(n = 60) {
-    const emojis = ['💍', '🌸', '💛', '✨', '🤍', '💐', '🎊', '💫', '🌺', '❤️'];
+    const emojis = ['💍', '🌸', '💛', '✨', '🤍', '💐', '🎊', '💫', '🌺', '❤️', '💒', '🥂'];
     for (let i = 0; i < n; i++) {
         setTimeout(() => {
             const el = document.createElement('div');
             el.className = 'conf-piece';
             el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-            el.style.cssText = `left:${Math.random() * 100}vw;font-size:${14 + Math.random() * 14}px;animation-duration:${2 + Math.random() * 3}s`;
+            const size = 14 + Math.random() * 16;
+            el.style.cssText = `left:${Math.random() * 100}vw;font-size:${size}px;animation-duration:${2.5 + Math.random() * 3}s`;
             document.body.appendChild(el);
-            setTimeout(() => el.remove(), 5000);
-        }, i * 35);
+            setTimeout(() => el.remove(), 6000);
+        }, i * 40);
     }
 }
 

@@ -3,39 +3,39 @@
   "groomName": "Aryan",
   "weddingDate": "January 24th, 2026",
   "location": "The Royal Palace, Jaipur",
-  "heroText": "A Journey of Love Begins",
+  "heroText": "Together, they begin a new chapter of forever.",
   "letterContent": {
-    "msg1": "From the moment the two of you found each other, something in the universe shifted. Love — real, deep, enduring love — has a way of doing that. It rearranges the stars. It softens the edges of the world. It makes ordinary days feel like something sacred.",
-    "p2": "May your life together be a masterpiece of shared dreams and gentle understanding. May you always be each other's sanctuary, a place where you are fully seen, fully known, and completely loved.",
-    "p3": "Today, as you stand hand in hand, looking toward a future built together, remember that the greatest magic isn't in the grand gestures, but in the quiet shared glances and the strength you give one another.",
-    "p4": "With all my love and heartiest congratulations on your beautiful union."
+    "msg1": "From the moment the two of you found each other, something beautiful shifted in this world. Your love story isn't just about two hearts meeting — it's about two souls recognizing each other across time. The way you laugh together, the way you hold on through storms, the way your eyes speak what words never could — that is the kind of love poets have tried to capture for centuries.",
+    "p2": "May your journey together be filled with mornings that start with warm smiles, evenings wrapped in comfort, and a lifetime of moments that remind you why you chose each other. May you always be each other's home — a safe place where dreams grow and love deepens with every passing day.",
+    "p3": "Marriage is not just a ceremony. It is a promise whispered between two hearts — to stay, to grow, to forgive, and to love even harder when the world gets heavy. You two carry that promise so beautifully.",
+    "p4": "With all the love in my heart, congratulations on your beautiful forever. 💛"
   },
   "wishes": [
     {
       "title": "Always Hand in Hand",
-      "text": "May your path be easy and your burdens light. Walk together with grace."
+      "text": "May your path be easy and your burdens light. Walk together with grace, kindness, and unwavering trust."
     },
     {
       "title": "A Home of Joy",
-      "text": "May your home be filled with laughter and your hearts with peace."
+      "text": "May your home be filled with laughter that echoes through the walls and love that fills every corner."
     },
     {
       "title": "Endless Love",
-      "text": "May your love grow stronger with every sunrise and deeper with every moon."
+      "text": "May your love grow stronger with every sunrise and deeper with every moon. A bond that time only makes more beautiful."
     }
   ],
   "timeline": [
     {
       "year": "2021",
-      "event": "First Encounter"
+      "event": "First Encounter — Two paths crossed and nothing was ever the same."
     },
     {
       "year": "2023",
-      "event": "The Proposal"
+      "event": "The Proposal — A question that changed everything, answered with tears of joy."
     },
     {
       "year": "2026",
-      "event": "The Big Day"
+      "event": "The Big Day — Where forever begins, surrounded by love and blessings."
     }
   ]
 }

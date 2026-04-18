@@ -51,7 +51,7 @@
 </section>
 
 <div class="sec-divider">
-    <div class="sec-divider-icon">💍</div>
+    <img src="images/56176ac49782b1a2ea8d33d3c41e26fd.jpg" alt="Wedding Rings" class="sec-divider-ring">
 </div>
 
 <!-- ════════ WISHES SECTION ════════ -->
@@ -94,17 +94,14 @@
     <div class="doodle-slot" style="bottom: 15%; left: 15%;"></div>
 
     <h2 class="reveal">Seal the Promise</h2>
-    <div class="lock-sub reveal">Click the heart to unlock their future</div>
+    <div class="lock-sub reveal">Tap the heart to unlock a special message</div>
 
-    <div class="lock-stage reveal" id="lockStage">
-        <svg class="lock-svg" viewBox="0 0 200 260" onclick="unlockHeart()">
-            <path class="lock-shackle" d="M50,110 V60 A50,50 0 0,1 150,60 V110" fill="none" stroke="#c9a96e" stroke-width="15" stroke-linecap="round"/>
-            <rect x="30" y="100" width="140" height="120" rx="15" fill="#c9a96e"/>
-            <path d="M100,135 A15,15 0 1,1 99.9,135 Z" fill="#fdf8f0"/>
-            <rect x="95" y="145" width="10" height="25" fill="#fdf8f0"/>
-            <text x="100" y="200" text-anchor="middle" class="lock-engraving">Forever</text>
-        </svg>
+    <div class="lock-stage reveal" id="lockStage" onclick="unlockHeart()">
+        <div class="lock-glow"></div>
+        <img src="images/aa915da345bb5913d745b170196dc672.jpg" alt="Heart Lock" class="lock-heart-img">
     </div>
+
+    <div class="lock-success">💛 Unlocked with Love 💛</div>
 
     <div class="lock-msg">
         <div class="lock-reveal" id="lockReveal">
@@ -115,7 +112,7 @@
         </div>
     </div>
     
-    <span class="lock-cta" id="lockCta">Touch to Unlock</span>
+    <span class="lock-cta" id="lockCta">✦ Tap the Heart ✦</span>
 </section>
 
 <!-- ════════ FOOTER ════════ -->
