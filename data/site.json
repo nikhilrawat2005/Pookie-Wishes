@@ -386,6 +386,7 @@
     {
       "id": "wedding",
       "name": "Royal Nuptials",
+      "testing": true,
       "tagline": "A Grand Wedding Celebration ✨",
       "badge": "Premium",
       "emoji": "💍",
