@@ -627,3 +627,179 @@ footer p{
   opacity: 1;
   transform: translateY(0);
 }
+
+/* ══════════════════════════════
+   SECTION — THE CELEBRATION
+   ══════════════════════════════ */
+#celebration{
+  position:relative;z-index:1;
+  padding:100px 24px;
+  max-width:1000px;margin:0 auto;
+  overflow:hidden;
+}
+#celebration h2{
+  font-family:'Alex Brush',cursive;
+  font-size:clamp(2.8rem,6vw,5rem);
+  color:var(--gold-d);
+  text-align:center;
+  margin-bottom:16px;
+}
+#celebration .section-sub{
+  text-align:center;
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(.85rem,1.5vw,1rem);
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:60px;
+}
+.celebration-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:50px;
+  align-items:start;
+}
+@media(max-width:700px){
+  .celebration-grid{grid-template-columns:1fr;gap:40px;}
+}
+.celeb-card{
+  text-align:center;
+}
+.celeb-img-wrap{
+  width:100%;
+  max-width:280px;
+  margin:0 auto 24px;
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 12px 40px rgba(0,0,0,.08);
+  border:3px solid var(--gold-l);
+  transition:transform .5s ease,box-shadow .5s ease;
+}
+.celeb-img-wrap:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 60px rgba(139,105,20,.2);
+}
+.celeb-img{
+  width:100%;
+  height:auto;
+  display:block;
+  transition:transform .6s ease;
+}
+.celeb-img-wrap:hover .celeb-img{
+  transform:scale(1.05);
+}
+.celeb-card h3{
+  font-family:'Alex Brush',cursive;
+  font-size:clamp(1.8rem,3.5vw,2.5rem);
+  color:var(--gold-d);
+  margin-bottom:10px;
+}
+.celeb-card p{
+  font-family:'EB Garamond',serif;
+  font-size:clamp(1rem,1.6vw,1.15rem);
+  line-height:1.9;
+  color:var(--text-l);
+  font-style:italic;
+  max-width:320px;
+  margin:0 auto;
+}
+
+/* ══════════════════════════════
+   SECTION — WORDS OF WISDOM
+   ══════════════════════════════ */
+#wisdom{
+  position:relative;z-index:1;
+  padding:100px 24px;
+  max-width:900px;margin:0 auto;
+  overflow:hidden;
+}
+#wisdom h2{
+  font-family:'Alex Brush',cursive;
+  font-size:clamp(2.8rem,6vw,5rem);
+  color:var(--gold-d);
+  text-align:center;
+  margin-bottom:16px;
+}
+#wisdom .section-sub{
+  text-align:center;
+  font-family:'Playfair Display',serif;
+  font-style:italic;
+  font-size:clamp(.85rem,1.5vw,1rem);
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--gold);
+  margin-bottom:60px;
+}
+.wisdom-grid{
+  display:grid;
+  grid-template-columns:1fr;
+  gap:40px;
+}
+.wisdom-card{
+  background:white;
+  border:1px solid var(--gold-l);
+  border-radius:12px;
+  padding:40px 36px;
+  text-align:center;
+  box-shadow:0 8px 30px rgba(0,0,0,.05);
+  position:relative;
+  overflow:hidden;
+  transition:transform .4s ease,box-shadow .4s ease;
+}
+.wisdom-card:hover{
+  transform:translateY(-4px);
+  box-shadow:0 16px 50px rgba(139,105,20,.12);
+}
+.wisdom-card::before{
+  content:'✦';
+  position:absolute;
+  top:16px;left:50%;
+  transform:translateX(-50%);
+  font-size:.8rem;
+  color:var(--gold-l);
+  letter-spacing:.5em;
+}
+.wisdom-card blockquote{
+  font-family:'EB Garamond',serif;
+  font-size:clamp(1.1rem,2vw,1.35rem);
+  font-style:italic;
+  line-height:1.9;
+  color:var(--text);
+  margin:0 0 16px;
+}
+.wisdom-card cite{
+  font-family:'Playfair Display',serif;
+  font-size:.8rem;
+  letter-spacing:.2em;
+  text-transform:uppercase;
+  color:var(--gold);
+  font-style:normal;
+}
+
+/* ══════════════════════════════
+   FOOTER CREDIT
+   ══════════════════════════════ */
+.footer-credit{
+  margin-top:40px;
+  padding-top:20px;
+  border-top:1px solid var(--gold-l);
+}
+.footer-credit p{
+  font-family:'Cormorant Garamond',serif;
+  font-size:.85rem;
+  color:var(--text-ll);
+  letter-spacing:.1em;
+}
+
+/* ══════════════════════════════
+   SECTION — HERO LOCATION
+   ══════════════════════════════ */
+.hero-location{
+  font-family:'Playfair Display',serif;
+  font-size:clamp(.8rem,1.5vw,1rem);
+  color:var(--text-ll);
+  letter-spacing:.15em;
+  margin-top:8px;
+  animation:fadeUp 1.4s 1s both;
+}

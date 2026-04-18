@@ -4,22 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Royal Nuptials | A Wedding Surprise</title>
-    <!-- Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-    <!-- CSS -->
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
 <div id="petalLayer"></div>
 
-<!-- ════════ HERO SECTION ════════ -->
+<!-- ════════ SECTION 1 — HERO ════════ -->
 <section id="hero">
-    <!-- Doodle Slots for Hero -->
-    <div class="doodle-slot" style="top: 5%; left: 5%;"></div>
-    <div class="doodle-slot" style="top: 10%; right: 5%;"></div>
-    <div class="doodle-slot" style="bottom: 15%; left: 10%;"></div>
-    <div class="doodle-slot" style="bottom: 10%; right: 10%;"></div>
+    <div class="doodle-slot" style="top: 5%; left: 3%;"></div>
+    <div class="doodle-slot" style="top: 8%; right: 4%;"></div>
+    <div class="doodle-slot" style="bottom: 18%; left: 8%;"></div>
+    <div class="doodle-slot" style="bottom: 12%; right: 6%;"></div>
 
     <div class="hero-eyebrow">A Journey of Love</div>
     <div class="hero-names">
@@ -27,8 +24,9 @@
         <span class="hero-ampersand">&</span>
         <span class="groom-name">Aryan</span>
     </div>
-    <div class="hero-date">JANUARY 24, 2026</div>
+    <div class="hero-date wedding-date">JANUARY 24, 2026</div>
     <div class="hero-tagline hero-subtitle">Together, they begin a new chapter of forever.</div>
+    <div class="hero-location location-text"></div>
     
     <div class="scroll-hint">
         <span>Scroll to Explore</span>
@@ -36,11 +34,10 @@
     </div>
 </section>
 
-<!-- ════════ STORY / TIMELINE SECTION ════════ -->
+<!-- ════════ SECTION 2 — OUR JOURNEY / TIMELINE ════════ -->
 <section id="engagement" class="reveal">
-    <!-- Doodle Slots for Story -->
-    <div class="doodle-slot" style="top: 20%; left: -20px;"></div>
-    <div class="doodle-slot" style="top: 40%; right: -20px;"></div>
+    <div class="doodle-slot" style="top: 10%; left: -30px;"></div>
+    <div class="doodle-slot" style="bottom: 10%; right: -30px;"></div>
 
     <h2>Our Beautiful Journey</h2>
     <div class="section-sub">Milestones of Heart</div>
@@ -50,17 +47,47 @@
     </div>
 </section>
 
-<div class="sec-divider">
+<!-- ═══ Ring Divider ═══ -->
+<div class="sec-divider reveal">
     <img src="images/56176ac49782b1a2ea8d33d3c41e26fd.jpg" alt="Wedding Rings" class="sec-divider-ring">
 </div>
 
-<!-- ════════ WISHES SECTION ════════ -->
+<!-- ════════ SECTION 3 — THE CELEBRATION ════════ -->
+<section id="celebration" class="reveal">
+    <div class="doodle-slot" style="top: 5%; right: 5%;"></div>
+    <div class="doodle-slot" style="bottom: 5%; left: 5%;"></div>
+
+    <h2>The Celebration</h2>
+    <div class="section-sub">A Day Painted in Gold & Blossoms</div>
+
+    <div class="celebration-grid">
+        <div class="celeb-card reveal-left">
+            <div class="celeb-img-wrap">
+                <img src="images/e3ded39ecf73129b0137f2b8c0599293.jpg" alt="Wedding Cake" class="celeb-img">
+            </div>
+            <h3>The Sweetest Moment</h3>
+            <p>A towering masterpiece of love, adorned with blush peonies — each layer a chapter of your beautiful story together.</p>
+        </div>
+        <div class="celeb-card reveal-right">
+            <div class="celeb-img-wrap">
+                <img src="images/9b8f7dc6603d2ac5004462176edf084b.jpg" alt="Champagne Toast" class="celeb-img">
+            </div>
+            <h3>Raise a Toast</h3>
+            <p>To the couple who proved that the best love stories aren't found in books — they are lived, one beautiful day at a time.</p>
+        </div>
+    </div>
+</section>
+
+<!-- ═══ Flower Divider ═══ -->
+<div class="sec-divider reveal">
+    <img src="images/af01c37c8da6dfd3d0330a1fbdbd761e.jpg" alt="Cherry Blossoms" class="sec-divider-ring" style="width:clamp(100px,18vw,160px);">
+</div>
+
+<!-- ════════ SECTION 4 — HEARTFELT WISHES ════════ -->
 <section id="wishes">
-    <!-- Doodle Slots for Wishes -->
-    <div class="doodle-slot" style="top: 0; left: 10%;"></div>
-    <div class="doodle-slot" style="bottom: 0; right: 10%;"></div>
-    <div class="doodle-slot" style="top: 50%; left: 5%;"></div>
-    <div class="doodle-slot" style="top: 30%; right: 5%;"></div>
+    <div class="doodle-slot" style="top: 5%; left: 8%;"></div>
+    <div class="doodle-slot" style="bottom: 8%; right: 8%;"></div>
+    <div class="doodle-slot" style="top: 45%; right: 3%;"></div>
 
     <h2 class="reveal">Heartfelt Wishes</h2>
     <div class="wish-timeline" id="wishes-container">
@@ -68,11 +95,33 @@
     </div>
 </section>
 
-<!-- ════════ LOVE LETTER SECTION ════════ -->
+<!-- ═══ Bouquet Divider ═══ -->
+<div class="sec-divider reveal">
+    <img src="images/f98c75359b3aab99ec29651b703df9b9.jpg" alt="Bouquet" class="sec-divider-ring" style="width:clamp(100px,16vw,140px);">
+</div>
+
+<!-- ════════ SECTION 5 — WORDS OF WISDOM ════════ -->
+<section id="wisdom" class="reveal">
+    <div class="doodle-slot" style="top: 10%; left: 5%;"></div>
+    <div class="doodle-slot" style="bottom: 10%; right: 5%;"></div>
+
+    <h2>Words of Wisdom</h2>
+    <div class="section-sub">Timeless Reflections on Love</div>
+
+    <div class="wisdom-grid" id="wisdom-grid">
+        <!-- Dynamically loaded -->
+    </div>
+</section>
+
+<!-- ═══ Ring Box Divider ═══ -->
+<div class="sec-divider reveal">
+    <img src="images/c1f23f217b8da8f3d0583523187ba486.jpg" alt="Ring Box" class="sec-divider-ring" style="width:clamp(90px,15vw,130px);">
+</div>
+
+<!-- ════════ SECTION 6 — LOVE LETTER ════════ -->
 <section id="love-letter">
-    <!-- Doodle Slots for Letter -->
-    <div class="doodle-slot" style="top: -50px; left: -50px;"></div>
-    <div class="doodle-slot" style="bottom: -50px; right: -50px;"></div>
+    <div class="doodle-slot" style="top: -40px; left: -40px;"></div>
+    <div class="doodle-slot" style="bottom: -40px; right: -40px;"></div>
     
     <h2 class="reveal">A Message for You</h2>
     <div class="letter-paper reveal">
@@ -87,11 +136,15 @@
     </div>
 </section>
 
-<!-- ════════ LOVE LOCK SECTION ════════ -->
+<!-- ═══ Hearts Envelope Divider ═══ -->
+<div class="sec-divider reveal">
+    <img src="images/4b6890a49cf0f64452f0065b003521e9.jpg" alt="Love Letter" class="sec-divider-ring" style="width:clamp(80px,14vw,120px);">
+</div>
+
+<!-- ════════ SECTION 7 — LOVE LOCK ════════ -->
 <section id="love-lock">
-    <!-- Doodle Slots for Lock -->
-    <div class="doodle-slot" style="top: 10%; right: 15%;"></div>
-    <div class="doodle-slot" style="bottom: 15%; left: 15%;"></div>
+    <div class="doodle-slot" style="top: 8%; right: 12%;"></div>
+    <div class="doodle-slot" style="bottom: 12%; left: 12%;"></div>
 
     <h2 class="reveal">Seal the Promise</h2>
     <div class="lock-sub reveal">Tap the heart to unlock a special message</div>
@@ -117,24 +170,29 @@
 
 <!-- ════════ FOOTER ════════ -->
 <footer>
-    <!-- Doodle Slots for Footer -->
-    <div class="doodle-slot" style="top: -30px; left: 20%;"></div>
-    <div class="doodle-slot" style="top: -30px; right: 20%;"></div>
-    <div class="doodle-slot" style="bottom: 10px; left: 5%;"></div>
-    <div class="doodle-slot" style="bottom: 10px; right: 5%;"></div>
+    <div class="doodle-slot" style="top: -30px; left: 15%;"></div>
+    <div class="doodle-slot" style="top: -30px; right: 15%;"></div>
+    <div class="doodle-slot" style="bottom: 10px; left: 3%;"></div>
+    <div class="doodle-slot" style="bottom: 10px; right: 3%;"></div>
 
-    <div class="foot-names bride-name">Anya</div>
-    <div class="foot-names groom-name">Aryan</div>
+    <div class="foot-names">
+        <span class="bride-name">Anya</span> & <span class="groom-name">Aryan</span>
+    </div>
     <p>Celebrating a Beautiful Union</p>
     
     <div class="calli-strip reveal">
         <div class="calli-tag">Happiness</div>
         <div class="calli-tag">Eternity</div>
         <div class="calli-tag">Devotion</div>
+        <div class="calli-tag">Together</div>
+        <div class="calli-tag">Forever</div>
+    </div>
+
+    <div class="footer-credit">
+        <p>Made with 💛 by Pookie Wishes</p>
     </div>
 </footer>
 
-<!-- JS -->
 <script src="script.js"></script>
 
 </body>
