@@ -3,76 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Wedding Wish Card</title>
+    <title>Royal Nuptials · Wedding Wish</title>
     <link href="https://fonts.googleapis.com/css2?family=Alex+Brush&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 <div id="petalLayer"></div>
 
-<!-- CUSTOMIZER PANEL -->
-<div id="customizer-overlay">
-    <div id="customizer-panel">
-        <div class="cust-logo">💍</div>
-        <h1 class="cust-title">Create Your<br><span>Wedding Wish Card</span></h1>
-        <p class="cust-sub">Personalised in seconds. No past story needed.</p>
-        <div class="cust-form">
-            <div class="cust-field-row">
-                <div class="cust-field">
-                    <label>Bride's Name</label>
-                    <input type="text" id="inp-bride" placeholder="e.g. Anya" maxlength="30">
-                </div>
-                <div class="cust-field">
-                    <label>Groom's Name</label>
-                    <input type="text" id="inp-groom" placeholder="e.g. Aryan" maxlength="30">
-                </div>
-            </div>
-            <div class="cust-field">
-                <label>Wedding Date</label>
-                <input type="text" id="inp-date" placeholder="e.g. January 24, 2026" maxlength="50">
-            </div>
-            <div class="premium-toggle-wrap">
-                <div class="premium-badge">✨ Premium Mode</div>
-                <label class="toggle-switch">
-                    <input type="checkbox" id="toggle-premium">
-                    <span class="toggle-slider"></span>
-                </label>
-            </div>
-            <div id="premium-fields" class="premium-fields hidden">
-                <div class="premium-divider">Optional — for a more personal touch</div>
-                <div class="cust-field">
-                    <label>Wedding Location</label>
-                    <input type="text" id="inp-location" placeholder="e.g. The Grand Ballroom, Mumbai" maxlength="60">
-                </div>
-                <div class="cust-field">
-                    <label>Your Relationship to the Couple</label>
-                    <input type="text" id="inp-relation" placeholder="e.g. Best friend of the bride" maxlength="60">
-                </div>
-                <div class="cust-field">
-                    <label>A Special Message (optional)</label>
-                    <textarea id="inp-custom-msg" placeholder="Write something personal... or leave blank and we'll generate one ✨" rows="3" maxlength="400"></textarea>
-                </div>
-                <button class="btn-generate" id="btn-ai-generate" onclick="generateAIMessage()">
-                    <span class="btn-icon">✨</span> Auto-Generate Beautiful Message
-                </button>
-                <div id="ai-preview" class="ai-preview hidden"></div>
-            </div>
-            <button class="btn-create" id="btn-create" onclick="createCard()">
-                Create Your Wedding Wish →
-            </button>
-            <p class="cust-note">Free · No signup required · Shareable</p>
-        </div>
-    </div>
-</div>
-
-<!-- MAIN CARD -->
-<div id="main-card" class="hidden">
-
+<!-- ════════ SECTION 1 — HERO ════════ -->
 <section id="hero">
-    <div class="doodle-slot corner-tl" data-sticker="af01c37c8da6dfd3d0330a1fbdbd761e.jpg" data-size="180" data-rotate="-15"></div>
-    <div class="doodle-slot corner-tr" data-sticker="f98c75359b3aab99ec29651b703df9b9.jpg" data-size="160" data-rotate="12"></div>
-    <div class="doodle-slot corner-bl" data-sticker="d35faf4c47f312f0c0ea3e636a2f6a43.jpg" data-size="140" data-rotate="8"></div>
-    <div class="doodle-slot corner-br" data-sticker="1f1782224d76bfb1b7d3e803a538900c.jpg" data-size="150" data-rotate="-10"></div>
+    <div class="doodle-slot corner-tl" data-sticker="af01c37c8da6dfd3d0330a1fbdbd761e.jpg" data-size="160" data-rotate="-15"></div>
+    <div class="doodle-slot corner-br" data-sticker="f98c75359b3aab99ec29651b703df9b9.jpg" data-size="150" data-rotate="-8"></div>
     <div class="hero-eyebrow">Two Hearts · One Beautiful Beginning</div>
     <div class="hero-names">
         <span class="bride-name">Anya</span>
@@ -82,16 +23,15 @@
     <div class="hero-date wedding-date">JANUARY 24, 2026</div>
     <div class="hero-tagline">Today marks the beginning of a beautiful new chapter together ✨</div>
     <div class="hero-location location-text hidden"></div>
-    <button class="hero-cta" onclick="scrollToWish()">Send This Beautiful Wish 💌</button>
     <div class="scroll-hint">
         <span>Scroll to Explore</span>
         <div class="scroll-line"></div>
     </div>
 </section>
 
+<!-- ════════ SECTION 2 — BLESSINGS ════════ -->
 <section id="blessings" class="reveal">
-    <div class="doodle-slot side-left" data-sticker="19af0e09011f87d5b54ae1362bd22638.jpg" data-size="130" data-rotate="-8"></div>
-    <div class="doodle-slot side-right" data-sticker="5118b880b87d768007f12f641968d6ee.jpg" data-size="120" data-rotate="10"></div>
+    <div class="doodle-slot side-left" data-sticker="1f1782224d76bfb1b7d3e803a538900c.jpg" data-size="130" data-rotate="-8"></div>
     <h2>Blessings for You Both</h2>
     <div class="section-sub">Wishes Straight from the Heart</div>
     <div class="blessings-grid">
@@ -118,13 +58,14 @@
     </div>
 </section>
 
+<!-- ═══ Ring Divider ═══ -->
 <div class="sec-divider reveal">
     <img src="images/56176ac49782b1a2ea8d33d3c41e26fd.jpg" alt="Wedding Rings" class="sec-divider-ring">
 </div>
 
+<!-- ════════ SECTION 3 — THE CELEBRATION ════════ -->
 <section id="celebration" class="reveal">
-    <div class="doodle-slot side-right" data-sticker="00b3bd8d1e6aafbe6d44754fa630306e.jpg" data-size="130" data-rotate="14"></div>
-    <div class="doodle-slot side-left" data-sticker="6d4d8df79b99daee79f0473d3b3fee06.jpg" data-size="120" data-rotate="-12"></div>
+    <div class="doodle-slot side-right" data-sticker="29f8ada0158a4fc2d9e167106e489aa2.jpg" data-size="130" data-rotate="14"></div>
     <h2>The Celebration</h2>
     <div class="section-sub">A Day Painted in Gold & Blossoms</div>
     <div class="celebration-grid">
@@ -145,13 +86,14 @@
     </div>
 </section>
 
+<!-- ═══ Flower Divider ═══ -->
 <div class="sec-divider reveal">
     <img src="images/af01c37c8da6dfd3d0330a1fbdbd761e.jpg" alt="Cherry Blossoms" class="sec-divider-ring" style="width:clamp(100px,18vw,160px);">
 </div>
 
+<!-- ════════ SECTION 4 — WEDDING DAY MAGIC ════════ -->
 <section id="rituals" class="reveal">
-    <div class="doodle-slot side-left" data-sticker="4993b813df12fa1952cd58b6ccc08238.jpg" data-size="150" data-rotate="-10"></div>
-    <div class="doodle-slot side-right" data-sticker="e30935609ccc365b82aaf24914708c2b.jpg" data-size="140" data-rotate="8"></div>
+    <div class="doodle-slot side-left" data-sticker="551084a7dfd6d720535c958d061db0c2.jpg" data-size="140" data-rotate="-10"></div>
     <h2>Wedding Day Magic</h2>
     <div class="section-sub">The Beautiful Moments of Today</div>
     <div class="rituals-grid">
@@ -162,13 +104,14 @@
     </div>
 </section>
 
+<!-- ═══ Bouquet Divider ═══ -->
 <div class="sec-divider reveal">
     <img src="images/f98c75359b3aab99ec29651b703df9b9.jpg" alt="Bouquet" class="sec-divider-ring" style="width:clamp(100px,16vw,140px);">
 </div>
 
+<!-- ════════ SECTION 5 — YOUR BEAUTIFUL FUTURE ════════ -->
 <section id="future" class="reveal">
-    <div class="doodle-slot side-left" data-sticker="29f8ada0158a4fc2d9e167106e489aa2.jpg" data-size="140" data-rotate="-6"></div>
-    <div class="doodle-slot side-right" data-sticker="551084a7dfd6d720535c958d061db0c2.jpg" data-size="130" data-rotate="9"></div>
+    <div class="doodle-slot side-right" data-sticker="19af0e09011f87d5b54ae1362bd22638.jpg" data-size="130" data-rotate="9"></div>
     <h2>Your Beautiful Future</h2>
     <div class="section-sub">Dreams · Togetherness · Forever</div>
     <div class="future-quotes">
@@ -181,25 +124,27 @@
     </div>
 </section>
 
+<!-- ═══ Ring Box Divider ═══ -->
 <div class="sec-divider reveal">
     <img src="images/c1f23f217b8da8f3d0583523187ba486.jpg" alt="Ring Box" class="sec-divider-ring" style="width:clamp(90px,15vw,130px);">
 </div>
 
+<!-- ════════ SECTION 6 — WORDS OF WISDOM ════════ -->
 <section id="wisdom" class="reveal">
-    <div class="doodle-slot side-right" data-sticker="4b6890a49cf0f64452f0065b003521e9.jpg" data-size="130" data-rotate="12"></div>
-    <div class="doodle-slot side-left" data-sticker="aa915da345bb5913d745b170196dc672.jpg" data-size="120" data-rotate="-9"></div>
+    <div class="doodle-slot side-left" data-sticker="e30935609ccc365b82aaf24914708c2b.jpg" data-size="120" data-rotate="-9"></div>
     <h2>Words of Wisdom</h2>
     <div class="section-sub">Timeless Reflections on Love</div>
     <div class="wisdom-grid" id="wisdom-grid"></div>
 </section>
 
+<!-- ═══ Flower Divider ═══ -->
 <div class="sec-divider reveal">
     <img src="images/d35faf4c47f312f0c0ea3e636a2f6a43.jpg" alt="Flowers" class="sec-divider-ring" style="width:clamp(100px,16vw,140px);">
 </div>
 
+<!-- ════════ SECTION 7 — LOVE LETTER ════════ -->
 <section id="love-letter">
-    <div class="doodle-slot floating-top-left" data-sticker="f473af62bf608409ecda7a0844c3dc00.jpg" data-size="120" data-rotate="-18"></div>
-    <div class="doodle-slot floating-bot-right" data-sticker="6d4d8df79b99daee79f0473d3b3fee06.jpg" data-size="110" data-rotate="14"></div>
+    <div class="doodle-slot floating-bot-right" data-sticker="4b6890a49cf0f64452f0065b003521e9.jpg" data-size="120" data-rotate="-12"></div>
     <h2 class="reveal">A Message for You</h2>
     <div class="letter-paper reveal">
         <div class="letter-salutation">Dearest <span class="bride-name">Anya</span> &amp; <span class="groom-name">Aryan</span>,</div>
@@ -213,13 +158,14 @@
     </div>
 </section>
 
+<!-- ═══ Ring Divider ═══ -->
 <div class="sec-divider reveal">
     <img src="images/56176ac49782b1a2ea8d33d3c41e26fd.jpg" alt="Rings" class="sec-divider-ring" style="width:clamp(90px,15vw,130px);">
 </div>
 
+<!-- ════════ SECTION 8 — LOVE LOCK ════════ -->
 <section id="love-lock">
-    <div class="doodle-slot side-right" data-sticker="5118b880b87d768007f12f641968d6ee.jpg" data-size="120" data-rotate="13"></div>
-    <div class="doodle-slot side-left" data-sticker="19af0e09011f87d5b54ae1362bd22638.jpg" data-size="110" data-rotate="-9"></div>
+    <div class="doodle-slot side-left" data-sticker="5118b880b87d768007f12f641968d6ee.jpg" data-size="110" data-rotate="-9"></div>
     <h2 class="reveal">Seal the Promise</h2>
     <div class="lock-sub reveal">Tap the heart to reveal a special message</div>
     <div class="lock-stage reveal" id="lockStage" onclick="unlockHeart()">
@@ -237,21 +183,18 @@
     <span class="lock-cta" id="lockCta">✦ Tap the Heart ✦</span>
 </section>
 
+<!-- ════════ SECTION 9 — FINAL NAMES & POOKIE BRANDING ════════ -->
 <section id="final-cta" class="reveal">
     <div class="final-cta-wrap">
         <div class="final-tagline">A lifetime of love begins today.</div>
         <h2 class="final-names"><span class="bride-name">Anya</span> &amp; <span class="groom-name">Aryan</span></h2>
         <div class="final-date wedding-date">Forever · January 24, 2026</div>
-        <div class="final-btns">
-            <button class="btn-share" onclick="shareCard()">📤 Share This Wish Card</button>
-            <button class="btn-new" onclick="createNewCard()">✨ Create Your Own Card</button>
-        </div>
     </div>
 </section>
 
+<!-- ════════ FOOTER — POOKIE WISHES BRANDING ════════ -->
 <footer>
-    <div class="doodle-slot footer-fl-left" data-sticker="d35faf4c47f312f0c0ea3e636a2f6a43.jpg" data-size="110" data-rotate="-12"></div>
-    <div class="doodle-slot footer-fl-right" data-sticker="1f1782224d76bfb1b7d3e803a538900c.jpg" data-size="100" data-rotate="10"></div>
+    <div class="doodle-slot footer-fl-right" data-sticker="f473af62bf608409ecda7a0844c3dc00.jpg" data-size="100" data-rotate="10"></div>
     <div class="foot-names"><span class="bride-name">Anya</span> & <span class="groom-name">Aryan</span></div>
     <p>Forever Begins Today · <span class="wedding-date">January 24, 2026</span></p>
     <div class="calli-strip reveal">
@@ -260,10 +203,23 @@
         <div class="calli-tag">Forever</div><div class="calli-tag">Blessed</div>
         <div class="calli-tag">Joy</div>
     </div>
+
+    <!-- Pookie Wishes Branding Box -->
+    <div class="pw-branding-box">
+        <div class="pw-brand-inner">
+            <div class="pw-brand-icon">✨💌✨</div>
+            <h3 class="pw-brand-title">Want to Send a Beautiful Wish Like This?</h3>
+            <p class="pw-brand-desc">Create your own personalised digital wedding card, birthday surprise, or love letter — beautifully designed, instantly delivered.</p>
+            <a href="https://pookiewishes.com" target="_blank" class="pw-brand-btn">
+                Create Yours at Pookie Wishes 💛
+            </a>
+            <p class="pw-brand-sub">Starting at just ₹29 · No app needed · Shareable link</p>
+        </div>
+    </div>
+
     <div class="footer-credit"><p>Made with 💛 by <strong>Pookie Wishes</strong></p></div>
 </footer>
 
-</div><!-- end #main-card -->
 <script src="script.js"></script>
 </body>
 </html>

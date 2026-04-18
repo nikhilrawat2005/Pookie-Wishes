@@ -1,9 +1,9 @@
 /**
- * Pookie Wishes — Premium Wedding Wish Card
- * Universal content · AI message · Premium mode · Share CTA
+ * Pookie Wishes — Royal Nuptials Wedding Template
+ * Data-driven from user_content/config.json
  */
 
-// ── DEFAULT LETTER CONTENT (Universal — no past story needed) ──
+// ── DEFAULT LETTER CONTENT ──
 const DEFAULT_LETTER = {
     msg1: "Today, as you stand together at the beginning of this beautiful new chapter, I want you to know how truly special this moment is. Not just for you — but for everyone whose life has been touched by your love, your warmth, and the joy you carry into every room you enter.",
     p2: "May your journey together be filled with mornings that start with warm smiles, evenings wrapped in the kind of comfort only home can give, and a lifetime of moments that remind you every single day why you chose each other.",
@@ -11,7 +11,7 @@ const DEFAULT_LETTER = {
     p4: "With all the love in my heart — congratulations on your beautiful forever. 💛"
 };
 
-// ── CARD STATE ──
+// ── CARD DATA ──
 let cardData = {
     brideName: "Anya",
     groomName: "Aryan",
@@ -21,157 +21,64 @@ let cardData = {
 };
 
 // ══════════════════════════════════════════════
-// CUSTOMIZER
+// INIT — Load config.json and boot up
 // ══════════════════════════════════════════════
-document.addEventListener('DOMContentLoaded', () => {
-    // Premium toggle
-    document.getElementById('toggle-premium').addEventListener('change', function () {
-        const fields = document.getElementById('premium-fields');
-        fields.classList.toggle('hidden', !this.checked);
-    });
+document.addEventListener('DOMContentLoaded', async () => {
+    // Try loading from config.json
+    try {
+        const res = await fetch('user_content/config.json');
+        const data = await res.json();
 
-    // Load config.json as default preview data (silent, non-blocking)
-    fetch('user_content/config.json')
-        .then(r => r.json())
-        .then(data => {
-            if (data.brideName) document.getElementById('inp-bride').placeholder = data.brideName;
-            if (data.groomName) document.getElementById('inp-groom').placeholder = data.groomName;
-            if (data.weddingDate) document.getElementById('inp-date').placeholder = data.weddingDate;
-        })
-        .catch(() => {});
-});
+        if (data.brideName) cardData.brideName = data.brideName;
+        if (data.groomName) cardData.groomName = data.groomName;
+        if (data.weddingDate) cardData.weddingDate = data.weddingDate;
+        if (data.location) cardData.location = data.location;
 
-function createCard() {
-    const bride = document.getElementById('inp-bride').value.trim();
-    const groom = document.getElementById('inp-groom').value.trim();
-    const date  = document.getElementById('inp-date').value.trim();
-
-    if (!bride || !groom) {
-        shakeField(!bride ? 'inp-bride' : 'inp-groom');
-        return;
+        // Letter content
+        if (data.letterContent) {
+            cardData.letter.msg1 = data.letterContent.msg1 || DEFAULT_LETTER.msg1;
+            cardData.letter.p2 = data.letterContent.p2 || DEFAULT_LETTER.p2;
+            cardData.letter.p3 = data.letterContent.p3 || DEFAULT_LETTER.p3;
+            cardData.letter.p4 = data.letterContent.p4 || DEFAULT_LETTER.p4;
+        }
+        // Also support flat 'message' field from admin panel
+        if (data.message && !data.letterContent) {
+            cardData.letter.msg1 = data.message;
+        }
+    } catch (e) {
+        console.warn('[Wedding] Config load failed, using defaults:', e.message);
     }
 
-    cardData.brideName   = bride;
-    cardData.groomName   = groom;
-    cardData.weddingDate = date || 'Today';
-
-    const isPremium = document.getElementById('toggle-premium').checked;
-    if (isPremium) {
-        const loc      = document.getElementById('inp-location').value.trim();
-        const msg      = document.getElementById('inp-custom-msg').value.trim();
-        cardData.location = loc;
-        if (msg) {
-            cardData.letter.msg1 = msg;
-        }
-        if (loc) {
-            document.querySelector('.hero-location').textContent = loc;
-            document.querySelector('.hero-location').classList.remove('hidden');
-        }
-    }
-
-    // Inject names + date everywhere
+    // Apply all data to DOM
     applyCardData();
 
-    // Transition: hide overlay, show card
-    const overlay = document.getElementById('customizer-overlay');
-    overlay.style.opacity = '0';
-    overlay.style.transform = 'scale(1.04)';
-    setTimeout(() => {
-        overlay.style.display = 'none';
-        const card = document.getElementById('main-card');
-        card.classList.remove('hidden');
-        card.style.opacity = '0';
-        requestAnimationFrame(() => {
-            card.style.transition = 'opacity .9s ease';
-            card.style.opacity = '1';
-        });
+    // Init all visual systems
+    initPetals();
+    initScrollReveal();
+    initDoodleEngine();
+    initWisdom();
+    initTypewriter(cardData.letter);
+});
 
-        // Init everything after reveal
-        setTimeout(() => {
-            initPetals();
-            initScrollReveal();
-            initDoodleEngine();
-            initWisdom();
-            initTypewriter(cardData.letter);
-        }, 100);
-    }, 500);
-}
-
+// ══════════════════════════════════════════════
+// APPLY DATA TO DOM
+// ══════════════════════════════════════════════
 function applyCardData() {
     document.querySelectorAll('.bride-name').forEach(el => el.textContent = cardData.brideName);
     document.querySelectorAll('.groom-name').forEach(el => el.textContent = cardData.groomName);
     document.querySelectorAll('.wedding-date').forEach(el => el.textContent = cardData.weddingDate.toUpperCase());
 
-    // Update title
-    document.title = `${cardData.brideName} & ${cardData.groomName} · Wedding Wish`;
-}
-
-function shakeField(id) {
-    const el = document.getElementById(id);
-    el.style.borderColor = '#c4747a';
-    el.style.animation = 'shake .4s ease';
-    setTimeout(() => { el.style.animation = ''; el.style.borderColor = ''; }, 500);
-}
-
-// ══════════════════════════════════════════════
-// AI MESSAGE GENERATOR (Anthropic API)
-// ══════════════════════════════════════════════
-async function generateAIMessage() {
-    const btn = document.getElementById('btn-ai-generate');
-    const preview = document.getElementById('ai-preview');
-    const bride = document.getElementById('inp-bride').value.trim() || 'the bride';
-    const groom = document.getElementById('inp-groom').value.trim() || 'the groom';
-    const relation = document.getElementById('inp-relation').value.trim();
-    const date = document.getElementById('inp-date').value.trim() || 'their wedding day';
-
-    btn.disabled = true;
-    btn.innerHTML = '<span class="btn-icon spin">✨</span> Generating...';
-    preview.classList.remove('hidden');
-    preview.textContent = '';
-
-    const prompt = `Write a beautiful, heartfelt wedding message for ${bride} and ${groom} who are getting married on ${date}. ${relation ? `The sender is the ${relation}.` : ''} 
-
-Rules:
-- Only celebrate the present moment and the beautiful future ahead — NEVER mention how they met, their proposal, or past memories
-- Keep it warm, personal, and emotional but concise (3–4 sentences max)
-- Universal — can be sent by anyone without knowing the couple's full story
-- End with one powerful line they'll remember forever
-- No generic phrases like "wishing you a happy married life"
-
-Output ONLY the message, nothing else.`;
-
-    try {
-        const response = await fetch("https://api.anthropic.com/v1/messages", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-                model: "claude-sonnet-4-20250514",
-                max_tokens: 300,
-                messages: [{ role: "user", content: prompt }]
-            })
-        });
-        const data = await response.json();
-        const msg = data.content?.[0]?.text || DEFAULT_LETTER.msg1;
-
-        preview.textContent = msg;
-        preview.style.opacity = '0';
-        preview.style.transform = 'translateY(10px)';
-        requestAnimationFrame(() => {
-            preview.style.transition = 'opacity .6s ease, transform .6s ease';
-            preview.style.opacity = '1';
-            preview.style.transform = 'none';
-        });
-
-        // Save to card data
-        cardData.letter.msg1 = msg;
-        document.getElementById('inp-custom-msg').value = msg;
-
-    } catch (e) {
-        preview.textContent = DEFAULT_LETTER.msg1;
+    // Location
+    if (cardData.location) {
+        const locEl = document.querySelector('.hero-location');
+        if (locEl) {
+            locEl.textContent = `📍 ${cardData.location}`;
+            locEl.classList.remove('hidden');
+        }
     }
 
-    btn.disabled = false;
-    btn.innerHTML = '<span class="btn-icon">✨</span> Regenerate Message';
+    // Update page title
+    document.title = `${cardData.brideName} & ${cardData.groomName} · Wedding Wish 💛`;
 }
 
 // ══════════════════════════════════════════════
@@ -192,6 +99,7 @@ function initWisdom() {
             <cite>— ${q.author}</cite>
         </div>
     `).join('');
+    // Re-observe new elements
     initScrollReveal();
 }
 
@@ -330,52 +238,7 @@ function launchConfetti(n = 60) {
     }
 }
 
-// ══════════════════════════════════════════════
-// CTAs
-// ══════════════════════════════════════════════
-function scrollToWish() {
-    document.getElementById('love-lock').scrollIntoView({ behavior: 'smooth' });
-}
-
-async function shareCard() {
-    const title = `${cardData.brideName} & ${cardData.groomName} — Wedding Wish`;
-    const text  = `Wishing ${cardData.brideName} & ${cardData.groomName} a beautiful forever ❤️`;
-
-    if (navigator.share) {
-        try {
-            await navigator.share({ title, text, url: window.location.href });
-        } catch {}
-    } else {
-        // Fallback: copy to clipboard
-        try {
-            await navigator.clipboard.writeText(`${text}\n${window.location.href}`);
-            showToast('Link copied to clipboard! 💌');
-        } catch {
-            showToast('Share this page to spread the love 💌');
-        }
-    }
-}
-
-function createNewCard() {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-    setTimeout(() => {
-        document.getElementById('main-card').classList.add('hidden');
-        const overlay = document.getElementById('customizer-overlay');
-        overlay.style.display = '';
-        overlay.style.opacity = '0';
-        overlay.style.transform = 'scale(.97)';
-        requestAnimationFrame(() => {
-            overlay.style.transition = 'opacity .6s ease, transform .6s ease';
-            overlay.style.opacity = '1';
-            overlay.style.transform = 'none';
-        });
-        // Reset
-        document.getElementById('inp-bride').value = '';
-        document.getElementById('inp-groom').value = '';
-        document.getElementById('inp-date').value = '';
-    }, 400);
-}
-
+// ── UTILITY ──
 function showToast(msg) {
     const t = document.createElement('div');
     t.className = 'toast';
@@ -386,9 +249,4 @@ function showToast(msg) {
 }
 
 // ── Expose globals ──
-window.unlockHeart   = unlockHeart;
-window.createCard    = createCard;
-window.generateAIMessage = generateAIMessage;
-window.shareCard     = shareCard;
-window.createNewCard = createNewCard;
-window.scrollToWish  = scrollToWish;
+window.unlockHeart = unlockHeart;
