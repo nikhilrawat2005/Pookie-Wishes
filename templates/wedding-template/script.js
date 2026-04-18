@@ -1,17 +1,182 @@
 /**
- * Royal Nuptials — Polished Script
- * Smart sticker injection, enhanced content, all sections
+ * Pookie Wishes — Premium Wedding Wish Card
+ * Universal content · AI message · Premium mode · Share CTA
  */
 
+// ── DEFAULT LETTER CONTENT (Universal — no past story needed) ──
+const DEFAULT_LETTER = {
+    msg1: "Today, as you stand together at the beginning of this beautiful new chapter, I want you to know how truly special this moment is. Not just for you — but for everyone whose life has been touched by your love, your warmth, and the joy you carry into every room you enter.",
+    p2: "May your journey together be filled with mornings that start with warm smiles, evenings wrapped in the kind of comfort only home can give, and a lifetime of moments that remind you every single day why you chose each other.",
+    p3: "Marriage is not just a ceremony. It is a promise whispered between two hearts — to stay, to grow, to forgive, and to love even harder when the world gets heavy. From this day forward, may every moment bring you closer together.",
+    p4: "With all the love in my heart — congratulations on your beautiful forever. 💛"
+};
+
+// ── CARD STATE ──
+let cardData = {
+    brideName: "Anya",
+    groomName: "Aryan",
+    weddingDate: "January 24, 2026",
+    location: "",
+    letter: { ...DEFAULT_LETTER }
+};
+
+// ══════════════════════════════════════════════
+// CUSTOMIZER
+// ══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', () => {
-    loadConfig();
-    initPetals();
-    initScrollReveal();
-    initDoodleEngine();
-    initWisdom();
+    // Premium toggle
+    document.getElementById('toggle-premium').addEventListener('change', function () {
+        const fields = document.getElementById('premium-fields');
+        fields.classList.toggle('hidden', !this.checked);
+    });
+
+    // Load config.json as default preview data (silent, non-blocking)
+    fetch('user_content/config.json')
+        .then(r => r.json())
+        .then(data => {
+            if (data.brideName) document.getElementById('inp-bride').placeholder = data.brideName;
+            if (data.groomName) document.getElementById('inp-groom').placeholder = data.groomName;
+            if (data.weddingDate) document.getElementById('inp-date').placeholder = data.weddingDate;
+        })
+        .catch(() => {});
 });
 
-// --- WISDOM QUOTES (built-in) ---
+function createCard() {
+    const bride = document.getElementById('inp-bride').value.trim();
+    const groom = document.getElementById('inp-groom').value.trim();
+    const date  = document.getElementById('inp-date').value.trim();
+
+    if (!bride || !groom) {
+        shakeField(!bride ? 'inp-bride' : 'inp-groom');
+        return;
+    }
+
+    cardData.brideName   = bride;
+    cardData.groomName   = groom;
+    cardData.weddingDate = date || 'Today';
+
+    const isPremium = document.getElementById('toggle-premium').checked;
+    if (isPremium) {
+        const loc      = document.getElementById('inp-location').value.trim();
+        const msg      = document.getElementById('inp-custom-msg').value.trim();
+        cardData.location = loc;
+        if (msg) {
+            cardData.letter.msg1 = msg;
+        }
+        if (loc) {
+            document.querySelector('.hero-location').textContent = loc;
+            document.querySelector('.hero-location').classList.remove('hidden');
+        }
+    }
+
+    // Inject names + date everywhere
+    applyCardData();
+
+    // Transition: hide overlay, show card
+    const overlay = document.getElementById('customizer-overlay');
+    overlay.style.opacity = '0';
+    overlay.style.transform = 'scale(1.04)';
+    setTimeout(() => {
+        overlay.style.display = 'none';
+        const card = document.getElementById('main-card');
+        card.classList.remove('hidden');
+        card.style.opacity = '0';
+        requestAnimationFrame(() => {
+            card.style.transition = 'opacity .9s ease';
+            card.style.opacity = '1';
+        });
+
+        // Init everything after reveal
+        setTimeout(() => {
+            initPetals();
+            initScrollReveal();
+            initDoodleEngine();
+            initWisdom();
+            initTypewriter(cardData.letter);
+        }, 100);
+    }, 500);
+}
+
+function applyCardData() {
+    document.querySelectorAll('.bride-name').forEach(el => el.textContent = cardData.brideName);
+    document.querySelectorAll('.groom-name').forEach(el => el.textContent = cardData.groomName);
+    document.querySelectorAll('.wedding-date').forEach(el => el.textContent = cardData.weddingDate.toUpperCase());
+
+    // Update title
+    document.title = `${cardData.brideName} & ${cardData.groomName} · Wedding Wish`;
+}
+
+function shakeField(id) {
+    const el = document.getElementById(id);
+    el.style.borderColor = '#c4747a';
+    el.style.animation = 'shake .4s ease';
+    setTimeout(() => { el.style.animation = ''; el.style.borderColor = ''; }, 500);
+}
+
+// ══════════════════════════════════════════════
+// AI MESSAGE GENERATOR (Anthropic API)
+// ══════════════════════════════════════════════
+async function generateAIMessage() {
+    const btn = document.getElementById('btn-ai-generate');
+    const preview = document.getElementById('ai-preview');
+    const bride = document.getElementById('inp-bride').value.trim() || 'the bride';
+    const groom = document.getElementById('inp-groom').value.trim() || 'the groom';
+    const relation = document.getElementById('inp-relation').value.trim();
+    const date = document.getElementById('inp-date').value.trim() || 'their wedding day';
+
+    btn.disabled = true;
+    btn.innerHTML = '<span class="btn-icon spin">✨</span> Generating...';
+    preview.classList.remove('hidden');
+    preview.textContent = '';
+
+    const prompt = `Write a beautiful, heartfelt wedding message for ${bride} and ${groom} who are getting married on ${date}. ${relation ? `The sender is the ${relation}.` : ''} 
+
+Rules:
+- Only celebrate the present moment and the beautiful future ahead — NEVER mention how they met, their proposal, or past memories
+- Keep it warm, personal, and emotional but concise (3–4 sentences max)
+- Universal — can be sent by anyone without knowing the couple's full story
+- End with one powerful line they'll remember forever
+- No generic phrases like "wishing you a happy married life"
+
+Output ONLY the message, nothing else.`;
+
+    try {
+        const response = await fetch("https://api.anthropic.com/v1/messages", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                model: "claude-sonnet-4-20250514",
+                max_tokens: 300,
+                messages: [{ role: "user", content: prompt }]
+            })
+        });
+        const data = await response.json();
+        const msg = data.content?.[0]?.text || DEFAULT_LETTER.msg1;
+
+        preview.textContent = msg;
+        preview.style.opacity = '0';
+        preview.style.transform = 'translateY(10px)';
+        requestAnimationFrame(() => {
+            preview.style.transition = 'opacity .6s ease, transform .6s ease';
+            preview.style.opacity = '1';
+            preview.style.transform = 'none';
+        });
+
+        // Save to card data
+        cardData.letter.msg1 = msg;
+        document.getElementById('inp-custom-msg').value = msg;
+
+    } catch (e) {
+        preview.textContent = DEFAULT_LETTER.msg1;
+    }
+
+    btn.disabled = false;
+    btn.innerHTML = '<span class="btn-icon">✨</span> Regenerate Message';
+}
+
+// ══════════════════════════════════════════════
+// WISDOM QUOTES
+// ══════════════════════════════════════════════
 function initWisdom() {
     const quotes = [
         { text: "A successful marriage requires falling in love many times, always with the same person.", author: "Mignon McLaughlin" },
@@ -27,70 +192,17 @@ function initWisdom() {
             <cite>— ${q.author}</cite>
         </div>
     `).join('');
-    // re-observe newly created elements
     initScrollReveal();
 }
 
-// --- DATA LOADING ---
-async function loadConfig() {
-    try {
-        const response = await fetch('user_content/config.json');
-        const data = await response.json();
-
-        if (data.brideName) document.querySelectorAll('.bride-name').forEach(el => el.textContent = data.brideName);
-        if (data.groomName) document.querySelectorAll('.groom-name').forEach(el => el.textContent = data.groomName);
-        if (data.weddingDate) document.querySelectorAll('.wedding-date').forEach(el => el.textContent = data.weddingDate);
-        if (data.location) document.querySelectorAll('.location-text').forEach(el => el.textContent = data.location);
-        if (data.heroText) document.querySelector('.hero-subtitle') && (document.querySelector('.hero-subtitle').textContent = data.heroText);
-
-        // Timeline
-        const timelineContent = document.getElementById('timeline-content');
-        if (timelineContent && data.timeline) {
-            timelineContent.innerHTML = data.timeline.map(item => `
-                <div class="timeline-item reveal">
-                    <div class="time-year">${item.year}</div>
-                    <div class="time-mark"></div>
-                    <div class="time-desc">${item.event}</div>
-                </div>
-            `).join('');
-        }
-
-        // Wishes
-        const wishesContainer = document.getElementById('wishes-container');
-        const flowers = [
-            'images/af01c37c8da6dfd3d0330a1fbdbd761e.jpg',
-            'images/f98c75359b3aab99ec29651b703df9b9.jpg',
-            'images/d35faf4c47f312f0c0ea3e636a2f6a43.jpg',
-            'images/1f1782224d76bfb1b7d3e803a538900c.jpg',
-        ];
-        if (wishesContainer && data.wishes) {
-            wishesContainer.innerHTML = data.wishes.map((wish, index) => `
-                <div class="wish-item ${index % 2 === 0 ? 'left' : 'right'} reveal">
-                    <div class="wish-empty"></div>
-                    <div class="wish-dot"><div class="wish-dot-inner"></div></div>
-                    <div class="wish-content">
-                        <img src="${flowers[index % flowers.length]}" class="wish-flower" alt="flower">
-                        <h4>${wish.title}</h4>
-                        <p>${wish.text}</p>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        if (data.letterContent) initTypewriter(data.letterContent);
-        initScrollReveal();
-
-    } catch (error) {
-        console.error('Error loading config:', error);
-    }
-}
-
-// --- PETAL ANIMATION ---
+// ══════════════════════════════════════════════
+// PETAL ANIMATION
+// ══════════════════════════════════════════════
 function initPetals() {
     const layer = document.getElementById('petalLayer');
     if (!layer) return;
-    const colors = ['#f8d7da', '#fdf2f2', '#ffeaa0', '#fff', '#fce4ec', '#f3e5f5'];
-    for (let i = 0; i < 50; i++) {
+    const colors = ['#f8d7da','#fdf2f2','#ffeaa0','#fff','#fce4ec','#f3e5f5','#ffe4b5'];
+    for (let i = 0; i < 55; i++) {
         const p = document.createElement('div');
         p.className = 'petal';
         const size = 8 + Math.random() * 16;
@@ -107,7 +219,9 @@ function initPetals() {
     }
 }
 
-// --- SCROLL REVEAL ---
+// ══════════════════════════════════════════════
+// SCROLL REVEAL
+// ══════════════════════════════════════════════
 function initScrollReveal() {
     const revObs = new IntersectionObserver(entries => {
         entries.forEach(e => {
@@ -119,18 +233,20 @@ function initScrollReveal() {
     });
 }
 
-// --- TYPEWRITER ---
+// ══════════════════════════════════════════════
+// TYPEWRITER
+// ══════════════════════════════════════════════
 function initTypewriter(content) {
-    const msg1 = content.msg1 || "";
+    const msg1 = content.msg1 || DEFAULT_LETTER.msg1;
     let typed = false;
     const letterEl = document.getElementById('letter-typed');
     const p2 = document.getElementById('letter-p2');
     const p3 = document.getElementById('letter-p3');
     const p4 = document.getElementById('letter-p4');
 
-    if (p2) p2.textContent = content.p2;
-    if (p3) p3.textContent = content.p3;
-    if (p4) p4.textContent = content.p4;
+    if (p2) p2.textContent = content.p2 || DEFAULT_LETTER.p2;
+    if (p3) p3.textContent = content.p3 || DEFAULT_LETTER.p3;
+    if (p4) p4.textContent = content.p4 || DEFAULT_LETTER.p4;
 
     const letterObs = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting && !typed) {
@@ -140,7 +256,7 @@ function initTypewriter(content) {
             function tick() {
                 if (i < msg1.length) {
                     if (letterEl) letterEl.textContent += msg1[i++];
-                    setTimeout(tick, 16);
+                    setTimeout(tick, 14);
                 } else {
                     setTimeout(() => {
                         if (p2) p2.style.cssText = 'opacity:1;transition:opacity 1.5s';
@@ -160,32 +276,28 @@ function initTypewriter(content) {
     if (target) letterObs.observe(target);
 }
 
-// --- DOODLE ENGINE — Smart Data-Attribute Sticker System ---
+// ══════════════════════════════════════════════
+// DOODLE ENGINE
+// ══════════════════════════════════════════════
 function initDoodleEngine() {
     const slots = document.querySelectorAll('.doodle-slot[data-sticker]');
     slots.forEach(slot => {
-        const file    = slot.getAttribute('data-sticker');
-        const size    = parseInt(slot.getAttribute('data-size')) || 120;
-        const rotate  = parseFloat(slot.getAttribute('data-rotate')) || 0;
-
+        const file   = slot.getAttribute('data-sticker');
+        const size   = parseInt(slot.getAttribute('data-size')) || 120;
+        const rotate = parseFloat(slot.getAttribute('data-rotate')) || 0;
         const img = document.createElement('img');
         img.src = `images/${file}`;
         img.className = 'sticker';
-        img.style.cssText = `
-            width:${size}px;
-            --r:${rotate}deg;
-        `;
+        img.style.cssText = `width:${size}px;`;
         img.style.transform = `rotate(${rotate}deg)`;
-
-        // Add slight random bob offset so they don't all bob in sync
-        const delay = (Math.random() * 4).toFixed(1);
-        img.style.animationDelay = `${delay}s`;
-
+        img.style.animationDelay = `${(Math.random() * 4).toFixed(1)}s`;
         slot.appendChild(img);
     });
 }
 
-// --- LOVE LOCK ---
+// ══════════════════════════════════════════════
+// LOVE LOCK
+// ══════════════════════════════════════════════
 let lockOpen = false;
 function unlockHeart() {
     if (lockOpen) return;
@@ -200,9 +312,11 @@ function unlockHeart() {
     }, 1400);
 }
 
-// --- CONFETTI ---
+// ══════════════════════════════════════════════
+// CONFETTI
+// ══════════════════════════════════════════════
 function launchConfetti(n = 60) {
-    const emojis = ['💍', '🌸', '💛', '✨', '🤍', '💐', '🎊', '💫', '🌺', '❤️', '💒', '🥂', '🌼', '🌹'];
+    const emojis = ['💍','🌸','💛','✨','🤍','💐','🎊','💫','🌺','❤️','💒','🥂','🌼','🌹'];
     for (let i = 0; i < n; i++) {
         setTimeout(() => {
             const el = document.createElement('div');
@@ -216,4 +330,65 @@ function launchConfetti(n = 60) {
     }
 }
 
-window.unlockHeart = unlockHeart;
+// ══════════════════════════════════════════════
+// CTAs
+// ══════════════════════════════════════════════
+function scrollToWish() {
+    document.getElementById('love-lock').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function shareCard() {
+    const title = `${cardData.brideName} & ${cardData.groomName} — Wedding Wish`;
+    const text  = `Wishing ${cardData.brideName} & ${cardData.groomName} a beautiful forever ❤️`;
+
+    if (navigator.share) {
+        try {
+            await navigator.share({ title, text, url: window.location.href });
+        } catch {}
+    } else {
+        // Fallback: copy to clipboard
+        try {
+            await navigator.clipboard.writeText(`${text}\n${window.location.href}`);
+            showToast('Link copied to clipboard! 💌');
+        } catch {
+            showToast('Share this page to spread the love 💌');
+        }
+    }
+}
+
+function createNewCard() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    setTimeout(() => {
+        document.getElementById('main-card').classList.add('hidden');
+        const overlay = document.getElementById('customizer-overlay');
+        overlay.style.display = '';
+        overlay.style.opacity = '0';
+        overlay.style.transform = 'scale(.97)';
+        requestAnimationFrame(() => {
+            overlay.style.transition = 'opacity .6s ease, transform .6s ease';
+            overlay.style.opacity = '1';
+            overlay.style.transform = 'none';
+        });
+        // Reset
+        document.getElementById('inp-bride').value = '';
+        document.getElementById('inp-groom').value = '';
+        document.getElementById('inp-date').value = '';
+    }, 400);
+}
+
+function showToast(msg) {
+    const t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    requestAnimationFrame(() => t.classList.add('show'));
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 400); }, 3000);
+}
+
+// ── Expose globals ──
+window.unlockHeart   = unlockHeart;
+window.createCard    = createCard;
+window.generateAIMessage = generateAIMessage;
+window.shareCard     = shareCard;
+window.createNewCard = createNewCard;
+window.scrollToWish  = scrollToWish;
