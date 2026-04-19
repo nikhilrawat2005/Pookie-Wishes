@@ -385,7 +385,7 @@
     },
     {
       "id": "wedding",
-      "name": "Royal Nuptials",
+      "name": "Wedding Wishes",
       "testing": true,
       "tagline": "A Grand Wedding Celebration ✨",
       "badge": "Premium",
@@ -396,15 +396,15 @@
       "hasPhotos": false,
       "tags": ["wedding", "congrats", "marriage", "royal", "romantic"],
       "shortDesc": "A majestic wedding surprise with floral animations, a personalized love letter, and a symbolic heart lock.",
-      "longDesc": "Celebrate their union with the 'Royal Nuptials' template. Featuring a grand hero entrance, a timeline of their journey, heartfelt wishes, a signature typewriter love letter, and an interactive 'Love Lock' to seal their promise. Decorated with 24 custom stickers for a scrapbook feel.",
+      "longDesc": "Celebrate their union with the 'Wedding Wishes' template. Featuring a grand hero entrance, a timeline of their journey, heartfelt wishes, a signature typewriter love letter, and an interactive 'Love Lock' to seal their promise. Decorated with custom stickers for a scrapbook feel.",
       "vibe": "Majestic & Romantic",
       "features": [
-        "💍 Grand Royal Hero Entrance",
+        "💍 Grand Hero Entrance",
         "📜 Animated Journey Timeline",
         "🌸 Heartfelt Floral Wishes",
         "✍️ Typewriter Signature Letter",
         "🔒 Interactive Love Lock Reveal",
-        "🎨 24 Dynamic Sticker Decorations"
+        "🎨 Dynamic Sticker Decorations"
       ],
       "submitDetails": [
         { "icon": "👰", "label": "Bride's Name", "key": "brideName", "type": "text", "required": true, "desc": "The bride's name — appears on the hero screen" },
