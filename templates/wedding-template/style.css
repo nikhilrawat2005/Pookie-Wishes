@@ -1652,10 +1652,10 @@ footer p{
    POOKIE WISHES BRANDING BOX
    ══════════════════════════════════════════════════════ */
 .pw-branding-box {
-    max-width: 520px;
-    margin: 50px auto 30px;
-    padding: 3px;
-    border-radius: 20px;
+    max-width: 340px;
+    margin: 60px 0 20px auto;
+    padding: 2px;
+    border-radius: 16px;
     background: linear-gradient(135deg, var(--gold-l), var(--gold-d), var(--rose), var(--gold-l));
     background-size: 300% 300%;
     animation: pwGradient 6s ease infinite;
@@ -1667,56 +1667,47 @@ footer p{
 }
 .pw-brand-inner {
     background: white;
-    border-radius: 18px;
-    padding: 40px 30px;
-    text-align: center;
+    border-radius: 14px;
+    padding: 24px 20px;
+    text-align: left;
 }
 .pw-brand-icon {
-    font-size: 2rem;
-    margin-bottom: 16px;
+    font-size: 1.5rem;
+    margin-bottom: 8px;
     animation: floatSlow 3s ease-in-out infinite;
+    display: inline-block;
 }
 .pw-brand-title {
     font-family: 'Playfair Display', serif;
-    font-size: clamp(1.1rem, 2.5vw, 1.4rem);
+    font-size: 1.1rem;
     color: var(--text);
     font-weight: 700;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     line-height: 1.4;
 }
 .pw-brand-desc {
-    font-family: 'EB Garamond', serif;
-    font-size: clamp(.95rem, 1.6vw, 1.1rem);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.8rem;
     color: var(--text-l);
-    line-height: 1.7;
-    margin-bottom: 24px;
-    max-width: 420px;
-    margin-left: auto;
-    margin-right: auto;
+    line-height: 1.6;
+    margin-bottom: 16px;
 }
 .pw-brand-btn {
-    display: inline-block;
-    padding: 14px 36px;
+    display: block;
+    text-align: center;
+    padding: 10px 16px;
     background: linear-gradient(135deg, var(--gold-d), #a07820);
     color: white;
     text-decoration: none;
-    border-radius: 100px;
+    border-radius: 8px;
     font-family: 'Poppins', sans-serif;
-    font-size: .95rem;
+    font-size: .85rem;
     font-weight: 600;
-    box-shadow: 0 10px 30px rgba(139,105,20,.3);
-    transition: all .4s cubic-bezier(.34,1.25,.64,1);
-    letter-spacing: .02em;
+    box-shadow: 0 4px 15px rgba(139,105,20,.2);
+    transition: all .4s ease;
 }
 .pw-brand-btn:hover {
-    transform: translateY(-3px) scale(1.04);
-    box-shadow: 0 18px 45px rgba(139,105,20,.45);
-}
-.pw-brand-sub {
-    margin-top: 14px;
-    font-family: 'Poppins', sans-serif;
-    font-size: .75rem;
-    color: var(--text-ll);
-    letter-spacing: .05em;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(139,105,20,.3);
 }
 
