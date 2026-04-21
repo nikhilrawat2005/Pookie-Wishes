@@ -386,7 +386,6 @@
     {
       "id": "wedding",
       "name": "Wedding Wishes",
-      "testing": true,
       "tagline": "A Grand Wedding Celebration ✨",
       "badge": "Premium",
       "emoji": "💍",
@@ -410,11 +409,11 @@
         { "icon": "👰", "label": "Bride's Name", "key": "brideName", "type": "text", "required": true, "desc": "The bride's name — appears on the hero screen" },
         { "icon": "🤵", "label": "Groom's Name", "key": "groomName", "type": "text", "required": true, "desc": "The groom's name — appears on the hero screen" },
         { "icon": "📅", "label": "Wedding Date", "key": "weddingDate", "type": "text", "required": true, "desc": "The special day to remember" },
-        { "icon": "📍", "label": "Wedding Location", "key": "location", "type": "text", "required": true, "desc": "Where the magic happened" },
         { "icon": "💌", "label": "Main Love Letter", "key": "message", "type": "textarea", "required": true, "desc": "A heartfelt letter to the couple — revealed with a typewriter effect" }
       ],
       "media": {
-        "thumbnail": "templates/wedding-template/preview.png"
+        "thumbnail": "media/wedding/thumbnail.jpg",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1776790957/wedding_mipg7m.mov"
       }
     }
   ]

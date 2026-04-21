@@ -16,7 +16,6 @@ let cardData = {
     brideName: "Anya",
     groomName: "Aryan",
     weddingDate: "January 24, 2026",
-    location: "",
     letter: { ...DEFAULT_LETTER }
 };
 
@@ -24,15 +23,21 @@ let cardData = {
 // INIT — Load config.json and boot up
 // ══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', async () => {
-    // Try loading from config.json
+    // Try loading from Firebase if template-loader exists
+    let data;
     try {
-        const res = await fetch('user_content/config.json');
-        const data = await res.json();
+        if (typeof window.getPookieData === 'function') {
+            const fbData = await window.getPookieData('wedding');
+            if (fbData) data = fbData;
+        }
+        if (!data) {
+            const res = await fetch('user_content/config.json');
+            data = await res.json();
+        }
 
         if (data.brideName) cardData.brideName = data.brideName;
         if (data.groomName) cardData.groomName = data.groomName;
         if (data.weddingDate) cardData.weddingDate = data.weddingDate;
-        if (data.location) cardData.location = data.location;
 
         // Letter content
         if (data.letterContent) {
@@ -67,15 +72,6 @@ function applyCardData() {
     document.querySelectorAll('.bride-name').forEach(el => el.textContent = cardData.brideName);
     document.querySelectorAll('.groom-name').forEach(el => el.textContent = cardData.groomName);
     document.querySelectorAll('.wedding-date').forEach(el => el.textContent = cardData.weddingDate.toUpperCase());
-
-    // Location
-    if (cardData.location) {
-        const locEl = document.querySelector('.hero-location');
-        if (locEl) {
-            locEl.textContent = `📍 ${cardData.location}`;
-            locEl.classList.remove('hidden');
-        }
-    }
 
     // Update page title
     document.title = `${cardData.brideName} & ${cardData.groomName} · Wedding Wish 💛`;
