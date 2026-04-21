@@ -2,7 +2,7 @@
 
 // --- QR System Utilities ---
 window.getTemplateQRTheme = function(templateId, themeName) {
-    const isSpecial = ['hello-kitty', 'love-trap', 'sorry', 'anniversary-journey'].includes(templateId);
+    const isSpecial = ['hello-kitty', 'love-trap', 'sorry', 'anniversary-journey', 'wedding'].includes(templateId);
     
     // Core theme colors for QR code dots
     const themes = {
