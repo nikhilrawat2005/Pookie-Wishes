@@ -918,7 +918,7 @@ function openDrawer(oid) {
         const photosHtml = (p.photos && p.photos.length) ? `
           <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;padding-top:12px;border-top:1px solid var(--bdr);">
             ${p.photos.map((url, i) => {
-              const safeUrl = (typeof url === 'string' && url.includes('cloudinary.com')) ? url.replace(/\\.(heic|heif|hevc|pdf|tiff|bmp)$/i, '.jpg') : url;
+              const safeUrl = (typeof url === 'string' && url.includes('cloudinary.com')) ? url.replace(/\/fl_attachment[^\/]*\//i, '/').replace('/upload/', '/upload/f_auto,q_auto/').replace(/\.(heic|heif|hevc|pdf|tiff|bmp)$/i, '.png') : url;
               return `
               <div style="text-align:center;">
                 <a href="${url}" target="_blank" style="display:block;width:60px;height:60px;border-radius:var(--rs);overflow:hidden;border:1px solid var(--bdr);margin-bottom:4px;">
