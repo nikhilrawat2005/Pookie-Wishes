@@ -20,38 +20,62 @@ let cardData = {
 };
 
 // ══════════════════════════════════════════════
-// INIT — Load config.json and boot up
+// INIT — Load data and boot up
 // ══════════════════════════════════════════════
 document.addEventListener('DOMContentLoaded', async () => {
-    // Try loading from Firebase if template-loader exists
     let data;
     try {
         if (typeof window.getPookieData === 'function') {
-            const fbData = await window.getPookieData('wedding');
-            if (fbData) data = fbData;
+            data = await window.getPookieData('wedding');
         }
         if (!data) {
             const res = await fetch('user_content/config.json');
-            data = await res.json();
+            if (res.ok) data = await res.json();
         }
 
-        if (data.brideName) cardData.brideName = data.brideName;
-        if (data.groomName) cardData.groomName = data.groomName;
-        if (data.weddingDate) cardData.weddingDate = data.weddingDate;
+        if (data) {
+            console.log('[Wedding] Loaded data:', data);
+            if (data.brideName) cardData.brideName = data.brideName;
+            if (data.groomName) cardData.groomName = data.groomName;
+            
+            // Format Date (e.g. 2026-05-20 -> May 20, 2026)
+            if (data.weddingDate) {
+                let dStr = data.weddingDate;
+                if (dStr.length === 10 && dStr.includes('-')) {
+                    const d = new Date(dStr);
+                    if (!isNaN(d)) dStr = d.toLocaleDateString('en-US', { month:'long', day:'numeric', year:'numeric' });
+                }
+                cardData.weddingDate = dStr;
+            }
 
-        // Letter content
-        if (data.letterContent) {
-            cardData.letter.msg1 = data.letterContent.msg1 || DEFAULT_LETTER.msg1;
-            cardData.letter.p2 = data.letterContent.p2 || DEFAULT_LETTER.p2;
-            cardData.letter.p3 = data.letterContent.p3 || DEFAULT_LETTER.p3;
-            cardData.letter.p4 = data.letterContent.p4 || DEFAULT_LETTER.p4;
-        }
-        // Also support flat 'message' field from admin panel
-        if (data.message && !data.letterContent) {
-            cardData.letter.msg1 = data.message;
+            // Letter content logic
+            if (data.message || data.letterContent) {
+                // If user wrote a custom message, we REPLACE the whole letter
+                // unless they entered multiple paragraphs (not currently possible via form)
+                if (data.message) {
+                    cardData.letter.msg1 = data.message;
+                    cardData.letter.p2 = ""; // Clear defaults
+                    cardData.letter.p3 = "";
+                    cardData.letter.p4 = "";
+                } else if (data.letterContent) {
+                    cardData.letter.msg1 = data.letterContent.msg1 || DEFAULT_LETTER.msg1;
+                    cardData.letter.p2 = data.letterContent.p2 || "";
+                    cardData.letter.p3 = data.letterContent.p3 || "";
+                    cardData.letter.p4 = data.letterContent.p4 || "";
+                }
+            }
+
+            // Global Placeholder Fix (v3)
+            if (window.bindPookiePlaceholders) {
+                window.bindPookiePlaceholders({
+                    name: cardData.brideName,
+                    sender: cardData.brideName + " & " + cardData.groomName,
+                    message: cardData.letter.msg1
+                });
+            }
         }
     } catch (e) {
-        console.warn('[Wedding] Config load failed, using defaults:', e.message);
+        console.warn('[Wedding] Data load failed:', e.message);
     }
 
     // Apply all data to DOM
@@ -148,9 +172,9 @@ function initTypewriter(content) {
     const p3 = document.getElementById('letter-p3');
     const p4 = document.getElementById('letter-p4');
 
-    if (p2) p2.textContent = content.p2 || DEFAULT_LETTER.p2;
-    if (p3) p3.textContent = content.p3 || DEFAULT_LETTER.p3;
-    if (p4) p4.textContent = content.p4 || DEFAULT_LETTER.p4;
+    if (p2) p2.textContent = (content.p2 !== undefined) ? content.p2 : DEFAULT_LETTER.p2;
+    if (p3) p3.textContent = (content.p3 !== undefined) ? content.p3 : DEFAULT_LETTER.p3;
+    if (p4) p4.textContent = (content.p4 !== undefined) ? content.p4 : DEFAULT_LETTER.p4;
 
     const letterObs = new IntersectionObserver(entries => {
         if (entries[0].isIntersecting && !typed) {

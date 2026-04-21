@@ -371,6 +371,7 @@ body{
   color:var(--text);
 }
 .letter-body p{margin-bottom:20px}
+.letter-body p:empty{display:none}
 .letter-signature{
   font-family:'Alex Brush',cursive;
   font-size:2rem;

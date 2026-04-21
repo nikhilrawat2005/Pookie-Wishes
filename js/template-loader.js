@@ -4,7 +4,13 @@ window.getPookieData = async function(templateId) { const urlParams = new URLSea
       return { recipientName: recipient, senderName: sender, message: message };
     }
     if (template === 'wedding') {
-      return { brideName: pData.brideName || "Anya", groomName: pData.groomName || "Aryan", weddingDate: pData.weddingDate || "January 24, 2026", message: message, photos: photos };
+      return { 
+        brideName: pData.brideName || recipient, 
+        groomName: pData.groomName || "Partner", 
+        weddingDate: pData.weddingDate || "January 24, 2026", 
+        message: message, 
+        photos: photos 
+      };
     }
     return { ...order, ...pData, message, photos, recipientName: recipient, senderName: sender };
   } catch (err) {
