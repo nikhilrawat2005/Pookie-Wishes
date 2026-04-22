@@ -260,7 +260,7 @@
     if (!tMeta) return;
 
     const container = document.getElementById('dynamic-fields');
-    container.innerHTML = ""; // Clear
+    let fullHTML = "";
     selectedFiles = []; // Reset photos for each step
 
     tMeta.submitDetails.forEach((detail, idx) => {
@@ -273,7 +273,7 @@
           <div class="f-group" id="photo-upload-sec">
             <label class="f-label">${detail.label} ${detail.required ? '*' : '<span class="opt">(Optional)</span>'}</label>
             <div class="img-note">${detail.desc}</div>
-            <label class="upload-zone" id="drop-zone">
+            <label class="upload-zone" data-max="${count}">
               <div style="font-size:1.5rem;margin-bottom:5px;">${detail.icon || '📸'}</div>
               <div style="font-size:0.85rem;color:var(--text);">Select or Drag ${count} photos</div>
               <input type="file" id="${fieldId}" data-key="${detail.key}" data-max="${count}" multiple accept="image/*" onchange="updateFileList(this.files, ${count})">
@@ -281,33 +281,6 @@
             <div class="file-list" id="file-list-display">No files selected</div>
           </div>
         `;
-        
-        // Add drag events after small delay to ensure DOM is ready
-        setTimeout(() => {
-          const zone = document.getElementById('drop-zone');
-          if (zone) {
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
-              zone.addEventListener(evt, (e) => {
-                e.preventDefault();
-                e.stopPropagation();
-              }, false);
-            });
-
-            ['dragenter', 'dragover'].forEach(evt => {
-              zone.addEventListener(evt, () => zone.classList.add('drag-over'), false);
-            });
-
-            ['dragleave', 'drop'].forEach(evt => {
-              zone.addEventListener(evt, () => zone.classList.remove('drag-over'), false);
-            });
-
-            zone.addEventListener('drop', (e) => {
-              const dt = e.dataTransfer;
-              const files = dt.files;
-              updateFileList(files, count);
-            }, false);
-          }
-        }, 50);
       } else if (detail.type === "textarea") {
         fieldHTML = `
           <div class="f-group">
@@ -335,7 +308,34 @@
           </div>
         `;
       }
-      container.innerHTML += fieldHTML;
+      fullHTML += fieldHTML;
+    });
+
+    container.innerHTML = fullHTML;
+
+    // Attach listeners to all upload zones
+    container.querySelectorAll('.upload-zone').forEach(zone => {
+      const max = parseInt(zone.dataset.max || 3);
+      ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+        zone.addEventListener(evt, (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+        }, false);
+      });
+
+      ['dragenter', 'dragover'].forEach(evt => {
+        zone.addEventListener(evt, () => zone.classList.add('drag-over'), false);
+      });
+
+      ['dragleave', 'drop'].forEach(evt => {
+        zone.addEventListener(evt, () => zone.classList.remove('drag-over'), false);
+      });
+
+      zone.addEventListener('drop', (e) => {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+        updateFileList(files, max);
+      }, false);
     });
 
     // Change button text for final step
