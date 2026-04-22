@@ -25,6 +25,9 @@
     .upload-zone.drag-over::after { content: 'Drop to Upload ✨'; position: absolute; inset: 0; background: var(--pink-s); color: var(--pink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; border-radius: var(--rx); z-index: 2; }
     .upload-zone input[type="file"] { display: none; }
     .file-list { font-size: 0.8rem; color: var(--dim); min-height: 20px; margin-bottom:10px;}
+    .file-tag { background: var(--bg2); border: 1px solid var(--bdr); border-radius: 8px; padding: 6px 12px; display: flex; align-items: center; gap: 8px; font-size: 0.75rem; transition: all 0.2s; }
+    .file-tag:hover { border-color: var(--pink); background: var(--pink-s); }
+    .file-tag .remove { cursor: pointer; color: var(--pink); font-weight: bold; font-size: 1.1rem; line-height: 1; margin-left: 4px; }
     
     @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
     .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; margin-right: 6px; }
@@ -183,23 +186,58 @@
       files = files.files;
     }
     
-    if (files.length > max) {
-      toast(`You can only select up to ${max} photos`, "err");
-      // If it was an input, clear it
+    const newFiles = Array.from(files);
+    const totalCount = selectedFiles.length + newFiles.length;
+
+    if (totalCount > max) {
+      toast(`You can only have up to ${max} photos in total`, "err");
+      // Clear input so user can try again if they want
       const input = document.querySelector('input[type="file"]');
       if (input) input.value = ""; 
-      selectedFiles = [];
-      document.getElementById('file-list-display').textContent = "No files selected";
       return;
     }
     
-    selectedFiles = Array.from(files);
+    // Add new files, avoiding duplicates if possible (by name/size)
+    newFiles.forEach(nf => {
+        const isDup = selectedFiles.some(sf => sf.name === nf.name && sf.size === nf.size);
+        if (!isDup) selectedFiles.push(nf);
+    });
+
+    renderFileList();
+  }
+
+  function renderFileList() {
     const display = document.getElementById('file-list-display');
-    if(selectedFiles.length === 0) {
-      if (display) display.textContent = "No files selected";
-    } else {
-      if (display) display.textContent = selectedFiles.map(f => f.name).join(', ');
+    if (!display) return;
+
+    if (selectedFiles.length === 0) {
+      display.innerHTML = '<span style="color:var(--dim)">No files selected</span>';
+      return;
     }
+
+    display.innerHTML = `
+      <div style="display:flex; flex-wrap:wrap; gap:8px; margin-top:10px;">
+        ${selectedFiles.map((f, i) => `
+          <div class="file-tag">
+            <span style="max-width:120px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; color:var(--text);">${f.name}</span>
+            <span class="remove" onclick="removeFile(${i})">&times;</span>
+          </div>
+        `).join('')}
+        ${selectedFiles.length > 0 ? `<div onclick="clearFiles()" style="font-size:0.7rem; color:var(--pink); cursor:pointer; text-decoration:underline; align-self:center; margin-left:5px; font-weight:600;">Clear All</div>` : ''}
+      </div>
+    `;
+  }
+
+  function removeFile(index) {
+    selectedFiles.splice(index, 1);
+    renderFileList();
+  }
+
+  function clearFiles() {
+    selectedFiles = [];
+    const input = document.querySelector('input[type="file"]');
+    if (input) input.value = "";
+    renderFileList();
   }
 
   async function uploadToCloudinary(file) {
@@ -261,7 +299,10 @@
 
     const container = document.getElementById('dynamic-fields');
     let fullHTML = "";
-    selectedFiles = []; // Reset photos for each step
+    // NOTE: We do NOT reset selectedFiles = [] here if you want to keep them across 
+    // Wait, adaptForm is called when currentOrderIndex changes (Next Template).
+    // In that case, we MUST reset selectedFiles because it's for a NEW template.
+    selectedFiles = []; 
 
     tMeta.submitDetails.forEach((detail, idx) => {
       const fieldId = `field-${detail.key}`;
