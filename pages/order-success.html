@@ -20,8 +20,9 @@
     .f-label.opt { color:var(--dim); font-size:0.65rem; }
     .img-note { font-size: 0.75rem; color: var(--pink); background: var(--pink-s); padding: 10px; border-radius: var(--r); margin-bottom:15px; border: 1px solid var(--bdr-pink); }
     
-    .upload-zone { border: 2px dashed var(--bdr2); padding: 16px; border-radius: var(--r); text-align: center; cursor: pointer; transition: all 0.2s; margin-bottom:10px; background:var(--bg2);}
-    .upload-zone:hover { border-color: var(--pink); }
+    .upload-zone { border: 2px dashed var(--bdr2); padding: 24px 16px; border-radius: var(--rx); text-align: center; cursor: pointer; transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1); margin-bottom:10px; background:var(--bg2); position: relative; }
+    .upload-zone:hover, .upload-zone.drag-over { border-color: var(--pink); background: var(--pink-s); transform: translateY(-2px); box-shadow: var(--sh-md); }
+    .upload-zone.drag-over::after { content: 'Drop to Upload ✨'; position: absolute; inset: 0; background: var(--pink-s); color: var(--pink); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 0.9rem; border-radius: var(--rx); z-index: 2; }
     .upload-zone input[type="file"] { display: none; }
     .file-list { font-size: 0.8rem; color: var(--dim); min-height: 20px; margin-bottom:10px;}
     
@@ -177,19 +178,27 @@
     });
   }
 
-  function updateFileList(input) {
-    if (input.files.length > 3) {
-      toast("You can only select up to 3 photos", "err");
-      input.value = ""; // reset
+  function updateFileList(files, max) {
+    if (files instanceof HTMLInputElement) {
+      files = files.files;
+    }
+    
+    if (files.length > max) {
+      toast(`You can only select up to ${max} photos`, "err");
+      // If it was an input, clear it
+      const input = document.querySelector('input[type="file"]');
+      if (input) input.value = ""; 
       selectedFiles = [];
       document.getElementById('file-list-display').textContent = "No files selected";
       return;
     }
-    selectedFiles = Array.from(input.files);
+    
+    selectedFiles = Array.from(files);
+    const display = document.getElementById('file-list-display');
     if(selectedFiles.length === 0) {
-      document.getElementById('file-list-display').textContent = "No files selected";
+      if (display) display.textContent = "No files selected";
     } else {
-      document.getElementById('file-list-display').textContent = selectedFiles.map(f => f.name).join(', ');
+      if (display) display.textContent = selectedFiles.map(f => f.name).join(', ');
     }
   }
 
@@ -264,14 +273,41 @@
           <div class="f-group" id="photo-upload-sec">
             <label class="f-label">${detail.label} ${detail.required ? '*' : '<span class="opt">(Optional)</span>'}</label>
             <div class="img-note">${detail.desc}</div>
-            <label class="upload-zone">
+            <label class="upload-zone" id="drop-zone">
               <div style="font-size:1.5rem;margin-bottom:5px;">${detail.icon || '📸'}</div>
-              <div style="font-size:0.85rem;color:var(--text);">Select exactly ${count} photos</div>
-              <input type="file" id="${fieldId}" data-key="${detail.key}" data-max="${count}" multiple accept="image/*" onchange="updateFileList(this, ${count})">
+              <div style="font-size:0.85rem;color:var(--text);">Select or Drag ${count} photos</div>
+              <input type="file" id="${fieldId}" data-key="${detail.key}" data-max="${count}" multiple accept="image/*" onchange="updateFileList(this.files, ${count})">
             </label>
             <div class="file-list" id="file-list-display">No files selected</div>
           </div>
         `;
+        
+        // Add drag events after small delay to ensure DOM is ready
+        setTimeout(() => {
+          const zone = document.getElementById('drop-zone');
+          if (zone) {
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(evt => {
+              zone.addEventListener(evt, (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+              }, false);
+            });
+
+            ['dragenter', 'dragover'].forEach(evt => {
+              zone.addEventListener(evt, () => zone.classList.add('drag-over'), false);
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+              zone.addEventListener(evt, () => zone.classList.remove('drag-over'), false);
+            });
+
+            zone.addEventListener('drop', (e) => {
+              const dt = e.dataTransfer;
+              const files = dt.files;
+              updateFileList(files, count);
+            }, false);
+          }
+        }, 50);
       } else if (detail.type === "textarea") {
         fieldHTML = `
           <div class="f-group">
@@ -307,21 +343,7 @@
     btn.textContent = (currentOrderIndex === totalItems - 1) ? "Complete Order 🚀" : "Next Template ➡️";
   }
 
-  function updateFileList(input, max) {
-    if (input.files.length > max) {
-      toast(`You can only select up to ${max} photos`, "err");
-      input.value = ""; 
-      selectedFiles = [];
-      document.getElementById('file-list-display').textContent = "No files selected";
-      return;
-    }
-    selectedFiles = Array.from(input.files);
-    if(selectedFiles.length === 0) {
-      document.getElementById('file-list-display').textContent = "No files selected";
-    } else {
-      document.getElementById('file-list-display').textContent = selectedFiles.map(f => f.name).join(', ');
-    }
-  }
+  // updateFileList refactored above
 
   async function submitPersonalisation() {
     const currentItem = orderData.orders[currentOrderIndex];
