@@ -1289,9 +1289,9 @@
     };
 
     let PHOTO_DATA = [
-      { cover: 'assets/love-sticker.webp', src: 'assets/memory1.jpg' },
-      { cover: 'assets/kittyheart.webp', src: 'assets/memory2.jpg' },
-      { cover: 'assets/hello-kitty-love.gif', src: 'assets/memory3.jpg' },
+      { cover: 'assets/card1.jpg', src: 'assets/memory1.jpg' },
+      { cover: 'assets/card2.jpg', src: 'assets/memory2.jpg' },
+      { cover: 'assets/card3.jpg', src: 'assets/memory3.jpg' },
     ];
 
     let userData = null;
@@ -1306,9 +1306,9 @@
             if (userData.no_button_messages) CFG.noMsgs = userData.no_button_messages;
             if (userData.photos) {
                CFG.photos = userData.photos;
-               const defaultCovers = ['assets/love-sticker.webp', 'assets/kittyheart.webp', 'assets/hello-kitty-love.gif'];
+               const defaultCovers = ['assets/card1.jpg', 'assets/card2.jpg', 'assets/card3.jpg'];
                PHOTO_DATA = userData.photos.map((url, i) => ({
-                 cover: defaultCovers[i] || 'assets/kittyheart.webp',
+                 cover: defaultCovers[i] || 'assets/card1.jpg',
                  src: url
                }));
             }
