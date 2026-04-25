@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Payment Successful! — Pookie Wishes ✨</title>
-  <link rel="icon" type="image/png" href="../favicon.png">🎂</text></svg>">
+  <link rel="icon" type="image/png" href="../assets/favicon.png">🎂</text></svg>">
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
   <style>
@@ -32,6 +32,16 @@
     @keyframes bob { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
     .loading-spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.3); border-radius: 50%; border-top-color: #fff; animation: spin 0.6s linear infinite; margin-right: 6px; }
     @keyframes spin { to { transform: rotate(360deg); } }
+    
+    /* Sticker Preview Styles */
+    .sticker-opt-wrap { margin-bottom: 15px; padding: 12px; background: rgba(255, 105, 180, 0.03); border: 1px solid var(--bdr-pink); border-radius: var(--r); }
+    .sticker-check-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; margin-bottom: 8px; }
+    .sticker-check-row input { width: 18px; height: 18px; cursor: pointer; accent-color: var(--pink); }
+    .sticker-check-row span { font-size: 0.85rem; font-weight: 700; color: var(--text2); }
+    .sticker-preview { display: none; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .sticker-preview img { width: 60px; height: 60px; object-fit: cover; border-radius: 8px; border: 1px solid var(--bdr); background: white; }
+    .sticker-preview.show { display: flex; animation: slideDown 0.3s ease; }
+    @keyframes slideDown { from { opacity: 0; transform: translateY(-5px); } to { opacity: 1; transform: translateY(0); } }
   </style>
 </head>
 <body>
@@ -299,10 +309,13 @@
 
     const container = document.getElementById('dynamic-fields');
     let fullHTML = "";
-    // NOTE: We do NOT reset selectedFiles = [] here if you want to keep them across 
-    // Wait, adaptForm is called when currentOrderIndex changes (Next Template).
-    // In that case, we MUST reset selectedFiles because it's for a NEW template.
     selectedFiles = []; 
+    
+    const STICKER_MAP = {
+      'hello-kitty': ['../assets/hello-kitty1.png', '../assets/hello-kitty2.png', '../assets/hello-kitty3.png'],
+      'harry-potter': ['../assets/harry-potter1.png', '../assets/harry-potter2.png', '../assets/harry-potter3.png'],
+      'love-trap': ['../assets/love1.png', '../assets/love2.png', '../assets/love3.png']
+    };
 
     tMeta.submitDetails.forEach((detail, idx) => {
       const fieldId = `field-${detail.key}`;
@@ -314,12 +327,27 @@
           <div class="f-group" id="photo-upload-sec">
             <label class="f-label">${detail.label} ${detail.required ? '*' : '<span class="opt">(Optional)</span>'}</label>
             <div class="img-note">${detail.desc}</div>
-            <label class="upload-zone" data-max="${count}">
-              <div style="font-size:1.5rem;margin-bottom:5px;">${detail.icon || '📸'}</div>
-              <div style="font-size:0.85rem;color:var(--text);">Select or Drag ${count} photos</div>
-              <input type="file" id="${fieldId}" data-key="${detail.key}" data-max="${count}" multiple accept="image/*" onchange="updateFileList(this.files, ${count})">
-            </label>
-            <div class="file-list" id="file-list-display">No files selected</div>
+            
+            ${STICKER_MAP[currentItem.templateId] ? `
+            <div class="sticker-opt-wrap">
+              <label class="sticker-check-row">
+                <input type="checkbox" id="use-stickers" onchange="toggleStickers(this.checked, '${currentItem.templateId}')">
+                <span>Don't have photos? Use our cute stickers instead! ✨</span>
+              </label>
+              <div id="sticker-preview-box" class="sticker-preview">
+                ${STICKER_MAP[currentItem.templateId].map(url => `<img src="${url}" alt="sticker">`).join('')}
+              </div>
+            </div>
+            ` : ''}
+
+            <div id="upload-main-area">
+              <label class="upload-zone" data-max="${count}">
+                <div style="font-size:1.5rem;margin-bottom:5px;">${detail.icon || '📸'}</div>
+                <div style="font-size:0.85rem;color:var(--text);">Select or Drag ${count} photos</div>
+                <input type="file" id="${fieldId}" data-key="${detail.key}" data-max="${count}" multiple accept="image/*" onchange="updateFileList(this.files, ${count})">
+              </label>
+              <div class="file-list" id="file-list-display">No files selected</div>
+            </div>
           </div>
         `;
       } else if (detail.type === "textarea") {
@@ -384,6 +412,22 @@
     btn.textContent = (currentOrderIndex === totalItems - 1) ? "Complete Order 🚀" : "Next Template ➡️";
   }
 
+  function toggleStickers(checked, templateId) {
+    const uploadArea = document.getElementById('upload-main-area');
+    const previewBox = document.getElementById('sticker-preview-box');
+    if (checked) {
+      uploadArea.style.opacity = '0.3';
+      uploadArea.style.pointerEvents = 'none';
+      previewBox.classList.add('show');
+      selectedFiles = []; // Clear any selected files
+      renderFileList();
+    } else {
+      uploadArea.style.opacity = '1';
+      uploadArea.style.pointerEvents = 'auto';
+      previewBox.classList.remove('show');
+    }
+  }
+
   // updateFileList refactored above
 
   async function submitPersonalisation() {
@@ -398,7 +442,8 @@
     tMeta.submitDetails.forEach(detail => {
       if (detail.type === "photo") {
         const max = parseInt(detail.label.match(/\d+/)?.[0] || 3);
-        if (detail.required && selectedFiles.length !== max) {
+        const useStickers = document.getElementById('use-stickers')?.checked;
+        if (!useStickers && detail.required && selectedFiles.length !== max) {
           toast(`Please select exactly ${max} photos for this template!`, "err");
           missing = true;
         }
@@ -423,7 +468,22 @@
 
     try {
       let photoLinks = [];
-      if (selectedFiles.length > 0) {
+      const useStickers = document.getElementById('use-stickers')?.checked;
+      
+      if (useStickers) {
+        const STICKER_MAP = {
+          'hello-kitty': ['../assets/hello-kitty1.png', '../assets/hello-kitty2.png', '../assets/hello-kitty3.png'],
+          'harry-potter': ['../assets/harry-potter1.png', '../assets/harry-potter2.png', '../assets/harry-potter3.png'],
+          'love-trap': ['../assets/love1.png', '../assets/love2.png', '../assets/love3.png']
+        };
+        // We use absolute URLs relative to the template's folder for consistency in delivery
+        // Since templates are in /templates/xxx-template/index.html, 
+        // root assets are at ../../assets/xxx.png
+        photoLinks = STICKER_MAP[currentItem.templateId].map(path => {
+            // Convert ../assets/xxx.png to ../../assets/xxx.png for template usage
+            return path.replace('../assets/', '../../assets/');
+        });
+      } else if (selectedFiles.length > 0) {
         toast(`Uploading photos... ✨`, "inf");
         for (let i = 0; i < selectedFiles.length; i++) {
           const url = await uploadToCloudinary(selectedFiles[i]);
