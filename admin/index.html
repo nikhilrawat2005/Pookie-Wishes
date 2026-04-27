@@ -5,11 +5,20 @@
 -->
 <html lang="en">
 <head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-WKPVPXVTBC"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-WKPVPXVTBC');
+</script>
   <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Admin Dashboard — Pookie Zenith</title>
   <link rel="icon" type="image/png" href="../assets/favicon.png">
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;900&display=swap');
     
@@ -297,6 +306,27 @@
         <div>Name</div><div>Email / Guest</div><div style="text-align:right">Templates</div><div>Last Active</div>
       </div>
       <div id="users-tbl-body"><div class="empty"><i data-lucide="loader" class="spin"></i> Loading...</div></div>
+
+    <!-- ANALYTICS SECTION -->
+    <div id="analytics-sec" style="display:none; padding-bottom:60px;">
+      <div style="display: flex; justify-content: flex-end; margin-bottom: 20px;">
+        <a href="https://analytics.google.com/" target="_blank" class="btn btn-primary" style="display: inline-flex; align-items: center; gap: 8px;">
+          <i data-lucide="external-link"></i> for analytics
+        </a>
+      </div>
+      <div class="stats" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
+        <div class="stat-c" style="grid-column: span 2; min-height: 400px;">
+          <div class="sec-title"><i data-lucide="pie-chart"></i> Template Popularity (Sales)</div>
+          <canvas id="popularityChart"></canvas>
+        </div>
+        <div class="stat-c" style="grid-column: span 3; max-height: 500px; overflow-y: auto;">
+          <div class="sec-title"><i data-lucide="award"></i> Template Sales Ranking</div>
+          <div id="ranking-list" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap:15px; margin-top:15px;">
+            <div class="empty">Analyzing sales data...</div>
+          </div>
+        </div>
+      </div>
+    </div>
     </div>
 
     <!-- BROADCAST SECTION -->
@@ -451,6 +481,46 @@ async function loadOrders(isLoadMore = false) {
   }
 }
 
+let charts = {};
+function renderAnalytics() {
+  const valid = orders.filter(o => !o.trash && ['paid', 'delivered'].includes(o.status));
+  const stats = {};
+  valid.forEach(o => {
+    const tid = o.templateId || 'unknown';
+    if(!stats[tid]) stats[tid] = { name: tid, sales: 0, rev: 0 };
+    stats[tid].sales++; 
+    stats[tid].rev += (o.totalAmount||o.total||0);
+  });
+  
+  const sorted = Object.values(stats).sort((a,b) => b.sales - a.sales);
+  
+  // Render Ranking List
+  document.getElementById('ranking-list').innerHTML = sorted.map((s, i) => `
+    <div class="stat-c" style="padding:15px; display:flex; align-items:center; gap:12px;">
+      <div style="font-size:1.2rem; font-weight:900; color:var(--pink);">#${i+1}</div>
+      <div style="flex:1;">
+        <div style="font-weight:700; font-size:0.9rem;">${s.name}</div>
+        <div style="font-size:0.7rem; color:var(--dim);">${s.sales} Sold</div>
+      </div>
+      <div style="font-weight:700; color:var(--mint);">₹${s.rev}</div>
+    </div>
+  `).join('') || '<div class="empty">No sales data.</div>';
+
+  // Render Chart
+  if(charts.pop) charts.pop.destroy();
+  charts.pop = new Chart(document.getElementById('popularityChart'), {
+    type: 'pie',
+    data: { 
+      labels: sorted.map(x=>x.name), 
+      datasets: [{ 
+        data: sorted.map(x=>x.sales), 
+        backgroundColor: ['#ff2a85', '#10b981', '#3b82f6', '#f59e0b', '#8e44ad', '#e67e22', '#2c3e50'] 
+      }] 
+    },
+    options: { responsive: true, maintainAspectRatio: false }
+  });
+}
+
 async function updateStats() {
   const validOrders = orders.filter(o => ['paid', 'delivered', 'pending_verification'].includes(o.status) && !o.trash);
   document.getElementById('s-total').textContent = validOrders.length;
@@ -482,6 +552,14 @@ function setTab(filter, el) {
   const hdr = document.getElementById('main-title');
   const rfBtn = document.querySelector('.main-hd .btn-soft');
   
+  const secU = document.getElementById('users-tbl');
+  const secB = document.getElementById('broadcast-sec');
+  const secA = document.getElementById('analytics-sec');
+  
+  if(secU) secU.style.display = 'none';
+  if(secB) secB.style.display = 'none';
+  if(secA) secA.style.display = 'none';
+  
   if(filter === 'templates') {
     if(st) st.style.display = 'none';
     if(tbl) tbl.style.display = 'none';
@@ -503,7 +581,7 @@ function setTab(filter, el) {
     if(tbl) tbl.style.display = 'none';
     if(grid) grid.style.display = 'none';
     if(sugGrid) sugGrid.style.display = 'none';
-    if(document.getElementById('users-tbl')) document.getElementById('users-tbl').style.display = 'block';
+    if(secU) secU.style.display = 'block';
     if(rfBtn) rfBtn.style.display = 'none';
     hdr.textContent = "Registered Customers";
     loadUsers();
@@ -512,18 +590,24 @@ function setTab(filter, el) {
     if(tbl) tbl.style.display = 'none';
     if(grid) grid.style.display = 'none';
     if(sugGrid) sugGrid.style.display = 'none';
-    if(document.getElementById('users-tbl')) document.getElementById('users-tbl').style.display = 'none';
-    if(document.getElementById('broadcast-sec')) document.getElementById('broadcast-sec').style.display = 'block';
+    if(secB) secB.style.display = 'block';
     if(rfBtn) rfBtn.style.display = 'none';
     hdr.textContent = "Broadcast / Email Center";
     loadBroadcastUsers();
+  } else if(filter === 'ranking') {
+    if(st) st.style.display = 'none';
+    if(tbl) tbl.style.display = 'none';
+    if(grid) grid.style.display = 'none';
+    if(sugGrid) sugGrid.style.display = 'none';
+    if(secA) secA.style.display = 'block';
+    if(rfBtn) rfBtn.style.display = 'inline-flex';
+    hdr.textContent = "Analytics & Sales 📈";
+    renderAnalytics();
   } else {
     if(st) st.style.display = 'grid';
     if(tbl) tbl.style.display = 'block';
     if(grid) grid.style.display = 'none';
     if(sugGrid) sugGrid.style.display = 'none';
-    if(document.getElementById('users-tbl')) document.getElementById('users-tbl').style.display = 'none';
-    if(document.getElementById('broadcast-sec')) document.getElementById('broadcast-sec').style.display = 'none';
     if(rfBtn) rfBtn.style.display = 'inline-flex';
     hdr.textContent = "Dashboard Overview";
     renderTable();
