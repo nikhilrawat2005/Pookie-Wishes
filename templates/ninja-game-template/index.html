@@ -766,6 +766,14 @@ async function initData() {
       const sign = document.querySelector('#letter-sign-el, .letter-sign');
       if (sign) sign.textContent = userData.senderName ? `Happy Birthday, From ${userData.senderName} ✨` : "Happy Birthday. Here's to you. ✨";
 
+      // Update scroll messages if provided
+      if (window.SCROLL_MESSAGES) {
+        if (userData.scroll1) window.SCROLL_MESSAGES[0] = userData.scroll1;
+        if (userData.scroll2) window.SCROLL_MESSAGES[1] = userData.scroll2;
+        if (userData.scroll3) window.SCROLL_MESSAGES[2] = userData.scroll3;
+        if (userData.scroll4) window.SCROLL_MESSAGES[3] = userData.scroll4;
+      }
+
       // 🌿 Global Placeholder Fix (v3)
       if (window.bindPookiePlaceholders) {
         window.bindPookiePlaceholders({

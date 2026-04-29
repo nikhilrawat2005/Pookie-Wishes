@@ -364,7 +364,6 @@
       "currency": "₹",
       "currencyCode": "INR",
       "hasPhotos": false,
-      "testing": true,
       "tags": ["gaming", "retro", "ninja", "interactive", "arcade"],
       "shortDesc": "A retro arcade-style ninja adventure where you collect scrolls to reveal hidden messages.",
       "longDesc": "Run, jump, and slash through the Ninja Path! This retro 8-bit adventure lets your pookie play as a ninja on a quest. Collect coins to unlock hidden scrolls containing your messages, avoid obstacles, and reach the final sanctuary to read a beautiful parchment letter. Perfect for the gaming fan in your life.",
@@ -378,10 +377,16 @@
       ],
       "submitDetails": [
         { "icon": "🥷", "label": "Ninja's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The username for the hero" },
-        { "icon": "💌", "label": "Final Parchment Letter", "key": "message", "type": "textarea", "required": true, "desc": "The grand finale heartfelt message" }
+        { "icon": "📜", "label": "Scroll 1 Message", "key": "scroll_1", "type": "textarea", "required": true, "desc": "First hidden message" },
+        { "icon": "📜", "label": "Scroll 2 Message", "key": "scroll_2", "type": "textarea", "required": true, "desc": "Second hidden message" },
+        { "icon": "📜", "label": "Scroll 3 Message", "key": "scroll_3", "type": "textarea", "required": true, "desc": "Third hidden message" },
+        { "icon": "📜", "label": "Scroll 4 Message", "key": "scroll_4", "type": "textarea", "required": true, "desc": "Fourth hidden message" },
+        { "icon": "💌", "label": "Final Parchment Letter", "key": "message", "type": "textarea", "required": true, "desc": "The grand finale heartfelt message" },
+        { "icon": "✍️", "label": "Your Name", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this?" }
       ],
       "media": {
-        "thumbnail": "templates/ninja-game-template/backs/scroll-animation.gif"
+        "thumbnail": "templates/ninja-game-template/backs/scroll-animation.gif",
+        "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1777478390/niggarunning_vkyis8.mov"
       }
     },
     {

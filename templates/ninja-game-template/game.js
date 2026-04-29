@@ -23,7 +23,7 @@ const JUMP_VEL      = -520;
 const TYPEWRITER_MS = 50;
 
 // Scroll messages — one per scroll item found in the level
-const SCROLL_MESSAGES = [
+window.SCROLL_MESSAGES = [
   "Pause the game. Just for a second. Know that someone thinks about you every single day. ✨",
   "You're the main character of my life, not just this game. Everything's better with you in it. 💖",
   "Okay you're actually kind of unbeatable — at games, at life, at making me smile. I'm obsessed 🥷",
@@ -516,7 +516,7 @@ class GameScene extends Phaser.Scene {
     this._playAnim(player, 'idle');
     this.physics.pause();
 
-    const msg = SCROLL_MESSAGES[this.scrollIndex % SCROLL_MESSAGES.length];
+    const msg = window.SCROLL_MESSAGES[this.scrollIndex % window.SCROLL_MESSAGES.length];
     this.scrollIndex++;
 
     const msgEl = document.getElementById('scroll-message');
