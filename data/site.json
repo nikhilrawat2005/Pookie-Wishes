@@ -385,7 +385,7 @@
         { "icon": "✍️", "label": "Your Name", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this?" }
       ],
       "media": {
-        "thumbnail": "templates/ninja-game-template/backs/scroll-animation.gif",
+        "thumbnail": "media/ninja/thumbnail.jpg",
         "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1777478390/niggarunning_vkyis8.mov"
       }
     },
