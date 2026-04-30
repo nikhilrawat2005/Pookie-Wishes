@@ -104,18 +104,6 @@ function applyContent(c) {
 
   // Page 10 — sealed subtitle
   setEl('sealedSub', `Happy Birthday, ${name}! 🎂✨`);
-
-  // Photo Slideshow (Page 5)
-  const slideshow = document.getElementById('wishSlideshow');
-  if (slideshow && c.photos && c.photos.length > 0) {
-    slideshow.innerHTML = '';
-    c.photos.forEach((p, i) => {
-      const img = document.createElement('img');
-      img.className = 'wish-img' + (i === 0 ? ' active' : '');
-      img.src = p;
-      slideshow.appendChild(img);
-    });
-  }
 }
 
 function setEl(id, value) {
