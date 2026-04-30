@@ -1,9 +1,9 @@
 <!--
-    ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?
+    ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛
     Copyright (c) 2026 Cipher - Team Pookie Wishes
     Unauthorized copying of this file, via any medium is strictly prohibited.
     Proprietary and confidential.
-    ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ? ?
+    ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛ ♛
 -->
 <!DOCTYPE html>
 <!-- 
@@ -98,16 +98,23 @@
     </div>
     <div class="card-container">
       <div class="envelope-wrap">
-        <div class="envelope" id="envelope" onclick="openEnvelope()">
-          <div class="envelope-flap"></div>
-          <div class="envelope-body">
-            <div class="envelope-letter">
-              <img src="assets/hello-kitty-i-love-you.gif" class="env-gif" alt=""/>
-            </div>
+        <!-- env-scene: letter + envelope shell share this stacking context -->
+        <div class="env-scene" id="envScene">
+          <!-- Letter lives OUTSIDE the envelope so it stays visible when envelope fades -->
+          <div class="envelope-letter" id="envLetter">
+            <img src="assets/hello-kitty-i-love-you.gif" class="env-gif" alt=""/>
           </div>
-          <img src="assets/bow.png" class="env-bow" alt=""/>
+          <!-- Envelope shell (fades away after letter emerges) -->
+          <div class="envelope" id="envelope" onclick="openEnvelope()">
+            <div class="envelope-flap"></div>
+            <div class="envelope-body"></div>
+            <img src="assets/bow.png" class="env-bow" alt=""/>
+          </div>
         </div>
         <p class="click-hint" id="envelopeHint">Click to open 💌</p>
+        <button class="btn-pink env-next-btn" id="envNextBtn" style="display:none" onclick="goToPage(3)">
+          Read The Letter 💌
+        </button>
       </div>
     </div>
   </div>
@@ -137,7 +144,7 @@
         </div>
         <button class="music-btn" id="letterMusicBtn" onclick="toggleLetterMusic()" title="Toggle music">🎵</button>
       </div>
-      <button class="btn-pink" onclick="goToPage(9)">Continue It ✨</button>
+      <button class="btn-pink" onclick="goToPage(10)">Continue It ✨</button>
     </div>
   </div>
 
@@ -147,19 +154,21 @@
   <div class="page" id="page4">
     <div class="page-header">
       <h2 class="page-title">It's Cake Time! 🎂</h2>
-      <p class="page-sub">Draw a line across the cake to cut it!</p>
+      <p class="page-sub">Drag across the cake to slice it!</p>
     </div>
     <div class="card-container">
       <div class="cake-card">
         <div class="cake-kitty-row">
           <img src="assets/hello_kitty_spidy3.png" class="cake-side-kitty" alt=""/>
           <div class="cake-center">
-            <p class="cake-instruction">Draw across the middle ✂️</p>
+            <p class="cake-instruction">Drag across the middle ✂️</p>
             <div class="cake-canvas-wrap">
               <canvas id="cakeCanvas" width="280" height="240"></canvas>
               <div class="cake-img-wrap" id="cakeDisplay">
                 <img src="assets/birthday_cake.png" class="cake-img" id="cakeImg" alt="Cake"/>
               </div>
+              <!-- Slice piece sprite — shows middle column of cake transparent.png -->
+              <div id="cakeSlice" class="cake-slice" aria-hidden="true"></div>
             </div>
             <div id="cakeCutMsg" class="cake-cut-msg" style="display:none">
               <img src="assets/candle_cake.png" class="cut-cake-img" alt=""/>
@@ -237,7 +246,7 @@
             <span class="mem-stat-val" id="bombCount">0</span>
           </div>
           <div class="mem-btn-group">
-            <button class="mem-icon-btn" onclick="initMemoryGame()" title="Shuffle & restart">🔀</button>
+            <button class="mem-icon-btn" onclick="initMemoryGame()" title="Shuffle &amp; restart">🔀</button>
             <button class="mem-icon-btn mem-quit-btn" onclick="confirmQuitGame()" title="Quit game">🚪</button>
           </div>
         </div>
@@ -389,7 +398,7 @@
           <img src="assets/hello-kitty-i-love-you.gif" alt=""/>
         </div>
         <div class="letter-body">
-          <p class="letter-greeting" id="finalLetterGreeting">My dearest RECIPIENT,</p>
+          <p class="letter-greeting" id="finalLetterGreeting">My dearest birthday princess,</p>
           <p class="letter-text"    id="finalLetterBody">May this new year bring you everything your heart desires...</p>
           <p class="letter-pink"    id="finalLetterPink">Happy Birthday, my love. You deserve the world. 🎂✨</p>
           <hr class="letter-divider"/>

@@ -86,8 +86,8 @@
       "submitDetails": [
         { "icon": "🎀", "label": "Birthday Person's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "Their real name or nickname — appears on the opening screen" },
         { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "How you want to sign this surprise" },
-        { "icon": "💌", "label": "Personal Birthday Letter", "key": "message", "type": "textarea", "required": true, "desc": "A heartfelt birthday message — revealed step by step in the flip cards" },
-        { "icon": "📸", "label": "3 Favorite Photos", "key": "photos", "type": "photo", "required": true, "desc": "Your favorite memories — shown in the animated photo gallery" },
+        { "icon": "💌", "label": "Personal Birthday Letter", "key": "message", "type": "textarea", "required": true, "desc": "A heartfelt birthday message — revealed in the finale" },
+        { "icon": "📸", "label": "3 Favorite Photos", "key": "photos", "type": "photo", "required": true, "desc": "Your favorite memories — shown in the gallery and cards" },
         { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": false, "desc": "Choose a color palette for your premium QR code ✨" }
       ],
       "media": {

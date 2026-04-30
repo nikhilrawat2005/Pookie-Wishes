@@ -1,0 +1,26 @@
+{
+  "name": "Beautiful",
+  "letterGreeting": "My dearest birthday girl,",
+  "letterBody": "Today marks another year of your incredible existence, and I couldn't be more grateful to celebrate it with you. You bring so much joy, laughter, and love into this world – and into my life. You deserve all the magic, all the dreams, and all the love this world has to offer.",
+  "letterSign": "Forever yours 💝",
+  "finalLetterGreeting": "My dearest birthday princess,",
+  "finalLetterBody": "May this new year bring you everything your heart desires and more joy than you can imagine.",
+  "finalLetterPink": "Happy Birthday, my love. You deserve the world and so much more. 🎂✨",
+  "wishes": [
+    {
+      "message": "Happy Birthday to the girl who makes every day feel like a celebration! You light up every room you walk into and every heart you touch. 🎊💕",
+      "sticker": "assets/hello-kitty-i-love-you.gif",
+      "memory": "assets/memory1.jpg"
+    },
+    {
+      "message": "Incredible, beautiful, and perfect just the way you are! Wishing you a year filled with endless smiles, cozy moments, and all your favourite things. ✨🌸",
+      "sticker": "assets/eyes.gif",
+      "memory": "assets/memory2.jpg"
+    },
+    {
+      "message": "May this new year bring you endless joy, love, and all the dreams your heart desires! You deserve every single wonderful thing coming your way. 💝🌟",
+      "sticker": "assets/giphy.gif",
+      "memory": "assets/memory3.jpg"
+    }
+  ]
+}

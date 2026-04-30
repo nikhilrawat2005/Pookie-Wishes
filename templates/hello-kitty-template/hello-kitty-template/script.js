@@ -104,18 +104,6 @@ function applyContent(c) {
 
   // Page 10 — sealed subtitle
   setEl('sealedSub', `Happy Birthday, ${name}! 🎂✨`);
-
-  // Photo Slideshow (Page 5)
-  const slideshow = document.getElementById('wishSlideshow');
-  if (slideshow && c.photos && c.photos.length > 0) {
-    slideshow.innerHTML = '';
-    c.photos.forEach((p, i) => {
-      const img = document.createElement('img');
-      img.className = 'wish-img' + (i === 0 ? ' active' : '');
-      img.src = p;
-      slideshow.appendChild(img);
-    });
-  }
 }
 
 function setEl(id, value) {
@@ -178,24 +166,41 @@ function spawnBgElements() {
    § 6  ENVELOPE
 ────────────────────────────────────────────────────── */
 function openEnvelope() {
-  const env = document.getElementById('envelope');
-  if (env.classList.contains('open')) return;
-  env.classList.add('open');
+  const scene = document.getElementById('envScene');
+  const env   = document.getElementById('envelope');
+  if (!scene || env.classList.contains('open')) return;
+
+  env.classList.add('open');   // triggers flap flip
+  scene.classList.add('open'); // triggers letter rise + envelope fade
+
   const hint = document.getElementById('envelopeHint');
+  const btn  = document.getElementById('envNextBtn');
   if (hint) { hint.textContent = 'Opening... 💌'; hint.style.opacity = '.5'; }
   launchConfetti(18);
-  setTimeout(() => goToPage(3), 1300);
+
+  // Show Next button after letter is fully visible (~1.1s)
+  setTimeout(() => {
+    if (hint) hint.style.display = 'none';
+    if (btn)  btn.style.display  = 'block';
+  }, 1100);
 }
 
 function resetEnvelope() {
-  const env  = document.getElementById('envelope');
-  const hint = document.getElementById('envelopeHint');
-  if (env)  env.classList.remove('open');
-  if (hint) { hint.textContent = 'Click to open 💌'; hint.style.opacity = '1'; }
+  const scene = document.getElementById('envScene');
+  const env   = document.getElementById('envelope');
+  const hint  = document.getElementById('envelopeHint');
+  const btn   = document.getElementById('envNextBtn');
+  if (scene) scene.classList.remove('open');
+  if (env)   env.classList.remove('open');
+  if (hint)  { hint.textContent = 'Click to open 💌'; hint.style.opacity = '1'; hint.style.display = ''; }
+  if (btn)   btn.style.display = 'none';
 }
+
 
 /* ──────────────────────────────────────────────────────
    § 7  CAKE CANVAS  (responsive: scales with CSS)
+   Slice illusion: drag triggers a pre-defined triangular
+   slice that always exits from the RIGHT side.
 ────────────────────────────────────────────────────── */
 function initCakeCanvas() {
   const canvas = document.getElementById('cakeCanvas');
@@ -246,21 +251,58 @@ function endDraw(e) {
   cakeDrawing = false;
   const p  = canvasPos(e);
   const dx = p.x - cakeStartX, dy = p.y - cakeStartY;
+  const dist = Math.sqrt(dx * dx + dy * dy);
 
-  if (Math.sqrt(dx*dx + dy*dy) > 60) {
-    // Good cut
-    cakeCut = true;
-    const msg     = document.getElementById('cakeCutMsg');
-    const cakeImg = document.getElementById('cakeImg');
-    if (msg)     msg.style.display = 'block';
-    if (cakeImg) cakeImg.src = 'assets/candle_cake.png';
-    launchConfetti(28);
-    // Cake cutting now leads to Memory Game (Page 6)
-    setTimeout(() => goToPage(6), 3000);
+  if (dist > 50) {
+    // ── Slice illusion: trigger regardless of actual direction ──
+    triggerCakeSlice(dx);
   } else {
+    // Too short — clear the guideline
     cakeCtx.clearRect(0, 0, 280, 240);
   }
 }
+
+/* Drives the sprite-sheet slice illusion:
+   1. Swap the main cake background to "cake with gap" (right sprite column)
+   2. Show the slice piece (middle sprite column) and animate it detaching
+   3. After the detach animation, switch to a gentle infinite hover float */
+function triggerCakeSlice(dx) {
+  if (cakeCut) return;
+  cakeCut = true;
+
+  // Clear the draw guideline
+  cakeCtx.clearRect(0, 0, 280, 240);
+
+  // ── Step 1: swap main cake to "sliced" state (cake with gap) ──
+  const wrap = document.getElementById('cakeDisplay');
+  if (wrap) wrap.classList.add('sliced');
+
+  // ── Step 2: show and animate the detaching slice piece ──
+  const slice = document.getElementById('cakeSlice');
+  if (slice) {
+    slice.classList.remove('detaching', 'hovering');
+    void slice.offsetWidth; // force reflow to restart animation
+
+    slice.classList.add('detaching');
+
+    // After detach finishes, switch to infinite hover float
+    slice.addEventListener('animationend', () => {
+      slice.classList.remove('detaching');
+      slice.classList.add('hovering');
+    }, { once: true });
+  }
+
+  // ── Step 3: show the success message ──
+  setTimeout(() => {
+    const msg = document.getElementById('cakeCutMsg');
+    if (msg) msg.style.display = 'block';
+    launchConfetti(28);
+  }, 500);
+
+  // ── Step 4: user must press the button to continue ──
+  // (auto-advance removed intentionally)
+}
+
 
 /* ──────────────────────────────────────────────────────
    § 8  WISH SLIDESHOW
@@ -469,21 +511,23 @@ function shuffle(arr) {
 }
 
 /* ──────────────────────────────────────────────────────
-   § 11  FLIP CARDS + REVEAL PANELS  (Page 7)
+   § 11  FLIP CARDS  (Page 7)
+   Reveal content is injected directly into the .flip-back
+   face so it appears exactly where the card sits — true flip.
 ────────────────────────────────────────────────────── */
 function flipCard(idx) {
-  const card  = document.getElementById('flipCard'  + idx);
-  const panel = document.getElementById('reveal' + idx);
-  if (!card || !panel) return;
+  const card = document.getElementById('flipCard' + idx);
+  if (!card) return;
 
   const isOpen = card.classList.contains('flipped');
 
   if (!isOpen) {
-    // Open
+    // Inject content into back face BEFORE adding .flipped
+    // so it's visible the moment the card turns over
+    const back = card.querySelector('.flip-back');
+    if (back) injectReveal(idx, back);
+
     card.classList.add('flipped');
-    injectReveal(idx, panel);
-    // Double rAF ensures transition triggers after display change
-    requestAnimationFrame(() => requestAnimationFrame(() => panel.classList.add('open')));
 
     if (!flippedCards.has(idx)) {
       flippedCards.add(idx);
@@ -493,30 +537,39 @@ function flipCard(idx) {
     if (flippedCards.size === 3) setTimeout(() => showModal('wishesModal'), 900);
 
   } else {
-    // Close
+    // Flip back to front
     card.classList.remove('flipped');
-    panel.classList.remove('open');
-    panel.addEventListener('transitionend', () => {
-      if (!panel.classList.contains('open')) panel.innerHTML = '';
+    // After transition completes, restore the placeholder so it's
+    // ready if the user flips again
+    card.addEventListener('transitionend', () => {
+      if (!card.classList.contains('flipped')) {
+        const back = card.querySelector('.flip-back');
+        if (back) resetBackFace(idx, back);
+      }
     }, { once: true });
   }
 }
 
-function injectReveal(idx, panel) {
+function injectReveal(idx, backEl) {
   const safeData = userData || {};
   const wish    = (safeData.wishes || [])[idx] || {};
   const msg     = wish.message || '💕 Happy Birthday! 💕';
   const sticker = wish.sticker || 'assets/hello-kitty-i-love-you.gif';
   const memSrc  = wish.memory  || `assets/memory${idx + 1}.jpg`;
 
-  panel.innerHTML = `
-    <div class="reveal-inner">
-      <img class="reveal-mem-img" src="${memSrc}" alt="Memory"
-           onerror="this.outerHTML='<div class=\\'reveal-mem-fallback\\'>🎀</div>'"
-           loading="lazy"/>
-      <p class="reveal-text">${msg}</p>
-      <img class="reveal-sticker" src="${sticker}" alt=""/>
-    </div>`;
+  backEl.innerHTML = `
+    <img class="reveal-mem-img" src="${memSrc}" alt="Memory"
+         onerror="this.outerHTML='<div class=\\'reveal-mem-fallback\\'>🎀</div>'"
+         loading="lazy"/>
+    <p class="reveal-text">${msg}</p>
+    <img class="reveal-sticker" src="${sticker}" alt=""/>`;
+}
+
+function resetBackFace(idx, backEl) {
+  const icons = ['💌', '🌸', '✨'];
+  backEl.innerHTML = `
+    <span class="fback-icon">${icons[idx] || '💕'}</span>
+    <span class="fback-tap">tap to close</span>`;
 }
 
 /* ──────────────────────────────────────────────────────
@@ -562,12 +615,14 @@ function restartExperience() {
   flippedCards.clear();
   cakeCut = false;
 
-  // Cake
+  // Cake canvas + sprite reset
   if (cakeCtx) cakeCtx.clearRect(0, 0, 280, 240);
-  const cakeMsg = document.getElementById('cakeCutMsg');
-  const cakeImg = document.getElementById('cakeImg');
-  if (cakeMsg) cakeMsg.style.display = 'none';
-  if (cakeImg) cakeImg.src = 'assets/birthday_cake.png';
+  const cakeMsg  = document.getElementById('cakeCutMsg');
+  const cakeWrap = document.getElementById('cakeDisplay');
+  const cakeSlice = document.getElementById('cakeSlice');
+  if (cakeMsg)   cakeMsg.style.display = 'none';
+  if (cakeWrap)  cakeWrap.classList.remove('sliced');
+  if (cakeSlice) cakeSlice.classList.remove('detaching', 'hovering');
 
   // Flip cards + panels
   [0, 1, 2].forEach(i => {
