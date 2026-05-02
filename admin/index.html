@@ -306,6 +306,7 @@
         <div>Name</div><div>Email / Guest</div><div style="text-align:right">Templates</div><div>Last Active</div>
       </div>
       <div id="users-tbl-body"><div class="empty"><i data-lucide="loader" class="spin"></i> Loading...</div></div>
+    </div>
 
     <!-- ANALYTICS SECTION -->
     <div id="analytics-sec" style="display:none; padding-bottom:60px;">
@@ -326,7 +327,6 @@
           </div>
         </div>
       </div>
-    </div>
     </div>
 
     <!-- BROADCAST SECTION -->
@@ -409,7 +409,14 @@ window.addEventListener('DOMContentLoaded', async () => {
     if (!firebase.apps.length) firebase.initializeApp(SITE.firebase);
     db = firebase.firestore();
   } catch (e) {
-    alert('CRITICAL ERROR: Failed to load site.json');
+    console.error('CRITICAL ERROR: Failed to load site.json', e);
+    alert('CRITICAL ERROR: Failed to load site.json. Check console for details.');
+    return;
+  }
+  
+  if (!SITE || !SITE.firebase) {
+    console.error('SITE or SITE.firebase is missing');
+    alert('Configuration error: SITE metadata is invalid.');
     return;
   }
   
@@ -487,7 +494,7 @@ async function renderAnalytics() {
   if (!listCont) return;
   
   listCont.innerHTML = '<div class="empty"><i data-lucide="loader" class="spin"></i> Analyzing all sales data...</div>';
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
 
   try {
     // Fetch all successful orders for accurate analytics (not just the first 50)
@@ -532,7 +539,7 @@ async function renderAnalytics() {
     `).join('') || '<div class="empty">No sales data.</div>';
 
     // Update Top Stats with TRUE totals
-    const trueTotalRevenue = valid.reduce((s,o) => s + (o.totalAmount || o.total || 0), 0);
+    const trueTotalRevenue = valid.reduce((s,o) => s + Number(o.totalAmount || o.total || 0), 0);
     const sTotal = document.getElementById('s-total');
     const sRev = document.getElementById('s-rev');
     if (sTotal) sTotal.textContent = valid.length;
@@ -574,7 +581,7 @@ async function updateStats() {
   
   // Initially show stats for loaded orders
   document.getElementById('s-total').textContent = validOrders.length;
-  document.getElementById('s-rev').textContent   = '₹' + validOrders.reduce((s,o)=>s+(o.totalAmount||o.total||0),0);
+  document.getElementById('s-rev').textContent   = '₹' + validOrders.reduce((s,o)=>s+Number(o.totalAmount||o.total||0),0);
   document.getElementById('s-pend').textContent  = validOrders.filter(o=>o.status==='pending_verification').length;
   
   try {
@@ -642,7 +649,7 @@ function setTab(filter, el) {
     hdr.textContent = "Broadcast / Email Center";
     loadBroadcastUsers();
   } else if(filter === 'ranking') {
-    if(st) st.style.display = 'none';
+    if(st) st.style.display = 'grid';
     if(tbl) tbl.style.display = 'none';
     if(grid) grid.style.display = 'none';
     if(sugGrid) sugGrid.style.display = 'none';
@@ -1226,7 +1233,7 @@ function toast(m, t) {
   d.className = 'toast ' + (t==='err'?'err':'ok');
   d.innerHTML = `<i data-lucide="${t==='err'?'alert-circle':'check-circle'}"></i> <span>${m}</span>`;
   c.appendChild(d);
-  lucide.createIcons();
+  if (window.lucide) lucide.createIcons();
   setTimeout(()=>d.remove(), 3000);
 }
 </script>
