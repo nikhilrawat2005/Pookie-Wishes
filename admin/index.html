@@ -19,6 +19,7 @@
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://unpkg.com/lucide@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2"></script>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Outfit:wght@500;700;900&display=swap');
     
@@ -316,9 +317,11 @@
         </a>
       </div>
       <div class="stats" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap:20px;">
-        <div class="stat-c" style="grid-column: span 2; min-height: 400px;">
+        <div class="stat-c" style="grid-column: span 2; max-height: 400px; display: flex; flex-direction: column;">
           <div class="sec-title"><i data-lucide="pie-chart"></i> Template Popularity (Sales)</div>
-          <canvas id="popularityChart"></canvas>
+          <div style="flex:1; position:relative; min-height:0;">
+            <canvas id="popularityChart"></canvas>
+          </div>
         </div>
         <div class="stat-c" style="grid-column: span 3; max-height: 500px; overflow-y: auto;">
           <div class="sec-title"><i data-lucide="award"></i> Template Sales Ranking</div>
@@ -549,13 +552,19 @@ async function renderAnalytics() {
     if(charts.pop) charts.pop.destroy();
     const ctx = document.getElementById('popularityChart');
     if (ctx) {
+      // Register plugin globally if needed (Chart.js v3+)
+      Chart.register(ChartDataLabels);
+      
+      const totalSales = sorted.reduce((sum, x) => sum + x.sales, 0);
+
       charts.pop = new Chart(ctx, {
         type: 'pie',
         data: { 
           labels: sorted.map(x=>x.name), 
           datasets: [{ 
             data: sorted.map(x=>x.sales), 
-            backgroundColor: ['#ff2a85', '#10b981', '#3b82f6', '#f59e0b', '#8e44ad', '#e67e22', '#2c3e50', '#9b59b6', '#34495e', '#16a085'] 
+            backgroundColor: ['#ff2a85', '#10b981', '#3b82f6', '#f59e0b', '#8e44ad', '#e67e22', '#2c3e50', '#9b59b6', '#34495e', '#16a085'],
+            borderWidth: 0
           }] 
         },
         options: { 
@@ -563,8 +572,19 @@ async function renderAnalytics() {
           maintainAspectRatio: false,
           plugins: {
             legend: {
-              position: 'bottom',
-              labels: { color: '#a1a1aa', font: { family: 'Inter', size: 10 } }
+              display: false // Hide legend to save space since labels are on segments
+            },
+            datalabels: {
+              color: '#fff',
+              font: { family: 'Outfit', weight: 'bold', size: 10 },
+              formatter: (value, context) => {
+                const label = context.chart.data.labels[context.dataIndex];
+                const percentage = ((value / totalSales) * 100).toFixed(0) + '%';
+                // Only show label if percentage > 5% to avoid overlap
+                return (value / totalSales) > 0.05 ? `${label}\n${percentage}` : '';
+              },
+              textAlign: 'center',
+              padding: 4
             }
           }
         }
