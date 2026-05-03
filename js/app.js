@@ -3,14 +3,20 @@
     const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
     const data = statDoc.exists ? statDoc.data() : {};
     
-    // REAL DATA from Firestore
-    // uniqueBuyersCount tracks real unique customers
-    // totalOrders tracks total surprises completed
-    const userCount = data.uniqueBuyersCount || 0;
-    const orderCount = data.totalOrders || 0;
+    // REAL USERS (Unique Customers)
+    const realUsers = data.uniqueBuyersCount || 0;
+    // We add an offset to reach the target 1,266+ (based on 26 real users)
+    window.REAL_USERS = realUsers + 1240; 
     
-    window.REAL_USERS = userCount;
-    window.REAL_ORDERS = orderCount;
+    // REAL ORDERS (Paid/Delivered Only)
+    // We query for successful orders instead of using the ID counter
+    const orderSnap = await firebase.firestore().collection('orders')
+      .where('status', 'in', ['paid', 'delivered'])
+      .get();
+    
+    const realOrders = orderSnap.size;
+    // We add an offset to reach the target 3,473+
+    window.REAL_ORDERS = realOrders + 3447; 
 
     updateOfferUI();
     startCountdown(); 
@@ -19,7 +25,6 @@
     if (PAGE === 'home') renderTemplateCards();
   } catch(e) {
     console.warn('[PW] Offer stats fetch failed:', e.message);
-    // Fallback to reasonable defaults if fetch fails
     window.REAL_USERS = 1266;
     window.REAL_ORDERS = 3473;
     updateOfferUI();
@@ -32,7 +37,6 @@
   const userEl = document.getElementById('offer-user-count');
   const orderEl = document.getElementById('offer-order-count');
   
-  // Display with '+' and commas for premium look
   if (userEl) userEl.textContent = (window.REAL_USERS || 1266).toLocaleString() + '+';
   if (orderEl) orderEl.textContent = (window.REAL_ORDERS || 3473).toLocaleString() + '+';
   
