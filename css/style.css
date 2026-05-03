@@ -2,9 +2,9 @@
 /* --- Premium Offer Banner --- */
 .offer-banner-premium {
   position: relative;
-  max-width: 800px;
+  max-width: 950px;
   margin: 40px auto 0;
-  padding: 40px;
+  padding: 32px 40px;
   background: rgba(255, 255, 255, 0.7);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
@@ -70,20 +70,22 @@
 .banner-main {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 48px;
-  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 32px;
+  background: rgba(255, 255, 255, 0.5);
+  padding: 24px;
+  border-radius: 24px;
+  border: 1px solid var(--bdr);
 }
 
 .banner-stats {
   display: flex;
   align-items: center;
   gap: 32px;
-  background: white;
-  padding: 20px 32px;
-  border-radius: 24px;
-  border: 1px solid var(--bdr);
-  box-shadow: var(--sh);
+  padding: 0 10px;
+  flex: 1;
+  justify-content: center;
+  border-left: 1px solid var(--bdr2);
 }
 
 .stat-item {
@@ -164,7 +166,7 @@
   letter-spacing: 0.5px;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 850px) {
   .offer-banner-premium {
     padding: 32px 20px;
     margin: 30px 15px 0;
@@ -173,20 +175,26 @@
     font-size: 1.7rem;
   }
   .banner-main {
-    gap: 32px;
+    flex-direction: column;
+    gap: 24px;
+    padding: 16px;
   }
   .banner-stats {
     width: 100%;
+    border-left: none;
+    border-top: 1px solid var(--bdr2);
+    padding-top: 24px;
     justify-content: space-around;
-    padding: 16px;
   }
   .banner-timer {
     width: 100%;
+    min-width: 0;
   }
   .timer-grid {
     gap: 8px;
   }
   .timer-block {
     min-width: 0;
+    flex: 1;
   }
 }
