@@ -3,17 +3,46 @@
     const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
     const data = statDoc.exists ? statDoc.data() : {};
     
-    // Exact logic from Admin Panel "Unique Customers"
-    window.REAL_USERS = data.uniqueBuyersCount || 0; 
-    
-    // Exact logic from Admin Panel "Total Orders (Paid)"
+    // 1. Fetch all successful orders (used for both Orders count and Guest Users count)
     const orderSnap = await firebase.firestore().collection('orders')
       .where('status', 'in', ['paid', 'delivered', 'pending_verification'])
       .get();
       
-    // Filter out any trashed orders just like the admin panel does
+    // Exact logic from Admin Panel "Total Orders (Paid)"
     const validOrdersCount = orderSnap.docs.filter(d => !d.data().trash).length;
     window.REAL_ORDERS = validOrdersCount; 
+
+    // 2. Exact logic from Admin Panel "Customers / Users" (Serial End Number)
+    // Combine emails from the 'users' collection and guest emails from 'orders'
+    let uniqueUserCount = data.uniqueBuyersCount || 0;
+    try {
+      const emailSet = new Set();
+      
+      // Get registered users
+      const usersSnap = await firebase.firestore().collection('users').get();
+      if (!usersSnap.empty) {
+        usersSnap.docs.forEach(d => {
+          const email = d.data().email;
+          if (email) emailSet.add(email.toLowerCase());
+        });
+      }
+      
+      // Get guest buyers from valid orders
+      orderSnap.docs.forEach(d => {
+        const o = d.data();
+        if (o.trash) return;
+        const em = (o.user?.email || o.buyerEmail || '').toLowerCase();
+        if (em) emailSet.add(em);
+      });
+      
+      if (emailSet.size > 0) {
+        uniqueUserCount = emailSet.size;
+      }
+    } catch (err) {
+      console.warn('[PW] Could not fetch full users list for stats, falling back to counter');
+    }
+    
+    window.REAL_USERS = uniqueUserCount;
 
     updateOfferUI();
     startCountdown(); 
