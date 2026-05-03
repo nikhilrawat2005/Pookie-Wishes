@@ -3,9 +3,17 @@
     const statDoc = await firebase.firestore().collection('counters').doc('stats').get();
     const data = statDoc.exists ? statDoc.data() : {};
     
-    // 100% REAL RAW DATA - NO OFFSETS OR FAKE NUMBERS
+    // Exact logic from Admin Panel "Unique Customers"
     window.REAL_USERS = data.uniqueBuyersCount || 0; 
-    window.REAL_ORDERS = data.totalOrders || 0; 
+    
+    // Exact logic from Admin Panel "Total Orders (Paid)"
+    const orderSnap = await firebase.firestore().collection('orders')
+      .where('status', 'in', ['paid', 'delivered', 'pending_verification'])
+      .get();
+      
+    // Filter out any trashed orders just like the admin panel does
+    const validOrdersCount = orderSnap.docs.filter(d => !d.data().trash).length;
+    window.REAL_ORDERS = validOrdersCount; 
 
     updateOfferUI();
     startCountdown(); 
