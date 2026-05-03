@@ -80,4 +80,4 @@ Fields marked as (Optional) will use premium defaults if left empty.
 --------------------------------------------------
 *This is a bespoke service handled manually via WhatsApp/Instagram.*
 - WhatsApp: 918700113731
-- Instagram: @pookiewish
+- Instagram: @pookiewishes

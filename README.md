@@ -101,7 +101,7 @@ To use the **Broadcast / Email Center** in the Admin Panel, you must configure G
 ## 📬 Contact & Support
 
 Maintainer: **Team Cipher**
-Instagram: [@pookiewish](https://www.instagram.com/pookiewish/)
+Instagram: [@pookiewishes](https://www.instagram.com/pookiewishes/)
 Email: [teamcipher.work@gmail.com](mailto:teamcipher.work@gmail.com)
 
 ---
