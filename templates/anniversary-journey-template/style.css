@@ -338,7 +338,8 @@ body {
 .polaroid-img {
     width: 100%;
     aspect-ratio: 1 / 1;
-    object-fit: cover;
+    object-fit: contain;
+    background: #fff;
     display: block;
     filter: contrast(1.03) saturate(0.95);
     transition: filter 0.4s ease;

@@ -695,7 +695,7 @@ body {
 }
 .fphoto img {
   width: 100%; height: 100%;
-  object-fit: cover; border-radius: 12px; display: block;
+  object-fit: contain; border-radius: 12px; display: block;
 }
 .fcap2 {
   font-family: 'Cinzel', serif; font-size: clamp(.65rem, 1.3vw, .75rem);

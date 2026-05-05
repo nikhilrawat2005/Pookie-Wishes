@@ -250,7 +250,7 @@ function buildFlipCards() {
           img.onload = () => {
             const ph = document.getElementById(`fp${i}`);
             ph.innerHTML = '';
-            img.style.cssText = 'width:100%;height:100%;object-fit:cover;border-radius:12px;';
+            img.style.cssText = 'width:100%;height:100%;object-fit:contain;border-radius:12px;';
             ph.appendChild(img);
           };
           img.src = card.photo;
