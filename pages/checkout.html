@@ -245,12 +245,7 @@ async function syncCheckoutCart() {
   const items = JSON.parse(localStorage.getItem('pookie_cart') || '[]');
   if (!items.length || !SITE?.templates) return;
   
-  function isOfferActive() {
-    const targetDate = new Date('May 31, 2026 23:59:59').getTime();
-    const now = new Date().getTime();
-    return (targetDate - now) > 0;
-  }
-  const offerActive = isOfferActive();
+  const offerActive = window.isPookieOfferActive && window.isPookieOfferActive();
   
   const updated = items.map(item => {
     const tpl = SITE.templates.find(t => t.id === item.id);

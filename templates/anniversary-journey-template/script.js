@@ -403,9 +403,3 @@ function showEnding() {
 function restartJourney() {
     location.reload();
 }
-
-document.addEventListener('DOMContentLoaded', async () => {
-    await initData();
-    buildPhotoMoments();
-    initPetalCanvas();
-});

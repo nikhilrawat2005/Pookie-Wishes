@@ -1,0 +1,66 @@
+POOKIE WISHES — TEMPLATE FORM REQUIREMENTS REPORT
+Generated: 2026-05-09
+
+--------------------------------------------------------------------------------
+1. HELLO KITTY (ID: hello-kitty)
+- Fields: Birthday Person's Name, Your Name, Personal Birthday Letter, 3 Favorite Photos, QR Code Theme.
+- Photo Fallback: YES (Cute Stickers available).
+- Requirement: 3 Photos.
+
+2. HARRY POTTER (ID: harry-potter)
+- Fields: Witch/Wizard's Name, Your Name, Birthday Wish Message, 3 Favorite Photos, QR Code Theme.
+- Photo Fallback: YES (Magical Stickers available).
+- Requirement: 3 Photos.
+
+3. LOVE TRAP (ID: love-trap)
+- Fields: Their Name, Your Name, 3 Favorite Photos, Love Confession Letter, QR Code Theme.
+- Photo Fallback: YES (Romantic Stickers available).
+- Requirement: 3 Photos.
+
+4. CELESTIAL UNIVERSE (ID: celestial)
+- Fields: Birthday Person's Name, Your Name, Star Message, QR Code Theme.
+- Photo Fallback: NO (Template is text-based).
+- Requirement: 0 Photos.
+
+5. AMONG US (ID: among-us)
+- Fields: Crewmate's Name, Your Name.
+- Photo Fallback: NO (Template is animation-based).
+- Requirement: 0 Photos.
+
+6. HOPPERS (ID: hoppers)
+- Fields: Birthday Person's Name, Your Name, Birthday Message.
+- Photo Fallback: NO (Template is animation-based).
+- Requirement: 0 Photos.
+
+7. THE APOLOGY (ID: sorry)
+- Fields: Their Name, Your Name, Apology Letter, 1 Happy Photo, QR Code Theme.
+- Photo Fallback: YES (Sorry Stickers available).
+- Requirement: 1 Photo.
+
+8. ANNIVERSARY JOURNEY (ID: anniversary-journey)
+- Fields: Special One's Name, Anniversary Date, Your Name, QR Code Theme, Long Letter, 4 Journey Photos.
+- Photo Fallback: NO (User MUST provide their own memories for this journey).
+- Requirement: 4 Photos.
+
+9. NINJA PATH ADVENTURE (ID: ninja-game)
+- Fields: Ninja's Name, Scroll 1-4 Messages, Final Parchment Letter, Your Name.
+- Photo Fallback: NO (Template is gaming-based).
+- Requirement: 0 Photos.
+
+10. WEDDING WISHES (ID: wedding)
+- Fields: Bride's Name, Groom's Name, Wedding Date, Main Love Letter.
+- Photo Fallback: NO (Template is text/sticker-based, no user photos needed).
+- Requirement: 0 Photos.
+
+11. FULLY CUSTOM THEME (ID: hand-made)
+- Fields: N/A (Hand-handled via WhatsApp/Instagram).
+- Requirement: Custom.
+
+--------------------------------------------------------------------------------
+SUMMARY:
+- Total Templates: 11
+- Photo-based: 5 (Hello Kitty, Harry Potter, Love Trap, Sorry, Anniversary Journey)
+- With Sticker Fallback: 4 (Hello Kitty, Harry Potter, Love Trap, Sorry)
+- Mandatory User Photos: 1 (Anniversary Journey)
+- No Photos Needed: 5 (Celestial, Among Us, Hoppers, Ninja, Wedding)
+--------------------------------------------------------------------------------
