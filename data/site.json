@@ -346,8 +346,8 @@
         { "icon": "📅", "label": "Anniversary Date", "key": "eventDate", "type": "date", "required": true, "desc": "The special date to highlight at the beginning of the journey" },
         { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Your name to sign off the surprise letter" },
         { "icon": "🎨", "label": "QR Code Theme", "key": "theme", "type": "select", "options": ["Romantic Red (Default)", "Ocean Blue", "Golden Sunset", "Royal Purple", "Emerald Green"], "required": false, "desc": "Choose a color palette for your premium QR code ✨" },
-        { "icon": "💌", "label": "Long Letter", "key": "message", "type": "textarea", "required": true, "desc": "Write everything you feel — this is the finale surprise" }
-
+        { "icon": "💌", "label": "Long Letter", "key": "message", "type": "textarea", "required": true, "desc": "Write everything you feel — this is the finale surprise" },
+        { "icon": "📸", "label": "4 Journey Photos", "key": "photos", "type": "photo", "required": true, "desc": "Photos for your journey chapters — must be your special memories ✨" }
       ],
       "media": {
         "thumbnail": "media/anniversary/thumbnail.jpg",

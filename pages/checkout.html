@@ -206,6 +206,22 @@ window.addEventListener('DOMContentLoaded', async () => {
 
   renderSummary(cartItems);
 
+  // Auto-fill email if logged in
+  if (window.fbReady) {
+    const user = firebase.auth().currentUser;
+    if (user && user.email) {
+      const emailField = document.getElementById('f-email');
+      if (emailField && !emailField.value) emailField.value = user.email;
+    } else {
+      firebase.auth().onAuthStateChanged(u => {
+        if (u && u.email) {
+          const emailField = document.getElementById('f-email');
+          if (emailField && !emailField.value) emailField.value = u.email;
+        }
+      });
+    }
+  }
+
   // Dynamically update price live when user enters email
   const emailField = document.getElementById('f-email');
   if (emailField) {
