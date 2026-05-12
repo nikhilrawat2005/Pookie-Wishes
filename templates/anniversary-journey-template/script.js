@@ -106,7 +106,7 @@ async function initData() {
                 if (window.bindPookiePlaceholders) {
                     window.bindPookiePlaceholders({
                         name: DATA.recipient,
-                        sender: DATA.signature || "Your Love",
+                        sender: DATA.signature,
                         message: DATA.letter
                     });
                 }
@@ -143,7 +143,7 @@ async function initData() {
                 if (window.bindPookiePlaceholders) {
                     window.bindPookiePlaceholders({
                         name: DATA.recipient,
-                        sender: DATA.signature || "Your Love",
+                        sender: DATA.signature,
                         message: DATA.letter
                     });
                 }
