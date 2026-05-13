@@ -910,16 +910,24 @@ function spark(x,y){const b=document.createElement('div');b.className='sburst';b
    DATA LOADER INTEGRATION
 ═══════════════════════════════════════ */
 async function initTemplate() {
-  // Support both the Pookie platform loader and standalone use
   let data = null;
   try {
     if (typeof window.getPookieData === 'function') {
       data = await window.getPookieData('hoppers');
+      console.log("Hoppers: Data loaded:", data);
     }
-  } catch(e) { data = null; }
+  } catch(e) { console.error("Hoppers: Loader failed", e); }
 
-  if (!data) { try { const res = await fetch('user.json'); if (res.ok) data = await res.json(); } catch(e) {} }
-  const newName = (data && data.name) ? data.name : NAME;
+  // Fallback check
+  if (!data && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')) {
+    try { const res = await fetch('user.json'); if (res.ok) data = await res.json(); } catch(e) {}
+  }
+
+  // Robust keys
+  const newName = data?.recipientName || data?.name || data?.targetName || NAME;
+  const newMessage = data?.wishMessage || data?.message || data?.letterBody || "";
+  const newSender = data?.senderName || data?.sender || "";
+
   window.NAME = newName;
 
   // 1. Assign all stickers, GIFs and character images
@@ -945,8 +953,8 @@ async function initTemplate() {
   // 3. Fill letter body
   const pBody = document.getElementById('p-body');
   if (pBody) {
-    if (data && data.message) {
-      pBody.innerHTML = data.message.split('\n')
+    if (newMessage) {
+      pBody.innerHTML = newMessage.split('\n')
         .filter(t => t.trim())
         .map(t => `<p>${t}</p>`)
         .join('').replace(/XYZ/gi, newName);
@@ -955,8 +963,10 @@ async function initTemplate() {
     }
   }
   const pSign = document.querySelector('.p-sign');
-  if (pSign && data && data.sender) { pSign.textContent = `— With love, ${data.sender} 🌿`; }
-  if (typeof window.bindPookiePlaceholders === 'function') { window.bindPookiePlaceholders(data); }
+  if (pSign) {
+    pSign.textContent = newSender ? `— With love, ${newSender} 🌿` : `— With the whole forest behind it 🌳`;
+  }
+  if (typeof window.bindPookiePlaceholders === 'function' && data) { window.bindPookiePlaceholders(data); }
 
   // 4. Dismiss loader and show music bar
   setTimeout(() => {
