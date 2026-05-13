@@ -22,8 +22,7 @@
 <!-- Firebase SDK -->
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore-compat.js"></script>
-<!-- Universal Loader -->
-<script src="../../js/template-loader.js"></script>
+<!-- Standalone mode: no external loader needed -->
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,700;0,9..144,900;1,9..144,300;1,9..144,700;1,9..144,900&family=DM+Mono:wght@300;400&family=Unbounded:wght@300;700;900&display=swap');
 
@@ -632,27 +631,32 @@ body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:8900;
 </div><!-- .page -->
 <script>
 const R = {
-  bird_king: "../../assets/hoppers/asset_1.png",
-  amphibian: "../../assets/hoppers/asset_2.png",
-  reptile_q: "../../assets/hoppers/asset_3.png",
-  titus: "../../assets/hoppers/asset_4.png",
-  mabel_beaver: "../../assets/hoppers/asset_5.png",
-  nisha: "../../assets/hoppers/asset_6.png",
-  mabel_bv_sm: "../../assets/hoppers/asset_7.png",
-  ellen: "../../assets/hoppers/asset_8.png",
-  loaf: "../../assets/hoppers/asset_9.png",
-  tom_lizard: "../../assets/hoppers/asset_10.png",
-  insect_q: "../../assets/hoppers/asset_11.png",
-  fish_queen: "../../assets/hoppers/asset_12.png",
-  reptile2: "../../assets/hoppers/asset_13.png",
-  amphibian2: "../../assets/hoppers/asset_14.png",
-  tom_lizard2: "../../assets/hoppers/asset_15.png",
-  titus2: "../../assets/hoppers/asset_16.png",
-  mabel_bv2: "../../assets/hoppers/asset_17.png",
-  insect_q2: "../../assets/hoppers/asset_18.png",
-  gif_comedy: "../../assets/hoppers/asset_19.gif",
-  gif_wow: "../../assets/hoppers/asset_20.gif",
-  gif_insect: "../../assets/hoppers/asset_21.gif",
+  bird_king:    "assets/asset_1.png",
+  amphibian:    "assets/asset_2.png",
+  reptile_q:    "assets/asset_3.png",
+  titus:        "assets/asset_4.png",
+  mabel_beaver: "assets/asset_5.png",
+  nisha:        "assets/asset_6.png",
+  mabel_bv_sm:  "assets/asset_7.png",
+  ellen:        "assets/asset_8.png",
+  loaf:         "assets/asset_9.png",
+  tom_lizard:   "assets/asset_10.png",
+  insect_q:     "assets/asset_11.png",
+  fish_queen:   "assets/asset_12.png",
+  reptile2:     "assets/asset_13.png",
+  amphibian2:   "assets/asset_14.png",
+  tom_lizard2:  "assets/asset_15.png",
+  titus2:       "assets/asset_16.png",
+  mabel_bv2:    "assets/asset_17.png",
+  insect_q2:    "assets/asset_18.png",
+  gif_comedy:   "assets/asset_19.gif",
+  gif_wow:      "assets/asset_20.gif",
+  gif_insect:   "assets/asset_21.gif",
+  /* aliases so every reference resolves */
+  nisha_arms:   "assets/asset_6.png",
+  gif_workout:  "assets/asset_20.gif",
+  gif_bestfr:   "assets/asset_21.gif",
+  gif_celebrate:"assets/asset_19.gif",
 };
 /* ═══════════════════════════════════════
    ★ CHANGE THE NAME HERE ★
@@ -669,18 +673,7 @@ const LETTER = `
 <p>May this year bring you the kind of joy you so freely give to everyone else. The best chapters of your story are still unwritten. The glade is still expanding.</p>
 <p><strong>Happy Birthday. You are so deeply, completely loved.</strong> From the glade. From all of us. 🦫🌿</p>`;
 
-/* ═══════════════════════════════════════
-   NAME INJECTION
-═══════════════════════════════════════ */
-function injectName() {
-  document.querySelectorAll('.n-span').forEach(el => { el.textContent = el.textContent.replace(/XYZ/g, NAME); });
-  function walk(node) {
-    if (node.nodeType===3 && node.nodeValue.includes('XYZ')) node.nodeValue = node.nodeValue.replace(/XYZ/g,NAME);
-    else if (node.nodeType===1 && !['SCRIPT','STYLE'].includes(node.tagName)) Array.from(node.childNodes).forEach(walk);
-  }
-  walk(document.body);
-  document.title = `Happy Birthday ${NAME} — Hoppers 🌿`;
-}
+/* name injection is handled in initTemplate() */
 
 /* ═══════════════════════════════════════
    ASSIGN ALL IMAGES
@@ -689,58 +682,72 @@ function set(id, key) { const el=document.getElementById(id); if(el&&R[key]) el.
 function imgEl(key, cls='') { const i=document.createElement('img'); i.src=R[key]||''; if(cls) i.className=cls; return i; }
 
 function assignImages() {
-  /* LOADER */
+  /* LOADER — bouncing character on loading screen */
   set('ld-img', 'mabel_bv_sm');
 
-  /* Marketing Watermark */
-  set('c1l',  'ellen');          // left bottom — Ellen
-  set('c1r',  'loaf');           // right bottom — Loaf group
-  set('c1tr', 'bird_king');      // top right — Bird King
-  set('c1tl', 'titus');          // top left — Titus
+  /* CH1 — corner stickers flanking the hero title */
+  set('c1l',  'ellen');        // bottom-left — Ellen
+  set('c1r',  'loaf');         // bottom-right — Loaf group
+  set('c1tr', 'bird_king');    // top-right — Bird King
+  set('c1tl', 'titus');        // top-left — Titus
 
-  /* CH1 gif parade row */
+  /* CH1 — animated GIF parade row along the bottom of hero */
   const row = document.getElementById('ch1-gif-row');
-  ['mabel_beaver','insect_q','mabel_bv2','fish_queen','amphibian2','tom_lizard2','reptile_q','bird_king','titus2'].forEach(k => {
-    if (!R[k]) return;
-    const img = document.createElement('img'); img.src=R[k]; img.alt=''; row.appendChild(img);
-  });
+  if (row) {
+    row.innerHTML = '';
+    ['mabel_beaver','insect_q','mabel_bv2','fish_queen',
+     'amphibian2','tom_lizard2','reptile_q','bird_king','titus2'].forEach(k => {
+      if (!R[k]) return;
+      const img = document.createElement('img'); img.src = R[k]; img.alt = '';
+      row.appendChild(img);
+    });
+  }
 
-  /* CH2 message GIFs — use animated GIFs paired with PNG chars */
-  set('mu1-gif', 'gif_comedy');        // Mabel
-  set('mu2-gif', 'gif_workout');       // Ellen working out
-  set('mu3-gif', 'gif_wow');           // Tom Lizard wow
-  set('mu4-gif', 'gif_insect');        // Insect Queen surprise
-  set('mu5-gif', 'gif_bestfr');        // Best friends
+  /* CH2 — message unit GIFs (one animated GIF per message card) */
+  set('mu1-gif', 'gif_comedy');   // Mabel message — comedy gif
+  set('mu2-gif', 'gif_wow');      // Ellen message — wow gif
+  set('mu3-gif', 'gif_insect');   // Tom Lizard message — insect gif
+  set('mu4-gif', 'gif_comedy');   // Insect Queen message — comedy gif
+  set('mu5-gif', 'gif_wow');      // Whole Glade message — wow gif
 
-  /* CH3 background characters */
+  /* CH3 — background characters peeping at edges of quote section */
   set('ch3-l', 'reptile2');
   set('ch3-r', 'insect_q2');
 
-  /* CH4 George at side */
+  /* CH4 — King George silhouette at the side of Pond Rules */
   set('ch4-george', 'bird_king');
 
-  /* Oath celebration parade */
+  /* CH4 — Oath celebration mini-parade (appears after all 3 rules accepted) */
   const op = document.getElementById('oathParade');
-  ['mabel_bv_sm','titus','tom_lizard','insect_q'].forEach(k=>{
-    if(!R[k])return; const img=document.createElement('img'); img.src=R[k]; img.alt=''; op.appendChild(img);
-  });
+  if (op) {
+    op.innerHTML = '';
+    ['mabel_bv_sm','titus','tom_lizard','insect_q'].forEach(k => {
+      if (!R[k]) return;
+      const img = document.createElement('img'); img.src = R[k]; img.alt = '';
+      op.appendChild(img);
+    });
+  }
 
-  /* CH5 flanking chars */
-  set('ch5l', 'fish_queen');
-  set('ch5r', 'nisha_arms');
-  set('p-char', 'mabel_bv_sm');   // stamp on parchment
+  /* CH5 — flanking characters around the letter section */
+  set('ch5l',  'fish_queen');    // left side
+  set('ch5r',  'nisha');         // right side
+  set('p-char','mabel_bv_sm');   // small stamp character on parchment
 
-  /* CH6 hero GIF */
-  set('fin-gif', 'gif_celebrate');
+  /* CH6 — central hero GIF in the finale */
+  set('fin-gif', 'gif_insect');
 
-  /* CH6 full parade of PNG chars */
+  /* CH6 — full character parade along the bottom of the finale */
   const fp = document.getElementById('finParade');
-  const paradeKeys = ['bird_king','amphibian','titus','mabel_beaver','mabel_bv_sm',
-    'ellen','loaf','tom_lizard','insect_q','fish_queen','reptile_q',
-    'amphibian2','nisha','reptile2','titus2','mabel_bv2','insect_q2'];
-  paradeKeys.forEach(k => {
-    if(!R[k])return; const img=document.createElement('img'); img.src=R[k]; img.alt=''; fp.appendChild(img);
-  });
+  if (fp) {
+    fp.innerHTML = '';
+    ['bird_king','amphibian','titus','mabel_beaver','mabel_bv_sm',
+     'ellen','loaf','tom_lizard','insect_q','fish_queen','reptile_q',
+     'amphibian2','nisha','reptile2','titus2','mabel_bv2','insect_q2'].forEach(k => {
+      if (!R[k]) return;
+      const img = document.createElement('img'); img.src = R[k]; img.alt = '';
+      fp.appendChild(img);
+    });
+  }
 }
 
 /* ═══════════════════════════════════════
@@ -903,25 +910,39 @@ function spark(x,y){const b=document.createElement('div');b.className='sburst';b
    DATA LOADER INTEGRATION
 ═══════════════════════════════════════ */
 async function initTemplate() {
-  const data = await window.getPookieData('hoppers');
-  const newName = (data && data.name) ? data.name : "Pookie";
-  
+  // Support both the Pookie platform loader and standalone use
+  let data = null;
+  try {
+    if (typeof window.getPookieData === 'function') {
+      data = await window.getPookieData('hoppers');
+    }
+  } catch(e) { data = null; }
+
+  if (!data) { try { const res = await fetch('user.json'); if (res.ok) data = await res.json(); } catch(e) {} }
+  const newName = (data && data.name) ? data.name : NAME;
   window.NAME = newName;
-  
-  // 1. Assign Images
+
+  // 1. Assign all stickers, GIFs and character images
   if (typeof assignImages === 'function') assignImages();
-  
-  // 2. Inject Name throughout the page
-  if (typeof injectName === 'function') injectName(); 
-  document.querySelectorAll('.n-span').forEach(el => el.textContent = newName);
-  
+
+  // 2. Inject the name throughout the page
+  document.querySelectorAll('.n-span').forEach(el => el.textContent = el.textContent.replace(/XYZ/g, newName));
+  function walk(node) {
+    if (node.nodeType === 3 && node.nodeValue.includes('XYZ'))
+      node.nodeValue = node.nodeValue.replace(/XYZ/g, newName);
+    else if (node.nodeType === 1 && !['SCRIPT','STYLE'].includes(node.tagName))
+      Array.from(node.childNodes).forEach(walk);
+  }
+  walk(document.body);
+  document.title = `Happy Birthday ${newName} — Hoppers 🌿`;
+
   const pTo = document.getElementById('p-to');
   if (pTo) pTo.textContent = `To: ${newName}`;
-  
+
   const pSalute = document.getElementById('p-salute');
   if (pSalute) pSalute.textContent = `Dear ${newName},`;
-  
-  // 3. Handle Message
+
+  // 3. Fill letter body
   const pBody = document.getElementById('p-body');
   if (pBody) {
     if (data && data.message) {
@@ -930,24 +951,20 @@ async function initTemplate() {
         .map(t => `<p>${t}</p>`)
         .join('').replace(/XYZ/gi, newName);
     } else {
-      // Fallback to internal LETTER constant
-      if (typeof LETTER !== 'undefined') {
-        pBody.innerHTML = LETTER.replace(/XYZ/g, newName);
-      }
+      pBody.innerHTML = LETTER.replace(/XYZ/g, newName);
     }
   }
+  const pSign = document.querySelector('.p-sign');
+  if (pSign && data && data.sender) { pSign.textContent = `— With love, ${data.sender} 🌿`; }
+  if (typeof window.bindPookiePlaceholders === 'function') { window.bindPookiePlaceholders(data); }
 
-  // 4. Dismiss Loader
+  // 4. Dismiss loader and show music bar
   setTimeout(() => {
     const ldr = document.getElementById('loader');
     const mbr = document.getElementById('mbar');
     if (ldr) ldr.classList.add('gone');
     if (mbr) mbr.classList.add('show');
-    
-    // Trigger scroll reveal refresh if needed
-    if (typeof obs !== 'undefined') {
-        document.querySelectorAll('.rv,.rvl,.rvr').forEach(el=>obs.observe(el));
-    }
+    document.querySelectorAll('.rv,.rvl,.rvr').forEach(el => obs.observe(el));
   }, 2200);
 }
 
