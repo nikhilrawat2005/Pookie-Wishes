@@ -198,3 +198,44 @@
     flex: 1;
   }
 }
+
+/* --- Premium See More Button in Header --- */
+.tpl-section-see-more {
+  color: var(--pink);
+  font-family: var(--fb);
+  font-size: 0.8rem;
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: var(--pink-s);
+  border: 1px solid var(--bdr-pink);
+  padding: 6px 14px;
+  border-radius: 100px;
+  transition: all 0.22s var(--ease);
+  cursor: pointer;
+  white-space: nowrap;
+  margin-right: 8px;
+  text-decoration: none;
+}
+.tpl-section-see-more:hover {
+  background: var(--pink);
+  color: #fff;
+  border-color: var(--pink);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(232, 130, 154, 0.25);
+}
+.tpl-section-see-more span {
+  transition: transform 0.22s var(--ease);
+  display: inline-block;
+}
+.tpl-section-see-more:hover span {
+  transform: translateX(4px);
+}
+@media (max-width: 600px) {
+  .tpl-section-see-more {
+    font-size: 0.72rem;
+    padding: 4px 10px;
+    margin-right: 4px;
+  }
+}
