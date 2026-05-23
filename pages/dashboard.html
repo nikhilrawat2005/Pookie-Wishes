@@ -74,36 +74,6 @@
       .dash-nav-btn { border-bottom: none; border-right: 1px solid var(--dash-bdr); white-space: nowrap; flex: 1; justify-content: center; padding: 12px 16px; font-size: 0.85rem; }
       .dash-nav-btn i { width: 16px; height: 16px; }
       .dash-nav-btn.active::after { left: 0; right: 0; top: auto; bottom: 0; height: 3px; width: 100%; }
-    }
-
-    @media (max-width: 650px) {
-      .dash-sec-hd { flex-direction: column; align-items: flex-start; gap: 8px; }
-      .dash-sec-title { font-size: 1.4rem; }
-      .order-grid { grid-template-columns: 1fr; gap: 16px; }
-      .order-body { flex-direction: row; text-align: left; gap: 14px; margin-bottom: 16px; }
-      .order-thumb { width: 60px; height: 60px; font-size: 1.8rem; border-radius: 14px; }
-      .order-name { font-size: 1.1rem; }
-      .order-actions { grid-template-columns: 1fr; }
-    }
-
-      </div>
-      <div class="dash-nav-btn" data-dash-tab="favs">
-        <i data-lucide="heart"></i> Saved Favorites
-      </div>
-      <div class="dash-nav-btn" data-dash-tab="profile">
-        <i data-lucide="user"></i> Account Settings
-      </div>
-      <div class="dash-nav-btn" onclick="doLogout()">
-        <i data-lucide="log-out"></i> Sign Out
-      </div>
-    </nav>
-  </aside>
-
-  <!-- MAIN CONTENT -->
-  <main class="dash-main">
-    
-    <!-- WELCOME & QUOTA -->
-    <section>
       <div class="dash-sec-hd">
         <div class="dash-sec-title">Welcome back, <span id="welcome-name" style="color:var(--pink);">Pookie</span>! 🪄</div>
       <button class="theme-toggle-btn btn btn-ghost" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Theme">🌓</button>
