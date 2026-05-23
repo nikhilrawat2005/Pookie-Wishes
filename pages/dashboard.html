@@ -74,7 +74,25 @@
       .dash-nav-btn { border-bottom: none; border-right: 1px solid var(--dash-bdr); white-space: nowrap; flex: 1; justify-content: center; padding: 12px 16px; font-size: 0.85rem; }
       .dash-nav-btn i { width: 16px; height: 16px; }
       .dash-nav-btn.active::after { left: 0; right: 0; top: auto; bottom: 0; height: 3px; width: 100%; }
-      <div class="dash-sec-hd">
+</style>
+</head>
+<body>
+<div class="dash-container">
+  <aside class="dash-side">
+    <div class="dash-user-card">
+      <img id="dash-av" class="dash-av" src="" alt="Avatar" />
+      <div id="dash-name" class="dash-uname"></div>
+      <div id="dash-email" class="dash-umail"></div>
+    </div>
+    <nav class="dash-nav">
+      <div class="dash-nav-btn active" data-dash-tab="orders"><i data-lucide="package"></i> My Wishes</div>
+      <div class="dash-nav-btn" data-dash-tab="favs"><i data-lucide="heart"></i> Saved Favorites</div>
+      <div class="dash-nav-btn" data-dash-tab="profile"><i data-lucide="user"></i> Account Settings</div>
+      <div class="dash-nav-btn" onclick="doLogout()"><i data-lucide="log-out"></i> Sign Out</div>
+    </nav>
+  </aside>
+  <main class="dash-main">
+<div class="dash-sec-hd">
         <div class="dash-sec-title">Welcome back, <span id="welcome-name" style="color:var(--pink);">Pookie</span>! 🪄</div>
       <button class="theme-toggle-btn btn btn-ghost" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Theme">🌓</button>
       </div>
