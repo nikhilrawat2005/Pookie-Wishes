@@ -94,31 +94,6 @@
       .dash-nav-btn span { display: none; } /* Hide text on very small screens, keep icons? No, user might prefer text. Let's keep icons and text but smaller. */
       /* Actually, let's keep the text but it scrolls. */
     }
-  </style>
-</head>
-<body>
-
-<nav class="navbar scrolled">
-  <div class="nav-inner">
-    <a href="../index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a>
-    <div class="nav-links">
-      <a href="../index.html" class="btn btn-ghost hide-mobile">All Templates</a>
-      <a href="favorites.html" class="btn btn-ghost"><i data-lucide="heart" style="width:18px;"></i></a>
-      <div id="u-wrap" class="u-wrap">
-        <div class="u-av-wrap" onclick="toggleDd()">
-          <img id="u-av" class="u-av" src="" alt="avatar">
-        </div>
-      </div>
-    </div>
-  </div>
-</nav>
-
-<div class="dash-container reveal">
-  <!-- SIDEBAR -->
-  <aside class="dash-side">
-    <div class="dash-user-card">
-      <img id="dash-av" class="dash-av" src="https://api.dicebear.com/7.x/fun-emoji/svg?seed=Pookie" alt="User Avatar">
-      <div>
         <div id="dash-name" class="dash-dash-uname">Pookie ✨</div>
         <div id="dash-email" class="dash-umail">email@example.com</div>
       </div>
@@ -147,6 +122,7 @@
     <section>
       <div class="dash-sec-hd">
         <div class="dash-sec-title">Welcome back, <span id="welcome-name" style="color:var(--pink);">Pookie</span>! 🪄</div>
+      <button class="theme-toggle-btn btn btn-ghost" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Theme">🌓</button>
       </div>
       
       <div id="quota-panel" class="quota-card" style="display:none;">
