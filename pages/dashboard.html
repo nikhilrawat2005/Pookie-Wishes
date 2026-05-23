@@ -86,22 +86,6 @@
       .order-actions { grid-template-columns: 1fr; }
     }
 
-    @media (max-width: 480px) {
-      .dash-user-card { padding: 16px; gap: 14px; }
-      .dash-av { width: 50px; height: 50px; }
-      .dash-uname { font-size: 1.1rem; }
-      .dash-nav-btn { padding: 10px 12px; gap: 8px; }
-      .dash-nav-btn span { display: none; } /* Hide text on very small screens, keep icons? No, user might prefer text. Let's keep icons and text but smaller. */
-      /* Actually, let's keep the text but it scrolls. */
-    }
-        <div id="dash-name" class="dash-dash-uname">Pookie ✨</div>
-        <div id="dash-email" class="dash-umail">email@example.com</div>
-      </div>
-    </div>
-
-    <nav class="dash-nav">
-      <div class="dash-nav-btn active" data-dash-tab="orders">
-        <i data-lucide="package"></i> My Wishes
       </div>
       <div class="dash-nav-btn" data-dash-tab="favs">
         <i data-lucide="heart"></i> Saved Favorites
