@@ -18,7 +18,7 @@ function applyTheme(theme) {
     document.head.appendChild(meta);
   }
   // Choose a suitable color based on the theme
-  var color = theme === 'dark' ? '#0d0f1e' : '#fafbff';
+  var color = theme === 'dark' ? '#09090b' : '#fafbff';
   meta.setAttribute('content', color);
 }
 
