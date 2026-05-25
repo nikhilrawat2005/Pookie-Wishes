@@ -104,39 +104,134 @@
 </section>
 
 <section class="how-it-works-home reveal">
+  <div class="hiw-timeline-line"></div>
   <div class="hiw-home-grid">
     <div class="hiw-h-item">
       <div class="hiw-h-num">1</div>
-      <div class="hiw-h-txt"><strong>Choose Template</strong><br>Select your design</div>
+      <div class="hiw-h-txt">
+        <strong>🎨 Choose Template</strong>
+        Browse and pick a design that fits the vibe
+      </div>
     </div>
     <div class="hiw-h-item">
       <div class="hiw-h-num">2</div>
-      <div class="hiw-h-txt"><strong>Make Payment</strong><br>Secure gateway pay</div>
+      <div class="hiw-h-txt">
+        <strong>💳 Make Payment</strong>
+        Quick, secure gateway — starting at ₹29
+      </div>
     </div>
     <div class="hiw-h-item">
       <div class="hiw-h-num">3</div>
-      <div class="hiw-h-txt"><strong>Fill Details</strong><br>Submit your content</div>
+      <div class="hiw-h-txt">
+        <strong>📝 Fill Details</strong>
+        Share your message, photos, and names
+      </div>
     </div>
     <div class="hiw-h-item">
       <div class="hiw-h-num">4</div>
-      <div class="hiw-h-txt"><strong>Automated Build</strong><br>Zero-Touch System ⚡</div>
+      <div class="hiw-h-txt">
+        <strong>⚡ Auto Build</strong>
+        Our zero-touch system crafts your page instantly
+      </div>
     </div>
     <div class="hiw-h-item">
       <div class="hiw-h-num">5</div>
-      <div class="hiw-h-txt"><strong>Get Link</strong><br>Standard 30 Days ⏳</div>
+      <div class="hiw-h-txt">
+        <strong>🔗 Get the Link</strong>
+        Share your private surprise — live for 30 days
+      </div>
     </div>
   </div>
 </section>
 
 <main class="page-main">
-  <div class="filter-row">
-    <span class="filter-label" id="filter-label">All Templates</span>
-    <span class="filter-count" id="filter-count"></span>
+  <!-- Template Horizontal Marquee Section -->
+  <section class="marquee-section">
+    <div class="marquee-title-wrap">
+      <span class="marquee-badge">🔥 Trending Surprises — hover to pause</span>
+    </div>
+    <div class="marquee-viewport">
+      <div class="marquee-track" id="tpl-marquee-track">
+        <div class="load-msg"><span style="font-size:1.8rem">🌸</span>Loading templates…</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Big Trigger Button -->
+  <div class="selector-trigger-wrap reveal">
+    <button class="btn-mega-glow" onclick="openModal('modal-template-selector')">
+      <span class="btn-mega-shine"></span>
+      <span class="btn-mega-icon">🎁</span>
+      <span class="btn-mega-title">Create Your Surprise</span>
+      <span class="btn-mega-sub">Select Birthday, Love Life, or Wishes to customize</span>
+    </button>
   </div>
-  <div class="hero-sub" style="margin-bottom:24px; font-size:0.9rem;">Choose a design that fits their vibe. Each comes with interactive games, personalised messages, and hidden surprises.</div>
-  <div class="tpl-home stagger-in" id="tpl-grid">
-    <div class="load-msg"><span style="font-size:1.8rem">🌸</span>Loading templates…</div>
-  </div>
+
+  <!-- Browse & Filtering Section -->
+  <section class="browse-section reveal" id="browse-templates">
+    <div class="browse-header">
+      <h2 class="section-title">Explore Our <em>Surprise Vibes</em></h2>
+      <p class="section-sub">Choose a design that fits their vibe. Each template features interactive games, custom letters, and hidden animations.</p>
+    </div>
+
+    <!-- Search & Tabs Container -->
+    <div class="filter-controls">
+      <div class="search-box-wrap">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="home-search-inp" placeholder="Search templates (e.g. Hogwarts, cute, gaming...)" autocomplete="off">
+        <button id="home-search-clear" class="search-clear-btn hidden" onclick="clearHomeSearch()">✕</button>
+      </div>
+
+      <div class="category-tabs" id="category-tabs">
+        <button class="tab-btn active" data-tab="all" onclick="filterHomeTemplates('all')">
+          <span class="tab-icon">✨</span> All Vibes
+        </button>
+        <button class="tab-btn" data-tab="birthday" onclick="filterHomeTemplates('birthday')">
+          <span class="tab-icon">🎂</span> Birthday Wishes
+        </button>
+        <button class="tab-btn" data-tab="love" onclick="filterHomeTemplates('love')">
+          <span class="tab-icon">💝</span> Love Life
+        </button>
+        <button class="tab-btn" data-tab="wishes" onclick="filterHomeTemplates('wishes')">
+          <span class="tab-icon">💍</span> Wishes & Weddings
+        </button>
+      </div>
+    </div>
+
+    <!-- Dynamic Template Grid -->
+    <div class="tpl-grid-container">
+      <div class="t-grid" id="home-tpl-grid">
+        <div class="load-msg"><span style="font-size:1.8rem">🌸</span>Loading templates…</div>
+      </div>
+    </div>
+
+    <!-- Special High-End Showcase Card for Fully Custom Theme -->
+    <div class="custom-showcase-box reveal" id="custom-showcase">
+      <div class="custom-glow"></div>
+      <div class="custom-inner">
+        <div class="custom-left">
+          <div class="custom-badge">🎨 Bespoke Service</div>
+          <h3 class="custom-title">Want Something Completely <em>Custom?</em></h3>
+          <p class="custom-desc">Have a unique idea? A Hogwarts sorting hat game, a special pixel-art platformer, or a dynamic digital memory scrapbook? We will build it from scratch! <strong>No advance payment required. Pay only after you love the final result.</strong></p>
+          <div class="custom-features-list">
+            <span>✨ Custom Games & Logic</span>
+            <span>📱 Mobile & Desktop Optimized</span>
+            <span>💬 Collaboratively Coded</span>
+          </div>
+        </div>
+        <div class="custom-right">
+          <div class="custom-price-tag">
+            <span class="custom-price-label">Starts at</span>
+            <span class="custom-price-val">₹200</span>
+          </div>
+          <a href="https://wa.me/919569318598?text=Hi! I'm interested in the Fully Custom Theme service." target="_blank" class="btn btn-primary btn-lg custom-cta-btn">
+            💬 DM on WhatsApp
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <section class="sug-section reveal" id="cs-grid">
     <div class="sug-inner">
       <div class="sug-header">
@@ -265,9 +360,47 @@
       <button class="btn btn-soft" style="flex:1" onclick="emailRegister()">Register</button>
     </div>
     <button class="btn btn-ghost btn-full" style="font-size:.8rem" onclick="resetPassword()">Forgot password?</button>
-  </div>
+</div>
 </div>
 
+<div class="overlay" id="modal-template-selector">
+  <div class="modal template-selector-modal">
+    <button class="modal-x" onclick="closeModal('modal-template-selector')">✕</button>
+    <div class="modal-glow-bg"></div>
+    <span class="modal-ico">✨</span>
+    <h2>Choose a Theme</h2>
+    <p>Select a category to view the templates and start customizing!</p>
+    
+    <div class="selector-options">
+      <button class="selector-opt-btn" onclick="selectCategory('birthday')">
+        <div class="opt-icon-circle bg-birthday">🎂</div>
+        <div class="opt-content">
+          <span class="opt-label">Birthday Wishes</span>
+          <span class="opt-desc">Cute, magical Hogwarts, & cosmic space templates</span>
+        </div>
+        <span class="opt-arrow">➔</span>
+      </button>
+
+      <button class="selector-opt-btn" onclick="selectCategory('love')">
+        <div class="opt-icon-circle bg-love">💝</div>
+        <div class="opt-content">
+          <span class="opt-label">Love Life</span>
+          <span class="opt-desc">Romantic interactive games, apology pages & timeline scrolls</span>
+        </div>
+        <span class="opt-arrow">➔</span>
+      </button>
+
+      <button class="selector-opt-btn" onclick="selectCategory('wishes')">
+        <div class="opt-icon-circle bg-wishes">💍</div>
+        <div class="opt-content">
+          <span class="opt-label">Wishes</span>
+          <span class="opt-desc">Grand royal wedding celebrations</span>
+        </div>
+        <span class="opt-arrow">➔</span>
+      </button>
+    </div>
+  </div>
+</div>
 
 <div id="toasts"></div>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
