@@ -421,6 +421,38 @@
         "thumbnail": "media/wedding/thumbnail.jpg",
         "video": "https://res.cloudinary.com/dktx4woql/video/upload/v1776790957/wedding_mipg7m.mov"
       }
+    },
+    {
+      "id": "hiphop",
+      "name": "Hip-Hop Love Letter",
+      "tagline": "Not Your Ordinary Vibe 🎤",
+      "badge": "Testing 🧪",
+      "emoji": "🎤",
+      "price": 69,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "hasPhotos": true,
+      "testing": true,
+      "tags": ["hiphop", "urban", "glitch", "aesthetic", "love"],
+      "shortDesc": "A bold, urban-style interactive love letter with glitch effects, custom scroll transitions, and street-style aesthetic.",
+      "longDesc": "Express your feelings in a bold, unforgettable style. Featuring neon highlights, custom cursor tracks, chat message bubbles, custom picture frames, flip-to-reveal cards, and a password-locked secret letter. The ultimate street-culture vibe.",
+      "vibe": "Urban & Glitch",
+      "features": [
+        "🎤 Neon street-style aesthetic",
+        "💬 Staggered chat thread conversations",
+        "🎴 Glitch hover effects & flip cards",
+        "🔐 Password-locked secret letter",
+        "🖤 Smooth ambient parallax scroll"
+      ],
+      "submitDetails": [
+        { "icon": "🎤", "label": "Their Name", "key": "recipient_name", "type": "text", "required": true, "desc": "The person you are surprising — appears throughout the hiphop experience" },
+        { "icon": "✍️", "label": "Your Name", "key": "sender_name", "type": "text", "required": true, "desc": "How you want to sign off the surprise" },
+        { "icon": "💌", "label": "Secret Letter", "key": "message", "type": "textarea", "required": true, "desc": "Heartfelt notes shown inside the locked finale letter" }
+      ],
+      "media": {
+        "thumbnail": "templates/hiphop-template/04c6f570e22798877d130a2cd83b5946.jpg",
+        "gallery": []
+      }
     }
   ]
 }
