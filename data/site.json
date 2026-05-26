@@ -450,7 +450,7 @@
         { "icon": "💌", "label": "Secret Letter", "key": "message", "type": "textarea", "required": true, "desc": "Heartfelt notes shown inside the locked finale letter" }
       ],
       "media": {
-        "thumbnail": "templates/hiphop-template/04c6f570e22798877d130a2cd83b5946.jpg",
+        "thumbnail": "templates/hiphop-template/assets/04c6f570e22798877d130a2cd83b5946.jpg",
         "gallery": []
       }
     }
