@@ -382,6 +382,56 @@ html { transition: background-color 0.3s ease, color 0.3s ease; }
 /* Scroll thumb */
 [data-theme="dark"] ::-webkit-scrollbar-track { background: var(--bg2); }
 
+/* ── Timer & Stats Box: Dark Theme Overrides ─────────────────────────── */
+[data-theme="dark"] .timer-block {
+  background: #1d1d22;
+  border-color: rgba(255,255,255,0.12);
+  box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+}
+[data-theme="dark"] .timer-num {
+  color: #f4f4f6;
+}
+[data-theme="dark"] .timer-unit {
+  color: #8e8e93;
+}
+[data-theme="dark"] .timer-label {
+  background: rgba(255,255,255,0.06);
+  border-color: rgba(255,255,255,0.14);
+}
+[data-theme="dark"] .banner-stats {
+  border-left-color: rgba(255,255,255,0.1);
+}
+[data-theme="dark"] .stat-sep {
+  background: rgba(255,255,255,0.1);
+}
+
+/* ── Offer Banner Premium: Light Theme Box Styling ───────────────────── */
+/* Light theme: the banner itself uses semi-transparent dark (rgba(0,0,0,0.7))
+   which works fine. In light theme we make it softer/white-ish. */
+:root:not([data-theme="dark"]) .offer-banner-premium {
+  background: rgba(255,255,255,0.82);
+  border-color: rgba(232,130,154,0.35);
+  box-shadow: 0 24px 60px rgba(232,130,154,0.18);
+}
+:root:not([data-theme="dark"]) .timer-block {
+  background: #ffffff;
+  border-color: rgba(100,110,180,0.2);
+  box-shadow: 0 8px 20px rgba(100,110,180,0.12);
+}
+:root:not([data-theme="dark"]) .timer-num {
+  color: #1a1d35;
+}
+:root:not([data-theme="dark"]) .timer-unit {
+  color: #7880a8;
+}
+:root:not([data-theme="dark"]) .timer-label {
+  background: rgba(232,130,154,0.1);
+  border-color: rgba(232,130,154,0.4);
+}
+:root:not([data-theme="dark"]) .banner-glow {
+  background: radial-gradient(circle, rgba(232,130,154,0.12) 0%, transparent 60%);
+}
+
 /* ── Theme Toggle Button ─────────────────────────────────────────────── */
 .theme-toggle-btn {
   width: 38px;

@@ -17,6 +17,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My Dashboard — Pookie Wishes ✨</title>
   <link rel="icon" type="image/png" href="../assets/favicon.png">
+  <script src="../js/theme.js"></script>
   <link rel="stylesheet" href="../css/style.css">
   <script src="https://unpkg.com/lucide@latest"></script>
   <style>
@@ -85,6 +86,7 @@
       <div id="dash-email" class="dash-umail"></div>
     </div>
     <nav class="dash-nav">
+      <a class="dash-nav-btn" href="../index.html" style="text-decoration:none;"><i data-lucide="home"></i> Back to Home</a>
       <div class="dash-nav-btn active" data-dash-tab="orders"><i data-lucide="package"></i> My Wishes</div>
       <div class="dash-nav-btn" data-dash-tab="favs"><i data-lucide="heart"></i> Saved Favorites</div>
       <div class="dash-nav-btn" data-dash-tab="profile"><i data-lucide="user"></i> Account Settings</div>
@@ -183,6 +185,6 @@
   });
 </script>
 
-<script src="../js/theme.js"></script>
+<!-- theme.js loaded in <head> for zero-flash -->
 </body>
 </html>
