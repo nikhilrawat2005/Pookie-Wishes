@@ -246,20 +246,10 @@ async function syncCheckoutCart() {
   const items = JSON.parse(localStorage.getItem('pookie_cart') || '[]');
   if (!items.length || !SITE?.templates) return;
   
-  const offerActive = window.isPookieOfferActive && window.isPookieOfferActive();
-  
   const updated = items.map(item => {
     const tpl = SITE.templates.find(t => t.id === item.id);
     if (tpl) {
-      if (tpl.special) {
-        item.price = Number(tpl.price);
-      } else if (offerActive) {
-        item.price = 0;
-      } else if (Number(tpl.price) > 49) {
-        item.price = 49;
-      } else {
-        item.price = Number(tpl.price);
-      }
+      item.price = getEffectivePrice(tpl);
       item.name = tpl.name;
       item.emoji = tpl.emoji;
     }
