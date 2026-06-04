@@ -106,10 +106,10 @@ let currentHomeCategory = 'all';
 function filterTemplatesByCategory(templates, cat) {
   if (cat === 'all') return templates.filter(t => !t.special && !t.testing);
   if (cat === 'birthday') {
-    return templates.filter(t => !t.special && !t.testing && !['love-trap', 'sorry', 'anniversary-journey', 'among-us', 'wedding'].includes(t.id));
+    return templates.filter(t => !t.special && !t.testing && !['love-trap', 'sorry', 'anniversary-journey', 'among-us', 'wedding', 'hiphop'].includes(t.id));
   }
   if (cat === 'love') {
-    return templates.filter(t => !t.testing && ['love-trap', 'sorry', 'anniversary-journey', 'among-us'].includes(t.id));
+    return templates.filter(t => !t.testing && ['love-trap', 'sorry', 'anniversary-journey', 'among-us', 'hiphop'].includes(t.id));
   }
   if (cat === 'wishes') {
     return templates.filter(t => !t.testing && ['wedding'].includes(t.id));

@@ -191,3 +191,46 @@ if (unlockBtn && secretLocked && secretRevealed) {
     }, 350);
   });
 }
+
+// --- POOKIE WISHES ZERO-TOUCH DYNAMIC INTEGRATION ---
+let userData = null;
+async function initPookieData() {
+  try {
+    if (window.getPookieData) {
+      userData = await window.getPookieData('hiphop');
+    }
+    if (userData) {
+      // Bind recipient name, sender, etc. dynamically using central binder
+      if (window.bindPookiePlaceholders) {
+        window.bindPookiePlaceholders(userData);
+      }
+      
+      // Update page title
+      const recipient = userData.recipientName || "RECIPIENT";
+      document.title = `${recipient} — A Hip-Hop Love Letter`;
+
+      // Update secret locked letter paragraphs if a custom message is present
+      const letterBody = userData.message || userData.wishMessage;
+      if (letterBody) {
+        const letterContainer = document.querySelector('.secret-letter');
+        if (letterContainer) {
+          const paragraphs = letterBody.split('\n\n').map((p, idx) => {
+            return `<p class="letter-line letter-l${(idx % 4) + 2}">${p.replace(/\n/g, '<br>')}</p>`;
+          }).join('');
+          const sender = userData.senderName || "";
+          letterContainer.innerHTML = `
+            <p class="letter-line letter-l1">${recipient} —</p>
+            ${paragraphs}
+            <p class="letter-line letter-l6 letter-sign">${sender ? `— Yours, ${sender} 🩷` : 'It was always you. 🩸'}</p>
+          `;
+        }
+      }
+    }
+  } catch (e) {
+    console.error("Failed to load user customization data:", e);
+  }
+}
+
+// Run loader on DOMContentLoaded
+window.addEventListener('DOMContentLoaded', initPookieData);
+
