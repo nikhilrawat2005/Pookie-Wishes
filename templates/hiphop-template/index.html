@@ -627,11 +627,79 @@
 
     </div>
   </section>
-</body>
-</html>
 
-
+  <!-- ==============================
+       POOKIE WISHES WATERMARK
+       ============================== -->
+  <div id="pw-watermark" style="
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 99999;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+    opacity: 0;
+    transition: opacity 0.8s ease;
+    pointer-events: none;
+  ">
+    <div style="
+      background: rgba(10,10,12,0.92);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,26,107,0.25);
+      padding: 10px 14px;
+      border-radius: 14px 14px 0 14px;
+      font-size: 0.72rem;
+      font-family: 'Space Mono', monospace;
+      color: rgba(255,255,255,0.75);
+      max-width: 190px;
+      text-align: right;
+      line-height: 1.5;
+      pointer-events: auto;
+      box-shadow: 0 4px 20px rgba(255,26,107,0.15);
+    ">
+      Want your baddie to get one of these? 💖
+    </div>
+    <a href="https://pookie-wishes.vercel.app/" target="_blank" rel="noopener" style="
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      background: linear-gradient(135deg, #ff1a6b 0%, #ff6b35 100%);
+      color: #fff;
+      text-decoration: none;
+      padding: 9px 18px;
+      border-radius: 50px;
+      font-family: 'Barlow Condensed', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      box-shadow: 0 6px 24px rgba(255,26,107,0.35);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      pointer-events: auto;
+    "
+    onmouseover="this.style.transform='translateY(-2px) scale(1.04)';this.style.boxShadow='0 10px 30px rgba(255,26,107,0.5)'"
+    onmouseout="this.style.transform='none';this.style.boxShadow='0 6px 24px rgba(255,26,107,0.35)'"
+    >
+      <span>✨</span> Pookie Wishes
+    </a>
+  </div>
 
   <script src="script.js"></script>
+  <script>
+    // Show watermark after user scrolls past Scene 1
+    (function() {
+      const wm = document.getElementById('pw-watermark');
+      let shown = false;
+      window.addEventListener('scroll', function() {
+        if (!shown && window.scrollY > window.innerHeight * 0.8) {
+          shown = true;
+          wm.style.opacity = '1';
+          wm.style.pointerEvents = 'auto';
+        }
+      }, { passive: true });
+    })();
+  </script>
 </body>
 </html>
