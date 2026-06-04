@@ -188,6 +188,10 @@
 <script src="../js/app.js"></script>
 
 <script>
+const FREE_TESTING_EMAILS = [
+  'nikhil2005114@gmail.com',
+  'test2@gmail.com'
+];
 let ssFile = null;
 let compressedFile = null;
 
@@ -226,12 +230,12 @@ window.addEventListener('DOMContentLoaded', async () => {
   // Dynamically update price live when user enters email
   const emailField = document.getElementById('f-email');
   if (emailField) {
-    emailField.addEventListener('blur', async () => {
-      if (emailField.value.includes('@')) {
-        await syncCheckoutCart();
-        renderSummary(JSON.parse(localStorage.getItem('pookie_cart') || '[]'));
-      }
-    });
+    const handleEmailUpdate = async () => {
+      await syncCheckoutCart();
+      renderSummary(JSON.parse(localStorage.getItem('pookie_cart') || '[]'));
+    };
+    emailField.addEventListener('blur', handleEmailUpdate);
+    emailField.addEventListener('input', handleEmailUpdate);
   }
 });
 
@@ -266,14 +270,26 @@ function waitForSite() {
 }
 
 function renderSummary(items) {
-  const tplTotal = items.reduce((s,i) => s+Number(i.price||0), 0);
+  const email = document.getElementById('f-email')?.value.trim().toLowerCase();
+  const isFree = FREE_TESTING_EMAILS.includes(email);
+
+  const tplTotal = items.reduce((s,i) => s+Number(isFree ? 0 : (i.price||0)), 0);
   const isLifetime = document.getElementById('lifetime-upsell')?.checked;
-  const total = tplTotal + (isLifetime ? 100 : 0);
+  const total = isFree ? 0 : (tplTotal + (isLifetime ? 100 : 0));
   
   const totalEl = document.getElementById('sc-total');
   const qrAmtEl = document.getElementById('qr-amt');
   if (totalEl) totalEl.textContent = total;
   if (qrAmtEl) qrAmtEl.textContent = total;
+
+  const btn = document.getElementById('co-submit-btn');
+  if (btn) {
+    if (isFree) {
+      btn.textContent = 'Claim Free Test Order 🎁';
+    } else {
+      btn.textContent = 'Proceed to Payment 💳';
+    }
+  }
 
   const itemsContainer = document.getElementById('sc-items');
   if (!itemsContainer) return;
@@ -290,7 +306,7 @@ function renderSummary(items) {
         ${thumb ? `<img src="../${thumb}" onerror="this.onerror=null; this.parentElement.innerHTML='${emoji}'">` : emoji}
       </div>
       <span class="sc-name">${emoji} ${item.name}</span>
-      <span class="sc-price">${item.currency||'₹'}${item.price}</span>
+      <span class="sc-price">${item.currency||'₹'}${isFree ? 0 : item.price}</span>
     </div>`;
   }).join('');
 }
@@ -342,9 +358,11 @@ async function checkoutSubmitOrder() {
   btn.innerHTML = `<span class="loading-spinner"></span> Redirecting...`;
   btn.disabled = true;
   const orderId = 'PW-' + Date.now();
+  const email = data.email.toLowerCase();
+  const isFree = FREE_TESTING_EMAILS.includes(email);
   const tplTotal = data.orders.reduce((s,o)=>s+o.price,0);
   const isLifetime = !!document.getElementById('lifetime-upsell')?.checked;
-  const total = tplTotal + (isLifetime ? 100 : 0);
+  const total = isFree ? 0 : (tplTotal + (isLifetime ? 100 : 0));
   const expiryDate = new Date();
   expiryDate.setDate(expiryDate.getDate() + 30);
 
