@@ -126,6 +126,7 @@
       transform: translateY(-1px);
       box-shadow: 0 4px 12px rgba(127, 86, 217, 0.3);
     }
+    #checkout-step-1 { padding-bottom: 90px; }
 
     /* Form and Fields */
     .f-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom:14px; }
@@ -182,7 +183,7 @@
   </style>
 </head>
 <body>
-<nav class="navbar"><a href="../index.html" class="nav-logo">Pookie Wishes <sub>âœ¨</sub></a><div class="nav-links"><a href="../index.html" class="btn btn-ghost">â† Back</a></div></nav>
+<nav class="navbar"><a href="../index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a><div class="nav-links"><a href="../index.html" class="btn btn-ghost">← Back</a></div></nav>
 
 <div class="co-page">
   <div class="co-wrap">
@@ -197,15 +198,12 @@
 
       <!-- STEP 1: Personalization Details -->
       <div id="checkout-step-1">
-        <h2 class="co-title">Make it yours ðŸŽ¨</h2>
-        <div class="co-sub" style="margin-bottom:20px;">Fill the details below â€” your changes will be previewed interactively.</div>
+        <h2 class="co-title">Make it yours 🎨</h2>
+        <div class="co-sub" style="margin-bottom:20px;">Fill the details below — your changes will be previewed interactively.</div>
         
         <!-- Dynamic Fields Container -->
         <div id="dynamic-fields"></div>
         
-        <div class="divider"></div>
-        <button class="btn btn-primary btn-xl btn-full btn-shimmer" onclick="proceedToStep2()">Continue to Payment âž¡ï¸ </button>
-
         <!-- Floating Action Bar mimicking the requested design -->
         <div class="draft-action-bar" id="draft-bar">
           <div class="status-text">Your draft is &nbsp;<span>private</span></div>
@@ -218,7 +216,7 @@
 
       <!-- STEP 2: Checkout & Razorpay Details -->
       <div id="checkout-step-2" style="display:none;">
-        <h2 class="co-title">Checkout details ðŸ› ï¸ </h2>
+        <h2 class="co-title">Checkout details 🛍️</h2>
         <div class="co-sub" style="margin-bottom:20px;">Fill in your contact email and complete payment.</div>
 
         <div class="co-sec">
@@ -235,12 +233,10 @@
           </div>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="co-sec">
+               <div class="co-sec">
           <div class="co-sec-lbl">Your Live URL Preview</div>
           <div style="background:var(--bg2); border:1px solid var(--bdr2); border-radius:12px; padding:14px; font-family:var(--fm); font-size:0.82rem; color:var(--text); display:flex; align-items:center; gap:8px;">
-            ðŸŒ <span id="link-preview-val" style="font-weight:600; color:var(--pink);">https://pookiewishes.com/wishes/PW-xxxx</span>
+            🌐 <span id="link-preview-val" style="font-weight:600; color:var(--pink);">https://pookiewishes.com/wishes/PW-xxxx</span>
           </div>
         </div>
 
@@ -251,9 +247,9 @@
           <label class="upsell-box" for="lifetime-upsell">
             <input type="checkbox" id="lifetime-upsell" onchange="toggleHostingUpsell()">
             <div class="upsell-info">
-              <div class="upsell-title">Lifetime Unlimited Hosting ðŸ’Ž <span>Recommended</span></div>
+              <div class="upsell-title">Lifetime Unlimited Hosting 💎 <span>Recommended</span></div>
               <div class="upsell-desc">Normally, links expire after 1 month. With Lifetime Hosting, your surprise stays online forever! No recurring fees.</div>
-              <div class="upsell-price">+ â‚¹100</div>
+              <div class="upsell-price">+ ₹100</div>
             </div>
           </label>
         </div>
@@ -261,12 +257,12 @@
         <div class="divider"></div>
 
         <div class="submit-note">
-          Once payment is successful, your surprise greeting page will go live instantly. ðŸ’–
+          Once payment is successful, your surprise greeting page will go live instantly. 💖
         </div>
         
         <div style="display:flex; gap:10px;">
-          <button class="btn btn-ghost btn-xl" onclick="goBackToStep1()" style="flex:0 0 auto">â† Edit Design</button>
-          <button class="btn btn-primary btn-xl btn-full btn-shimmer" id="co-submit-btn" onclick="checkoutSubmitOrder()">Proceed to Payment ðŸ’³</button>
+          <button class="btn btn-ghost btn-xl" onclick="goBackToStep1()" style="flex:0 0 auto">← Edit Design</button>
+          <button class="btn btn-primary btn-xl btn-full btn-shimmer" id="co-submit-btn" onclick="checkoutSubmitOrder()">Proceed to Payment 💳</button>
         </div>
 
         <p style="text-align:center; font-size:0.75rem; color:var(--dim); margin-top:16px;">
@@ -299,17 +295,17 @@
       </div>
 
       <a id="preview-demo-btn" href="" target="_blank" class="btn btn-outline btn-full btn-sm" style="gap:8px;">
-        ðŸš€ Try Live Demo in New Tab
+        🚀 Try Live Demo in New Tab
       </a>
 
       <!-- ORDER SUMMARY & TRUST -->
       <div class="co-sidebar">
         <div class="sc">
-          <div class="sc-title">Order Summary ðŸ›’</div>
+          <div class="sc-title">Order Summary 🛒</div>
           <div id="sc-items"></div>
           <div class="sc-total">
             <span class="sc-total-l">Total</span>
-            <span class="sc-total-a">â‚¹<span id="sc-total">0</span></span>
+            <span class="sc-total-a">₹<span id="sc-total">0</span></span>
           </div>
         </div>
         
@@ -319,7 +315,7 @@
             <span style="font-weight:600; font-size:0.83rem; color:var(--text2); margin-left:6px;">Secure Razorpay Checkout</span>
           </div>
           <div style="margin-top:12px; text-align:center;">
-            <div style="font-family:var(--fd);font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:4px">100% Safe & Encrypted ðŸ”’</div>
+            <div style="font-family:var(--fd);font-size:.85rem;font-weight:700;color:var(--text);margin-bottom:4px">100% Safe & Encrypted 🔒</div>
             <div style="font-size:.7rem;color:var(--muted);line-height:1.4">Supports UPI, Cards, and Netbanking.</div>
           </div>
         </div>
@@ -332,7 +328,7 @@
 <footer class="footer">
   <div class="footer-inner">
     <div class="f-bottom">
-      <span>Â© 2026 Pookie Wishes â€” Personalized Digital Greeting Service ðŸ’–</span>
+      <span>© 2026 Pookie Wishes — Personalized Digital Greeting Service 💖</span>
       <div style="display:flex; gap:15px; margin-top:12px; flex-wrap:wrap; justify-content:center;">
         <a href="about.html" style="color:var(--dim)">About Us</a>
         <a href="terms.html" style="color:var(--dim)">Terms</a>
@@ -352,7 +348,8 @@
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-<!-- Firebase Storage removed â€” screenshots now uploaded via backend to Cloudinary -->
+<!-- Firebase Storage removed — screenshots now uploaded via backend to Cloudinary -->
+<script src="https://checkout.razorpay.com/v1/signup" style="display:none"></script>
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 <script src="../js/app.js"></script>
 
