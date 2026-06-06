@@ -2,7 +2,7 @@
 <!-- Pookie Wishes Checkout -->
 
 <!-- 
-  Â© 2026 Pookie Wishes. All rights reserved.
+  © 2026 Pookie Wishes. All rights reserved.
   Unauthorized copying, reproduction, or deployment is strictly prohibited.
 -->
 <html lang="en">
@@ -17,8 +17,8 @@
 </script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Checkout â€” Pookie Wishes âœ¨</title>
-  <link rel="icon" type="image/png" href="../assets/favicon.png">ðŸŽ‚</text></svg>">
+  <title>Checkout — Pookie Wishes ✨</title>
+  <link rel="icon" type="image/png" href="../assets/favicon.png">
   <link rel="stylesheet" href="../css/style.css">
   <script src="../js/theme.js"></script>
 
@@ -502,7 +502,7 @@ function adaptCheckoutForm(cartItems) {
       let defaultVal = "";
       if (detail.key === "recipient_name" || detail.key === "recipientName") defaultVal = "My Pookie";
       if (detail.key === "sender_name" || detail.key === "senderName") defaultVal = "Bestie";
-      if (detail.key === "message" || detail.key === "wishMessage") defaultVal = "Wishing you a beautiful day filled with laughter, cute moments, and lots of pookie wishes! âœ¨ðŸ’–";
+      if (detail.key === "message" || detail.key === "wishMessage") defaultVal = "Wishing you a beautiful day filled with laughter, cute moments, and lots of pookie wishes! ✨💖";
 
       if (detail.type === "photo") {
         const count = detail.label.match(/\d+/)?.[0] || 3;
@@ -515,7 +515,7 @@ function adaptCheckoutForm(cartItems) {
             <div class="sticker-opt-wrap">
               <label class="sticker-check-row">
                 <input type="checkbox" id="use-stickers-${tplIdx}" onchange="toggleStickers(${tplIdx}, this.checked, '${item.id}')">
-                <span>Don't have photos? Use our cute stickers instead! âœ¨</span>
+                <span>Don't have photos? Use our cute stickers instead! ✨</span>
               </label>
               <div id="sticker-preview-box-${tplIdx}" class="sticker-preview">
                 ${STICKER_MAP[item.id].map(url => `<img src="${url}" alt="sticker">`).join('')}
@@ -525,7 +525,7 @@ function adaptCheckoutForm(cartItems) {
 
             <div id="upload-main-area-${tplIdx}">
               <label class="upload-zone" data-index="${tplIdx}" data-max="${count}">
-                <div style="font-size:1.5rem;margin-bottom:5px;">${detail.icon || 'ðŸ“¸'}</div>
+                <div style="font-size:1.5rem;margin-bottom:5px;">${detail.icon || '📸'}</div>
                 <div style="font-size:0.85rem;color:var(--text);">Select or Drag ${count} photos</div>
                 <input type="file" id="${fieldId}" data-tpl-idx="${tplIdx}" data-key="${detail.key}" data-max="${count}" multiple accept="image/*" onchange="handleFileSelect(event, ${tplIdx}, ${count})">
               </label>
@@ -671,7 +671,7 @@ function renderSummary(items) {
 
   const btn = document.getElementById('co-submit-btn');
   if (btn) {
-    btn.textContent = isFree ? 'Claim Free Test Order ðŸŽ' : `Pay â‚¹${total} via Razorpay ðŸ’³`;
+    btn.textContent = isFree ? 'Claim Free Test Order 🎁' : `Pay ₹${total} via Razorpay 💳`;
   }
 
   const itemsContainer = document.getElementById('sc-items');
@@ -682,14 +682,14 @@ function renderSummary(items) {
   itemsContainer.innerHTML = items.map(item => {
     const tpl = tpls.find(t => t.id === item.id) || {};
     const thumb = tpl.media?.thumbnail || '';
-    const emoji = item.emoji || 'ðŸŽ';
+    const emoji = item.emoji || '🎁';
     
     return `<div class="sc-item">
       <div class="sc-thumb">
         ${thumb ? `<img src="../${thumb}" onerror="this.onerror=null; this.parentElement.innerHTML='${emoji}'">` : emoji}
       </div>
       <span class="sc-name">${emoji} ${item.name}</span>
-      <span class="sc-price">${item.currency||'â‚¹'}${isFree ? 0 : item.price}</span>
+      <span class="sc-price">${item.currency||'₹'}${isFree ? 0 : item.price}</span>
     </div>`;
   }).join('');
 }
@@ -771,7 +771,7 @@ async function proceedToStep2() {
         };
         photoLinks = STICKER_MAP[item.id] || [];
       } else if (filesByTemplate[i] && filesByTemplate[i].length > 0) {
-        toast(`Uploading images for ${item.name}... âœ¨`, 'inf');
+        toast(`Uploading images for ${item.name}... ✨`, 'inf');
         for (let file of filesByTemplate[i]) {
           const url = await uploadToCloudinary(file);
           photoLinks.push(url);
@@ -842,7 +842,7 @@ function validate() {
   if (!email?.includes('@')){ toast('Enter a valid email','err'); return null; }
   const orders = items.map(i => ({ templateId:i.id, templateName:`${i.emoji} ${i.name}`, price:i.price }));
   if (orders.length === 0) {
-    toast("No items in order âŒ", "err");
+    toast("No items in order ❌", "err");
     return null;
   }
   return { name, email, orders };
@@ -854,7 +854,7 @@ async function checkoutSubmitOrder() {
   btn.dataset.locked = "true";
 
   if (!navigator.onLine) {
-    toast("No internet connection âŒ", "err");
+    toast("No internet connection ❌", "err");
     btn.dataset.locked = "";
     return;
   }
@@ -935,7 +935,7 @@ async function checkoutSubmitOrder() {
     }
 
     localStorage.removeItem('pookie_cart');
-    toast('Free Order Placed! ðŸŽ‰', 'ok');
+    toast('Free Order Placed! 🎉', 'ok');
     setTimeout(() => {
       window.location.href = window.location.origin + window.location.pathname.replace('checkout.html', 'order-success.html') + `?id=${sequentialId}&email=${encodeURIComponent(data.email)}`;
     }, 1500);
@@ -1042,7 +1042,7 @@ async function checkoutSubmitOrder() {
     "order_id": razorOrderId,
     "handler": function (response) {
       localStorage.removeItem('pookie_cart');
-      toast("Payment Successful! ðŸŽ‰", "ok");
+      toast("Payment Successful! 🎉", "ok");
       if (window.fbReady) {
         firebase.firestore().collection('orders').doc(sequentialId).update({
           status: 'paid',
