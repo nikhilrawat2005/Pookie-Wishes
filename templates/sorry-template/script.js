@@ -477,9 +477,6 @@ function renderMusic() {
                 <button id="btn-forgive" class="bg-secondary text-white w-full py-3 rounded-xl font-black text-base shadow-xl hover:scale-105 transition-all outline-none">
                     FORGIVE ME? 🩷
                 </button>
-                <button id="btn-replay" onclick="window.showScene(0)" class="bg-dark text-white w-full py-3 rounded-xl font-black text-base shadow-xl hover:scale-105 transition-all outline-none flex items-center justify-center gap-2">
-                    <i data-lucide="refresh-cw" class="w-4 h-4"></i> WATCH IT AGAIN
-                </button>
             </div>
             
             <div class="mt-4 animate-float">
@@ -565,11 +562,6 @@ function setupMusicLogic(songs) {
     document.getElementById('btn-forgive').onclick = () => {
         launchConfetti();
         alert("Yay! I love you so much! 🩷 Best pookie forever!");
-    };
-    
-    document.getElementById('btn-replay').onclick = () => {
-        console.log("Replay clicked");
-        showScene(0);
     };
 }
 
