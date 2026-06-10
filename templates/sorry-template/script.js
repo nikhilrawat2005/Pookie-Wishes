@@ -124,15 +124,20 @@ function showScene(index) {
 
     const children = Array.from(app.children);
     if (children.length > 0) {
-        gsap.to(children, {
-            opacity: 0,
-            y: -30,
-            duration: 0.3,
-            stagger: 0.05,
-            onComplete: () => {
-                renderNewContent(index);
-            }
-        });
+        try {
+            gsap.to(children, {
+                opacity: 0,
+                y: -30,
+                duration: 0.3,
+                stagger: 0.05,
+                onComplete: () => {
+                    renderNewContent(index);
+                }
+            });
+        } catch (e) {
+            console.error("GSAP exit animation failed, fallback to direct render:", e);
+            renderNewContent(index);
+        }
     } else {
         renderNewContent(index);
     }
@@ -145,20 +150,28 @@ function renderNewContent(index) {
     updateProgressBar(index);
     
     const newChildren = Array.from(app.children);
-    gsap.fromTo(newChildren, 
-        { opacity: 0, y: 30, scale: 0.95 },
-        { 
-            opacity: 1, 
-            y: 0, 
-            scale: 1, 
-            duration: 0.5, 
-            stagger: 0.1, 
-            ease: "power2.out", 
-            onComplete: () => {
-                console.log(`[Nav] arrived at scene ${index}`);
+    try {
+        gsap.fromTo(newChildren, 
+            { opacity: 0, y: 30, scale: 0.95 },
+            { 
+                opacity: 1, 
+                y: 0, 
+                scale: 1, 
+                duration: 0.5, 
+                stagger: 0.1, 
+                ease: "power2.out", 
+                onComplete: () => {
+                    console.log(`[Nav] arrived at scene ${index}`);
+                }
             }
-        }
-    );
+        );
+    } catch (e) {
+        console.error("GSAP enter animation failed:", e);
+        newChildren.forEach(child => {
+            child.style.opacity = '1';
+            child.style.transform = 'none';
+        });
+    }
     
     updateNav(index);
 }
@@ -554,6 +567,10 @@ function setupMusicLogic(songs) {
         alert("Yay! I love you so much! 🩷 Best pookie forever!");
     };
     
+    document.getElementById('btn-replay').onclick = () => {
+        console.log("Replay clicked");
+        showScene(0);
+    };
 }
 
 function setupGlobalListeners() {
