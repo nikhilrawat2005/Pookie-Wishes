@@ -115,6 +115,9 @@ function showScene(index) {
     
     if (index !== 4 && audio) {
         audio.pause();
+        try {
+            audio.currentTime = 0;
+        } catch (e) {}
     }
 
     lucide.createIcons({ container: btnNext });
@@ -551,7 +554,7 @@ function setupMusicLogic(songs) {
     };
     
     document.getElementById('btn-replay').onclick = () => {
-        showScene(0, true);
+        showScene(0);
     };
 }
 

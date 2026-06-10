@@ -94,9 +94,13 @@
         // Observe scene changes to show watermark at the end scene
         const observer = new MutationObserver(() => {
             const forgivenessBtn = document.getElementById('btn-forgive');
-            if (forgivenessBtn) {
-                const wm = document.getElementById('global-watermark');
-                wm.classList.add('show-wm'); // Trigger the sliding animation
+            const wm = document.getElementById('global-watermark');
+            if (wm) {
+                if (forgivenessBtn) {
+                    wm.classList.add('show-wm'); // Trigger the sliding animation
+                } else {
+                    wm.classList.remove('show-wm');
+                }
             }
         });
         observer.observe(document.getElementById('scene-container'), { childList: true, subtree: true });
