@@ -1134,6 +1134,7 @@ function openDrawer(oid) {
       <div class="inf-row"><div class="inf-k">Customer Name</div><div class="inf-v">${o.user?.name || o.buyerName || '—'} <button class="copy-btn" onclick="copy('${o.user?.name || o.buyerName || '—'}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
       <div class="inf-row"><div class="inf-k">Customer Email</div><div class="inf-v">${o.user?.email || o.buyerEmail || '—'} <button class="copy-btn" onclick="copy('${o.user?.email || o.buyerEmail || '—'}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
       <div class="inf-row"><div class="inf-k">Total Revenue</div><div class="inf-v" style="color:var(--mint);">₹${o.totalAmount || o.total || 0}</div></div>
+      <div class="inf-row"><div class="inf-k">Surprise Password</div><div class="inf-v" style="color:var(--pink); font-weight:700;">${o.password || 'None'} <button class="copy-btn" onclick="copy('${o.password || ''}')"><i data-lucide="copy" style="width:12px;"></i></button></div></div>
     </div>
     
     <div class="sec-title"><i data-lucide="message-square"></i> Personalisation</div>

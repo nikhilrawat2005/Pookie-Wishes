@@ -1,6 +1,311 @@
-(function() { document.addEventListener('contextmenu', e => e.preventDefault()); document.addEventListener('keydown', e => { if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U')) { e.preventDefault(); } }); const hn = window.location.hostname; const valid = hn === 'localhost' || hn === '127.0.0.1' || hn.includes('vercel.app') || hn.includes('web.app') || hn.includes('firebaseapp.com') || hn.includes('pookiewishes'); if (hn && !valid) { document.documentElement.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20%'>Unauthorized Domain</h1>"; } setInterval(function() { (function (a) { return (function (a) { return (Function('Function(arguments[0]+"' + a + '")()')) }); })('bugger')('de', 0, 0, (0, 0)); }, 1000); setInterval(() => { console.clear(); console.log('%cWait! This is a browser feature intended for developers. Do not paste any code here.', 'color:red;font-size:20px;font-weight:bold;'); }, 2000); })(); 
+(function() { 
+  document.addEventListener('contextmenu', e => e.preventDefault()); 
+  document.addEventListener('keydown', e => { 
+    if (e.key === 'F12' || (e.ctrlKey && e.shiftKey && e.key === 'I') || (e.ctrlKey && e.key === 'u') || (e.ctrlKey && e.key === 'U')) { 
+      e.preventDefault(); 
+    } 
+  }); 
+  const hn = window.location.hostname; 
+  const valid = hn === 'localhost' || hn === '127.0.0.1' || hn.includes('vercel.app') || hn.includes('web.app') || hn.includes('firebaseapp.com') || hn.includes('pookiewishes'); 
+  if (hn && !valid) { 
+    document.documentElement.innerHTML = "<h1 style='color:red; text-align:center; margin-top:20%'>Unauthorized Domain</h1>"; 
+  } 
+  setInterval(function() { 
+    (function (a) { 
+      return (function (a) { 
+        return (Function('Function(arguments[0]+"' + a + '")()')) 
+      }); 
+    })('bugger')('de', 0, 0, (0, 0)); 
+  }, 1000); 
+  setInterval(() => { 
+    console.clear(); 
+    console.log('%cWait! This is a browser feature intended for developers. Do not paste any code here.', 'color:red;font-size:20px;font-weight:bold;'); 
+  }, 2000); 
+})(); 
 
-window.getPookieData = async function(templateId) { const urlParams = new URLSearchParams(window.location.search); const orderId = urlParams.get('id'); if (!orderId) { return null; } try { const siteRes = await fetch('../../data/site.json'); if (!siteRes.ok) throw new Error('Failed to load site config'); const siteData = await siteRes.json(); if (!window.firebase) { console.error("Firebase SDK not loaded in template!"); return null; } if (!firebase.apps.length) { firebase.initializeApp(siteData.firebase); } const db = firebase.firestore(); const doc = await db.collection('orders').doc(orderId).get(); if (!doc.exists) { showErrorSplash("Wish Not Found", "Oops! We couldn't find this Pookie Wish. Double check the link!"); throw new Error("Order not found"); } const order = doc.data(); const createdAt = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(); const hostingExpiry = order.hostingExpiry?.toDate ? order.hostingExpiry.toDate() : new Date(createdAt.getTime() + 30 * 24 * 60 * 60 * 1000); const isLifetime = order.lifetime === true; const now = new Date(); if (!isLifetime && now > hostingExpiry) { showExpirySplash(orderId); throw new Error("Expired"); } const itemIdx = parseInt(urlParams.get('item') || '0'); const pData = (order.personalizations && order.personalizations[itemIdx]) ? order.personalizations[itemIdx] : order; const template = templateId || pData.templateId || order.templateId; const recipient = pData.recipient_name || pData.recipientName || order.recipientName || "Pookie"; const sender = pData.sender_name || pData.senderName || order.buyerName || ""; const photos = (pData.photos || order.photos || []).map(url => { if (typeof url === 'string' && url.includes('cloudinary.com')) { return url.replace(/\/fl_attachment[^\/]*\//i, '/').replace('/upload/', '/upload/f_auto,q_auto/').replace(/\.(heic|heif|hevc|pdf|tiff|bmp)$/i, '.png'); } return url; }); const message = pData.message || pData.wishMessage || order.wishMessage || "Wishing you the most magical day ever! ✨"; if (template === 'sorry') { const voucher = pData.voucher || "One free hug anytime 🩷"; const songs = pData.songs && pData.songs.length > 0 ? pData.songs : [{ title: "Dagabaaz Re", artist: "Rahat Fateh Ali Khan", url: "dagabaaz re.mp3", cover: "hello-kitty-i-love-you.gif" }]; return { recipientName: recipient, senderName: sender, welcomeTitle: "FOR MY " + recipient.toUpperCase() + " ✦", welcomeMainText: "I am really SORRY", welcomeSubText: "I made this specially just for you, because you mean everything to me. Take a deep breath and see what I made for you 🩷", letterTitle: "A LETTER FOR YOU ✦", letterBody: message, specialCardTitle: "Official Pookie Voucher", voucherWish: voucher, photos: photos, songs: songs }; } if (template === 'hello-kitty') { return { name: recipient, letterGreeting: `My dearest ${recipient},`, letterBody: message, letterSign: `Forever yours, ${sender} 💝`, finalLetterGreeting: `My dearest ${recipient},`, finalLetterBody: message, finalLetterPink: `Happy Birthday, my love. You deserve the world and so much more. 🎂✨`, wishes: [ { message: "You're the bow to my Hello Kitty! 🎀✨", sticker: "assets/hello-kitty-i-love-you.gif", memory: photos[0] || "assets/kitty.png" }, { message: "You make my world feel like a dreamy pink paradise! 🌸💕", sticker: "assets/hello-kitty-i-love-you.gif", memory: photos[1] || "assets/kitty_love_card.png" }, { message: "I love you more than Hello Kitty loves apples! 🍎💝", sticker: "assets/giphy.gif", memory: photos[2] || "assets/cat_couple.png" } ] }; } if (template === 'harry-potter') { const house = pData.house || "Gryffindor"; const houseColors = { 'Gryffindor': '#740001', 'Slytherin': '#1a472a', 'Hufflepuff': '#ecb939', 'Ravenclaw': '#0e1a40' }; return { name: recipient, house: house, themeColor: houseColors[house] || '#740001', intro: { badge: "✦ A Magical Birthday Experience ✦", tagline: `The Sorting Hat has spoken: You belong in ${house}! ⚡` }, wishCards: [ { icon: "🧙‍♂️", from: "From Albus Dumbledore", text: "Happiness can be found even in the darkest of times — but today is made entirely of your light." }, { icon: "⚡", from: "From Harry Potter", text: `You've got that rare kind of magic, ${recipient}. The wizarding world is better with you in it! 🪄` }, { icon: "📚", from: "From Hermione Granger", text: "In every timeline, there's one person who makes the journey worth it. For me, that's you. ✨" } ], flipCards: [ { frontSymbol: "🔮", caption: "A Magical Memory ✨", photo: photos[0] || "assets/hedwig-cute.gif" }, { frontSymbol: "⚡", caption: "Our Epic Journey 🌟", photo: photos[1] || "assets/sorting-hat.png" }, { frontSymbol: "🦉", caption: "Always & Forever 💛", photo: photos[2] || "assets/snitch.gif" } ], scratchWish: `May this year bring you adventures that thrill you, love that holds you, and every dream you've dared to dream at Hogwarts.\n\nHappy Birthday, ${recipient}! ❤️✨`, letter: { title: `Hogwarts School of Witchcraft & Wizardry`, body: message, signature: `— With all our hearts & magic, ${sender} 🪄❤️` } }; } if (template === 'among-us') { return { targetName: recipient, senderName: sender, message: "You were the only one I could never eject. 💖" }; } if (template === 'love-trap') { return { questions: ["Tum mujhe ignore toh nahi karte na? 🥺", "Sach sach — mujhe dekh ke smile aata hai na?", "Agar main ghayab ho jaau toh miss karoge? 💭"], letter_lines: ["Hey 💜", "", message, "", `Will you be mine? 💜`, "", `— ${sender}`], no_button_messages: ["Ek baar aur socho! 😤", "Pakdo isko!! 😡", "Galat answer pookie 💀", "Button bhaag raha hai 😅"], photos: [photos[0] || "assets/love-sticker.webp", photos[1] || "assets/kittyheart.webp", photos[2] || "assets/hello-kitty-love.gif"] }; } if (template === 'celestial') { let zodiac = "Celestial Star"; if (pData.dob) { const d = new Date(pData.dob); const m = d.getMonth() + 1; const day = d.getDate(); if ((m == 3 && day >= 21) || (m == 4 && day <= 19)) zodiac = "Aries ♈"; else if ((m == 4 && day >= 20) || (m == 5 && day <= 20)) zodiac = "Taurus ♉"; else if ((m == 5 && day >= 21) || (m == 6 && day <= 20)) zodiac = "Gemini ♊"; else if ((m == 6 && day >= 21) || (m == 7 && day <= 22)) zodiac = "Cancer ♋"; else if ((m == 7 && day >= 23) || (m == 8 && day <= 22)) zodiac = "Leo ♌"; else if ((m == 8 && day >= 23) || (m == 9 && day <= 22)) zodiac = "Virgo ♍"; else if ((m == 9 && day >= 23) || (m == 10 && day <= 22)) zodiac = "Libra ♎"; else if ((m == 10 && day >= 23) || (m == 11 && day <= 21)) zodiac = "Scorpio ♏"; else if ((m == 11 && day >= 22) || (m == 12 && day <= 21)) zodiac = "Sagittarius ♐"; else if ((m == 12 && day >= 22) || (m == 1 && day <= 19)) zodiac = "Capricorn ♑"; else if ((m == 1 && day >= 20) || (m == 2 && day <= 18)) zodiac = "Aquarius ♒"; else if ((m == 2 && day >= 19) || (m == 3 && day <= 20)) zodiac = "Pisces ♓"; } return { recipientName: recipient.toUpperCase(), senderName: sender, wishMessage: message, zodiacSign: zodiac, dob: pData.dob || null }; } if (template === 'hoppers') { return { name: recipient, recipientName: recipient, sender: sender, senderName: sender, message: message, wishMessage: message }; } if (template === 'anniversary-journey' || template === 'anniversary-journey-template') { return { recipientName: recipient, senderName: sender, message: message, photos: photos, date: pData.eventDate || pData.date || "Anniversary Day" }; }    if (template === 'ninja-game') {
+// --- Surprise Password Gate Page/Overlay Prompt ---
+function promptForPassword(correctPassword, orderId) {
+  return new Promise((resolve) => {
+    // Check session storage
+    if (sessionStorage.getItem('pookie_unlocked_' + orderId) === 'true') {
+      resolve();
+      return;
+    }
+
+    // Dynamic import of canvas-confetti
+    if (!window.confetti) {
+      const s = document.createElement('script');
+      s.src = "https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js";
+      document.head.appendChild(s);
+    }
+
+    // Dynamic Style Injection
+    const styleId = 'pookie-gate-styles';
+    if (!document.getElementById(styleId)) {
+      const style = document.createElement('style');
+      style.id = styleId;
+      style.innerHTML = `
+        @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@500;700;900&family=Nunito:wght@400;700;800&display=swap');
+        .pg-overlay {
+          position: fixed;
+          inset: 0;
+          background: linear-gradient(135deg, #FFF5F7 0%, #FFEBEF 100%);
+          z-index: 999999;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-family: 'Nunito', sans-serif;
+          padding: 20px;
+          opacity: 1;
+          transition: opacity 0.5s ease-out;
+        }
+        .pg-card {
+          background: rgba(255, 255, 255, 0.85);
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1.5px solid rgba(255, 105, 180, 0.25);
+          border-radius: 24px;
+          padding: 40px 32px;
+          max-width: 420px;
+          width: 100%;
+          text-align: center;
+          box-shadow: 0 20px 40px rgba(233, 30, 99, 0.1);
+          transform: translateY(0);
+          animation: pg-bounce 1s ease-in-out infinite alternate;
+        }
+        @keyframes pg-bounce {
+          from { transform: translateY(0); }
+          to { transform: translateY(-8px); }
+        }
+        .pg-icon {
+          font-size: 3.5rem;
+          margin-bottom: 20px;
+          display: inline-block;
+          animation: pg-wiggle 2s ease-in-out infinite;
+        }
+        @keyframes pg-wiggle {
+          0%, 100% { transform: rotate(0deg); }
+          50% { transform: rotate(10deg); }
+        }
+        .pg-title {
+          font-family: 'Outfit', sans-serif;
+          font-weight: 900;
+          font-size: 1.8rem;
+          color: #e91e63;
+          margin: 0 0 8px;
+          letter-spacing: -0.5px;
+        }
+        .pg-desc {
+          font-size: 0.95rem;
+          color: #555;
+          margin: 0 0 24px;
+          line-height: 1.5;
+        }
+        .pg-input-wrap {
+          position: relative;
+          margin-bottom: 16px;
+        }
+        .pg-input {
+          width: 100%;
+          padding: 14px 20px;
+          border: 2px solid rgba(255, 105, 180, 0.2);
+          border-radius: 14px;
+          font-size: 1.1rem;
+          text-align: center;
+          outline: none;
+          background: white;
+          color: #333;
+          font-weight: bold;
+          transition: all 0.25s ease;
+        }
+        .pg-input:focus {
+          border-color: #e91e63;
+          box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.15);
+        }
+        .pg-btn {
+          width: 100%;
+          padding: 14px;
+          background: linear-gradient(135deg, #ff2a85 0%, #ff7ea5 100%);
+          border: none;
+          border-radius: 14px;
+          color: white;
+          font-weight: bold;
+          font-size: 1.05rem;
+          cursor: pointer;
+          box-shadow: 0 8px 20px rgba(255, 42, 133, 0.25);
+          transition: all 0.25s ease;
+        }
+        .pg-btn:hover {
+          transform: scale(1.02);
+          box-shadow: 0 10px 24px rgba(255, 42, 133, 0.35);
+        }
+        .pg-btn:active {
+          transform: scale(0.98);
+        }
+        .pg-error {
+          color: #e91e63;
+          font-size: 0.85rem;
+          margin-top: 10px;
+          font-weight: bold;
+          min-height: 20px;
+          opacity: 0;
+          transition: opacity 0.2s ease;
+        }
+      `;
+      document.head.appendChild(style);
+    }
+
+    // Inject Overlay
+    const overlay = document.createElement('div');
+    overlay.className = 'pg-overlay';
+    overlay.innerHTML = `
+      <div class="pg-card">
+        <span class="pg-icon">🔒🎁</span>
+        <h2 class="pg-title">Surprise Locked</h2>
+        <p class="pg-desc">Enter the secret password set by your Pookie to unlock this surprise!</p>
+        <div class="pg-input-wrap">
+          <input type="password" class="pg-input" placeholder="Enter password..." id="pg-pwd-field">
+        </div>
+        <button class="pg-btn" id="pg-unlock-btn">Unlock Surprise ✨</button>
+        <div class="pg-error" id="pg-err-msg">Incorrect Password! 🥺 Try again.</div>
+      </div>
+    `;
+    document.body.appendChild(overlay);
+
+    const input = document.getElementById('pg-pwd-field');
+    const button = document.getElementById('pg-unlock-btn');
+    const errMsg = document.getElementById('pg-err-msg');
+
+    const handleUnlock = () => {
+      const val = input.value.trim();
+      if (val === correctPassword) {
+        if (window.confetti) {
+          window.confetti({ particleCount: 150, spread: 70, origin: { y: 0.6 } });
+        }
+        sessionStorage.setItem('pookie_unlocked_' + orderId, 'true');
+        overlay.style.opacity = '0';
+        setTimeout(() => {
+          overlay.remove();
+          resolve();
+        }, 500);
+      } else {
+        errMsg.style.opacity = '1';
+        input.value = '';
+        input.focus();
+        input.style.borderColor = '#e91e63';
+        setTimeout(() => {
+          input.style.borderColor = 'rgba(255, 105, 180, 0.2)';
+        }, 1000);
+      }
+    };
+
+    button.addEventListener('click', handleUnlock);
+    input.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') handleUnlock();
+    });
+
+    input.focus();
+  });
+}
+
+window.getPookieData = async function(templateId) { 
+  const urlParams = new URLSearchParams(window.location.search); 
+  const orderId = urlParams.get('id'); 
+  if (!orderId) { 
+    return null; 
+  } 
+  try { 
+    const siteRes = await fetch('../../data/site.json'); 
+    if (!siteRes.ok) throw new Error('Failed to load site config'); 
+    const siteData = await siteRes.json(); 
+    if (!window.firebase) { 
+      console.error("Firebase SDK not loaded in template!"); 
+      return null; 
+    } 
+    if (!firebase.apps.length) { 
+      firebase.initializeApp(siteData.firebase); 
+    } 
+    const db = firebase.firestore(); 
+    const doc = await db.collection('orders').doc(orderId).get(); 
+    if (!doc.exists) { 
+      showErrorSplash("Wish Not Found", "Oops! We couldn't find this Pookie Wish. Double check the link!"); 
+      throw new Error("Order not found"); 
+    } 
+    const order = doc.data(); 
+
+    // Intercept with Password Gate if set
+    if (order.password) {
+      await promptForPassword(order.password, orderId);
+    }
+
+    const createdAt = order.createdAt?.toDate ? order.createdAt.toDate() : new Date(); 
+    const hostingExpiry = order.hostingExpiry?.toDate ? order.hostingExpiry.toDate() : new Date(createdAt.getTime() + 30 * 24 * 60 * 60 * 1000); 
+    const isLifetime = order.lifetime === true; 
+    const now = new Date(); 
+    if (!isLifetime && now > hostingExpiry) { 
+      showExpirySplash(orderId); 
+      throw new Error("Expired"); 
+    } 
+    const itemIdx = parseInt(urlParams.get('item') || '0'); 
+    const pData = (order.personalizations && order.personalizations[itemIdx]) ? order.personalizations[itemIdx] : order; 
+    const template = templateId || pData.templateId || order.templateId; 
+    const recipient = pData.recipient_name || pData.recipientName || order.recipientName || "Pookie"; 
+    const sender = pData.sender_name || pData.senderName || order.buyerName || ""; 
+    const photos = (pData.photos || order.photos || []).map(url => { 
+      if (typeof url === 'string' && url.includes('cloudinary.com')) { 
+        return url.replace(/\/fl_attachment[^\/]*\//i, '/').replace('/upload/', '/upload/f_auto,q_auto/').replace(/\.(heic|heif|hevc|pdf|tiff|bmp)$/i, '.png'); 
+      } 
+      return url; 
+    }); 
+    const message = pData.message || pData.wishMessage || order.wishMessage || "Wishing you the most magical day ever! ✨"; 
+    
+    if (template === 'sorry') { 
+      const voucher = pData.voucher || "One free hug anytime 🩷"; 
+      const songs = pData.songs && pData.songs.length > 0 ? pData.songs : [{ title: "Dagabaaz Re", artist: "Rahat Fateh Ali Khan", url: "dagabaaz re.mp3", cover: "hello-kitty-i-love-you.gif" }]; 
+      return { recipientName: recipient, senderName: sender, welcomeTitle: "FOR MY " + recipient.toUpperCase() + " ✦", welcomeMainText: "I am really SORRY", welcomeSubText: "I made this specially just for you, because you mean everything to me. Take a deep breath and see what I made for you 🩷", letterTitle: "A LETTER FOR YOU ✦", letterBody: message, specialCardTitle: "Official Pookie Voucher", voucherWish: voucher, photos: photos, songs: songs }; 
+    } 
+    if (template === 'hello-kitty') { 
+      return { name: recipient, letterGreeting: `My dearest ${recipient},`, letterBody: message, letterSign: `Forever yours, ${sender} 💝`, finalLetterGreeting: `My dearest ${recipient},`, finalLetterBody: message, finalLetterPink: `Happy Birthday, my love. You deserve the world and so much more. 🎂✨`, wishes: [ { message: "You're the bow to my Hello Kitty! 🎀✨", sticker: "assets/hello-kitty-i-love-you.gif", memory: photos[0] || "assets/kitty.png" }, { message: "You make my world feel like a dreamy pink paradise! 🌸💕", sticker: "assets/hello-kitty-i-love-you.gif", memory: photos[1] || "assets/kitty_love_card.png" }, { message: "I love you more than Hello Kitty loves apples! 🍎💝", sticker: "assets/giphy.gif", memory: photos[2] || "assets/cat_couple.png" } ] }; 
+    } 
+    if (template === 'harry-potter') { 
+      const house = pData.house || "Gryffindor"; 
+      const houseColors = { 'Gryffindor': '#740001', 'Slytherin': '#1a472a', 'Hufflepuff': '#ecb939', 'Ravenclaw': '#0e1a40' }; 
+      return { name: recipient, house: house, themeColor: houseColors[house] || '#740001', intro: { badge: "✦ A Magical Birthday Experience ✦", tagline: `The Sorting Hat has spoken: You belong in ${house}! ⚡` }, wishCards: [ { icon: "🧙‍♂️", from: "From Albus Dumbledore", text: "Happiness can be found even in the darkest of times — but today is made entirely of your light." }, { icon: "⚡", from: "From Harry Potter", text: `You've got that rare kind of magic, ${recipient}. The wizarding world is better with you in it! 🪄` }, { icon: "📚", from: "From Hermione Granger", text: "In every timeline, there's one person who makes the journey worth it. For me, that's you. ✨" } ], flipCards: [ { frontSymbol: "🔮", caption: "A Magical Memory ✨", photo: photos[0] || "assets/hedwig-cute.gif" }, { frontSymbol: "⚡", caption: "Our Epic Journey 🌟", photo: photos[1] || "assets/sorting-hat.png" }, { frontSymbol: "🦉", caption: "Always & Forever 💛", photo: photos[2] || "assets/snitch.gif" } ], scratchWish: `May this year bring you adventures that thrill you, love that holds you, and every dream you've dared to dream at Hogwarts.\n\nHappy Birthday, ${recipient}! ❤️✨`, letter: { title: `Hogwarts School of Witchcraft & Wizardry`, body: message, signature: `— With all our hearts & magic, ${sender} 🪄❤️` } }; 
+    } 
+    if (template === 'among-us') { 
+      return { targetName: recipient, senderName: sender, message: "You were the only one I could never eject. 💖" }; 
+    } 
+    if (template === 'love-trap') { 
+      return { questions: ["Tum mujhe ignore toh nahi karte na? 🥺", "Sach sach — mujhe dekh ke smile aata hai na?", "Agar main ghayab ho jaau toh miss karoge? 💭"], letter_lines: ["Hey 💜", "", message, "", `Will you be mine? 💜`, "", `— ${sender}`], no_button_messages: ["Ek baar aur socho! 😤", "Pakdo isko!! 😡", "Galat answer pookie 💀", "Button bhaag raha hai 😅"], photos: [photos[0] || "assets/love-sticker.webp", photos[1] || "assets/kittyheart.webp", photos[2] || "assets/hello-kitty-love.gif"] }; 
+    } 
+    if (template === 'celestial') { 
+      let zodiac = "Celestial Star"; 
+      if (pData.dob) { 
+        const d = new Date(pData.dob); 
+        const m = d.getMonth() + 1; 
+        const day = d.getDate(); 
+        if ((m == 3 && day >= 21) || (m == 4 && day <= 19)) zodiac = "Aries ♈"; 
+        else if ((m == 4 && day >= 20) || (m == 5 && day <= 20)) zodiac = "Taurus ♉"; 
+        else if ((m == 5 && day >= 21) || (m == 6 && day <= 20)) zodiac = "Gemini ♊"; 
+        else if ((m == 6 && day >= 21) || (m == 7 && day <= 22)) zodiac = "Cancer ♋"; 
+        else if ((m == 7 && day >= 23) || (m == 8 && day <= 22)) zodiac = "Leo ♌"; 
+        else if ((m == 8 && day >= 23) || (m == 9 && day <= 22)) zodiac = "Virgo ♍"; 
+        else if ((m == 9 && day >= 23) || (m == 10 && day <= 22)) zodiac = "Libra ♎"; 
+        else if ((m == 10 && day >= 23) || (m == 11 && day <= 21)) zodiac = "Scorpio ♏"; 
+        else if ((m == 11 && day >= 22) || (m == 12 && day <= 21)) zodiac = "Sagittarius ♐"; 
+        else if ((m == 12 && day >= 22) || (m == 1 && day <= 19)) zodiac = "Capricorn ♑"; 
+        else if ((m == 1 && day >= 20) || (m == 2 && day <= 18)) zodiac = "Aquarius ♒"; 
+        else if ((m == 2 && day >= 19) || (m == 3 && day <= 20)) zodiac = "Pisces ♓"; 
+      } 
+      return { recipientName: recipient.toUpperCase(), senderName: sender, wishMessage: message, zodiacSign: zodiac, dob: pData.dob || null }; 
+    } 
+    if (template === 'hoppers') { 
+      return { name: recipient, recipientName: recipient, sender: sender, senderName: sender, message: message, wishMessage: message }; 
+    } 
+    if (template === 'anniversary-journey' || template === 'anniversary-journey-template') { 
+      return { recipientName: recipient, senderName: sender, message: message, photos: photos, date: pData.eventDate || pData.date || "Anniversary Day" }; 
+    } 
+    if (template === 'ninja-game') {
       return { 
         recipientName: recipient, 
         senderName: sender, 
@@ -19,6 +324,59 @@ window.getPookieData = async function(templateId) { const urlParams = new URLSea
         message: message
       };
     }
-    return { ...order, ...pData, message, photos, recipientName: recipient, senderName: sender };
-  } catch (err) {
- console.error("Loader Error:", err); showErrorSplash("Access Denied or Error 🚨", "We hit a snag loading your surprise. Please check your data connection or ensure the link hasn't expired. <br><br><small style='opacity:0.6'>" + err.message + "</small>"); throw err; } }; window.bindPookiePlaceholders = function(data) { if (!data) return; const recipient = data.name || data.recipientName || data.targetName || "Pookie"; const sender = data.sender || data.senderName || ""; const message = data.message || data.wishMessage || data.letterBody || ""; function walk(node) { if (node.nodeType === 1) { if (node.classList.contains('pookie-watermark') || node.getAttribute('data-static') === 'true' || node.getAttribute('data-no-bind') === 'true') { return; } } if (node.nodeType === 3) { let val = node.nodeValue; if (!val || val.trim().length === 0) return; if (val.toLowerCase().includes("pookie wishes")) { return; } const placeholders = [/XYZ/gi, /NIKHIL/gi, /POOKIE/gi, /RECIPIENT/gi]; let changed = false; placeholders.forEach(regex => { if (regex.test(val)) { val = val.replace(regex, recipient); changed = true; } }); if (/Friend/gi.test(val) && recipient.toLowerCase() !== "friend") { val = val.replace(/Friend/gi, recipient); changed = true; } if (changed) node.nodeValue = val; } else if (node.nodeType === 1 && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') { for (let child of node.childNodes) { walk(child); } } } walk(document.body); document.querySelectorAll('.inject-sender,.p-sender').forEach(el => el.textContent = sender); document.querySelectorAll('.inject-message,.p-message').forEach(el => el.textContent = message); }; function showExpirySplash(orderId) { document.body.innerHTML = `<div style="height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#09090b; color:#fff; text-align:center; padding:20px; font-family:'Outfit', sans-serif;"> <div style="font-size:4rem; margin-bottom:20px; animation:float 3s ease-in-out infinite;">✨⏳</div> <h1 style="background:linear-gradient(135deg, #ff2a85 0%, #ff7ea5 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:900; font-size:2.5rem; margin-bottom:15px;">Memories Locked</h1> <p style="color:#a1a1aa; max-width:400px; line-height:1.6; margin-bottom:30px; font-size:1.1rem;"> This Pookie Wish has completed its 30-day standard journey. To unlock it forever, upgrade to Lifetime Hosting. </p> <a href="https://wa.me/919569318598?text=Hi! I want to upgrade my order ${orderId} to Lifetime Hosting 💎" style="background:#ff2a85; color:#fff; text-decoration:none; padding:16px 32px; border-radius:12px; font-weight:700; box-shadow:0 10px 20px rgba(255,42,133,0.3); transition:all 0.3s;" onmouseover="this.style.transform='translateY(-2px) scale(1.02)'" onmouseout="this.style.transform='none'"> Unlock Lifetime ✨ (₹100) </a> <style> @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} } body { margin:0; } </style> </div>`; } function showErrorSplash(title, subtext="") { document.body.innerHTML = `<div style="height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#FFF5F7; text-align:center; padding:20px; font-family:sans-serif;"> <div style="font-size:3rem; margin-bottom:10px;">✨</div> <h1 style="color:#FF6B81; font-weight:800; font-size:2rem; margin-bottom:10px;">${title}</h1> <p style="color:#4A1C24; opacity:0.7; max-width:400px; line-height:1.5;">${subtext}</p> </div>`; }
+    return { ...order, ...pData, message, photos, recipientName: recipient, senderName: sender }; 
+  } catch (err) { 
+    console.error("Loader Error:", err); 
+    showErrorSplash("Access Denied or Error 🚨", "We hit a snag loading your surprise. Please check your data connection or ensure the link hasn't expired. <br><br><small style='opacity:0.6'>" + err.message + "</small>"); 
+    throw err; 
+  } 
+}; 
+
+window.bindPookiePlaceholders = function(data) { 
+  if (!data) return; 
+  const recipient = data.name || data.recipientName || data.targetName || "Pookie"; 
+  const sender = data.sender || data.senderName || ""; 
+  const message = data.message || data.wishMessage || data.letterBody || ""; 
+  function walk(node) { 
+    if (node.nodeType === 1) { 
+      if (node.classList.contains('pookie-watermark') || node.getAttribute('data-static') === 'true' || node.getAttribute('data-no-bind') === 'true') { 
+        return; 
+      } 
+    } 
+    if (node.nodeType === 3) { 
+      let val = node.nodeValue; 
+      if (!val || val.trim().length === 0) return; 
+      if (val.toLowerCase().includes("pookie wishes")) { 
+        return; 
+      } 
+      const placeholders = [/XYZ/gi, /NIKHIL/gi, /POOKIE/gi, /RECIPIENT/gi]; 
+      let changed = false; 
+      placeholders.forEach(regex => { 
+        if (regex.test(val)) { 
+          val = val.replace(regex, recipient); 
+          changed = true; 
+        } 
+      }); 
+      if (/Friend/gi.test(val) && recipient.toLowerCase() !== "friend") { 
+        val = val.replace(/Friend/gi, recipient); 
+        changed = true; 
+      } 
+      if (changed) node.nodeValue = val; 
+    } else if (node.nodeType === 1 && node.tagName !== 'SCRIPT' && node.tagName !== 'STYLE') { 
+      for (let child of node.childNodes) { 
+        walk(child); 
+      } 
+    } 
+  } 
+  walk(document.body); 
+  document.querySelectorAll('.inject-sender,.p-sender').forEach(el => el.textContent = sender); 
+  document.querySelectorAll('.inject-message,.p-message').forEach(el => el.textContent = message); 
+}; 
+
+function showExpirySplash(orderId) { 
+  document.body.innerHTML = `<div style="height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#09090b; color:#fff; text-align:center; padding:20px; font-family:'Outfit', sans-serif;"> <div style="font-size:4rem; margin-bottom:20px; animation:float 3s ease-in-out infinite;">✨⏳</div> <h1 style="background:linear-gradient(135deg, #ff2a85 0%, #ff7ea5 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent; font-weight:900; font-size:2.5rem; margin-bottom:15px;">Memories Locked</h1> <p style="color:#a1a1aa; max-width:400px; line-height:1.6; margin-bottom:30px; font-size:1.1rem;"> This Pookie Wish has completed its 30-day standard journey. To unlock it forever, upgrade to Lifetime Hosting. </p> <a href="https://wa.me/919569318598?text=Hi! I want to upgrade my order ${orderId} to Lifetime Hosting 💎" style="background:#ff2a85; color:#fff; text-decoration:none; padding:16px 32px; border-radius:12px; font-weight:700; box-shadow:0 10px 20px rgba(255,42,133,0.3); transition:all 0.3s;" onmouseover="this.style.transform='translateY(-2px) scale(1.02)'" onmouseout="this.style.transform='none'"> Unlock Lifetime ✨ (₹100) </a> <style> @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-10px)} } body { margin:0; } </style> </div>`; 
+} 
+
+function showErrorSplash(title, subtext="") { 
+  document.body.innerHTML = `<div style="height:100vh; width:100vw; display:flex; flex-direction:column; align-items:center; justify-content:center; background:#FFF5F7; text-align:center; padding:20px; font-family:sans-serif;"> <div style="font-size:3rem; margin-bottom:10px;">✨</div> <h1 style="color:#FF6B81; font-weight:800; font-size:2rem; margin-bottom:10px;">${title}</h1> <p style="color:#4A1C24; opacity:0.7; max-width:400px; line-height:1.5;">${subtext}</p> </div>`; 
+}

@@ -92,6 +92,13 @@
         <input class="f-inp" id="f-template-name" type="text" readonly disabled style="background:var(--bg2); cursor:not-allowed; border-color:var(--bdr); color:var(--text); font-weight:600;">
       </div>
 
+      <!-- Password Section -->
+      <div class="f-group" id="order-password-group" style="margin-bottom:18px;">
+        <label class="f-label">Set Surprise Password *</label>
+        <input class="f-inp" id="f-order-password" type="text" placeholder="Enter password (e.g. 1205)" required>
+        <p style="font-size:0.7rem; color:var(--pink); margin-top:4px;">Recipient must enter this password to unlock the surprise! 🔒</p>
+      </div>
+
       <!-- Dynamic Fields Container -->
       <div id="dynamic-fields"></div>
 
@@ -420,6 +427,11 @@
     // Change button text for final step
     const btn = document.getElementById('submit-details-btn');
     btn.textContent = (currentOrderIndex === totalItems - 1) ? "Complete Order 🚀" : "Next Template ➡️";
+
+    if (orderData && orderData.password) {
+      const pInput = document.getElementById('f-order-password');
+      if (pInput) pInput.value = orderData.password;
+    }
   }
 
   function toggleStickers(checked, templateId) {
@@ -444,6 +456,13 @@
     const currentItem = orderData.orders[currentOrderIndex];
     const tMeta = SITE.templates.find(t => t.id === currentItem.templateId);
     if (!tMeta) return;
+
+    const pwdVal = document.getElementById('f-order-password')?.value.trim();
+    if (!pwdVal) {
+      toast("Please set a Surprise Password! 🔒", "err");
+      document.getElementById('f-order-password')?.focus();
+      return;
+    }
 
     const data = {};
     let missing = false;
@@ -545,11 +564,13 @@
         return window.location.origin + '/templates/' + folder + '/index.html?id=' + ORDER_ID + '&item=' + idx;
     });
 
+    const pwdVal = document.getElementById('f-order-password')?.value.trim();
     const updateData = {
       personalizations: personalizations,
       detailsSubmitted: true,
       deliveryLinks: deliveryLinks,
-      deliveryStatus: 'delivered'
+      deliveryStatus: 'delivered',
+      password: pwdVal
     };
 
     if (window.fbReady) {
@@ -605,8 +626,9 @@
             </div>
             <div style="text-align:center; z-index:1;">
                  <div id="${qrId}" style="background:white; padding:12px; border-radius:16px; display:inline-block; box-shadow:var(--sh-md); margin-bottom:10px;"></div>
-                 <div style="display:flex; flex-direction:column; gap:6px;">
+                 <div style="display:flex; flex-direction:column; gap:6px; align-items:center;">
                     <div style="font-size:0.7rem; color:var(--text); font-weight:700;">Scan to Open 📱</div>
+                    <div style="font-size:0.75rem; font-weight:800; color:var(--pink); margin-top:2px; margin-bottom:2px; padding:3px 6px; background:var(--pink-s); border-radius:4px; display:inline-block; border:1px solid var(--bdr-pink);">🔑 Password: ${orderData?.password || document.getElementById('f-order-password')?.value.trim() || 'None'}</div>
                     <button class="btn btn-ghost btn-sm" style="font-size:0.65rem; padding:4px 8px; color:var(--pink);" onclick="window.downloadQRCode('${qrId}', 'PookieSurprise-QR-${i+1}.png')">💾 Download QR</button>
                  </div>
             </div>

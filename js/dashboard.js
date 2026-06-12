@@ -134,6 +134,7 @@ function renderOrders(orders) {
         <div id="qr-container-${o.id}" class="qr-panel" style="display:none; margin-top:16px; background:var(--bg2); padding:16px; border-radius:var(--r); text-align:center; border:1px solid var(--bdr-pink); width:100%; position:relative; overflow:hidden;">
            <div id="qr-${o.id}" style="background:white; padding:12px; border-radius:12px; display:inline-block; margin-bottom:12px; box-shadow:var(--sh-md);"></div>
            <div style="font-size:0.85rem; color:var(--text); font-weight:700; margin-bottom:4px; position:relative; z-index:1;">Ready to Scan! ✨</div>
+           ${o.password ? `<div style="font-size:0.85rem; font-weight:800; color:var(--pink); margin-bottom:8px; display:inline-block; padding:3px 8px; background:rgba(255,42,133,0.05); border-radius:4px; border:1px solid rgba(255,42,133,0.15); position:relative; z-index:1;">🔑 Password: ${o.password}</div>` : ''}
            <p style="font-size:0.7rem; color:var(--muted); margin-bottom:12px; position:relative; z-index:1;">Use any phone camera to scan and view the surprise.</p>
            <button class="btn btn-ghost btn-sm" style="width:100%; color:var(--pink); background:rgba(255,105,180,0.05);" onclick="window.downloadQRCode('qr-${o.id}', 'PookieSurprise-${o.id}.png')">
                 <i data-lucide="download" style="width:12px; margin-right:4px;"></i> Download HQ Image
