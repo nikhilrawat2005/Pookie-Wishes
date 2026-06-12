@@ -109,15 +109,23 @@ function renderOrders(orders) {
     const successLink = `order-success.html?id=${o.id}&email=${encodeURIComponent(o.buyerEmail)}`;
     const deliveryLink = o.deliveryLink || (o.deliveryLinks ? o.deliveryLinks[0] : '#');
 
+    // Format order date
+    let orderDateStr = '';
+    if (o.createdAt) {
+      const d = o.createdAt.toDate ? o.createdAt.toDate() : new Date(o.createdAt);
+      orderDateStr = d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
     return `
       <div class="order-card" id="order-card-${o.id}">
         <div class="order-status ${statusCls}">${statusTxt}</div>
-        <div class="order-id">ID: ${o.id}</div>
+        <div class="order-id">ID: ${o.id}${orderDateStr ? ` &nbsp;·&nbsp; 📅 ${orderDateStr}` : ''}</div>
         <div class="order-body">
           <div class="order-thumb">${emoji}</div>
           <div class="order-info">
             <div class="order-name">${templateName} ${itemCount > 1 ? `(+${itemCount-1})` : ''}</div>
             <div class="order-for">For: ${recipient}</div>
+            ${o.password ? `<div style="display:inline-flex; align-items:center; gap:5px; margin-top:7px; background:rgba(255,42,133,0.06); border:1px solid rgba(255,42,133,0.2); border-radius:6px; padding:3px 10px; font-size:0.78rem; font-weight:700; color:var(--pink);">🔑 Password: <span style="letter-spacing:0.5px;">${o.password}</span></div>` : ''}
           </div>
         </div>
         <div class="order-actions">
@@ -146,24 +154,23 @@ function renderOrders(orders) {
   }).join('');
   
   if (window.lucide) lucide.createIcons();
+
+  // Show orders banner with total count
+  const banner = document.getElementById('orders-banner');
+  const bannerNum = document.getElementById('orders-banner-num');
+  if (banner && bannerNum) {
+    bannerNum.textContent = orders.length;
+    banner.style.display = 'block';
+  }
 }
 
 async function updateQuotaUI() {
-  const panel = document.getElementById('quota-panel');
-  const countEl = document.getElementById('quota-count');
-  if (!panel || !countEl) return;
-
-  const waitQuota = setInterval(() => {
-    if (window.USER_QUOTA_FETCHED) {
-      clearInterval(waitQuota);
-      const limit = (window.USER_MAX_QUOTA !== undefined) ? window.USER_MAX_QUOTA : (window.ACTIVE_OFFER_LIMIT || 0);
-      if (limit > 0) {
-        panel.style.display = 'flex';
-        // count = delivered items
-        countEl.textContent = `${window.USER_DELIVERED_COUNT}/${limit}`;
-      }
-    }
-  }, 500);
+  // Show the orders banner once orders are loaded
+  // We hook into loadOrders completion, so we just set up the banner here
+  // The actual count is set when renderOrders is called
+  const banner = document.getElementById('orders-banner');
+  if (!banner) return;
+  // Banner visibility and count are set in renderOrders
 }
 
 function copyLink(link) {

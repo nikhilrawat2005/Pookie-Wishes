@@ -74,8 +74,59 @@
       .dash-nav::-webkit-scrollbar { display: none; }
       .dash-nav-btn { border-bottom: none; border-right: 1px solid var(--dash-bdr); white-space: nowrap; flex: 1; justify-content: center; padding: 12px 16px; font-size: 0.85rem; }
       .dash-nav-btn i { width: 16px; height: 16px; }
-      .dash-nav-btn.active::after { left: 0; right: 0; top: auto; bottom: 0; height: 3px; width: 100%; }
-</style>
+    .dash-nav-btn.active::after { left: 0; right: 0; top: auto; bottom: 0; height: 3px; width: 100%; }
+
+    /* SWEET ORDERS BANNER */
+    .orders-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: var(--card);
+      border: 1px solid var(--bdr-pink);
+      border-radius: var(--rx);
+      padding: 18px 24px;
+      margin-bottom: 4px;
+      box-shadow: var(--sh);
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+    .orders-banner-text {
+      font-size: 0.92rem;
+      color: var(--text2);
+      line-height: 1.55;
+    }
+    .orders-banner-text strong { color: var(--text); }
+    .orders-banner-count {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      background: var(--g-pink);
+      border: 1px solid var(--bdr-pink);
+      border-radius: var(--r);
+      padding: 10px 22px;
+      min-width: 80px;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    .orders-banner-num {
+      font-family: var(--fd);
+      font-size: 2rem;
+      font-weight: 800;
+      background: var(--g-main);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      line-height: 1;
+    }
+    .orders-banner-label {
+      font-family: var(--fm);
+      font-size: 0.62rem;
+      color: var(--pink);
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-top: 3px;
+    }
+  </style>
 </head>
 <body>
 <div class="dash-container">
@@ -100,14 +151,16 @@
       <button class="theme-toggle-btn btn btn-ghost" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle Theme">🌓</button>
       </div>
       
-      <div id="quota-panel" class="quota-card" style="display:none;">
-        <div class="quota-info">
-          <div class="quota-title">Founding Member Offer ✨</div>
-          <div class="quota-desc">You're one of our first customers! [Note: Only delivered orders count toward your quota.]</div>
-        </div>
-        <div class="quota-bar-wrap">
-          <div id="quota-count" class="quota-count">0/3</div>
-          <div class="quota-label">Templates Delivered</div>
+      <div id="orders-banner" style="display:none;">
+        <div class="orders-banner">
+          <div class="orders-banner-text">
+            💖 <strong>Thank you for being with us!</strong><br>
+            Every surprise you've sent has made someone's day extra special. Keep spreading the love! 🌸
+          </div>
+          <div class="orders-banner-count">
+            <div id="orders-banner-num" class="orders-banner-num">0</div>
+            <div class="orders-banner-label">Orders Placed</div>
+          </div>
         </div>
       </div>
     </section>
