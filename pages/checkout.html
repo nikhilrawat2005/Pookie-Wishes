@@ -242,6 +242,21 @@
 
         <div class="divider"></div>
 
+        <div class="co-sec" id="password-section">
+          <div class="co-sec-lbl">Surprise Password (Optional)</div>
+          <div style="background:rgba(255,42,133,0.04); border:1.5px solid var(--bdr-pink); border-radius:var(--r); padding:16px; margin-bottom:4px;">
+            <div style="font-size:0.82rem; color:var(--text2); margin-bottom:12px; line-height:1.6;">
+              🔐 Set a password to protect your surprise link. Only people who know this password can open it. You'll see it in your dashboard and it will be shown on the QR code too.
+            </div>
+            <div class="f-group" style="margin-bottom:0">
+              <label class="f-label">SET A PASSWORD <span style="color:var(--dim);font-size:.7rem">(leave blank for no protection)</span></label>
+              <input class="f-inp" id="f-link-password" type="text" placeholder="e.g. pookie123" autocomplete="off" style="letter-spacing:0.5px;">
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
         <div class="co-sec">
           <div class="co-sec-lbl">Hosting Plan Option</div>
           <label class="upsell-box" for="lifetime-upsell">
@@ -837,6 +852,7 @@ async function uploadToCloudinary(file) {
 function validate() {
   const name  = document.getElementById('f-name').value.trim();
   const email = document.getElementById('f-email').value.trim();
+  const password = (document.getElementById('f-link-password')?.value || '').trim();
   const items = JSON.parse(localStorage.getItem('pookie_cart')||'[]');
   if (!name)               { toast('Enter your name','err'); return null; }
   if (!email?.includes('@')){ toast('Enter a valid email','err'); return null; }
@@ -845,7 +861,7 @@ function validate() {
     toast("No items in order ❌", "err");
     return null;
   }
-  return { name, email, orders };
+  return { name, email, orders, password };
 }
 
 async function checkoutSubmitOrder() {
@@ -918,6 +934,7 @@ async function checkoutSubmitOrder() {
           deliveryLinks: deliveryLinks,
           deliveryStatus: 'delivered',
           gateway: 'none_free',
+          password: data.password || '',
           lifetime: isLifetime,
           hostingExpiry: isLifetime ? null : firebase.firestore.Timestamp.fromDate(expiryDate),
           createdAt: firebase.firestore.FieldValue.serverTimestamp()
@@ -1020,6 +1037,7 @@ async function checkoutSubmitOrder() {
         detailsSubmitted: true,
         deliveryLinks: deliveryLinks,
         deliveryStatus: 'delivered',
+        password: data.password || '',
         lifetime: isLifetime,
         hostingExpiry: isLifetime ? null : firebase.firestore.Timestamp.fromDate(expiryDate),
         status: 'pending_payment',
