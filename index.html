@@ -13,142 +13,231 @@
   gtag('js', new Date());
   gtag('config', 'G-WKPVPXVTBC');
 </script>
-  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Pookie Wishes — Digital Surprises ✨</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pookie Wishes — Personalised Digital Surprises</title>
   <meta name="description" content="Create a personalised interactive website for any special moment — birthday, proposal, anniversary, or just because. Fully customised, beautifully designed, starting at ₹29.">
+  <!-- Open Graph -->
+  <meta property="og:title" content="Pookie Wishes — Personalised Digital Surprises">
+  <meta property="og:description" content="Custom interactive surprise websites for every special moment. Starting at ₹29.">
+  <meta property="og:type" content="website">
   <link rel="icon" type="image/png" href="assets/favicon.png">
+  <!-- Google Fonts preconnect for performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <!-- Phosphor Icons (lightweight icon system — replaces emoji UI chrome) -->
+  <script src="https://unpkg.com/@phosphor-icons/web@2.1.1/src/index.js" defer></script>
   <script src="js/theme.js"></script>
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-<nav class="navbar" id="nav">
-  <a href="index.html" class="nav-logo">Pookie Wishes <sub>✨</sub></a>
+<!-- ═══════════════════════════════════════════════════════════
+     NAVIGATION
+═══════════════════════════════════════════════════════════ -->
+<nav class="navbar" id="nav" role="navigation" aria-label="Main navigation">
+  <a href="index.html" class="nav-logo" aria-label="Pookie Wishes home">Pookie Wishes</a>
   <div class="nav-links">
     <a href="pages/how-it-works.html" class="btn btn-ghost">How It Works</a>
-    <div class="nav-cart-wrap" onclick="openCart()" title="Cart" style="cursor:pointer;padding:8px;position:relative">
-      🛒 <span class="cart-count" style="display:none">0</span>
-    </div>
+
+    <!-- Cart button — Phosphor icon replaces emoji -->
+    <button class="nav-icon-btn nav-cart-wrap" onclick="openCart()" title="View cart" aria-label="Open cart" style="position:relative">
+      <i class="ph ph-shopping-cart" style="font-size:18px"></i>
+      <span class="cart-count" style="display:none" aria-live="polite">0</span>
+    </button>
+
+    <!-- Sign in -->
     <button class="btn btn-primary" id="btn-login" onclick="openModal('modal-auth')">Sign In</button>
+
+    <!-- Logged-in user avatar -->
     <div class="user-wrap hidden" id="u-wrap">
-      <img class="user-av" id="u-av" src="" alt="" onclick="toggleDd()">
-      <div class="user-dd" id="u-dd">
-        <div class="dd-head"><div class="dd-name" id="dd-uname"></div><div class="dd-email" id="dd-uemail"></div></div>
-        <div class="dd-item red" onclick="doLogout()">🚪 Sign Out</div>
+      <img class="user-av" id="u-av" src="" alt="Your profile" onclick="toggleDd()">
+      <div class="user-dd" id="u-dd" role="menu">
+        <div class="dd-head">
+          <div class="dd-name" id="dd-uname"></div>
+          <div class="dd-email" id="dd-uemail"></div>
+        </div>
+        <a href="pages/dashboard.html" class="dd-item" role="menuitem">My Orders</a>
+        <div class="dd-sep"></div>
+        <div class="dd-item red" onclick="doLogout()" role="menuitem">Sign Out</div>
       </div>
     </div>
-    <button class="theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Switch to dark mode" title="Dark Mode"><span class="theme-icon">🌙</span></button>
-    <button class="hamburger" id="hamburger" aria-label="Menu">☰</button>
+
+    <!-- Theme toggle — Phosphor icons replaces emoji -->
+    <button class="theme-toggle-btn" id="theme-toggle" onclick="toggleTheme()" aria-label="Toggle dark mode" title="Toggle dark mode">
+      <i class="ph ph-moon" id="theme-icon-moon" style="font-size:17px"></i>
+      <i class="ph ph-sun" id="theme-icon-sun" style="font-size:17px;display:none"></i>
+    </button>
+
+    <!-- Hamburger — Phosphor icon replaces emoji -->
+    <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+      <i class="ph ph-list" id="hamburger-icon" style="font-size:18px"></i>
+    </button>
   </div>
-  <div class="mobile-menu" id="mobile-menu">
+
+  <!-- Mobile menu -->
+  <div class="mobile-menu" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
     <a href="index.html" class="btn btn-ghost">All Templates</a>
     <a href="pages/how-it-works.html" class="btn btn-ghost">How It Works</a>
-    <a href="pages/dashboard.html" class="btn btn-ghost">My Dashboard</a>
+    <a href="pages/dashboard.html" class="btn btn-ghost">My Orders</a>
   </div>
 </nav>
 
-<section class="hero-compact">
-  <div class="blob blob-1"></div><div class="blob blob-2"></div><div class="dots-bg"></div>
-  <div class="hero-inner">
-    <div class="hero-chip"><span class="chip-dot"></span>Personalised digital surprises · Starting at ₹29</div>
-    <h1 class="reveal">Personalised Digital<br><em>Greeting Service</em></h1>
-    <p class="hero-sub reveal">Pookie Wishes is a personalized digital greeting service where we create custom surprise webpages using your text and images, delivered via a private link.</p>
-    
-    <div class="offer-banner-premium reveal" id="hero-offer-panel" style="display:none;">
-      <div class="banner-glow"></div>
-      <div class="banner-content">
-        <div class="banner-top">
-          <div class="banner-badge">✨ EXCLUSIVE TEMPLATE SALE</div>
-          <h2 class="banner-title">Huge Sale on Exclusive Templates! 🎁</h2>
-          <p class="banner-subtitle">Get premium interactive surprise websites starting at just ₹29. Limited time only!</p>
-        </div>
-        
-        <div class="banner-main">
-          <div class="banner-timer">
-            <div class="timer-label">OFFER ENDS IN</div>
-            <div class="timer-grid">
-              <div class="timer-block">
-                <span class="timer-num" id="days">00</span>
-                <span class="timer-unit">Days</span>
-              </div>
-              <div class="timer-block">
-                <span class="timer-num" id="hours">00</span>
-                <span class="timer-unit">Hours</span>
-              </div>
-              <div class="timer-block">
-                <span class="timer-num" id="minutes">00</span>
-                <span class="timer-unit">Mins</span>
-              </div>
-              <div class="timer-block">
-                <span class="timer-num" id="seconds">00</span>
-                <span class="timer-unit">Secs</span>
-              </div>
-            </div>
-          </div>
-          
-          <div class="banner-stats">
-            <div class="stat-item">
-              <div class="stat-value" id="offer-user-count">--</div>
-              <div class="stat-label">Users Joined</div>
-            </div>
-            <div class="stat-sep"></div>
-            <div class="stat-item">
-              <div class="stat-value" id="offer-order-count">--</div>
-              <div class="stat-label">Surprises Delivered</div>
-            </div>
-          </div>
+<!-- ═══════════════════════════════════════════════════════════
+     HERO — Asymmetric Split (constitution: anti-center-bias)
+     Stack: headline / subtext / 2 CTAs — max 4 elements, no eyebrow
+═══════════════════════════════════════════════════════════ -->
+<section class="hero-split" aria-label="Hero">
+  <div class="hero-dots" aria-hidden="true"></div>
+
+  <!-- Left: Content -->
+  <div class="hero-content">
+    <h1 class="hero-heading reveal">
+      Digital Surprises<br>That <em>Hit Different</em>
+    </h1>
+    <p class="hero-sub reveal">
+      Custom interactive surprise websites for every special moment. Share via a private link. Starting at ₹29.
+    </p>
+    <div class="hero-ctas reveal">
+      <button
+        class="btn btn-primary btn-lg"
+        id="hero-cta-primary"
+        onclick="openModal('modal-template-selector')"
+        aria-label="Create a surprise — choose a template"
+      >
+        Create a Surprise
+        <i class="ph ph-arrow-right" style="font-size:16px"></i>
+      </button>
+      <a href="#browse-templates" class="btn btn-ghost btn-lg" id="hero-cta-secondary">
+        See Templates
+      </a>
+    </div>
+  </div>
+
+  <!-- Right: Visual -->
+  <div class="hero-visual" aria-hidden="true">
+    <div class="hero-img-wrap reveal">
+      <img
+        src="assets/hero-visual.png"
+        alt="A glowing digital gift box representing a personalised surprise"
+        loading="eager"
+        decoding="async"
+        width="560"
+        height="420"
+      >
+      <!-- Floating stat pill -->
+      <div class="hero-stat-pill" aria-label="Surprises delivered">
+        <div>
+          <div class="stat-num" id="offer-order-count">--</div>
+          <div class="stat-label">Surprises<br>Delivered</div>
         </div>
       </div>
+      <!-- Price pill -->
+      <div class="hero-price-pill">Starting at ₹29</div>
     </div>
   </div>
 </section>
 
-<section class="how-it-works-home reveal">
-  <div class="hiw-timeline-line"></div>
-  <div class="hiw-home-grid">
-    <div class="hiw-h-item">
-      <div class="hiw-h-num">1</div>
-      <div class="hiw-h-txt">
-        <strong>🎨 Choose Template</strong>
-        Browse and pick a design that fits the vibe
+<!-- ═══════════════════════════════════════════════════════════
+     OFFER BAND (moved out of hero — its own below-fold section)
+     Eyebrow restraint: offer band label counts as 1 of 2 allowed
+═══════════════════════════════════════════════════════════ -->
+<div class="offer-band" id="hero-offer-panel" style="display:none">
+  <div class="offer-band-inner">
+    <span class="offer-band-label">Exclusive Sale</span>
+    <div class="offer-band-title">Huge savings on all templates — limited time only.</div>
+    <div class="offer-band-stats">
+      <div class="offer-band-stat">
+        <span class="stat-val" id="offer-user-count">--</span>
+        <span class="stat-lbl">Users Joined</span>
+      </div>
+      <div class="offer-band-timer" aria-label="Countdown timer">
+        <div class="timer-block">
+          <span class="timer-num" id="days">00</span>
+          <span class="timer-unit">Days</span>
+        </div>
+        <span class="timer-sep">:</span>
+        <div class="timer-block">
+          <span class="timer-num" id="hours">00</span>
+          <span class="timer-unit">Hrs</span>
+        </div>
+        <span class="timer-sep">:</span>
+        <div class="timer-block">
+          <span class="timer-num" id="minutes">00</span>
+          <span class="timer-unit">Min</span>
+        </div>
+        <span class="timer-sep">:</span>
+        <div class="timer-block">
+          <span class="timer-num" id="seconds">00</span>
+          <span class="timer-unit">Sec</span>
+        </div>
       </div>
     </div>
-    <div class="hiw-h-item">
-      <div class="hiw-h-num">2</div>
-      <div class="hiw-h-txt">
-        <strong>💳 Make Payment</strong>
-        Quick, secure gateway — starting at ₹29
+  </div>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HOW IT WORKS — Redesigned (5-step staggered, not equal cards)
+     No eyebrow — heading carries the section
+═══════════════════════════════════════════════════════════ -->
+<section class="how-it-works-home" aria-label="How it works">
+  <div class="hiw-home-inner">
+    <h2 class="hiw-home-heading">Five steps to a perfect surprise</h2>
+    <div class="hiw-steps-grid">
+
+      <div class="hiw-step reveal">
+        <div class="hiw-step-num" aria-hidden="true">1</div>
+        <div class="hiw-step-info">
+          <div class="hiw-step-label">Choose a Template</div>
+          <div class="hiw-step-desc">Browse designs built for every vibe</div>
+        </div>
       </div>
-    </div>
-    <div class="hiw-h-item">
-      <div class="hiw-h-num">3</div>
-      <div class="hiw-h-txt">
-        <strong>📝 Fill Details</strong>
-        Share your message, photos, and names
+
+      <div class="hiw-step reveal">
+        <div class="hiw-step-num" aria-hidden="true">2</div>
+        <div class="hiw-step-info">
+          <div class="hiw-step-label">Make Payment</div>
+          <div class="hiw-step-desc">Secure gateway starting at ₹29</div>
+        </div>
       </div>
-    </div>
-    <div class="hiw-h-item">
-      <div class="hiw-h-num">4</div>
-      <div class="hiw-h-txt">
-        <strong>⚡ Auto Build</strong>
-        Our zero-touch system crafts your page instantly
+
+      <div class="hiw-step reveal">
+        <div class="hiw-step-num" aria-hidden="true">3</div>
+        <div class="hiw-step-info">
+          <div class="hiw-step-label">Add Your Details</div>
+          <div class="hiw-step-desc">Upload photos and write your message</div>
+        </div>
       </div>
-    </div>
-    <div class="hiw-h-item">
-      <div class="hiw-h-num">5</div>
-      <div class="hiw-h-txt">
-        <strong>🔗 Get the Link</strong>
-        Share your private surprise — live for 30 days
+
+      <div class="hiw-step reveal">
+        <div class="hiw-step-num" aria-hidden="true">4</div>
+        <div class="hiw-step-info">
+          <div class="hiw-step-label">Auto Build</div>
+          <div class="hiw-step-desc">Your page is crafted instantly</div>
+        </div>
       </div>
+
+      <div class="hiw-step reveal">
+        <div class="hiw-step-num" aria-hidden="true">5</div>
+        <div class="hiw-step-info">
+          <div class="hiw-step-label">Share the Link</div>
+          <div class="hiw-step-desc">Private surprise link, live 30 days</div>
+        </div>
+      </div>
+
     </div>
   </div>
 </section>
 
+<!-- ═══════════════════════════════════════════════════════════
+     MAIN — Template Showcase
+═══════════════════════════════════════════════════════════ -->
 <main class="page-main">
-  <!-- Template Horizontal Marquee Section -->
-  <section class="marquee-section">
+
+  <!-- Template Marquee — eyebrow badge serves as section label (1 of 2 allowed) -->
+  <section class="marquee-section" aria-label="Trending templates preview">
     <div class="marquee-title-wrap">
-      <span class="marquee-badge">🔥 Trending Surprises — hover to pause</span>
+      <span class="marquee-badge">Trending Surprises — hover to pause</span>
     </div>
     <div class="marquee-viewport">
       <div class="marquee-track" id="tpl-marquee-track">
@@ -157,66 +246,73 @@
     </div>
   </section>
 
-  <!-- Big Trigger Button -->
-  <div class="selector-trigger-wrap reveal">
-    <button class="btn-mega-glow" onclick="openModal('modal-template-selector')">
-      <span class="btn-mega-shine"></span>
-      <span class="btn-mega-icon">🎁</span>
-      <span class="btn-mega-title">Create Your Surprise</span>
-      <span class="btn-mega-sub">Select Birthday, Love Life, or Wishes to customize</span>
-    </button>
-  </div>
-
-  <!-- Browse & Filtering Section -->
-  <section class="browse-section reveal" id="browse-templates">
+  <!-- Browse & Filter Section -->
+  <section class="browse-section reveal" id="browse-templates" aria-label="Browse all templates">
     <div class="browse-header">
       <h2 class="section-title">Explore Our <em>Surprise Vibes</em></h2>
       <p class="section-sub">Choose a design that fits their vibe. Each template features interactive games, custom letters, and hidden animations.</p>
     </div>
 
-    <!-- Search & Tabs Container -->
+    <!-- Search & Tabs -->
     <div class="filter-controls">
-      <div class="search-box-wrap">
-        <span class="search-icon">🔍</span>
-        <input type="text" id="home-search-inp" placeholder="Search templates (e.g. Hogwarts, cute, gaming...)" autocomplete="off">
-        <button id="home-search-clear" class="search-clear-btn hidden" onclick="clearHomeSearch()">✕</button>
+      <div class="search-box-wrap" role="search">
+        <i class="ph ph-magnifying-glass search-icon" aria-hidden="true" style="font-size:18px"></i>
+        <input
+          type="text"
+          id="home-search-inp"
+          placeholder="Search templates (e.g. Hogwarts, cute, gaming…)"
+          autocomplete="off"
+          aria-label="Search templates"
+        >
+        <button id="home-search-clear" class="search-clear-btn hidden" onclick="clearHomeSearch()" aria-label="Clear search">
+          <i class="ph ph-x" style="font-size:14px"></i>
+        </button>
       </div>
 
-      <div class="category-tabs" id="category-tabs">
-        <button class="tab-btn active" data-tab="all" onclick="filterHomeTemplates('all')">
+      <div class="category-tabs" id="category-tabs" role="tablist" aria-label="Filter by category">
+        <button class="tab-btn active" data-tab="all" onclick="filterHomeTemplates('all')" role="tab" aria-selected="true">
           <span class="tab-icon">✨</span> All Vibes
         </button>
-        <button class="tab-btn" data-tab="birthday" onclick="filterHomeTemplates('birthday')">
-          <span class="tab-icon">🎂</span> Birthday Wishes
+        <button class="tab-btn" data-tab="birthday" onclick="filterHomeTemplates('birthday')" role="tab" aria-selected="false">
+          <span class="tab-icon">🎂</span> Birthday
         </button>
-        <button class="tab-btn" data-tab="love" onclick="filterHomeTemplates('love')">
+        <button class="tab-btn" data-tab="love" onclick="filterHomeTemplates('love')" role="tab" aria-selected="false">
           <span class="tab-icon">💝</span> Love Life
         </button>
-        <button class="tab-btn" data-tab="wishes" onclick="filterHomeTemplates('wishes')">
-          <span class="tab-icon">💍</span> Wishes & Weddings
+        <button class="tab-btn" data-tab="wishes" onclick="filterHomeTemplates('wishes')" role="tab" aria-selected="false">
+          <span class="tab-icon">💍</span> Wishes
         </button>
       </div>
     </div>
 
     <!-- Dynamic Template Grid -->
     <div class="tpl-grid-container">
-      <div class="t-grid" id="home-tpl-grid">
+      <div class="t-grid" id="home-tpl-grid" aria-label="Template grid">
         <div class="load-msg"><span style="font-size:1.8rem">🌸</span>Loading templates…</div>
       </div>
     </div>
 
-    <!-- Special High-End Showcase Card for Fully Custom Theme -->
+    <!-- Bespoke Service Card — distinct layout from grid above -->
     <div class="custom-showcase-box reveal" id="custom-showcase">
-      <div class="custom-glow"></div>
+      <div class="custom-glow" aria-hidden="true"></div>
       <div class="custom-inner">
         <div class="custom-left">
-          <div class="custom-badge">🎨 Bespoke Service</div>
+          <!-- No eyebrow badge here — section context is clear without it -->
           <h3 class="custom-title">Want Something Completely <em>Custom?</em></h3>
-          <p class="custom-desc">Have a unique idea? A Hogwarts sorting hat game, a special pixel-art platformer, or a dynamic digital memory scrapbook? We will build it from scratch! <strong>No advance payment required. Pay only after you love the final result.</strong></p>
+          <p class="custom-desc">Have a unique idea? A Hogwarts sorting hat game, a pixel-art platformer, a digital memory scrapbook? We will build it from scratch. No advance payment required — pay only after you love the result.</p>
           <div class="custom-features-list">
-            <span>✨ Custom Games & Logic</span>
-            <span>📱 Mobile & Desktop Optimized</span>
-            <span>💬 Collaboratively Coded</span>
+            <span>
+              <i class="ph ph-lightning" style="color:var(--pink);font-size:14px"></i>
+              Custom Games &amp; Logic
+            </span>
+            <span>
+              <i class="ph ph-devices" style="color:var(--pink);font-size:14px"></i>
+              Mobile &amp; Desktop Ready
+            </span>
+            <span>
+              <i class="ph ph-chat-circle" style="color:var(--pink);font-size:14px"></i>
+              Collaboratively Coded
+            </span>
           </div>
         </div>
         <div class="custom-right">
@@ -224,45 +320,61 @@
             <span class="custom-price-label">Starts at</span>
             <span class="custom-price-val">₹200</span>
           </div>
-          <a href="https://wa.me/919569318598?text=Hi! I'm interested in the Fully Custom Theme service." target="_blank" class="btn btn-primary btn-lg custom-cta-btn">
-            💬 DM on WhatsApp
+          <a
+            href="https://wa.me/919569318598?text=Hi! I'm interested in the Fully Custom Theme service."
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn btn-primary btn-lg custom-cta-btn"
+            id="custom-whatsapp-cta"
+            aria-label="Contact us on WhatsApp for a custom theme"
+          >
+            <i class="ph ph-whatsapp-logo" style="font-size:18px"></i>
+            Chat on WhatsApp
           </a>
         </div>
       </div>
     </div>
   </section>
 
-  <section class="sug-section reveal" id="cs-grid">
+  <!-- Suggestion Section — eyebrow chip = 2nd and final eyebrow for this page -->
+  <section class="sug-section reveal" id="cs-grid" aria-label="Suggest a template">
     <div class="sug-inner">
       <div class="sug-header">
-        <span class="sug-chip">💡 Shape What's Next</span>
+        <span class="sug-chip">
+          <i class="ph ph-lightbulb" style="font-size:11px"></i>
+          Shape What's Next
+        </span>
         <h2 class="sug-title">What <em>Theme</em> Should We Build?</h2>
-        <p class="sug-sub">Got a vibe in mind? Drop your idea below — the most loved themes become real. Your dream template could be live next. ✨</p>
+        <p class="sug-sub">Got a vibe in mind? Drop your idea below — the most loved themes become real. Your dream template could be live next.</p>
       </div>
+
       <div class="sug-form-wrap" id="sug-box">
-        <div class="sug-orbs">
+        <div class="sug-orbs" aria-hidden="true">
           <div class="sug-orb sug-orb-1"></div>
           <div class="sug-orb sug-orb-2"></div>
           <div class="sug-orb sug-orb-3"></div>
         </div>
-        <div class="sug-form">
+        <div class="sug-form" role="form" aria-label="Theme suggestion form">
           <div class="sug-field-group">
-            <label class="sug-label" for="sug-name">🎨 Name the Theme <span class="sug-required">*</span></label>
+            <label class="sug-label" for="sug-name">
+              Name the Theme <span class="sug-required" aria-label="required">*</span>
+            </label>
             <div class="sug-inp-wrap">
               <input
                 class="sug-inp"
                 id="sug-name"
                 type="text"
                 maxlength="60"
-                placeholder="e.g. Taylor Swift Era, Studio Ghibli, Beach Vibe..."
+                placeholder="e.g. Taylor Swift Era, Studio Ghibli, Beach Vibe…"
                 autocomplete="off"
+                aria-required="true"
               >
-              <span class="sug-inp-glow"></span>
+              <span class="sug-inp-glow" aria-hidden="true"></span>
             </div>
           </div>
           <div class="sug-field-group">
             <label class="sug-label" for="sug-desc">
-              💬 Describe it <span class="sug-optional">(optional)</span>
+              Describe it <span class="sug-optional">(optional)</span>
             </label>
             <div class="sug-inp-wrap">
               <textarea
@@ -270,67 +382,80 @@
                 id="sug-desc"
                 rows="3"
                 maxlength="250"
-                placeholder="Tell us the vibe, colours, features, or why it would be perfect..."
+                placeholder="Tell us the vibe, colours, features, or why it would be perfect…"
+                aria-required="false"
               ></textarea>
-              <span class="sug-inp-glow"></span>
+              <span class="sug-inp-glow" aria-hidden="true"></span>
             </div>
           </div>
-          <button class="sug-btn" id="sug-btn" onclick="submitSuggestion()">
-            <span class="sug-btn-shine"></span>
-            🚀 Drop My Idea
+          <button class="sug-btn" id="sug-btn" onclick="submitSuggestion()" aria-label="Submit your theme idea">
+            <span class="sug-btn-shine" aria-hidden="true"></span>
+            Drop My Idea
+            <i class="ph ph-paper-plane-right" style="font-size:16px;margin-left:4px"></i>
           </button>
-          <p class="sug-disclaimer">Most-voted ideas get built first. We'll DM you if yours goes live! 💌</p>
+          <p class="sug-disclaimer">Most-voted ideas get built first. We will reach out if yours goes live.</p>
         </div>
       </div>
     </div>
   </section>
 </main>
 
-<footer class="footer">
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════ -->
+<footer class="footer" role="contentinfo">
   <div class="footer-inner">
     <div class="footer-grid">
       <div>
-        <a href="index.html" class="f-logo">Pookie Wishes</a>
-        <p class="f-desc">Digital surprises that feel personal and unforgettable. Because your people deserve more than a text. ✨</p>
+        <a href="index.html" class="f-logo" aria-label="Pookie Wishes home">Pookie Wishes</a>
+        <p class="f-desc">Digital surprises that feel personal and unforgettable. Because your people deserve more than a text.</p>
       </div>
       <div>
         <div class="f-ctitle">Pages</div>
         <div class="f-links">
           <a href="index.html">Templates</a>
           <a href="pages/how-it-works.html">How It Works</a>
-          <a href="pages/dashboard.html">My Dashboard</a>
+          <a href="pages/dashboard.html">My Orders</a>
         </div>
       </div>
       <div>
         <div class="f-ctitle">Contact</div>
         <div class="f-links">
-          <a href="https://wa.me/919569318598" target="_blank">WhatsApp: +91 95693 18598 💬</a>
+          <a href="https://wa.me/919569318598" target="_blank" rel="noopener noreferrer">WhatsApp: +91 95693 18598</a>
           <a href="#" data-site-email-href><span data-site-email>teamcipher.work@gmail.com</span></a>
-          <a href="https://www.instagram.com/pookiewishes/" target="_blank">Instagram: @pookiewishes</a>
+          <a href="https://www.instagram.com/pookiewishes/" target="_blank" rel="noopener noreferrer">Instagram: @pookiewishes</a>
         </div>
       </div>
     </div>
     <div class="f-bottom">
-      <span>© 2026 <span data-site-name>Pookie Wishes</span> — Personalized Digital Greeting Service 💖</span>
-      <div style="display:flex; gap:15px; margin-top:12px; flex-wrap:wrap; justify-content:center;">
+      <span>© 2026 <span data-site-name>Pookie Wishes</span> — Personalised Digital Greeting Service</span>
+      <div style="display:flex;gap:15px;margin-top:12px;flex-wrap:wrap;justify-content:center;">
         <a href="pages/about.html" style="color:var(--dim)">About Us</a>
         <a href="pages/terms.html" style="color:var(--dim)">Terms</a>
         <a href="pages/refund-policy.html" style="color:var(--dim)">Refund Policy</a>
         <a href="pages/privacy-policy.html" style="color:var(--dim)">Privacy Policy</a>
       </div>
-      <div style="margin-top:20px; font-size:0.75rem; color:var(--dim); max-width:650px; margin-left:auto; margin-right:auto; line-height:1.6; border-top:1px solid rgba(0,0,0,0.05); padding-top:15px;">
-        <p><strong>Compliance & Safety:</strong> We strictly prohibit any illegal, copyrighted, adult, or harmful content. All submissions are automatically processed but subject to post-delivery safety review. This is a digital service. No physical products are sold or shipped.</p>
-        <p style="margin-top:8px; font-weight:700; color:var(--text2);">Support Email: teamcipher.work@gmail.com</p>
+      <div style="margin-top:20px;font-size:.75rem;color:var(--dim);max-width:650px;margin-left:auto;margin-right:auto;line-height:1.6;border-top:1px solid rgba(0,0,0,.05);padding-top:15px;">
+        <p><strong>Compliance &amp; Safety:</strong> We strictly prohibit any illegal, copyrighted, adult, or harmful content. All submissions are automatically processed but subject to post-delivery safety review. This is a digital service. No physical products are sold or shipped.</p>
+        <p style="margin-top:8px;font-weight:700;color:var(--text2);">Support: teamcipher.work@gmail.com</p>
       </div>
     </div>
   </div>
 </footer>
 
-<div class="cart-overlay" id="cart-overlay"></div>
-<div class="cart-drawer" id="cart-drawer">
+<!-- ═══════════════════════════════════════════════════════════
+     CART DRAWER
+═══════════════════════════════════════════════════════════ -->
+<div class="cart-overlay" id="cart-overlay" onclick="closeCart()" aria-hidden="true"></div>
+<div class="cart-drawer" id="cart-drawer" role="dialog" aria-label="Shopping cart" aria-modal="true">
   <div class="cart-hd">
-    <div class="cart-hd-title">🛒 My Cart</div>
-    <button class="cart-close" onclick="closeCart()">✕</button>
+    <div class="cart-hd-title">
+      <i class="ph ph-shopping-cart" style="font-size:18px;margin-right:6px;vertical-align:middle"></i>
+      My Cart
+    </div>
+    <button class="cart-close" onclick="closeCart()" aria-label="Close cart">
+      <i class="ph ph-x" style="font-size:14px"></i>
+    </button>
   </div>
   <div class="cart-body" id="cart-body"></div>
   <div class="cart-footer" id="cart-footer" style="display:none">
@@ -338,71 +463,93 @@
       <span class="cart-total-label">Total</span>
       <span class="cart-total-amount" id="cart-total">₹0</span>
     </div>
-    <button class="btn btn-primary btn-full btn-lg btn-shimmer" onclick="checkoutCart()">Checkout 🎁</button>
+    <button class="btn btn-primary btn-full btn-lg btn-shimmer" onclick="checkoutCart()" id="checkout-btn">
+      Checkout
+      <i class="ph ph-arrow-right" style="font-size:16px"></i>
+    </button>
   </div>
 </div>
 
-<div class="overlay" id="modal-auth">
+<!-- ═══════════════════════════════════════════════════════════
+     AUTH MODAL
+═══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="modal-auth" role="dialog" aria-label="Sign in" aria-modal="true">
   <div class="modal">
-    <button class="modal-x" onclick="closeModal('modal-auth')">✕</button>
-    <span class="modal-ico">🎂</span>
+    <button class="modal-x" onclick="closeModal('modal-auth')" aria-label="Close sign in">
+      <i class="ph ph-x" style="font-size:13px"></i>
+    </button>
+    <span class="modal-ico" aria-hidden="true">🎂</span>
     <h2>Welcome!</h2>
     <p>Sign in to save favourites and track orders.</p>
-    <button class="btn btn-google btn-full" onclick="googleLogin()">
-      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48"><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.14z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="#FBBC05" d="M10.53 28.59c-.49-1.47-.76-3.04-.76-4.59s.27-3.12.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.55 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/></svg>
+    <button class="btn btn-google btn-full" onclick="googleLogin()" id="google-login-btn">
+      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v8.51h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.14z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/><path fill="#FBBC05" d="M10.53 28.59c-.49-1.47-.76-3.04-.76-4.59s.27-3.12.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.55 10.78l7.98-6.19z"/><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.55 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/></svg>
       Continue with Google
     </button>
-    <div class="modal-or">or</div>
-    <div class="f-group"><input class="f-inp" id="auth-email" type="email" placeholder="your@email.com"></div>
-    <div class="f-group"><input class="f-inp" id="auth-pw" type="password" placeholder="Password"></div>
-    <div style="display:flex;gap:8px;margin-bottom:10px">
-      <button class="btn btn-primary" style="flex:1" onclick="emailSignIn()">Log In</button>
-      <button class="btn btn-soft" style="flex:1" onclick="emailRegister()">Register</button>
+    <div class="modal-or" aria-hidden="true">or</div>
+    <div class="f-group">
+      <label class="f-label" for="auth-email">Email</label>
+      <input class="f-inp" id="auth-email" type="email" placeholder="your@email.com" autocomplete="email">
     </div>
-    <button class="btn btn-ghost btn-full" style="font-size:.8rem" onclick="resetPassword()">Forgot password?</button>
-</div>
+    <div class="f-group">
+      <label class="f-label" for="auth-pw">Password</label>
+      <input class="f-inp" id="auth-pw" type="password" placeholder="Password" autocomplete="current-password">
+    </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+      <button class="btn btn-primary" style="flex:1" onclick="emailSignIn()" id="login-btn">Log In</button>
+      <button class="btn btn-soft"    style="flex:1" onclick="emailRegister()" id="register-btn">Register</button>
+    </div>
+    <button class="btn btn-ghost btn-full" style="font-size:.8rem" onclick="resetPassword()" id="forgot-pw-btn">Forgot password?</button>
+  </div>
 </div>
 
-<div class="overlay" id="modal-template-selector">
+<!-- ═══════════════════════════════════════════════════════════
+     TEMPLATE CATEGORY SELECTOR MODAL
+═══════════════════════════════════════════════════════════ -->
+<div class="overlay" id="modal-template-selector" role="dialog" aria-label="Choose a template category" aria-modal="true">
   <div class="modal template-selector-modal">
-    <button class="modal-x" onclick="closeModal('modal-template-selector')">✕</button>
-    <div class="modal-glow-bg"></div>
-    <span class="modal-ico">✨</span>
+    <button class="modal-x" onclick="closeModal('modal-template-selector')" aria-label="Close category selector">
+      <i class="ph ph-x" style="font-size:13px"></i>
+    </button>
+    <div class="modal-glow-bg" aria-hidden="true"></div>
+    <span class="modal-ico" aria-hidden="true">✨</span>
     <h2>Choose a Theme</h2>
-    <p>Select a category to view the templates and start customizing!</p>
-    
-    <div class="selector-options">
-      <button class="selector-opt-btn" onclick="selectCategory('birthday')">
-        <div class="opt-icon-circle bg-birthday">🎂</div>
+    <p>Select a category to view templates and start customising.</p>
+
+    <div class="selector-options" role="list">
+      <button class="selector-opt-btn" onclick="selectCategory('birthday')" role="listitem" aria-label="Birthday Wishes category">
+        <div class="opt-icon-circle bg-birthday" aria-hidden="true">🎂</div>
         <div class="opt-content">
           <span class="opt-label">Birthday Wishes</span>
-          <span class="opt-desc">Cute, magical Hogwarts, & cosmic space templates</span>
+          <span class="opt-desc">Cute, magical Hogwarts, and cosmic space templates</span>
         </div>
-        <span class="opt-arrow">➔</span>
+        <i class="ph ph-arrow-right opt-arrow" aria-hidden="true" style="font-size:18px"></i>
       </button>
 
-      <button class="selector-opt-btn" onclick="selectCategory('love')">
-        <div class="opt-icon-circle bg-love">💝</div>
+      <button class="selector-opt-btn" onclick="selectCategory('love')" role="listitem" aria-label="Love Life category">
+        <div class="opt-icon-circle bg-love" aria-hidden="true">💝</div>
         <div class="opt-content">
           <span class="opt-label">Love Life</span>
-          <span class="opt-desc">Romantic interactive games, apology pages & timeline scrolls</span>
+          <span class="opt-desc">Romantic games, apology pages and timeline scrolls</span>
         </div>
-        <span class="opt-arrow">➔</span>
+        <i class="ph ph-arrow-right opt-arrow" aria-hidden="true" style="font-size:18px"></i>
       </button>
 
-      <button class="selector-opt-btn" onclick="selectCategory('wishes')">
-        <div class="opt-icon-circle bg-wishes">💍</div>
+      <button class="selector-opt-btn" onclick="selectCategory('wishes')" role="listitem" aria-label="Wishes and Weddings category">
+        <div class="opt-icon-circle bg-wishes" aria-hidden="true">💍</div>
         <div class="opt-content">
-          <span class="opt-label">Wishes</span>
+          <span class="opt-label">Wishes &amp; Weddings</span>
           <span class="opt-desc">Grand royal wedding celebrations</span>
         </div>
-        <span class="opt-arrow">➔</span>
+        <i class="ph ph-arrow-right opt-arrow" aria-hidden="true" style="font-size:18px"></i>
       </button>
     </div>
   </div>
 </div>
 
-<div id="toasts"></div>
+<!-- Toast notifications -->
+<div id="toasts" role="status" aria-live="polite"></div>
+
+<!-- Firebase -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
@@ -412,19 +559,53 @@
   window.DATA_URL = 'data/site.json';
 </script>
 <script src="js/app.js"></script>
+
 <script>
-  const hamburger = document.getElementById('hamburger');
+  // ── Hamburger toggle ──────────────────────────────────────────────────────
+  const hamburger  = document.getElementById('hamburger');
   const mobileMenu = document.getElementById('mobile-menu');
+  const hamburgerIcon = document.getElementById('hamburger-icon');
+
   hamburger.addEventListener('click', () => {
-    hamburger.classList.toggle('open');
-    mobileMenu.classList.toggle('open');
+    const isOpen = hamburger.classList.toggle('open');
+    mobileMenu.classList.toggle('open', isOpen);
+    hamburger.setAttribute('aria-expanded', String(isOpen));
+    // Toggle icon: List ↔ X
+    if (isOpen) {
+      hamburgerIcon.className = 'ph ph-x';
+    } else {
+      hamburgerIcon.className = 'ph ph-list';
+    }
   });
+
   mobileMenu.querySelectorAll('a').forEach(link => {
     link.addEventListener('click', () => {
       hamburger.classList.remove('open');
       mobileMenu.classList.remove('open');
+      hamburger.setAttribute('aria-expanded', 'false');
+      hamburgerIcon.className = 'ph ph-list';
     });
   });
+
+  // ── Theme icon sync ───────────────────────────────────────────────────────
+  // Keeps moon/sun icon in sync with the active theme
+  function syncThemeIcon() {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    const moon = document.getElementById('theme-icon-moon');
+    const sun  = document.getElementById('theme-icon-sun');
+    if (moon && sun) {
+      moon.style.display = isDark ? 'none' : '';
+      sun.style.display  = isDark ? '' : 'none';
+    }
+  }
+  // Run on load
+  syncThemeIcon();
+  // Also observe theme changes from theme.js toggleTheme()
+  const origToggle = window.toggleTheme;
+  window.toggleTheme = function() {
+    if (origToggle) origToggle();
+    requestAnimationFrame(syncThemeIcon);
+  };
 </script>
 </body>
 </html>
