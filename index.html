@@ -125,11 +125,16 @@
         width="560"
         height="420"
       >
-      <!-- Floating stat pill -->
-      <div class="hero-stat-pill" aria-label="Surprises delivered">
+      <!-- Floating stat pill containing both dynamic counts -->
+      <div class="hero-stat-pill" aria-label="Surprise Statistics">
         <div>
-          <div class="stat-num" id="offer-order-count">--</div>
-          <div class="stat-label">Surprises<br>Delivered</div>
+          <span class="stat-num" id="offer-order-count">--</span>
+          <span class="stat-label">Surprises<br>Delivered</span>
+        </div>
+        <div style="width: 1px; height: 24px; background: rgba(255, 255, 255, 0.15);"></div>
+        <div>
+          <span class="stat-num" id="offer-user-count">--</span>
+          <span class="stat-label">Users<br>Joined</span>
         </div>
       </div>
       <!-- Price pill -->
@@ -137,44 +142,6 @@
     </div>
   </div>
 </section>
-
-<!-- ═══════════════════════════════════════════════════════════
-     OFFER BAND (moved out of hero — its own below-fold section)
-     Eyebrow restraint: offer band label counts as 1 of 2 allowed
-═══════════════════════════════════════════════════════════ -->
-<div class="offer-band" id="hero-offer-panel" style="display:none">
-  <div class="offer-band-inner">
-    <span class="offer-band-label">Exclusive Sale</span>
-    <div class="offer-band-title">Huge savings on all templates — limited time only.</div>
-    <div class="offer-band-stats">
-      <div class="offer-band-stat">
-        <span class="stat-val" id="offer-user-count">--</span>
-        <span class="stat-lbl">Users Joined</span>
-      </div>
-      <div class="offer-band-timer" aria-label="Countdown timer">
-        <div class="timer-block">
-          <span class="timer-num" id="days">00</span>
-          <span class="timer-unit">Days</span>
-        </div>
-        <span class="timer-sep">:</span>
-        <div class="timer-block">
-          <span class="timer-num" id="hours">00</span>
-          <span class="timer-unit">Hrs</span>
-        </div>
-        <span class="timer-sep">:</span>
-        <div class="timer-block">
-          <span class="timer-num" id="minutes">00</span>
-          <span class="timer-unit">Min</span>
-        </div>
-        <span class="timer-sep">:</span>
-        <div class="timer-block">
-          <span class="timer-num" id="seconds">00</span>
-          <span class="timer-unit">Sec</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
 
 <!-- ═══════════════════════════════════════════════════════════
      HOW IT WORKS — Redesigned (5-step staggered, not equal cards)
