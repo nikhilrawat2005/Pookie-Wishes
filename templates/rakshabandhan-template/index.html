@@ -19,18 +19,18 @@
   --bg:          #F8F3E8;           /* warm cream */
   --bg-2:        #F3ECD9;           /* slightly deeper cream */
   --surface:     #EDE4CE;           /* card surface */
-  --accent:      #C9A84C;           /* rich gold */
-  --accent-dim:  rgba(201,168,76,0.18);
-  --accent-glow: rgba(201,168,76,0.40);
-  --rose:        #7A1F2B;           /* deep maroon */
-  --marigold:    #D97B29;           /* festive marigold orange */
-  --marigold-dim:rgba(217,123,41,0.18);
-  --green:       #2F4A3C;           /* deep leaf green */
-  --green-dim:   rgba(47,74,60,0.16);
-  --text:        #2E1A0E;           /* dark espresso brown */
-  --text-2:      rgba(46,26,14,0.60);
-  --text-3:      rgba(46,26,14,0.32);
-  --line:        rgba(201,168,76,0.38);
+  --accent:      #A87F18;           /* richer, higher-contrast gold */
+  --accent-dim:  rgba(168,127,24,0.18);
+  --accent-glow: rgba(168,127,24,0.40);
+  --rose:        #8B1424;           /* deep rich maroon */
+  --marigold:    #C8620E;           /* high contrast marigold orange */
+  --marigold-dim:rgba(200,98,14,0.18);
+  --green:       #1E3A2B;           /* deep forest leaf green */
+  --green-dim:   rgba(30,58,43,0.16);
+  --text:        #140702;           /* rich high-contrast dark espresso */
+  --text-2:      #2A1408;           /* clear dark subtext */
+  --text-3:      #452410;           /* sharp muted text */
+  --line:        rgba(168,127,24,0.45);
   --r:           14px;
 }
 
@@ -158,33 +158,33 @@ body::after {
 /* Text system */
 .eyebrow {
   font-family: 'Outfit', sans-serif;
-  font-size: 9.5px; font-weight: 500;
+  font-size: 10px; font-weight: 700;
   letter-spacing: 4px; text-transform: uppercase;
-  color: var(--rose); opacity: 0.80;
+  color: var(--rose); opacity: 1;
   margin-bottom: 16px;
 }
 .heading {
   font-family: 'Cormorant Garamond', serif;
   color: var(--text);
-  font-weight: 400; line-height: 1.08;
+  font-weight: 600; line-height: 1.1;
   letter-spacing: 1px;
 }
 .sub {
   font-family: 'Cormorant Garamond', serif;
-  font-style: italic; font-weight: 300;
+  font-style: italic; font-weight: 500;
   color: var(--text-2);
-  font-size: 18.5px; line-height: 1.85;
+  font-size: 19px; line-height: 1.75;
   margin-top: 18px;
 }
 .desc {
-  font-family: 'Outfit', sans-serif; font-weight: 300;
-  color: var(--text-2); font-size: 13px;
-  line-height: 2; letter-spacing: 0.4px;
+  font-family: 'Outfit', sans-serif; font-weight: 400;
+  color: var(--text-2); font-size: 13.5px;
+  line-height: 1.8; letter-spacing: 0.4px;
 }
 .rule {
   width: 44px; height: 1px;
   background: linear-gradient(90deg, transparent, var(--accent), transparent);
-  margin: 20px auto; opacity: 0.7;
+  margin: 20px auto; opacity: 0.85;
 }
 
 /* ===========================
