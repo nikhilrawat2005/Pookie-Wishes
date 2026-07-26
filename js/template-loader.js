@@ -324,6 +324,14 @@ window.getPookieData = async function(templateId) {
         message: message
       };
     }
+    if (template === 'rakshabandhan' || template === 'rakshabandhan-template' || template === 'rakshaband') {
+      return {
+        recipientName: recipient,
+        senderName: sender,
+        message: message,
+        photos: photos
+      };
+    }
     return { ...order, ...pData, message, photos, recipientName: recipient, senderName: sender }; 
   } catch (err) { 
     console.error("Loader Error:", err); 

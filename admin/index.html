@@ -890,7 +890,8 @@ function createTemplateGrid() {
     
     // Hand-made usually doesn't have a local template folder for "Try Live Demo" 
     // but the admin might want to visit the checkout flow or a placeholder
-    const link = t.id === 'hand-made' ? '../index.html#templates' : `../templates/${folder}/index.html`;
+    const demoPath = t.demoUrl ? (t.demoUrl.startsWith('../') ? t.demoUrl : `../${t.demoUrl}`) : `../templates/${folder}/index.html`;
+    const link = t.id === 'hand-made' ? '../index.html#templates' : demoPath;
 
     return `
       <div class="tpl-card">

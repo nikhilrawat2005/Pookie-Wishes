@@ -1,0 +1,41 @@
+{
+  "senderName": "Your Name Here",
+  "year": "2026",
+  "scene1": {
+    "eyebrow": "Ek Pavitra Bandhan",
+    "heading": "Raksha Bandhan",
+    "sub": "Ek rishta jo sirf reshmi dhaage se nahi,<br>saalon ke pyaar, vishwas aur<br>ankahi meethhi yaadon se bandha hai."
+  },
+  "scene2": {
+    "sub": "Har dhaage mein chhupi ek paavan dua,<br>har rang mein simta ek meetha vaada,<br>jo waqt ke saath aur bhi gehra hota jaaye."
+  },
+  "scene3": {
+    "eyebrow": "Wishing You",
+    "sub": "Bachpan ki befikr shararatein, woh nanhi nok-jhok,<br>aur ta-umar saath nibhane ka sabse pyara vaada.<br>Aapko Raksha Bandhan ki dil se shubhkamnayein!"
+  },
+  "scene4": {
+    "desc": "Har purani tasveer mein muskurati hai hamari bachpan ki khushiyan,<br>aur har panna bayan karta hai hamari ek anmol kahani."
+  },
+  "scene5": {
+    "eyebrow": "Yaadon Ka Safar",
+    "heading": "Timeline of Us",
+    "memories": ["Bachpan", "Masti", "Aaj"],
+    "memoryDescs": ["Pehli rakhi ki pyari smritiyan", "Shararat, muskaan aur meethi ladaiyan", "Wahi meetha bandhan, aur bhi gehra"]
+  },
+  "scene6": {
+    "quote": "Rishtey toh kayi hote hain duniya mein,<br>par bhai-behen ka ye rishta sabse khas hai...<br>jisme thodi si ladai hai, behisaab pyaar hai,<br>aur ta-umar saath rehne ka meetha ehsaas hai."
+  },
+  "scene6b": {
+    "eyebrow": "Ek Chhoti Si Baat",
+    "heading": "A Little Something<br><em>From My Heart</em>",
+    "note": "Chhahe kitni bhi dooriyan ho ya kitni bhi nok-jhok,<br>tum hamesha meri sabse badi taaqat aur khushi ki wajah rahoge."
+  },
+  "scene7": {
+    "eyebrow": "Dil Se",
+    "heading": "Happy Raksha Bandhan",
+    "wishes": "Hamesha khush raho, muskuraate raho,<br>duniya ki saari khushiyan aur safalta tumhein mile.<br>Aankhon mein vishwas aur dil mein aprampar pyaar rahe."
+  },
+  "scene8": {
+    "withLove": "With Love"
+  }
+}
