@@ -118,6 +118,7 @@
     /* BADGES */
     .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 100px; font-size: 0.7rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
     .badge-pending { background: rgba(245, 158, 11, 0.1); color: #fcd34d; border: 1px solid rgba(245, 158, 11, 0.2); }
+    .badge-red { background: rgba(239, 68, 68, 0.12); color: #fca5a5; border: 1px solid rgba(239, 68, 68, 0.3); }
     .badge-verified { background: rgba(59, 130, 246, 0.1); color: #93c5fd; border: 1px solid rgba(59, 130, 246, 0.2); }
     .badge-delivered { background: rgba(16, 185, 129, 0.1); color: #6ee7b7; border: 1px solid rgba(16, 185, 129, 0.2); }
     
@@ -245,7 +246,7 @@
     
     <div class="sb-link on" data-tab="all" onclick="setTab('all',this)"><i data-lucide="layers"></i> All Orders</div>
     <div class="sb-link" data-tab="paid" onclick="setTab('paid',this)"><i data-lucide="check-circle-2"></i> Paid Orders</div>
-    <div class="sb-link" data-tab="unpaid" onclick="setTab('unpaid',this)"><i data-lucide="gift"></i> Free / Unpaid</div>
+    <div class="sb-link" data-tab="unpaid" onclick="setTab('unpaid',this)"><i data-lucide="gift"></i> Completed (Paid + Free)</div>
     <div class="sb-link" data-tab="trash" onclick="setTab('trash',this)"><i data-lucide="trash-2"></i> Trash / Recovery</div>
     <div class="sb-link" data-tab="broadcast" onclick="setTab('broadcast',this)"><i data-lucide="send"></i> Broadcast / Email</div>
     <div class="sb-link" data-tab="lifetime" onclick="setTab('lifetime',this)"><i data-lucide="gem"></i> Lifetime</div>
@@ -290,7 +291,7 @@
       <div class="stat-c">
         <i data-lucide="gift"></i>
         <div class="stat-n" id="s-pend" style="color:#fcd34d;">0</div>
-        <div class="stat-l">Free / Unpaid (₹0)</div>
+        <div class="stat-l">Total Completed (Paid + Free)</div>
       </div>
     </div>
 
@@ -960,16 +961,20 @@ async function updateStats() {
   // orders too. The only field that is exclusively written by the real Razorpay success
   // handler is razorpay_payment_id, so we require status:'paid' + that field + amount > 0.
   const isRealPaid = o => o.status === 'paid' && !!o.razorpay_payment_id && Number(o.totalAmount || o.total || 0) > 0;
+
+  // A "Free" completed order = any order that's genuinely delivered with ₹0 owed
+  // (includes your own testing orders and any other legit free/testing order).
+  const isFreeCompleted = o => !isRealPaid(o) && Number(o.totalAmount || o.total || 0) === 0
+    && (o.deliveryStatus === 'delivered' || o.status === 'delivered');
+
   const paidOrders = activeOrders.filter(isRealPaid);
-  const unpaidOrders = activeOrders.filter(o => !isRealPaid(o));
-  
-  // Show stats:
-  // s-total = Paid & Delivered Orders count
-  // s-rev = Total Revenue from paid & delivered orders
-  // s-pend = Free/Unpaid Orders count (orphans + free + pending)
+  const freeOrders = activeOrders.filter(isFreeCompleted);
+  // Everything else — pending_payment, "Paid — Not Delivered", "Marked Paid (No Payment
+  // Found)" etc — is left out of both buckets entirely (shown in red in the table instead).
+
   document.getElementById('s-total').textContent = paidOrders.length;
   document.getElementById('s-rev').textContent   = '₹' + paidOrders.reduce((s,o)=>s+Number(o.totalAmount||o.total||0),0);
-  document.getElementById('s-pend').textContent  = unpaidOrders.length;
+  document.getElementById('s-pend').textContent  = paidOrders.length + freeOrders.length;
   
   try {
     const statDoc = await db.collection('counters').doc('stats').get();
@@ -986,8 +991,10 @@ function renderTable() {
   let list = activeOrders;
   
   const isRealPaidRow = o => o.status === 'paid' && !!o.razorpay_payment_id && Number(o.totalAmount || o.total || 0) > 0;
+  const isFreeCompletedRow = o => !isRealPaidRow(o) && Number(o.totalAmount || o.total || 0) === 0
+    && (o.deliveryStatus === 'delivered' || o.status === 'delivered');
   if (curFilter === 'paid')      list = activeOrders.filter(isRealPaidRow);
-  if (curFilter === 'unpaid')    list = activeOrders.filter(o => !isRealPaidRow(o));
+  if (curFilter === 'unpaid')    list = activeOrders.filter(o => isRealPaidRow(o) || isFreeCompletedRow(o));
   if (curFilter === 'delivered') list = activeOrders.filter(o => o.deliveryStatus === 'delivered' || o.status === 'delivered');
   if (curFilter === 'trash')     list = orders.filter(o => o.trash === true);
   if (curFilter === 'lifetime')  list = activeOrders.filter(o => o.lifetime === true);
@@ -1025,7 +1032,7 @@ function renderTable() {
       sCls = 'badge-delivered';
     } else if (o.status === 'pending_payment') {
       sLabel = 'Pending Payment';
-      sCls = 'badge-pending';
+      sCls = 'badge-red';
     } else {
       sLabel = amount > 0 ? 'Unpaid' : 'Free Order';
       sCls = 'badge-pending';
