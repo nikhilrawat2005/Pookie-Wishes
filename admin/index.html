@@ -994,13 +994,13 @@ function renderTable() {
   let html = list.map(o => {
     const oid = o.orderId || o._docId;
     const isZT = ztTemplates.includes(o.templateId || (o.items?.[0]?.id));
-    let sLabel = o.status || 'pending', sCls = 'badge-pending';
+    let sLabel = 'Unpaid', sCls = 'badge-pending';
     if (o.deliveryStatus === 'delivered' || o.status === 'delivered') { 
       sLabel = 'Delivered'; sCls = 'badge-delivered'; 
     } else if (o.status === 'paid') { 
       sLabel = 'Paid'; sCls = 'badge-verified'; 
     } else if (o.status === 'pending_payment' || o.status === 'pending') {
-      sLabel = 'Unpaid'; sCls = 'badge-pending';
+      sLabel = 'Unpaid Checkout'; sCls = 'badge-pending';
     }
     
     const dt = o.createdAt?.toDate?.().toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) || '—';
