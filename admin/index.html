@@ -507,12 +507,14 @@ async function renderAnalytics() {
       .where('status', 'in', ['paid', 'delivered'])
       .get();
     
-    // Same rule as updateStats(): only count orders that were actually PAID *and* DELIVERED.
-    // Without the deliveryStatus check, this filter (and the s-total/s-rev it overwrites)
-    // counted every order with status:'paid' — including any that were never really paid
-    // (client-set status, orphaned tests, etc), which is why the dashboard showed 25 "paid"
-    // orders while only ₹29 of real revenue had actually come in.
-    const valid = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(o => !o.trash && o.deliveryStatus === 'delivered');
+    // Same rule as updateStats(): only count orders that were REALLY paid.
+    // deliveryStatus can't be used as a signal — it's set to 'delivered' at order
+    // creation time, before payment even happens. razorpay_payment_id is the only
+    // field that's exclusively written by a genuine Razorpay success callback, so
+    // we require status:'paid' + that field + a non-zero amount.
+    const valid = snap.docs
+      .map(d => ({ id: d.id, ...d.data() }))
+      .filter(o => !o.trash && o.status === 'paid' && !!o.razorpay_payment_id && Number(o.totalAmount || o.total || 0) > 0);
     const stats = {};
     
     valid.forEach(o => {
@@ -952,11 +954,14 @@ async function loadSuggestions() {
 
 async function updateStats() {
   const activeOrders = orders.filter(o => !o.trash);
-  // Core rule: an order only counts as "Paid" when it was actually paid AND delivered.
-  // Phase-1 orphans (status:'paid' but deliveryStatus never set), free/test orders (₹0),
-  // and pending_payment orders all fall into "Free/Unpaid" instead.
-  const paidOrders = activeOrders.filter(o => o.status === 'paid' && o.deliveryStatus === 'delivered');
-  const unpaidOrders = activeOrders.filter(o => !(o.status === 'paid' && o.deliveryStatus === 'delivered'));
+  // Core rule: an order only counts as "Paid" when real money actually moved.
+  // deliveryStatus is NOT a reliable signal — checkout.html sets deliveryStatus:'delivered'
+  // at order-creation time, BEFORE payment even happens, so it's true for pending/unpaid
+  // orders too. The only field that is exclusively written by the real Razorpay success
+  // handler is razorpay_payment_id, so we require status:'paid' + that field + amount > 0.
+  const isRealPaid = o => o.status === 'paid' && !!o.razorpay_payment_id && Number(o.totalAmount || o.total || 0) > 0;
+  const paidOrders = activeOrders.filter(isRealPaid);
+  const unpaidOrders = activeOrders.filter(o => !isRealPaid(o));
   
   // Show stats:
   // s-total = Paid & Delivered Orders count
@@ -980,8 +985,9 @@ function renderTable() {
   const activeOrders = orders.filter(o => !o.trash);
   let list = activeOrders;
   
-  if (curFilter === 'paid')      list = activeOrders.filter(o => o.status === 'paid' && o.deliveryStatus === 'delivered');
-  if (curFilter === 'unpaid')    list = activeOrders.filter(o => !(o.status === 'paid' && o.deliveryStatus === 'delivered'));
+  const isRealPaidRow = o => o.status === 'paid' && !!o.razorpay_payment_id && Number(o.totalAmount || o.total || 0) > 0;
+  if (curFilter === 'paid')      list = activeOrders.filter(isRealPaidRow);
+  if (curFilter === 'unpaid')    list = activeOrders.filter(o => !isRealPaidRow(o));
   if (curFilter === 'delivered') list = activeOrders.filter(o => o.deliveryStatus === 'delivered' || o.status === 'delivered');
   if (curFilter === 'trash')     list = orders.filter(o => o.trash === true);
   if (curFilter === 'lifetime')  list = activeOrders.filter(o => o.lifetime === true);
@@ -999,14 +1005,20 @@ function renderTable() {
     const amount = Number(o.totalAmount || o.total || 0);
     
     const isDelivered = o.deliveryStatus === 'delivered' || o.status === 'delivered';
+    const isRealPayment = !!o.razorpay_payment_id && amount > 0;
     let sLabel, sCls;
 
-    if (o.status === 'paid' && isDelivered) {
-      sLabel = amount > 0 ? 'Delivered' : 'Free Delivered';
+    if (o.status === 'paid' && isRealPayment && isDelivered) {
+      sLabel = 'Delivered';
       sCls = 'badge-delivered';
-    } else if (o.status === 'paid' && !isDelivered) {
-      // Phase-1 orphan: payment went through but form/delivery never completed
+    } else if (o.status === 'paid' && isRealPayment && !isDelivered) {
+      // Real payment went through but form/delivery never completed
       sLabel = 'Paid — Not Delivered ⚠️';
+      sCls = 'badge-pending';
+    } else if (o.status === 'paid' && !isRealPayment) {
+      // status says 'paid' but there's no real Razorpay payment behind it
+      // (or amount is ₹0) — this is a suspicious/orphaned record, not real revenue
+      sLabel = 'Marked Paid (No Payment Found) ⚠️';
       sCls = 'badge-pending';
     } else if (amount === 0 && isDelivered) {
       sLabel = 'Free Delivered';
