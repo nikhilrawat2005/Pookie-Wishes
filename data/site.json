@@ -482,9 +482,7 @@
         "✨ Magical interactive moments"
       ],
       "submitDetails": [
-        { "icon": "🪔", "label": "Sibling's Name", "key": "recipient_name", "type": "text", "required": true, "desc": "Their name — shown on the opening screen" },
-        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this surprise" },
-        { "icon": "💌", "label": "Personal Rakhi Note", "key": "message", "type": "textarea", "required": true, "desc": "A heartfelt message for your sibling" }
+        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this surprise" }
       ],
       "media": {
         "thumbnail": "rakshabandhan/assets/images/gen-scene1-hero.jpg",

@@ -326,10 +326,7 @@ window.getPookieData = async function(templateId) {
     }
     if (template === 'rakshabandhan' || template === 'rakshabandhan-template' || template === 'rakshaband') {
       return {
-        recipientName: recipient,
-        senderName: sender,
-        message: message,
-        photos: photos
+        senderName: sender
       };
     }
     return { ...order, ...pData, message, photos, recipientName: recipient, senderName: sender }; 
