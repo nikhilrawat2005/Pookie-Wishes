@@ -507,7 +507,12 @@ async function renderAnalytics() {
       .where('status', 'in', ['paid', 'delivered'])
       .get();
     
-    const valid = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(o => !o.trash);
+    // Same rule as updateStats(): only count orders that were actually PAID *and* DELIVERED.
+    // Without the deliveryStatus check, this filter (and the s-total/s-rev it overwrites)
+    // counted every order with status:'paid' — including any that were never really paid
+    // (client-set status, orphaned tests, etc), which is why the dashboard showed 25 "paid"
+    // orders while only ₹29 of real revenue had actually come in.
+    const valid = snap.docs.map(d => ({ id: d.id, ...d.data() })).filter(o => !o.trash && o.deliveryStatus === 'delivered');
     const stats = {};
     
     valid.forEach(o => {
