@@ -8,8 +8,20 @@
       .where('status', 'in', ['paid', 'delivered', 'pending_verification'])
       .get();
       
-    // Exact logic from Admin Panel "Total Orders (Paid)"
-    const validOrdersCount = orderSnap.docs.filter(d => !d.data().trash).length;
+    // "Surprises Delivered" = Total Completed orders (Paid + Free), same rule as the
+    // admin dashboard: a real paid order needs status:'paid' + a real razorpay_payment_id
+    // + amount > 0. A free order needs amount === 0 and to actually be delivered.
+    // pending_payment / pending_verification / orphaned "paid with no payment" orders
+    // are excluded — they aren't actually completed yet.
+    const isRealPaid = o => o.status === 'paid' && !!o.razorpay_payment_id && Number(o.totalAmount || o.total || 0) > 0;
+    const isFreeCompleted = o => !isRealPaid(o) && Number(o.totalAmount || o.total || 0) === 0
+      && (o.deliveryStatus === 'delivered' || o.status === 'delivered');
+
+    const validOrdersCount = orderSnap.docs.filter(d => {
+      const o = d.data();
+      if (o.trash) return false;
+      return isRealPaid(o) || isFreeCompleted(o);
+    }).length;
     window.REAL_ORDERS = validOrdersCount; 
 
     // 2. Exact logic from Admin Panel "Customers / Users" (Serial End Number)
