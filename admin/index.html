@@ -598,23 +598,6 @@ async function renderAnalytics() {
   }
 }
 
-async function updateStats() {
-  const validOrders = orders.filter(o => ['paid', 'delivered', 'pending_verification'].includes(o.status) && !o.trash);
-  
-  // Initially show stats for loaded orders
-  document.getElementById('s-total').textContent = validOrders.length;
-  document.getElementById('s-rev').textContent   = '₹' + validOrders.reduce((s,o)=>s+Number(o.totalAmount||o.total||0),0);
-  document.getElementById('s-pend').textContent  = validOrders.filter(o=>o.status==='pending_verification').length;
-  
-  try {
-    const statDoc = await db.collection('counters').doc('stats').get();
-    if (statDoc.exists) {
-      document.getElementById('s-unique').textContent = statDoc.data().uniqueBuyersCount || 0;
-    }
-  } catch (e) {
-    console.error('Failed to fetch counters:', e);
-  }
-}
 function setTab(filter, el) {
   curFilter = filter;
   document.querySelectorAll('.sb-link').forEach(l=>l.classList.remove('on'));
@@ -818,9 +801,13 @@ async function loadUsers() {
     registered.forEach(u => {
       if (u.email) {
         emailData[u.email.toLowerCase()] = {
+          // IMPORTANT: never fall back to lastLogin here — lastLogin updates on
+          // every sign-in, which made the date column jump to "today" whenever
+          // a user just logged in without placing any new order. Only real
+          // account-creation date (or '—' if truly missing) should show here.
           name: u.name || 'Pookie User',
           email: u.email,
-          createdAt: u.createdAt || u.lastLogin,
+          createdAt: u.createdAt || null,
           isUser: true,
           count: 0
         };
@@ -846,8 +833,11 @@ async function loadUsers() {
       const tc = o.orders ? o.orders.length : (o.items ? o.items.length : 1);
       emailData[em].count += tc;
       
-      // Update most recent activity date if guest
-      if (!emailData[em].isUser && o.createdAt && (!emailData[em].createdAt || o.createdAt > emailData[em].createdAt)) {
+      // "Last Active" = most recent ORDER date, for both guests and registered users.
+      // (Deliberately not using Firebase Auth's lastLogin here — that updates on every
+      // sign-in even without a new order, which made this column jump to "today" and
+      // looked like the order date had changed.)
+      if (o.createdAt && (!emailData[em].createdAt || o.createdAt > emailData[em].createdAt)) {
          emailData[em].createdAt = o.createdAt;
       }
     });
@@ -957,13 +947,16 @@ async function loadSuggestions() {
 
 async function updateStats() {
   const activeOrders = orders.filter(o => !o.trash);
-  const paidOrders = activeOrders.filter(o => Number(o.totalAmount || o.total || 0) > 0);
-  const unpaidOrders = activeOrders.filter(o => Number(o.totalAmount || o.total || 0) === 0);
+  // Core rule: an order only counts as "Paid" when it was actually paid AND delivered.
+  // Phase-1 orphans (status:'paid' but deliveryStatus never set), free/test orders (₹0),
+  // and pending_payment orders all fall into "Free/Unpaid" instead.
+  const paidOrders = activeOrders.filter(o => o.status === 'paid' && o.deliveryStatus === 'delivered');
+  const unpaidOrders = activeOrders.filter(o => !(o.status === 'paid' && o.deliveryStatus === 'delivered'));
   
   // Show stats:
-  // s-total = Paid Orders count
-  // s-rev = Total Revenue from paid orders
-  // s-pend = Free/Unpaid Orders count (₹0)
+  // s-total = Paid & Delivered Orders count
+  // s-rev = Total Revenue from paid & delivered orders
+  // s-pend = Free/Unpaid Orders count (orphans + free + pending)
   document.getElementById('s-total').textContent = paidOrders.length;
   document.getElementById('s-rev').textContent   = '₹' + paidOrders.reduce((s,o)=>s+Number(o.totalAmount||o.total||0),0);
   document.getElementById('s-pend').textContent  = unpaidOrders.length;
@@ -982,8 +975,8 @@ function renderTable() {
   const activeOrders = orders.filter(o => !o.trash);
   let list = activeOrders;
   
-  if (curFilter === 'paid')      list = activeOrders.filter(o => Number(o.totalAmount || o.total || 0) > 0);
-  if (curFilter === 'unpaid')    list = activeOrders.filter(o => Number(o.totalAmount || o.total || 0) === 0);
+  if (curFilter === 'paid')      list = activeOrders.filter(o => o.status === 'paid' && o.deliveryStatus === 'delivered');
+  if (curFilter === 'unpaid')    list = activeOrders.filter(o => !(o.status === 'paid' && o.deliveryStatus === 'delivered'));
   if (curFilter === 'delivered') list = activeOrders.filter(o => o.deliveryStatus === 'delivered' || o.status === 'delivered');
   if (curFilter === 'trash')     list = orders.filter(o => o.trash === true);
   if (curFilter === 'lifetime')  list = activeOrders.filter(o => o.lifetime === true);
@@ -1000,12 +993,25 @@ function renderTable() {
     const isZT = ztTemplates.includes(o.templateId || (o.items?.[0]?.id));
     const amount = Number(o.totalAmount || o.total || 0);
     
-    let sLabel = amount > 0 ? 'Paid' : 'Free Order';
-    let sCls = amount > 0 ? 'badge-delivered' : 'badge-pending';
-    
-    if (o.deliveryStatus === 'delivered' || o.status === 'delivered') { 
-      sLabel = amount > 0 ? 'Delivered' : 'Free Delivered'; 
-      sCls = 'badge-delivered'; 
+    const isDelivered = o.deliveryStatus === 'delivered' || o.status === 'delivered';
+    let sLabel, sCls;
+
+    if (o.status === 'paid' && isDelivered) {
+      sLabel = amount > 0 ? 'Delivered' : 'Free Delivered';
+      sCls = 'badge-delivered';
+    } else if (o.status === 'paid' && !isDelivered) {
+      // Phase-1 orphan: payment went through but form/delivery never completed
+      sLabel = 'Paid — Not Delivered ⚠️';
+      sCls = 'badge-pending';
+    } else if (amount === 0 && isDelivered) {
+      sLabel = 'Free Delivered';
+      sCls = 'badge-delivered';
+    } else if (o.status === 'pending_payment') {
+      sLabel = 'Pending Payment';
+      sCls = 'badge-pending';
+    } else {
+      sLabel = amount > 0 ? 'Unpaid' : 'Free Order';
+      sCls = 'badge-pending';
     }
     
     const dt = o.createdAt?.toDate?.().toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) || '—';
