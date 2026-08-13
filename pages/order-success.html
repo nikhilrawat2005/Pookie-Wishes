@@ -179,15 +179,7 @@
     const text = encodeURIComponent(`Hi! I need help with my Pookie Wishes order. Order ID: ${ORDER_ID}`);
     document.getElementById('wa-link').href = `https://wa.me/${wa}?text=${text}`;
 
-    // Mark order as paid if it's currently pending_payment
-    if(window.fbReady && ORDER_ID !== '—') {
-      try {
-        await firebase.firestore().collection('orders').doc(ORDER_ID).update({
-          status: 'paid',
-          paymentConfirmedAt: firebase.firestore.FieldValue.serverTimestamp()
-        });
-      } catch(e) { console.warn("Could not mark order as paid", e); }
-    }
+
   });
 
   window.addEventListener('load', () => { 
