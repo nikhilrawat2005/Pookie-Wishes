@@ -8,6 +8,10 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500&family=Outfit:wght@200;300;400;500;600&display=swap" rel="stylesheet">
+<!-- Firebase SDK & Template Loader -->
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+<script src="../js/template-loader.js"></script>
 <style>
 /* ============================================================
    DESIGN SYSTEM — Raksha Bandhan Cinematic Reel
@@ -822,9 +826,31 @@ window.addEventListener('resize', scaleStage);
    DATA INJECTION
 ================================================================ */
 function applyData(d) {
-  const set  = (id, v) => { const e = document.getElementById(id); if (e && v) e.innerHTML = v; };
-  const text = (id, v) => { const e = document.getElementById(id); if (e && v) e.textContent = v; };
-  if (d.scene1) { text('s1-eyebrow', d.scene1.eyebrow); set('s1-sub', d.scene1.sub); }
+  if (!d) return;
+  const recipient = d.recipientName || d.recipient_name || d.name || "Pookie";
+  const sender = d.senderName || d.sender_name || d.sender || "Your Name Here";
+  const customMessage = d.message || d.wishMessage || "";
+  const photos = d.photos || [];
+
+  // Helper function to replace placehoder texts in strings
+  const replaceVars = (str) => {
+    if (!str || typeof str !== 'string') return str;
+    return str
+      .replace(/XYZ/gi, recipient)
+      .replace(/POOKIE/gi, recipient)
+      .replace(/RECIPIENT/gi, recipient)
+      .replace(/Your Name Here/gi, sender)
+      .replace(/\[Sender\]/gi, sender)
+      .replace(/\[Recipient\]/gi, recipient);
+  };
+
+  const set  = (id, v) => { const e = document.getElementById(id); if (e && v) e.innerHTML = replaceVars(v); };
+  const text = (id, v) => { const e = document.getElementById(id); if (e && v) e.textContent = replaceVars(v); };
+  
+  if (d.scene1) { 
+    text('s1-eyebrow', d.scene1.eyebrow); 
+    set('s1-sub', d.scene1.sub); 
+  }
   if (d.scene2) set('s2-sub', d.scene2.sub);
   if (d.scene3) set('s3-sub', d.scene3.sub);
   if (d.scene4) set('s4-desc', d.scene4.desc);
@@ -835,13 +861,73 @@ function applyData(d) {
     if (d.scene5.memoryDescs) d.scene5.memoryDescs.forEach((m, i) => text('mem' + i + '-desc', m));
   }
   if (d.scene6) set('s6-quote', d.scene6.quote);
-  if (d.scene6b) { text('s6b-eyebrow', d.scene6b.eyebrow); set('s6b-heading', d.scene6b.heading); set('s6b-note', d.scene6b.note); }
-  if (d.scene7) { text('s7-eyebrow', d.scene7.eyebrow); text('s7-heading', d.scene7.heading); set('s7-wishes', d.scene7.wishes); }
-  if (d.senderName) text('s8-name', d.senderName);
+  if (d.scene6b) { 
+    text('s6b-eyebrow', d.scene6b.eyebrow); 
+    set('s6b-heading', d.scene6b.heading); 
+  }
+  
+  // Set Scene 6B note (Personal Rakhi Note / Message)
+  if (customMessage) {
+    set('s6b-note', customMessage.replace(/\n/g, '<br>'));
+  } else if (d.scene6b && d.scene6b.note) {
+    set('s6b-note', d.scene6b.note);
+  }
+
+  if (d.scene7) { 
+    text('s7-eyebrow', d.scene7.eyebrow); 
+    text('s7-heading', d.scene7.heading); 
+    set('s7-wishes', d.scene7.wishes); 
+  }
+  
+  text('s8-name', sender);
   if (d.scene8 && d.scene8.withLove) text('s8-with-love', d.scene8.withLove);
   if (d.year) text('s8-year', d.year);
+
+  // Update recipient & sender placeholders across all DOM text nodes
+  if (window.bindPookiePlaceholders) {
+    window.bindPookiePlaceholders({
+      recipientName: recipient,
+      senderName: sender,
+      message: customMessage
+    });
+  }
+
+  // Update photos if provided in order data
+  if (photos && photos.length > 0) {
+    const s4Img = document.querySelector('#s4 .frame-wrap img');
+    if (s4Img && photos[0]) s4Img.src = photos[0];
+
+    const tlImgs = document.querySelectorAll('#s5 .tl-node img');
+    photos.slice(0, 3).forEach((imgUrl, i) => {
+      if (tlImgs[i]) tlImgs[i].src = imgUrl;
+    });
+  }
 }
-fetch('data.json').then(r => r.json()).then(applyData).catch(() => {});
+
+async function initRakshabandhan() {
+  let defaultData = {};
+  try {
+    const r = await fetch('data.json');
+    if (r.ok) defaultData = await r.json();
+  } catch(e) {}
+
+  if (window.getPookieData) {
+    try {
+      const orderData = await window.getPookieData('rakshabandhan');
+      if (orderData) {
+        // Merge data.json structure with order dynamic data
+        const mergedData = Object.assign({}, defaultData, orderData);
+        applyData(mergedData);
+        return;
+      }
+    } catch(e) {
+      console.log('Using default data fallback due to:', e);
+    }
+  }
+  applyData(defaultData);
+}
+
+initRakshabandhan();
 
 /* ================================================================
    PARTICLES
