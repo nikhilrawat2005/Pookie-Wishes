@@ -244,6 +244,8 @@
     <div class="sb-divider"></div>
     
     <div class="sb-link on" data-tab="all" onclick="setTab('all',this)"><i data-lucide="layers"></i> All Orders</div>
+    <div class="sb-link" data-tab="paid" onclick="setTab('paid',this)"><i data-lucide="check-circle-2"></i> Paid Orders</div>
+    <div class="sb-link" data-tab="unpaid" onclick="setTab('unpaid',this)"><i data-lucide="clock"></i> Unpaid / Pending</div>
     <div class="sb-link" data-tab="trash" onclick="setTab('trash',this)"><i data-lucide="trash-2"></i> Trash / Recovery</div>
     <div class="sb-link" data-tab="broadcast" onclick="setTab('broadcast',this)"><i data-lucide="send"></i> Broadcast / Email</div>
     <div class="sb-link" data-tab="lifetime" onclick="setTab('lifetime',this)"><i data-lucide="gem"></i> Lifetime</div>
@@ -276,9 +278,9 @@
         <div class="stat-l">Unique Customers</div>
       </div>
       <div class="stat-c">
-        <i data-lucide="hash"></i>
-        <div class="stat-n" id="s-total">0</div>
-        <div class="stat-l">Total Orders (Paid)</div>
+        <i data-lucide="check-circle-2"></i>
+        <div class="stat-n" id="s-total" style="color:var(--mint);">0</div>
+        <div class="stat-l">Total Paid Orders</div>
       </div>
       <div class="stat-c">
         <i data-lucide="indian-rupee"></i>
@@ -288,7 +290,7 @@
       <div class="stat-c">
         <i data-lucide="clock"></i>
         <div class="stat-n" id="s-pend" style="color:#fcd34d;">0</div>
-        <div class="stat-l">Paid / Verifying</div>
+        <div class="stat-l">Unpaid / Pending</div>
       </div>
     </div>
 
@@ -953,27 +955,53 @@ async function loadSuggestions() {
   }
 }
 
-function renderTable() {
-  const validOrders = orders.filter(o => !o.trash && ['paid', 'delivered', 'pending_verification'].includes(o.status));
-  let list = validOrders;
+async function updateStats() {
+  const paidOrders = orders.filter(o => !o.trash && ['paid', 'delivered'].includes(o.status));
+  const unpaidOrders = orders.filter(o => !o.trash && !['paid', 'delivered'].includes(o.status));
   
-  if(curFilter==='delivered') list = validOrders.filter(o=>o.deliveryStatus==='delivered' || o.status==='delivered');
-  if(curFilter==='trash')     list = orders.filter(o=>o.trash === true);
-  if(curFilter==='lifetime')  list = validOrders.filter(o=>o.lifetime === true);
+  // Update stats counters
+  document.getElementById('s-total').textContent = paidOrders.length;
+  document.getElementById('s-rev').textContent   = '₹' + paidOrders.reduce((s,o)=>s+Number(o.totalAmount||o.total||0),0);
+  document.getElementById('s-pend').textContent  = unpaidOrders.length;
+  
+  try {
+    const statDoc = await db.collection('counters').doc('stats').get();
+    if (statDoc.exists) {
+      document.getElementById('s-unique').textContent = statDoc.data().uniqueBuyersCount || 0;
+    }
+  } catch (e) {
+    console.error('Failed to fetch counters:', e);
+  }
+}
+
+function renderTable() {
+  const activeOrders = orders.filter(o => !o.trash);
+  let list = activeOrders;
+  
+  if (curFilter === 'paid')      list = activeOrders.filter(o => ['paid', 'delivered'].includes(o.status));
+  if (curFilter === 'unpaid')    list = activeOrders.filter(o => !['paid', 'delivered'].includes(o.status));
+  if (curFilter === 'delivered') list = activeOrders.filter(o => o.deliveryStatus === 'delivered' || o.status === 'delivered');
+  if (curFilter === 'trash')     list = orders.filter(o => o.trash === true);
+  if (curFilter === 'lifetime')  list = activeOrders.filter(o => o.lifetime === true);
   
   if(!list.length) {
     document.getElementById('tbl-body').innerHTML = '<div class="empty">No orders found.</div>';
     return;
   }
   
-  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers', 'wedding', 'hiphop', 'anniversary-journey', 'ninja-game'];
+  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers', 'wedding', 'hiphop', 'anniversary-journey', 'ninja-game', 'rakshabandhan'];
 
   let html = list.map(o => {
     const oid = o.orderId || o._docId;
     const isZT = ztTemplates.includes(o.templateId || (o.items?.[0]?.id));
-    let sLabel = o.status, sCls = 'badge-pending';
-    if(o.deliveryStatus==='delivered') { sLabel='Delivered'; sCls='badge-delivered'; }
-    else if(o.status==='paid') { sLabel='Paid / Info Req'; sCls='badge-verified'; }
+    let sLabel = o.status || 'pending', sCls = 'badge-pending';
+    if (o.deliveryStatus === 'delivered' || o.status === 'delivered') { 
+      sLabel = 'Delivered'; sCls = 'badge-delivered'; 
+    } else if (o.status === 'paid') { 
+      sLabel = 'Paid'; sCls = 'badge-verified'; 
+    } else if (o.status === 'pending_payment' || o.status === 'pending') {
+      sLabel = 'Unpaid'; sCls = 'badge-pending';
+    }
     
     const dt = o.createdAt?.toDate?.().toLocaleDateString('en-IN',{day:'2-digit',month:'short'}) || '—';
     const tpl = o.templateId || (o.items?.[0]?.name) || 'Unknown';
