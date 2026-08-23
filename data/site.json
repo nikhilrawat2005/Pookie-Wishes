@@ -463,14 +463,15 @@
       "currency": "₹",
       "currencyCode": "INR",
       "hasPhotos": false,
-      "demoUrl": "../rakshabandhan/index.html",
+      "demoUrl": "../templates/rakshabandhan-template/index.html",
       "tags": [
         "rakhi",
         "rakshabandhan",
         "festival",
         "sibling",
         "love",
-        "family"
+        "family",
+        "wishes"
       ],
       "shortDesc": "A sacred and heartfelt Raksha Bandhan surprise filled with memories, rakhi themes, and personal notes.",
       "longDesc": "Celebrate the special bond of protection and love. A journey through memories, sacred vows, childhood nostalgia, and a heartfelt personal note for your brother or sister.",
@@ -485,7 +486,7 @@
         { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this surprise" }
       ],
       "media": {
-        "thumbnail": "rakshabandhan/assets/images/gen-scene1-hero.jpg",
+        "thumbnail": "templates/rakshabandhan-template/assets/images/gen-scene1-hero.jpg",
         "gallery": []
       }
     },
