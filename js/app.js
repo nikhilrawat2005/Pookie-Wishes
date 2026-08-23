@@ -88,19 +88,59 @@ function syncCartWithSite() { if (!SITE?.templates?.length || !Array.isArray(car
   const bg = ph === 'hk' ? 'linear-gradient(135deg,#fff0f4,#f4eeff,#eef4ff)' : 'linear-gradient(135deg,#f5eee8,#f0ece0,#eaeaf5)';
   const search = [t.name, ...(t.tags||[]), t.vibe||''].join(' ').toLowerCase();
   const detailUrl = `${ROOT}pages/template.html?t=${t.id}`;
-  const addBtnLabel = inCart ? '🛒 In Cart' : '🛒 Add to Cart';
+  const demoUrl = t.demoUrl ? (isPages ? t.demoUrl : t.demoUrl.replace('../', '')) : `${ROOT}templates/${t.id}-template/index.html`;
+  const addBtnLabel = inCart ? '🛒 In Cart' : '＋ Cart';
   
   const salePrice = getEffectivePrice(t);
+  const hasMusic = ['rakshabandhan', 'rakshabandhan2', 'celestial', 'sorry', 'anniversary-journey', 'wedding'].includes(t.id);
 
   const priceHTML = `<span class="t-price-wrap"><span class="t-price">${t.currency||'₹'}${salePrice}</span></span>`;
-
-  const saleLabelHTML = '';
-  const badgeHTML = '';
   
   const imgHTML = t.media?.thumbnail ? `<img class="t-thumb" src="${ROOT}${t.media.thumbnail}" alt="${t.name}" loading="lazy" onerror="this.style.display='none';this.nextElementSibling.removeAttribute('style')">` : '';
   const phHTML = `<div class="t-ph ${ph}" ${t.media?.thumbnail ? 'style="display:none"' : `style="background:${bg}"`}> <span class="ph-emoji">${t.emoji}</span></div>`;
   
-  return ` <div class="t-card ${t.special ? 't-special' : ''}" data-id="${t.id}" data-search="${search}" onclick="pookieNav('${detailUrl}')"> <div class="t-media"> ${imgHTML}${phHTML} ${t.badge ? `<span class="t-badge ${t.badge.includes('New') ? 'new' : ''}">${t.badge}</span>` : ''} ${badgeHTML} ${!t.special && typeof PAGE !== 'undefined' && PAGE === 'favorites' ? ` <div class="t-card-actions" onclick="event.stopPropagation()"> <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}" onclick="toggleFav('${t.id}',event)">${isFav?'💖':'🤍'}</button> </div>` : ''} </div> <div class="t-body"> <div class="t-meta"> <span class="t-name">${t.name}</span> ${priceHTML} </div> ${saleLabelHTML} <div class="t-tagline">${t.tagline}</div> <div class="t-card-btns" onclick="event.stopPropagation()"> ${t.special ? `<button class="btn btn-primary btn-full" onclick="pookieNav('${detailUrl}')">Customise Now</button>` : ` <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">${addBtnLabel}</button> <button class="btn btn-primary" onclick="createSurprise('${t.id}',event)">Create Surprise</button> ` } </div> </div> </div>`;
+  return `
+    <div class="t-card ${t.special ? 't-special' : ''}" data-id="${t.id}" data-search="${search}" onclick="pookieNav('${detailUrl}')">
+      <div class="t-media">
+        ${imgHTML}${phHTML}
+        <div class="t-badges-wrap">
+          ${t.badge ? `<span class="t-badge ${t.badge.includes('New') ? 'new' : ''}">${t.badge}</span>` : ''}
+          ${hasMusic ? `<span class="t-music-pill">🎵 Music</span>` : ''}
+        </div>
+        <!-- Card Quick Action Hover Bar -->
+        <div class="t-media-overlay" onclick="event.stopPropagation()">
+          <a href="${demoUrl}" target="_blank" rel="noopener noreferrer" class="btn-demo-quick" title="Test Live Interactive Surprise">
+            <i class="ph ph-eye" style="font-size:14px"></i>
+            Live Demo
+          </a>
+        </div>
+        ${!t.special && typeof PAGE !== 'undefined' && PAGE === 'favorites' ? `
+          <div class="t-card-actions" onclick="event.stopPropagation()">
+            <button class="card-icon-btn fav ${isFav?'on':''}" data-fav="${t.id}" onclick="toggleFav('${t.id}',event)">${isFav?'💖':'🤍'}</button>
+          </div>
+        ` : ''}
+      </div>
+      <div class="t-body">
+        <div class="t-meta">
+          <span class="t-name">${t.name}</span>
+          ${priceHTML}
+        </div>
+        <div class="t-tagline">${t.tagline}</div>
+        <div class="t-card-btns" onclick="event.stopPropagation()">
+          ${t.special ? `
+            <button class="btn btn-primary btn-full" onclick="pookieNav('${detailUrl}')">Customise Now</button>
+          ` : `
+            <a href="${demoUrl}" target="_blank" rel="noopener noreferrer" class="btn btn-demo-card">
+              <i class="ph ph-eye" style="font-size:14px"></i>
+              Demo
+            </a>
+            <button class="btn btn-outline" onclick="addToCart('${t.id}',event)">${addBtnLabel}</button>
+            <button class="btn btn-primary btn-cta-surprise" onclick="createSurprise('${t.id}',event)">Create</button>
+          `}
+        </div>
+      </div>
+    </div>
+  `;
 } function buildSeeMoreCard(cat) { return ''; }
 let currentHomeCategory = 'all';
 

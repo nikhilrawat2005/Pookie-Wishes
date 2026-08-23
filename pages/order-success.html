@@ -611,7 +611,8 @@
                     ${orderItem.templateName || 'Digital Gift'}
                 </div>
                 <div style="font-family:var(--fm); font-size:0.8rem; color:var(--text2); word-break:break-all; margin-bottom:15px; background:rgba(255,255,255,0.5); padding:8px; border-radius:8px; border:1px solid rgba(0,0,0,0.05);">${link}</div>
-                <div style="display:flex; gap:10px;">
+                <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                    <a href="https://api.whatsapp.com/send?text=${encodeURIComponent(`🎁 I have created a special interactive surprise for you! Open it here: ${link}`)}" target="_blank" rel="noopener noreferrer" class="btn btn-sm" style="background:#25D366; color:#fff; border:none;">💬 WhatsApp</a>
                     <button class="btn btn-soft btn-sm" onclick="navigator.clipboard.writeText('${link}');toast('Link ${i+1} Copied!','ok')">📋 Copy Link</button>
                     <a href="${link}" target="_blank" class="btn btn-primary btn-sm">Visit ✨</a>
                 </div>

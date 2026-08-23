@@ -92,11 +92,15 @@
 
   <!-- Left: Content -->
   <div class="hero-content">
+    <div class="hero-eyebrow-pill reveal">
+      <span class="pulse-dot"></span>
+      <span>Ultra-Personalised Interactive Web Experiences</span>
+    </div>
     <h1 class="hero-heading reveal">
       Digital Surprises<br>That <em>Hit Different</em>
     </h1>
     <p class="hero-sub reveal">
-      Custom interactive surprise websites for every special moment. Share via a private link. Starting at ₹29.
+      Create an unforgettable interactive surprise website for your pookie — featuring mini-games, dynamic love letters, songs & secret reveals. Delivered via private link.
     </p>
     <div class="hero-ctas reveal">
       <button
@@ -105,27 +109,83 @@
         onclick="openModal('modal-template-selector')"
         aria-label="Create a surprise — choose a template"
       >
+        <i class="ph ph-sparkle" style="font-size:18px"></i>
         Create a Surprise
         <i class="ph ph-arrow-right" style="font-size:16px"></i>
       </button>
       <a href="#browse-templates" class="btn btn-ghost btn-lg" id="hero-cta-secondary">
-        See Templates
+        <i class="ph ph-eye" style="font-size:16px"></i>
+        Explore All Vibes
       </a>
+    </div>
+
+    <!-- Trust proof metrics -->
+    <div class="hero-trust-bar reveal">
+      <div class="trust-item">
+        <i class="ph ph-lightning" style="color:var(--gold);font-size:16px"></i>
+        <span>Ready in <strong>60 Seconds</strong></span>
+      </div>
+      <div class="trust-sep"></div>
+      <div class="trust-item">
+        <i class="ph ph-lock-key" style="color:var(--pink);font-size:16px"></i>
+        <span><strong>100% Private</strong> Link</span>
+      </div>
+      <div class="trust-sep"></div>
+      <div class="trust-item">
+        <i class="ph ph-star-fill" style="color:var(--gold);font-size:16px"></i>
+        <span><strong>4.9/5</strong> Sibling & Love Rating</span>
+      </div>
     </div>
   </div>
 
-  <!-- Right: Visual -->
+  <!-- Right: Interactive Device Showcase -->
   <div class="hero-visual" aria-hidden="true">
-    <div class="hero-img-wrap reveal">
-      <img
-        src="assets/hero-visual.png"
-        alt="A glowing digital gift box representing a personalised surprise"
-        loading="eager"
-        decoding="async"
-        width="560"
-        height="420"
-      >
-      <!-- Floating stat pill containing both dynamic counts -->
+    <div class="hero-mockup-wrap reveal">
+      <!-- Floating decorative card left -->
+      <div class="float-card float-card-1">
+        <span class="fc-icon">💌</span>
+        <div class="fc-text">
+          <strong>Secret Note</strong>
+          <span>Typewriter reveal ✨</span>
+        </div>
+      </div>
+
+      <!-- Floating decorative card right -->
+      <div class="float-card float-card-2">
+        <span class="fc-icon">🎵</span>
+        <div class="fc-text">
+          <strong>Custom Track</strong>
+          <span>Plays with animation</span>
+        </div>
+      </div>
+
+      <!-- Floating Smartphone Device Frame -->
+      <div class="hero-phone-device">
+        <div class="phone-speaker"></div>
+        <div class="phone-screen">
+          <div class="screen-header">
+            <span class="screen-badge">🌸 Raksha Bandhan & Birthday</span>
+          </div>
+          <div class="screen-animation-box">
+            <div class="animated-rakhi-glow">✨</div>
+            <div class="screen-hero-title">Happy Birthday, Pookie! 🎀</div>
+            <div class="screen-typewriter-mock">
+              <span id="hero-typewriter-text">"You are my favourite person in the whole universe..."</span>
+              <span class="cursor-blink"></span>
+            </div>
+            <div class="screen-mini-cards">
+              <div class="mini-card-item active">📸 Memory 1</div>
+              <div class="mini-card-item">🍰 Cake Cut</div>
+              <div class="mini-card-item">📜 Certificate</div>
+            </div>
+          </div>
+          <div class="screen-bottom-action">
+            <button class="screen-btn-demo" onclick="window.location.href='#browse-templates'">Tap to Preview Experience 💖</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Live Counters Pill -->
       <div class="hero-stat-pill" aria-label="Surprise Statistics">
         <div>
           <span class="stat-num" id="offer-order-count">--</span>
@@ -137,8 +197,9 @@
           <span class="stat-label">Users<br>Joined</span>
         </div>
       </div>
+
       <!-- Price pill -->
-      <div class="hero-price-pill">Starting at ₹29</div>
+      <div class="hero-price-pill">From ₹29</div>
     </div>
   </div>
 </section>

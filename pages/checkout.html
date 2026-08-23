@@ -551,7 +551,14 @@ function adaptCheckoutForm(cartItems) {
       } else if (detail.type === "textarea") {
         fieldsHTML += `
           <div class="f-group">
-            <label class="f-label">${detail.label} ${detail.required ? '*' : '<span class="opt">(Optional)</span>'}</label>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
+              <label class="f-label" style="margin-bottom:0;">${detail.label} ${detail.required ? '*' : '<span class="opt">(Optional)</span>'}</label>
+              <div class="msg-prompt-chips">
+                <button type="button" class="chip-prompt" onclick="insertSampleMessage('${fieldId}', 'emotional')">✨ Sweet & Emotional</button>
+                <button type="button" class="chip-prompt" onclick="insertSampleMessage('${fieldId}', 'playful')">😂 Playful</button>
+                <button type="button" class="chip-prompt" onclick="insertSampleMessage('${fieldId}', 'short')">💌 Deep</button>
+              </div>
+            </div>
             <textarea class="f-inp" id="${fieldId}" data-tpl-idx="${tplIdx}" data-key="${detail.key}" rows="3" placeholder="${placeholderVal}">${defaultVal}</textarea>
           </div>
         `;
@@ -600,6 +607,19 @@ function adaptCheckoutForm(cartItems) {
       updateFiles(e.dataTransfer.files, tplIdx, max);
     });
   });
+}
+
+function insertSampleMessage(fieldId, type) {
+  const el = document.getElementById(fieldId);
+  if (!el) return;
+  const messages = {
+    emotional: "No matter how fast time flies or how busy life gets, you will always be my favourite person. Thank you for filling my world with so much warmth, laughter, and unforgettable memories. I cherish every single moment with you! ❤️✨",
+    playful: "Happy special day to my favourite troublemaker! Thanks for always being my partner-in-crime, stealing my snacks, and never judging my weirdness. Life is 100x more fun with you around! 😂🍕🎉",
+    short: "To the one who makes everything brighter and better just by being in it. Forever grateful for you. Always and unconditionally. 💖"
+  };
+  el.value = messages[type] || messages.emotional;
+  el.dispatchEvent(new Event('input', { bubbles: true }));
+  el.focus();
 }
 
 function toggleStickers(tplIdx, checked, templateId) {
