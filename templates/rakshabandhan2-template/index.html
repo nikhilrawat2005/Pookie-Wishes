@@ -584,29 +584,25 @@
       opacity: 0.8;
     }
 
-    .diya-row {
+    .rakhi-motif-row {
       display: flex;
-      gap: clamp(4px, 1vmin, 10px);
+      gap: clamp(6px, 1.2vmin, 12px);
       margin-top: 1.5%;
       opacity: 0;
       transition: opacity 0.7s ease 1.45s;
     }
-    .card.revealed .diya-row { opacity: 1; }
-    .diya {
-      width: clamp(4.5px, 0.7vmin, 7px);
-      height: clamp(4.5px, 0.7vmin, 7px);
-      border-radius: 50%;
-      background: radial-gradient(circle, #FFD040 40%, #FF8800 100%);
-      box-shadow: 0 0 5px 2px rgba(255, 150, 25, 0.45);
-      animation: diapulse 2s ease-in-out infinite alternate;
+    .card.revealed .rakhi-motif-row { opacity: 1; }
+    .rakhi-petal-dot {
+      font-size: clamp(8px, 1.3vmin, 12px);
+      animation: rakhiGlow 2.5s ease-in-out infinite alternate;
     }
-    .diya:nth-child(2){animation-delay:.4s}
-    .diya:nth-child(3){animation-delay:.8s}
-    .diya:nth-child(4){animation-delay:1.2s}
-    .diya:nth-child(5){animation-delay:1.6s}
-    @keyframes diapulse {
-      from { opacity:.55; transform:scale(.85); }
-      to   { opacity:1;   transform:scale(1.15); }
+    .rakhi-petal-dot:nth-child(2){animation-delay:.4s}
+    .rakhi-petal-dot:nth-child(3){animation-delay:.8s}
+    .rakhi-petal-dot:nth-child(4){animation-delay:1.2s}
+    .rakhi-petal-dot:nth-child(5){animation-delay:1.6s}
+    @keyframes rakhiGlow {
+      from { opacity:.6; transform:scale(.9); filter: drop-shadow(0 0 2px rgba(200,55,85,0.3)); }
+      to   { opacity:1;  transform:scale(1.15); filter: drop-shadow(0 0 8px rgba(201,154,69,0.7)); }
     }
 
     .hand-scene {
@@ -767,13 +763,15 @@
     }
     .cert-frame-luxury {
       width: 100%;
-      height: 62%;
-      background: url('assets/cert_bg.jpg') center center / cover no-repeat;
-      border: 2px solid var(--gold-primary);
-      border-radius: 8px;
-      padding: clamp(10px, 2vmin, 14px) clamp(12px, 2.5vmin, 18px);
+      height: 64%;
+      background: linear-gradient(135deg, #FFFDF8 0%, #FAF4E8 50%, #F5ECDA 100%);
+      border: 3px double #C99545;
+      outline: 1px solid rgba(184, 58, 8, 0.35);
+      outline-offset: -7px;
+      border-radius: 12px;
+      padding: clamp(12px, 2vmin, 16px) clamp(14px, 2.5vmin, 20px);
       position: relative;
-      box-shadow: 0 14px 36px rgba(61, 25, 11, 0.16);
+      box-shadow: 0 14px 36px rgba(61, 25, 11, 0.14), inset 0 0 20px rgba(201, 149, 69, 0.08);
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -782,47 +780,48 @@
     }
     .cert-title-lux {
       font-family: var(--font-display);
-      font-size: clamp(11.5px, 2.4vmin, 17px);
-      letter-spacing: 0.12em;
+      font-size: clamp(12px, 2.4vmin, 18px);
+      letter-spacing: 0.14em;
       text-transform: uppercase;
       color: #7D2B05;
       font-weight: 700;
     }
     .cert-subtitle-lux {
-      font-size: clamp(7.5px, 1.15vmin, 10px);
-      letter-spacing: 0.18em;
+      font-size: clamp(7.5px, 1.15vmin, 10.5px);
+      letter-spacing: 0.2em;
       text-transform: uppercase;
       color: #9A5228;
-      margin-top: 2px;
+      margin-top: 3px;
       font-weight: 600;
     }
     .cert-seal-lux {
-      width: clamp(28px, 4.8vmin, 36px);
-      height: clamp(28px, 4.8vmin, 36px);
+      width: clamp(30px, 5vmin, 38px);
+      height: clamp(30px, 5vmin, 38px);
       border-radius: 50%;
       background: linear-gradient(135deg, #C99545 0%, #B83A08 100%);
       color: #FFF;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: clamp(12px, 2vmin, 16px);
-      margin: 4px 0;
-      box-shadow: 0 4px 12px rgba(184, 58, 8, 0.28);
+      font-size: clamp(14px, 2.2vmin, 18px);
+      margin: 6px 0;
+      box-shadow: 0 4px 14px rgba(184, 58, 8, 0.3);
+      border: 1.5px solid #FFF;
     }
     .cert-names-input {
       display: flex;
-      gap: 8px;
+      gap: 10px;
       align-items: center;
       justify-content: center;
-      margin: 4px 0;
+      margin: 6px 0;
     }
     .cert-name-text {
       font-family: var(--font-script);
-      font-size: clamp(17px, 3.2vmin, 24px);
+      font-size: clamp(18px, 3.4vmin, 26px);
       font-weight: 700;
       color: #5A1E04;
       border-bottom: 2px solid #B83A08;
-      padding: 0 6px 2px;
+      padding: 0 8px 2px;
       display: inline-block;
       min-width: 60px;
       text-align: center;
@@ -830,11 +829,11 @@
     .cert-desc-lux {
       font-family: var(--font-display);
       font-style: italic;
-      font-size: clamp(8px, 1.3vmin, 11.5px);
+      font-size: clamp(8.5px, 1.35vmin, 12px);
       color: #4A1B07;
-      max-width: 88%;
-      margin-top: 3px;
-      line-height: 1.35;
+      max-width: 90%;
+      margin-top: 4px;
+      line-height: 1.4;
       font-weight: 500;
     }
 
@@ -1273,9 +1272,12 @@
           <h1>Happy <em>Raksha&nbsp;Bandhan</em></h1>
           <p class="subtitle">May this thread of love protect you forever<br/>and bring endless joy to your journey.</p>
           <div class="orn-divider"><span class="orn-diamond">◆</span></div>
-          <div class="diya-row">
-            <div class="diya"></div><div class="diya"></div><div class="diya"></div>
-            <div class="diya"></div><div class="diya"></div>
+          <div class="rakhi-motif-row">
+            <span class="rakhi-petal-dot">🪷</span>
+            <span class="rakhi-petal-dot">🌸</span>
+            <span class="rakhi-petal-dot">✨</span>
+            <span class="rakhi-petal-dot">🌸</span>
+            <span class="rakhi-petal-dot">🪷</span>
           </div>
         </div>
 
@@ -1688,47 +1690,86 @@
     canvas.height = 800;
     const ctx = canvas.getContext('2d');
 
-    const bgImg = new Image();
-    bgImg.crossOrigin = 'anonymous';
-    bgImg.onload = () => {
-      ctx.drawImage(bgImg, 0, 0, 1200, 800);
+    // 1. Royal Ivory Parchment Background
+    const grad = ctx.createLinearGradient(0, 0, 1200, 800);
+    grad.addColorStop(0, '#FFFDF9');
+    grad.addColorStop(0.5, '#FBF5EB');
+    grad.addColorStop(1, '#F5ECDB');
+    ctx.fillStyle = grad;
+    ctx.fillRect(0, 0, 1200, 800);
 
-      // Certificate Title
-      ctx.font = 'bold 42px "Playfair Display", Georgia, serif';
-      ctx.fillStyle = '#7D2B05';
-      ctx.textAlign = 'center';
-      ctx.fillText('CERTIFICATE OF ETERNAL BOND', 600, 260);
+    // 2. Gold Filigree & Maroon Double Borders
+    ctx.strokeStyle = '#C99545';
+    ctx.lineWidth = 8;
+    ctx.strokeRect(30, 30, 1140, 740);
 
-      ctx.font = '600 22px "Plus Jakarta Sans", sans-serif';
-      ctx.fillStyle = '#9A5228';
-      ctx.fillText('RAKSHA BANDHAN 2026', 600, 310);
+    ctx.strokeStyle = 'rgba(184, 58, 8, 0.4)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(45, 45, 1110, 710);
 
-      // Sibling Names
-      ctx.font = 'bold 54px "Caveat", cursive';
-      ctx.fillStyle = '#5A1E04';
-      ctx.fillText(`${bName}   &   ${sName}`, 600, 440);
+    ctx.strokeStyle = '#C99545';
+    ctx.lineWidth = 1;
+    ctx.strokeRect(52, 52, 1096, 696);
 
-      // Divider line
-      ctx.strokeStyle = '#B83A08';
-      ctx.lineWidth = 3;
-      ctx.beginPath();
-      ctx.moveTo(340, 460);
-      ctx.lineTo(860, 460);
-      ctx.stroke();
-
-      // Description
-      ctx.font = 'italic 24px "Playfair Display", serif';
-      ctx.fillStyle = '#4A1B07';
-      ctx.fillText('"Certified to protect, tease, steal snacks,', 600, 540);
-      ctx.fillText('and love unconditionally forever and ever."', 600, 580);
-
-      ctx.font = '18px "Plus Jakarta Sans", sans-serif';
+    // Corner Ornaments
+    const drawCorner = (x, y) => {
       ctx.fillStyle = '#B83A08';
-      ctx.fillText('Official Seal of Siblinghood • Rakhi 2026', 600, 680);
-
-      callback(canvas);
+      ctx.font = '24px "Playfair Display", serif';
+      ctx.fillText('✦', x, y);
     };
-    bgImg.src = 'assets/cert_bg.jpg';
+    drawCorner(70, 75);
+    drawCorner(1130, 75);
+    drawCorner(70, 735);
+    drawCorner(1130, 735);
+
+    // 3. Certificate Title
+    ctx.font = 'bold 40px "Playfair Display", Georgia, serif';
+    ctx.fillStyle = '#7D2B05';
+    ctx.textAlign = 'center';
+    ctx.fillText('CERTIFICATE OF ETERNAL BOND', 600, 160);
+
+    ctx.font = '600 20px "Plus Jakarta Sans", sans-serif';
+    ctx.fillStyle = '#9A5228';
+    ctx.fillText('RAKSHA BANDHAN 2026', 600, 205);
+
+    // 4. Auspicious Lotus Seal
+    ctx.beginPath();
+    ctx.arc(600, 270, 34, 0, Math.PI * 2);
+    ctx.fillStyle = '#B83A08';
+    ctx.fill();
+    ctx.lineWidth = 3;
+    ctx.strokeStyle = '#C99545';
+    ctx.stroke();
+
+    ctx.font = '26px sans-serif';
+    ctx.fillStyle = '#FFF';
+    ctx.fillText('🪷', 600, 279);
+
+    // 5. Sibling Names
+    ctx.font = 'bold 56px "Caveat", cursive';
+    ctx.fillStyle = '#5A1E04';
+    ctx.fillText(`${bName}   &   ${sName}`, 600, 410);
+
+    // Divider underline
+    ctx.strokeStyle = '#B83A08';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(320, 435);
+    ctx.lineTo(880, 435);
+    ctx.stroke();
+
+    // 6. Description Text
+    ctx.font = 'italic 26px "Playfair Display", serif';
+    ctx.fillStyle = '#4A1B07';
+    ctx.fillText('"Certified to protect, tease, steal snacks,', 600, 525);
+    ctx.fillText('and love unconditionally forever and ever."', 600, 565);
+
+    // 7. Footer Seal & Brand
+    ctx.font = '600 18px "Plus Jakarta Sans", sans-serif';
+    ctx.fillStyle = '#9A5228';
+    ctx.fillText('Official Seal of Siblinghood • Sacred Promise 🌸', 600, 670);
+
+    callback(canvas);
   }
 
   document.getElementById('btnDownloadCert').addEventListener('click', () => {
