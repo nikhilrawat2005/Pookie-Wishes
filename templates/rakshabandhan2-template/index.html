@@ -1,0 +1,1977 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+  <title>Happy Raksha Bandhan 🌸</title>
+  <meta name="description" content="Wishing you a beautiful Raksha Bandhan filled with love, blessings, and the eternal bond of siblings." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=Caveat:wght@500;600;700&display=swap" rel="stylesheet" />
+  <!-- Firebase SDK & Template Loader -->
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
+  <script src="../../js/template-loader.js"></script>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg-cream: #F7EFE5;
+      --paper-ivory: #FCF8F2;
+      --text-dark: #3D190B;
+      --text-warm: #6B2F16;
+      --text-muted: #8E5336;
+      --accent-crimson: #B83A08;
+      --accent-rust: #C85420;
+      --gold-primary: #C99545;
+      --gold-subtle: rgba(201, 149, 69, 0.28);
+      --font-display: 'Playfair Display', Georgia, serif;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      --font-script: 'Caveat', cursive;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100dvh;
+      min-height: 100vh;
+      overflow: hidden;
+      font-family: var(--font-sans);
+      background: var(--bg-cream);
+      color: var(--text-dark);
+      -webkit-font-smoothing: antialiased;
+      position: fixed;
+      inset: 0;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       PAGE CANVAS (FULL VIEWPORT)
+    ══════════════════════════════════════════════════════ */
+    .page {
+      position: fixed;
+      inset: 0;
+      width: 100vw;
+      height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: url('assets/bg.jpg') center center / cover no-repeat;
+      z-index: 0;
+      padding: env(safe-area-inset-top, 10px) env(safe-area-inset-right, 10px) env(safe-area-inset-bottom, 10px) env(safe-area-inset-left, 10px);
+    }
+    .page::after {
+      content: '';
+      position: absolute; inset: 0;
+      background: linear-gradient(135deg,
+        rgba(247, 235, 218, 0.35) 0%,
+        rgba(190, 90, 45, 0.05) 50%,
+        rgba(245, 225, 195, 0.25) 100%);
+      pointer-events: none;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       TOP CONTROLS (RESPONSIVE MUSIC & SIBLING CODE)
+    ══════════════════════════════════════════════════════ */
+    .top-controls {
+      position: fixed;
+      top: max(12px, env(safe-area-inset-top));
+      right: max(12px, env(safe-area-inset-right));
+      display: flex;
+      align-items: center;
+      gap: clamp(6px, 1.5vw, 12px);
+      z-index: 60;
+    }
+    .music-player-pill {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(252, 248, 242, 0.94);
+      border: 1px solid rgba(201, 149, 69, 0.35);
+      border-radius: 30px;
+      padding: 5px 12px 5px 8px;
+      box-shadow: 0 6px 20px rgba(61, 25, 11, 0.12);
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      user-select: none;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .music-player-pill:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 24px rgba(184, 58, 8, 0.2);
+      border-color: var(--gold-primary);
+    }
+    .disc-icon {
+      width: clamp(22px, 3.5vmin, 26px);
+      height: clamp(22px, 3.5vmin, 26px);
+      border-radius: 50%;
+      background: linear-gradient(135deg, #C99545 0%, #B83A08 100%);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(10px, 1.8vmin, 13px);
+      animation: spin 3s linear infinite;
+      animation-play-state: paused;
+    }
+    .music-player-pill.playing .disc-icon {
+      animation-play-state: running;
+    }
+    @keyframes spin { 100% { transform: rotate(360deg); } }
+    .music-info {
+      display: flex;
+      flex-direction: column;
+    }
+    .music-title {
+      font-size: clamp(8.5px, 1.3vmin, 10px);
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--text-dark);
+      white-space: nowrap;
+    }
+    .music-status {
+      font-size: clamp(7.5px, 1.1vmin, 8.5px);
+      color: var(--accent-rust);
+      font-weight: 500;
+    }
+
+    .secret-code-pill {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(252, 248, 242, 0.94);
+      border: 1px solid rgba(201, 149, 69, 0.35);
+      border-radius: 30px;
+      padding: 6px 12px;
+      box-shadow: 0 6px 20px rgba(61, 25, 11, 0.12);
+      backdrop-filter: blur(8px);
+      cursor: pointer;
+      user-select: none;
+      font-size: clamp(8.5px, 1.3vmin, 10.5px);
+      font-weight: 600;
+      color: var(--text-warm);
+      letter-spacing: 0.04em;
+      transition: all 0.25s ease;
+      white-space: nowrap;
+    }
+    .secret-code-pill:hover {
+      transform: translateY(-2px);
+      background: #FFFFFF;
+      border-color: var(--accent-crimson);
+      color: var(--accent-crimson);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       CARD CONTAINER (RESPONSIVE FOR MOBILE, TABLET, DESKTOP)
+    ══════════════════════════════════════════════════════ */
+    .card {
+      position: relative;
+      width: min(92vw, 86dvh, 800px);
+      height: min(92vw, 86dvh, 800px);
+      max-width: 95vmin;
+      max-height: 95vmin;
+      overflow: hidden;
+      border-radius: 6px;
+      z-index: 1;
+      background-color: var(--paper-ivory);
+
+      box-shadow:
+        inset 0 0 0 clamp(6px, 1.2vmin, 10px) var(--paper-ivory),
+        inset 0 0 0 clamp(7px, 1.4vmin, 11.5px) var(--gold-subtle),
+        inset 0 0 0 clamp(12px, 2.2vmin, 18px) var(--paper-ivory),
+        inset 0 0 0 clamp(13px, 2.4vmin, 19.5px) rgba(184, 58, 8, 0.12),
+        0 20px 60px rgba(61, 25, 11, 0.18),
+        0 4px 16px rgba(61, 25, 11, 0.08),
+        0 0 80px rgba(201, 149, 69, 0.10);
+
+      opacity: 0;
+      transform: scale(0.97) translateY(8px);
+      transition:
+        opacity 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.05s,
+        transform 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.05s;
+    }
+    .card.revealed {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+
+    .card::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        repeating-linear-gradient(
+          45deg,
+          rgba(160, 100, 40, 0.012) 0px,
+          rgba(160, 100, 40, 0.012) 1px,
+          transparent 1px,
+          transparent 8px
+        );
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    .card-vignette {
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse at center,
+        transparent 60%,
+        rgba(150, 70, 20, 0.04) 100%);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    /* Corner ornaments */
+    .corner {
+      position: absolute;
+      width: clamp(24px, 4.5vmin, 36px);
+      height: clamp(24px, 4.5vmin, 36px);
+      z-index: 20;
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 0.8s ease 0.6s;
+    }
+    .card.revealed .corner { opacity: 1; }
+    .corner svg { width: 100%; height: 100%; }
+    .corner-tl { top: clamp(8px, 1.8vmin, 14px); left: clamp(8px, 1.8vmin, 14px); }
+    .corner-tr { top: clamp(8px, 1.8vmin, 14px); right: clamp(8px, 1.8vmin, 14px); transform: scaleX(-1); }
+    .corner-bl { bottom: clamp(8px, 1.8vmin, 14px); left: clamp(8px, 1.8vmin, 14px); transform: scaleY(-1); }
+    .corner-br { bottom: clamp(8px, 1.8vmin, 14px); right: clamp(8px, 1.8vmin, 14px); transform: scale(-1,-1); }
+
+    /* Mandala */
+    .mandala {
+      position: absolute;
+      left: 50%; top: 48%;
+      transform: translate(-50%, -50%) scale(0);
+      width: 50%; height: 50%;
+      z-index: 2;
+      pointer-events: none;
+      opacity: 0;
+      transition:
+        transform 1.4s cubic-bezier(0.16, 1, 0.3, 1) 2.0s,
+        opacity 1.0s ease 2.0s;
+    }
+    .card.revealed .mandala {
+      transform: translate(-50%, -50%) scale(1);
+      opacity: 0.07;
+    }
+
+    /* Center Glow */
+    .glow-center {
+      position: absolute;
+      left: 50%; top: 49%;
+      width: 36%; height: 36%;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(255, 195, 90, 0.24) 0%,
+        rgba(255, 160, 50, 0.08) 50%,
+        transparent 72%);
+      transform: translate(-50%, -50%) scale(0);
+      z-index: 3;
+      pointer-events: none;
+      transition: transform 1.1s cubic-bezier(0.16, 1, 0.3, 1) 0s;
+    }
+    .glow-center.lit {
+      transform: translate(-50%, -50%) scale(1);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       STAGE TRANSITIONS & ADAPTIVE PADDING
+    ══════════════════════════════════════════════════════ */
+    .stage {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transition: opacity 0.4s ease, transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: scale(0.985);
+      z-index: 5;
+    }
+    .stage.active {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+      transform: scale(1);
+    }
+
+    /* Premium Button Styles */
+    .btn-lux {
+      font-family: var(--font-sans);
+      font-weight: 600;
+      font-size: clamp(9px, 1.6vmin, 12.5px);
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      padding: clamp(7px, 1.4vmin, 9px) clamp(14px, 3vmin, 22px);
+      border-radius: 30px;
+      border: 1px solid rgba(184, 58, 8, 0.35);
+      background: linear-gradient(135deg, #B83A08 0%, #C85420 100%);
+      color: #FFFFFF;
+      cursor: pointer;
+      box-shadow: 0 4px 16px rgba(184, 58, 8, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.25);
+      transition: all 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .btn-lux:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 22px rgba(184, 58, 8, 0.36);
+      background: linear-gradient(135deg, #C4430F 0%, #D45D25 100%);
+    }
+    .btn-lux:active { transform: translateY(0); }
+
+    .btn-lux-ghost {
+      font-family: var(--font-sans);
+      font-weight: 500;
+      font-size: clamp(8.5px, 1.4vmin, 11.5px);
+      letter-spacing: 0.05em;
+      padding: clamp(6px, 1.2vmin, 8px) clamp(12px, 2.5vmin, 18px);
+      border-radius: 30px;
+      border: 1px solid rgba(142, 83, 54, 0.35);
+      background: rgba(255, 255, 255, 0.65);
+      color: var(--text-warm);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+    .btn-lux-ghost:hover {
+      background: rgba(255, 255, 255, 0.95);
+      border-color: var(--gold-primary);
+      color: var(--text-dark);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       STAGE 0: TEASER INVITATION
+    ══════════════════════════════════════════════════════ */
+    #stage-teaser {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 4% 5% 12%;
+    }
+    .teaser-dialogue-card {
+      width: 90%;
+      max-width: 370px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid rgba(201, 149, 69, 0.35);
+      box-shadow: 0 16px 44px rgba(61, 25, 11, 0.14), 0 2px 10px rgba(201, 149, 69, 0.16);
+      overflow: hidden;
+      animation: popSoft 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    @keyframes popSoft {
+      0% { transform: scale(0.93) translateY(12px); opacity: 0; }
+      100% { transform: scale(1) translateY(0); opacity: 1; }
+    }
+    .teaser-top-bar {
+      background: linear-gradient(135deg, rgba(201, 149, 69, 0.15) 0%, rgba(184, 58, 8, 0.08) 100%);
+      padding: 8px 14px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid rgba(201, 149, 69, 0.2);
+    }
+    .teaser-top-bar span {
+      font-size: clamp(8.5px, 1.4vmin, 10.5px);
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text-warm);
+    }
+    .teaser-content {
+      padding: clamp(14px, 2.5vmin, 20px) 16px clamp(16px, 2.8vmin, 22px);
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: clamp(10px, 2vmin, 14px);
+    }
+    .teaser-rakhi-frame {
+      width: clamp(90px, 22vmin, 130px);
+      height: clamp(90px, 22vmin, 130px);
+      border-radius: 50%;
+      padding: 3px;
+      background: linear-gradient(135deg, #C99545 0%, #F5D79E 50%, #B83A08 100%);
+      box-shadow: 0 6px 20px rgba(184, 58, 8, 0.2), 0 0 16px rgba(201, 149, 69, 0.22);
+    }
+    .teaser-rakhi-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      display: block;
+      border: 2px solid #FFFFFF;
+    }
+    .teaser-question {
+      font-family: var(--font-display);
+      font-size: clamp(15px, 3.1vmin, 21px);
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.3;
+    }
+    .teaser-btn-group {
+      display: flex;
+      gap: 10px;
+      margin-top: 2px;
+      position: relative;
+      width: 100%;
+      justify-content: center;
+      min-height: 38px;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       STAGE 1: POLAROID STACK (DRAG & SWIPE)
+    ══════════════════════════════════════════════════════ */
+    #stage-memories {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3.5% 5% 12%;
+    }
+    .stage-header {
+      text-align: center;
+    }
+    .stage-tagline {
+      font-size: clamp(7.5px, 1.2vmin, 10px);
+      letter-spacing: 0.22em;
+      text-transform: uppercase;
+      font-weight: 500;
+      color: var(--accent-crimson);
+      margin-bottom: 2px;
+    }
+    .stage-heading {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 3.2vmin, 24px);
+      font-weight: 600;
+      color: var(--text-dark);
+      letter-spacing: -0.01em;
+    }
+    .deck-container {
+      position: relative;
+      width: 80%;
+      height: 60%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      touch-action: pan-y;
+    }
+    .art-card {
+      position: absolute;
+      width: clamp(175px, 44vmin, 290px);
+      background: #FFFFFF;
+      padding: 8px 8px 14px 8px;
+      border-radius: 6px;
+      border: 1px solid rgba(201, 149, 69, 0.25);
+      box-shadow: 0 14px 32px rgba(61, 25, 11, 0.13);
+      transform-origin: center bottom;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      cursor: grab;
+      user-select: none;
+    }
+    .art-card:active { cursor: grabbing; }
+    .art-card img {
+      width: 100%;
+      height: clamp(115px, 28vmin, 185px);
+      object-fit: contain;
+      border-radius: 4px;
+      display: block;
+      background: #FAF6EE;
+      pointer-events: none;
+    }
+    .art-caption {
+      font-family: var(--font-script);
+      font-size: clamp(13px, 2.5vmin, 18px);
+      font-weight: 600;
+      color: var(--text-warm);
+      text-align: center;
+      margin-top: 7px;
+      line-height: 1.15;
+      pointer-events: none;
+    }
+    .deck-nav {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 4px;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       STAGE 2: MAIN RAKHI ANIMATION
+    ══════════════════════════════════════════════════════ */
+    .card-top {
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 27%;
+      padding: 3% 6% 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      z-index: 15;
+      pointer-events: none;
+    }
+    .festival-label {
+      font-weight: 500;
+      font-size: clamp(6px, 1.1vmin, 9.5px);
+      letter-spacing: 0.4em;
+      text-transform: uppercase;
+      color: var(--accent-rust);
+      margin-bottom: 1.5%;
+      opacity: 0;
+      transform: translateY(-8px);
+      transition: opacity 0.7s ease 0.55s, transform 0.7s ease 0.55s;
+    }
+    .card.revealed .festival-label { opacity: 1; transform: translateY(0); }
+
+    .card-top h1 {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 4.6vmin, 44px);
+      font-weight: 700;
+      color: var(--text-dark);
+      line-height: 1.08;
+      text-align: center;
+      text-shadow: 0 2px 18px rgba(184, 58, 8, 0.12);
+      opacity: 0;
+      transform: translateY(10px);
+      transition: opacity 0.75s ease 0.85s, transform 0.75s ease 0.85s;
+    }
+    .card.revealed .card-top h1 { opacity: 1; transform: translateY(0); }
+    .card-top h1 em {
+      font-style: italic;
+      color: var(--accent-crimson);
+      font-weight: 400;
+    }
+    .subtitle {
+      margin-top: 1.5%;
+      font-size: clamp(7px, 1.15vmin, 10.5px);
+      color: var(--text-muted);
+      font-weight: 400;
+      text-align: center;
+      line-height: 1.5;
+      max-width: 78%;
+      opacity: 0;
+      transform: translateY(6px);
+      transition: opacity 0.7s ease 1.15s, transform 0.7s ease 1.15s;
+    }
+    .card.revealed .subtitle { opacity: 1; transform: translateY(0); }
+
+    .orn-divider {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 1.5%;
+      opacity: 0;
+      transition: opacity 0.7s ease 1.3s;
+    }
+    .card.revealed .orn-divider { opacity: 1; }
+    .orn-divider::before,
+    .orn-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      max-width: 50px;
+      background: linear-gradient(to right, transparent, rgba(201, 149, 69, 0.4), rgba(201, 149, 69, 0.2));
+    }
+    .orn-divider::after {
+      background: linear-gradient(to left, transparent, rgba(201, 149, 69, 0.4), rgba(201, 149, 69, 0.2));
+    }
+    .orn-diamond {
+      font-size: clamp(5.5px, 0.9vmin, 8px);
+      color: var(--gold-primary);
+      opacity: 0.8;
+    }
+
+    .diya-row {
+      display: flex;
+      gap: clamp(4px, 1vmin, 10px);
+      margin-top: 1.5%;
+      opacity: 0;
+      transition: opacity 0.7s ease 1.45s;
+    }
+    .card.revealed .diya-row { opacity: 1; }
+    .diya {
+      width: clamp(4.5px, 0.7vmin, 7px);
+      height: clamp(4.5px, 0.7vmin, 7px);
+      border-radius: 50%;
+      background: radial-gradient(circle, #FFD040 40%, #FF8800 100%);
+      box-shadow: 0 0 5px 2px rgba(255, 150, 25, 0.45);
+      animation: diapulse 2s ease-in-out infinite alternate;
+    }
+    .diya:nth-child(2){animation-delay:.4s}
+    .diya:nth-child(3){animation-delay:.8s}
+    .diya:nth-child(4){animation-delay:1.2s}
+    .diya:nth-child(5){animation-delay:1.6s}
+    @keyframes diapulse {
+      from { opacity:.55; transform:scale(.85); }
+      to   { opacity:1;   transform:scale(1.15); }
+    }
+
+    .hand-scene {
+      position: absolute;
+      inset: 0;
+      z-index: 10;
+      pointer-events: none;
+    }
+    .boyhand, .girlhand {
+      position: absolute;
+      will-change: transform, opacity;
+      opacity: 0;
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-drag: none;
+      display: block;
+    }
+    .boyhand {
+      z-index: 11;
+      filter: drop-shadow(0 16px 36px rgba(120, 50, 10, 0.22));
+      transition:
+        transform 1.55s cubic-bezier(0.16, 1, 0.3, 1) 0s,
+        opacity 0.45s ease-out 0s;
+    }
+    .girlhand {
+      z-index: 12;
+      filter: drop-shadow(-8px -16px 28px rgba(120, 50, 10, 0.18));
+      transition:
+        transform 1.55s cubic-bezier(0.16, 1, 0.3, 1) 0.38s,
+        opacity 0.45s ease-out 0.38s;
+    }
+    .boyhand.arrived,
+    .girlhand.arrived { opacity: 1; }
+
+    .card-bottom {
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      padding: 0 6% 11%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-end;
+      z-index: 16;
+      pointer-events: none;
+      opacity: 0;
+      transform: translateY(12px);
+      transition: opacity 0.85s ease 0s, transform 0.85s ease 0s;
+    }
+    .card-bottom.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: auto;
+    }
+    .wish-text {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(8.5px, 1.45vmin, 13.5px);
+      font-weight: 600;
+      color: var(--text-dark);
+      text-align: center;
+      line-height: 1.5;
+      text-shadow: 0 1px 8px rgba(252, 248, 242, 0.95);
+      background: radial-gradient(ellipse at center, rgba(252, 248, 242, 0.75) 0%, transparent 80%);
+      padding: 3px 12px;
+      border-radius: 8px;
+    }
+    .hearts {
+      margin-top: clamp(2px, 0.4vmin, 4px);
+      font-size: clamp(10px, 1.6vmin, 14px);
+      letter-spacing: 0.16em;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       STAGE 3: TYPEWRITER LETTER & GIFT
+    ══════════════════════════════════════════════════════ */
+    #stage-gift {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3.5% 6% 12%;
+    }
+    .letter-paper {
+      width: 100%;
+      max-height: 52%;
+      background: #FFFFFF;
+      border: 1px solid rgba(201, 149, 69, 0.28);
+      border-radius: 8px;
+      padding: clamp(10px, 2vmin, 14px) clamp(12px, 2.5vmin, 16px);
+      box-shadow: 0 10px 24px rgba(61, 25, 11, 0.08);
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .letter-paper h3 {
+      font-family: var(--font-script);
+      font-size: clamp(15px, 2.8vmin, 22px);
+      color: var(--accent-crimson);
+      border-bottom: 1px dashed rgba(201, 149, 69, 0.35);
+      padding-bottom: 3px;
+    }
+    .letter-body {
+      font-family: var(--font-script);
+      font-size: clamp(13.5px, 2.4vmin, 18.5px);
+      font-weight: 600;
+      color: var(--text-dark);
+      line-height: 1.45;
+      min-height: 60px;
+    }
+    .cursor-blink {
+      display: inline-block;
+      width: 2px;
+      height: 1.1em;
+      vertical-align: middle;
+      background: var(--accent-crimson);
+      animation: blink 0.7s infinite;
+    }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
+    .gift-reveal-box {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      background: #FAF4EB;
+      padding: 7px 12px;
+      border-radius: 8px;
+      border: 1px solid rgba(201, 149, 69, 0.25);
+      width: 100%;
+    }
+    .gift-reveal-box img {
+      width: clamp(38px, 6vmin, 44px);
+      height: clamp(38px, 6vmin, 44px);
+      object-fit: cover;
+      border-radius: 6px;
+    }
+    .gift-text { flex: 1; }
+    .gift-text strong {
+      font-size: clamp(9.5px, 1.5vmin, 12px);
+      font-weight: 600;
+      color: var(--text-dark);
+      display: block;
+    }
+    .gift-text span {
+      font-size: clamp(8px, 1.25vmin, 10.5px);
+      color: var(--text-muted);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       STAGE 4: ULTRA LUXURY DIGITAL RAKHI CERTIFICATE
+    ══════════════════════════════════════════════════════ */
+    #stage-certificate {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      padding: 3.5% 5% 12%;
+    }
+    .cert-frame-luxury {
+      width: 100%;
+      height: 62%;
+      background: url('assets/cert_bg.jpg') center center / cover no-repeat;
+      border: 2px solid var(--gold-primary);
+      border-radius: 8px;
+      padding: clamp(10px, 2vmin, 14px) clamp(12px, 2.5vmin, 18px);
+      position: relative;
+      box-shadow: 0 14px 36px rgba(61, 25, 11, 0.16);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+    .cert-title-lux {
+      font-family: var(--font-display);
+      font-size: clamp(11.5px, 2.4vmin, 17px);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: #7D2B05;
+      font-weight: 700;
+    }
+    .cert-subtitle-lux {
+      font-size: clamp(7.5px, 1.15vmin, 10px);
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: #9A5228;
+      margin-top: 2px;
+      font-weight: 600;
+    }
+    .cert-seal-lux {
+      width: clamp(28px, 4.8vmin, 36px);
+      height: clamp(28px, 4.8vmin, 36px);
+      border-radius: 50%;
+      background: linear-gradient(135deg, #C99545 0%, #B83A08 100%);
+      color: #FFF;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: clamp(12px, 2vmin, 16px);
+      margin: 4px 0;
+      box-shadow: 0 4px 12px rgba(184, 58, 8, 0.28);
+    }
+    .cert-names-input {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      justify-content: center;
+      margin: 4px 0;
+    }
+    .cert-name-text {
+      font-family: var(--font-script);
+      font-size: clamp(17px, 3.2vmin, 24px);
+      font-weight: 700;
+      color: #5A1E04;
+      border-bottom: 2px solid #B83A08;
+      padding: 0 6px 2px;
+      display: inline-block;
+      min-width: 60px;
+      text-align: center;
+    }
+    .cert-desc-lux {
+      font-family: var(--font-display);
+      font-style: italic;
+      font-size: clamp(8px, 1.3vmin, 11.5px);
+      color: #4A1B07;
+      max-width: 88%;
+      margin-top: 3px;
+      line-height: 1.35;
+      font-weight: 500;
+    }
+
+    .cert-action-bar {
+      display: flex;
+      gap: clamp(6px, 1.5vw, 10px);
+      align-items: center;
+      margin-bottom: 3px;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       EASTER EGG MODAL
+    ══════════════════════════════════════════════════════ */
+    .easter-modal {
+      position: fixed; inset: 0;
+      background: rgba(61, 25, 11, 0.75);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      padding: 16px;
+    }
+    .easter-modal.active {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .easter-box {
+      width: 100%;
+      max-width: 360px;
+      background: #FFFFFF;
+      border-radius: 12px;
+      border: 1px solid var(--gold-primary);
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.35);
+      animation: popSoft 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    /* ══════════════════════════════════════════════════════
+       CANVAS & BREADCRUMBS TIMELINE
+    ══════════════════════════════════════════════════════ */
+    #petalsCanvas {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 18;
+    }
+    #outerPetalsCanvas {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 30;
+    }
+
+    .timeline-breadcrumbs {
+      position: absolute;
+      bottom: max(10px, env(safe-area-inset-bottom));
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      z-index: 25;
+      background: rgba(252, 248, 242, 0.96);
+      padding: 4px 14px;
+      border-radius: 24px;
+      border: 1px solid rgba(201, 149, 69, 0.3);
+      box-shadow: 0 4px 14px rgba(61, 25, 11, 0.08);
+      backdrop-filter: blur(8px);
+      white-space: nowrap;
+    }
+    .b-step {
+      font-size: clamp(7.5px, 1.15vmin, 9.5px);
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+      padding: 2px 3px;
+      border-radius: 4px;
+      transition: all 0.2s ease;
+    }
+    .b-step.active {
+      color: var(--accent-crimson);
+      font-weight: 700;
+    }
+    .b-step:hover {
+      color: var(--gold-primary);
+    }
+    .b-sep {
+      color: rgba(201, 149, 69, 0.4);
+      font-size: 7.5px;
+    }
+
+    /* ══════════════════════════════════════════════════════
+       STAGE 5: SIBLING SECRET CODE FINAL SCREEN
+    ══════════════════════════════════════════════════════ */
+    #stage-secret {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .secret-final-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(10px, 2vmin, 18px);
+      padding: 8% 10%;
+      text-align: center;
+    }
+    .secret-final-glyph {
+      font-size: clamp(38px, 8vmin, 60px);
+      animation: secret-pulse 2.2s ease-in-out infinite alternate;
+    }
+    @keyframes secret-pulse {
+      from { transform: scale(0.92) rotate(-4deg); opacity: 0.8; }
+      to   { transform: scale(1.08) rotate(4deg);  opacity: 1;   }
+    }
+    .secret-final-title {
+      font-family: var(--font-display);
+      font-size: clamp(16px, 3.5vmin, 26px);
+      font-weight: 700;
+      color: var(--text-dark);
+      letter-spacing: 0.02em;
+    }
+    .secret-final-sub {
+      font-family: var(--font-script);
+      font-size: clamp(12px, 2.2vmin, 17px);
+      color: var(--text-muted);
+      font-style: italic;
+    }
+    .secret-final-btn {
+      margin-top: clamp(4px, 1vmin, 8px);
+      font-size: clamp(11px, 1.9vmin, 14px);
+    }
+    .secret-restart-btn {
+      font-size: clamp(10px, 1.6vmin, 12px);
+      opacity: 0.7;
+    }
+    .secret-restart-btn:hover { opacity: 1; }
+
+    /* ══════════════════════════════════════════════════════
+       RESPONSIVE SYSTEM — ALL SCREEN TYPES
+       • Tiny phones  (<360px wide)
+       • Phones portrait (360–520px)
+       • Phones landscape / short screens (max-height < 500px)
+       • Tablets (521–900px)
+       • Wide tablets / small laptops (901–1280px)
+       • Desktops (1281–1920px) — default, already covered above
+       • Large / 4K screens (>1920px)
+    ══════════════════════════════════════════════════════ */
+
+    /* ── Tiny phones (<360px) ── */
+    @media (max-width: 359px) {
+      .top-controls {
+        top: max(6px, env(safe-area-inset-top));
+        right: max(6px, env(safe-area-inset-right));
+        gap: 4px;
+      }
+      .music-player-pill {
+        padding: 3px 8px 3px 5px;
+        gap: 5px;
+      }
+      .music-title { font-size: 7px; }
+      .music-status { font-size: 6px; }
+      .disc-icon { width: 18px; height: 18px; font-size: 9px; }
+      .secret-code-pill { padding: 4px 7px; font-size: 7px; }
+      .card {
+        width: 96vw;
+        height: 96vw;
+        max-height: 82dvh;
+      }
+      .timeline-breadcrumbs { font-size: 7px; gap: 3px; }
+      .stage-tagline { font-size: clamp(6px, 1.5vmin, 9px); }
+      .stage-heading { font-size: clamp(11px, 3.5vmin, 16px); }
+    }
+
+    /* ── Phones portrait (360–520px) ── */
+    @media (min-width: 360px) and (max-width: 520px) {
+      .top-controls {
+        top: max(8px, env(safe-area-inset-top));
+        right: max(8px, env(safe-area-inset-right));
+        gap: 5px;
+      }
+      .music-player-pill { padding: 4px 10px 4px 6px; }
+      .secret-code-pill  { padding: 5px 9px; }
+      .card {
+        width: 94vw;
+        height: 94vw;
+        max-height: 84dvh;
+      }
+    }
+
+    /* ── Phones landscape / short viewport (height < 500px) ── */
+    @media (max-height: 499px) {
+      .top-controls {
+        top: max(4px, env(safe-area-inset-top));
+        right: max(6px, env(safe-area-inset-right));
+        gap: 4px;
+        flex-direction: row;
+      }
+      .music-player-pill { padding: 3px 8px 3px 5px; }
+      .music-info { display: none; } /* hide text, show only disc */
+      .secret-code-pill { display: none; } /* hide in landscape — too cramped */
+      .card {
+        width: min(90vw, 90dvh);
+        height: min(90vw, 90dvh);
+        max-width: 460px;
+        max-height: 90dvh;
+      }
+      .timeline-breadcrumbs {
+        bottom: max(4px, env(safe-area-inset-bottom));
+        font-size: 7px;
+        gap: 3px;
+      }
+      .stage-header { padding: 4% 6% 2%; }
+      .stage-tagline { font-size: 7px; }
+      .stage-heading { font-size: clamp(10px, 2.5vmin, 14px); }
+      /* Letter stage: tighter */
+      #stage-gift { padding: 3% 5% 10%; }
+      .letter-paper { max-height: 48%; }
+      /* Certificate: tighter */
+      .cert-frame-luxury { padding: 8px 10px; }
+      .cert-title-lux { font-size: clamp(11px, 2vmin, 14px); }
+    }
+
+    /* ── Tablets portrait + small tablets landscape (521–900px) ── */
+    @media (min-width: 521px) and (max-width: 900px) {
+      .top-controls {
+        top: max(12px, env(safe-area-inset-top));
+        right: max(14px, env(safe-area-inset-right));
+        gap: 8px;
+      }
+      .card {
+        width: min(88vw, 84dvh, 680px);
+        height: min(88vw, 84dvh, 680px);
+      }
+      .timeline-breadcrumbs { font-size: 9px; }
+    }
+
+    /* ── Wide tablets / small laptops (901–1280px) ── */
+    @media (min-width: 901px) and (max-width: 1280px) {
+      .card {
+        width: min(80vw, 82dvh, 760px);
+        height: min(80vw, 82dvh, 760px);
+      }
+    }
+
+    /* ── Large / 4K screens (>1920px) ── */
+    @media (min-width: 1921px) {
+      .card {
+        width: min(60vw, 78dvh, 1000px);
+        height: min(60vw, 78dvh, 1000px);
+      }
+      .music-title { font-size: 11px; }
+      .music-status { font-size: 9px; }
+      .disc-icon { width: 28px; height: 28px; font-size: 14px; }
+      .secret-code-pill { font-size: 11px; padding: 7px 14px; }
+    }
+
+    /* ── Ultra-wide / TV screens (>2560px) ── */
+    @media (min-width: 2561px) {
+      .card {
+        width: min(45vw, 72dvh, 1100px);
+        height: min(45vw, 72dvh, 1100px);
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Real Song Audio Element -->
+  <audio id="bgAudio" src="assets/bhaiya_mere.mp3" loop preload="none"></audio>
+
+  <!-- Floating Luxury Music Player & Secret Sibling Pill -->
+  <div class="top-controls">
+    <div class="music-player-pill" id="musicPill" title="Play 'Phoolon Ka Taaron Ka' Sibling Anthem">
+      <div class="disc-icon" id="discIcon">🪷</div>
+      <div class="music-info">
+        <span class="music-title">Phoolon Ka Taaron Ka</span>
+        <span class="music-status" id="musicStatus">Tap to Play 🎵</span>
+      </div>
+    </div>
+
+    <div class="secret-code-pill" id="btnSecretPill" title="Open Secret Sibling Code">
+      <span>🤫 Sibling Code</span>
+    </div>
+  </div>
+
+  <div class="page" aria-hidden="true">
+
+    <div class="card" id="card" role="img" aria-label="Raksha Bandhan Greeting Card">
+
+      <div class="card-vignette"></div>
+
+      <!-- Corner Ornaments -->
+      <div class="corner corner-tl" aria-hidden="true">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 32 L4 8 Q4 4 8 4 L32 4" stroke="#C99545" stroke-width="1" opacity="0.65"/>
+          <path d="M4 18 Q10 10 18 4" stroke="#C99545" stroke-width="0.6" opacity="0.4"/>
+          <circle cx="4" cy="4" r="1.8" fill="#C99545" opacity="0.6"/>
+          <path d="M8 4 L4 4 L4 8" stroke="#C99545" stroke-width="1.2" opacity="0.75" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="corner corner-tr" aria-hidden="true">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 32 L4 8 Q4 4 8 4 L32 4" stroke="#C99545" stroke-width="1" opacity="0.65"/>
+          <path d="M4 18 Q10 10 18 4" stroke="#C99545" stroke-width="0.6" opacity="0.4"/>
+          <circle cx="4" cy="4" r="1.8" fill="#C99545" opacity="0.6"/>
+          <path d="M8 4 L4 4 L4 8" stroke="#C99545" stroke-width="1.2" opacity="0.75" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="corner corner-bl" aria-hidden="true">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 32 L4 8 Q4 4 8 4 L32 4" stroke="#C99545" stroke-width="1" opacity="0.65"/>
+          <path d="M4 18 Q10 10 18 4" stroke="#C99545" stroke-width="0.6" opacity="0.4"/>
+          <circle cx="4" cy="4" r="1.8" fill="#C99545" opacity="0.6"/>
+          <path d="M8 4 L4 4 L4 8" stroke="#C99545" stroke-width="1.2" opacity="0.75" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="corner corner-br" aria-hidden="true">
+        <svg viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M4 32 L4 8 Q4 4 8 4 L32 4" stroke="#C99545" stroke-width="1" opacity="0.65"/>
+          <path d="M4 18 Q10 10 18 4" stroke="#C99545" stroke-width="0.6" opacity="0.4"/>
+          <circle cx="4" cy="4" r="1.8" fill="#C99545" opacity="0.6"/>
+          <path d="M8 4 L4 4 L4 8" stroke="#C99545" stroke-width="1.2" opacity="0.75" stroke-linecap="round"/>
+        </svg>
+      </div>
+
+      <!-- Mandala Background -->
+      <svg class="mandala" id="mandala" viewBox="0 0 200 200" aria-hidden="true">
+        <g fill="none" stroke="#a85220" stroke-width="0.75">
+          <circle cx="100" cy="100" r="90"/>
+          <circle cx="100" cy="100" r="70"/>
+          <circle cx="100" cy="100" r="50"/>
+          <circle cx="100" cy="100" r="32"/>
+          <circle cx="100" cy="100" r="16"/>
+          <circle cx="100" cy="100" r="6"/>
+          <line x1="100" y1="10"  x2="100" y2="190"/>
+          <line x1="10"  y1="100" x2="190" y2="100"/>
+          <line x1="27"  y1="27"  x2="173" y2="173"/>
+          <line x1="173" y1="27"  x2="27"  y2="173"/>
+          <line x1="10"  y1="55"  x2="190" y2="145"/>
+          <line x1="55"  y1="10"  x2="145" y2="190"/>
+          <line x1="190" y1="55"  x2="10"  y2="145"/>
+          <line x1="145" y1="10"  x2="55"  y2="190"/>
+          <path d="M100,10 Q136,56 100,100 Q64,56 100,10"/>
+          <path d="M190,100 Q144,136 100,100 Q144,64 190,100"/>
+          <path d="M100,190 Q64,144 100,100 Q136,144 100,190"/>
+          <path d="M10,100 Q56,64 100,100 Q56,136 10,100"/>
+          <path d="M100,10 Q180,46 173,100 Q136,56 100,10"/>
+          <path d="M100,190 Q20,154 27,100 Q64,144 100,190"/>
+        </g>
+      </svg>
+
+      <!-- Center Glow -->
+      <div class="glow-center" id="glowCenter" aria-hidden="true"></div>
+
+      <!-- ════════════════ STAGES ════════════════ -->
+
+      <!-- STAGE 0: Aesthetic Teaser with Luxury Rakhi Cover -->
+      <div class="stage active" id="stage-teaser">
+        <div class="teaser-dialogue-card">
+          <div class="teaser-top-bar">
+            <span>Special Invitation</span>
+            <span style="color: var(--gold-primary);">✦</span>
+          </div>
+          <div class="teaser-content">
+            <div class="teaser-rakhi-frame">
+              <img src="assets/rakhi_cover.jpg" class="teaser-rakhi-img" alt="Designer Rakhi" />
+            </div>
+            <div class="teaser-question">Are You Ready For Rakhi 2026?</div>
+            <div class="teaser-btn-group">
+              <button class="btn-lux" id="btnYes">Enter Celebration ✨</button>
+              <button class="btn-lux-ghost" id="btnNo">Not Yet 🙈</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- STAGE 1: Sibling Chronicles & Doodles (Swipe/Drag Enabled) -->
+      <div class="stage" id="stage-memories">
+        <div class="stage-header">
+          <p class="stage-tagline">Chapter 1 • Sibling Chronicles</p>
+          <h2 class="stage-heading">The Good, The Bad & The Memes</h2>
+        </div>
+
+        <div class="deck-container" id="polaroidDeck">
+          <!-- Card 1: Remote Fight -->
+          <div class="art-card" style="transform: rotate(-4deg); z-index: 6;">
+            <img src="assets/fight.jpg.jpeg" alt="Sibling Fight" />
+            <div class="art-caption">80% fighting for TV remote & snacks! 🎮🥊</div>
+          </div>
+          <!-- Card 2: Bhaiyaaaaa Shout -->
+          <div class="art-card" style="transform: rotate(3deg); z-index: 5;">
+            <img src="assets/scream.jpg.jpeg" alt="Bhaiya Scream" />
+            <div class="art-caption">100 calls a day: "Bhaiyaaaaaaa!" 📢😂</div>
+          </div>
+          <!-- Card 3: Aesthetic Gifts Please -->
+          <div class="art-card" style="transform: rotate(-2deg); z-index: 4;">
+            <img src="assets/listen.jpg.jpeg" alt="Aesthetic Gifts" />
+            <div class="art-caption">"Iss baar envelope nahi, aesthetic gifts please!" 💅🛍️</div>
+          </div>
+          <!-- Card 4: Cool Sibling Dab -->
+          <div class="art-card" style="transform: rotate(4deg); z-index: 3;">
+            <img src="assets/dab.jpg.jpeg" alt="Sibling Dab" />
+            <div class="art-caption">Partners in crime forever! 😎✌️</div>
+          </div>
+          <!-- Card 5: Shinchan Pure Love -->
+          <div class="art-card" style="transform: rotate(-3deg); z-index: 2;">
+            <img src="assets/shinchan.jpg.jpeg" alt="Shinchan Rakhi" />
+            <div class="art-caption">Pure love & sweet memories! 🌸❤️</div>
+          </div>
+          <!-- Card 6: Cute Sibling Chase Doodle -->
+          <div class="art-card" style="transform: rotate(2deg); z-index: 1;">
+            <img src="assets/kidrunning.png" alt="Running Brother Doodle" />
+            <div class="art-caption">Running around with endless laughs! 🏃‍♂️💨</div>
+          </div>
+        </div>
+
+        <div class="deck-nav">
+          <button class="btn-lux-ghost" id="btnNextPhoto">Next Memory 🔄</button>
+          <button class="btn-lux" id="btnGoRakhi">Tie The Sacred Rakhi 🌸</button>
+        </div>
+      </div>
+
+      <!-- STAGE 2: The Main Cinematic Raksha Bandhan Ceremony -->
+      <div class="stage" id="stage-rakhi">
+        <div class="card-top">
+          <span class="festival-label">Celebrating the Sacred Bond</span>
+          <h1>Happy <em>Raksha&nbsp;Bandhan</em></h1>
+          <p class="subtitle">May this thread of love protect you forever<br/>and bring endless joy to your journey.</p>
+          <div class="orn-divider"><span class="orn-diamond">◆</span></div>
+          <div class="diya-row">
+            <div class="diya"></div><div class="diya"></div><div class="diya"></div>
+            <div class="diya"></div><div class="diya"></div>
+          </div>
+        </div>
+
+        <div class="hand-scene" aria-label="Raksha Bandhan animation">
+          <img id="boyhand"  class="boyhand"  src="assets/boyhand.png"  alt="Brother's hand" draggable="false"/>
+          <img id="girlhand" class="girlhand" src="assets/girlhand.png" alt="Sister tying rakhi" draggable="false"/>
+        </div>
+
+        <div class="card-bottom" id="bottomMessage">
+          <p class="wish-text">"A brother's love is a shield,<br/>a sister's prayer is a blessing."</p>
+          <div class="hearts">🪷 🌸 🪷</div>
+          <button class="btn-lux btn-next-letter" id="btnOpenLetter">Read Sister's Note 💌</button>
+        </div>
+      </div>
+
+      <!-- STAGE 3: Sister's Typewriter Note & Gift -->
+      <div class="stage" id="stage-gift">
+        <div class="stage-header">
+          <p class="stage-tagline">Chapter 3 • Personal Note</p>
+          <h2 class="stage-heading">From My Heart To Yours</h2>
+        </div>
+
+        <div class="letter-paper">
+          <h3>Dear Bhai / Behen 🌸,</h3>
+          <p class="letter-body" id="typewriterText"></p>
+          <p class="letter-body" style="text-align: right; color: var(--accent-crimson); margin-top: 4px;">
+            Forever & Always ❤️
+          </p>
+        </div>
+
+        <div class="gift-reveal-box">
+          <img src="assets/gift.jpg.jpeg" alt="Gift Box" />
+          <div class="gift-text">
+            <strong>Brother's Special Gift 🎁</strong>
+            <span>Unlimited Love, Protection & Sweet Vouchers!</span>
+          </div>
+        </div>
+
+        <button class="btn-lux" id="btnGoCert">Get Rakhi Certificate 📜✨</button>
+      </div>
+
+      <!-- STAGE 4: Ultra Luxury Digital Rakhi Certificate -->
+      <div class="stage" id="stage-certificate">
+        <div class="stage-header">
+          <p class="stage-tagline">Chapter 4 • Official Bond</p>
+          <h2 class="stage-heading">Sibling Protection Certificate</h2>
+        </div>
+
+        <div class="cert-frame-luxury" id="certFrame">
+          <div class="cert-title-lux">Certificate of Eternal Bond</div>
+          <div class="cert-subtitle-lux">Raksha Bandhan 2026</div>
+          <div class="cert-seal-lux">🪷</div>
+          
+          <div class="cert-names-input">
+            <span class="cert-name-text" id="brotherName">Brother</span>
+            <span style="color: #B83A08; font-weight: 700; font-size: 16px;">&</span>
+            <span class="cert-name-text" id="sisterName">Sister</span>
+          </div>
+
+          <p class="cert-desc-lux">
+            "Certified to protect, tease, steal snacks, and love unconditionally forever and ever."
+          </p>
+        </div>
+
+        <div class="cert-action-bar">
+          <button class="btn-lux" id="btnDownloadCert">Download Image 📥</button>
+          <button class="btn-lux" id="btnShareCert">Share WhatsApp 💬</button>
+          <button class="btn-lux-ghost" id="btnGoSecret">One Last Secret 🤫</button>
+        </div>
+      </div>
+
+      <!-- STAGE 5: Sibling Secret Code Final Screen -->
+      <div class="stage" id="stage-secret">
+        <div class="secret-final-wrap">
+          <div class="secret-final-glyph">🤫</div>
+          <h2 class="secret-final-title">Official Sibling Code</h2>
+          <p class="secret-final-sub">Psst… only you two know this exists.</p>
+          <button class="btn-lux secret-final-btn" id="btnRevealCode">Reveal Secret Code ✨</button>
+          <button class="btn-lux-ghost secret-restart-btn" id="btnRestartFinal">Restart from Beginning ↺</button>
+        </div>
+      </div>
+
+      <!-- Breadcrumbs Timeline -->
+      <div class="timeline-breadcrumbs" id="timelineNav">
+        <span class="b-step active" data-stage="0">Intro</span>
+        <span class="b-sep">/</span>
+        <span class="b-step" data-stage="1">Memes</span>
+        <span class="b-sep">/</span>
+        <span class="b-step" data-stage="2">Ceremony</span>
+        <span class="b-sep">/</span>
+        <span class="b-step" data-stage="3">Letter</span>
+        <span class="b-sep">/</span>
+        <span class="b-step" data-stage="4">Certificate</span>
+        <span class="b-sep">/</span>
+        <span class="b-step" data-stage="5">🤫</span>
+      </div>
+
+      <canvas id="petalsCanvas" aria-hidden="true"></canvas>
+
+    </div><!-- /.card -->
+
+  </div><!-- /.page -->
+
+  <canvas id="outerPetalsCanvas" aria-hidden="true"></canvas>
+
+  <!-- Easter Egg Modal -->
+  <div class="easter-modal" id="easterModal">
+    <div class="easter-box">
+      <div style="font-size: 32px; margin-bottom: 6px;">🤫✨</div>
+      <h3 style="font-family: var(--font-display); color: var(--accent-crimson); margin-bottom: 6px; font-size: 18px;">Official Sibling Code!</h3>
+      <p style="font-family: var(--font-script); font-size: 17px; color: var(--text-dark); margin-bottom: 16px; line-height: 1.4;">
+        "Clause #1: Jisne pehle TV remote uthaya, TV uska!<br/>Clause #2: Aakhri pizza slice par behan ka copyright hai! 😂🍕"
+      </p>
+      <button class="btn-lux" id="btnCloseEaster">Haha, 100% True! 🙈</button>
+    </div>
+  </div>
+
+  <script>
+  /* ════════════════════════════════════════════════════════════════
+     RAKSHA BANDHAN 2026 — ULTRA LUXURY EDITORIAL EXPERIENCE
+  ════════════════════════════════════════════════════════════════ */
+
+  const card        = document.getElementById('card');
+  const boyImg      = document.getElementById('boyhand');
+  const girlImg     = document.getElementById('girlhand');
+  const glowCenter  = document.getElementById('glowCenter');
+  const bottomMsg   = document.getElementById('bottomMessage');
+  const bSteps      = document.querySelectorAll('.b-step');
+
+  /* ── Anchor Points ── */
+  const BOY_WRIST  = { x: 0.44, y: 0.54 };
+  const GIRL_RAKHI = { x: 0.62, y: 0.50 };
+  const BOY_ASPECT  = 1.0251;
+  const GIRL_ASPECT = 1.0258;
+  const BOY_CW  = 0.82;
+  const GIRL_CW = 0.95;
+  const MEET = { x: 0.50, y: 0.49 };
+
+  /* ── Position hands relative to card ── */
+  function positionHands() {
+    const rect  = card.getBoundingClientRect();
+    const cardW = rect.width;
+    const cardH = rect.height;
+
+    const meetX = cardW * MEET.x;
+    const meetY = cardH * MEET.y;
+
+    // Boy hand
+    const bW = cardW * BOY_CW;
+    const bH = bW / BOY_ASPECT;
+    const bWristPx = { x: bW * BOY_WRIST.x, y: bH * BOY_WRIST.y };
+    const bLeft = meetX - bWristPx.x;
+    const bTop  = meetY - bWristPx.y;
+
+    boyImg.style.width  = bW + 'px';
+    boyImg.style.height = bH + 'px';
+    boyImg.style.left   = bLeft + 'px';
+    boyImg.style.top    = bTop  + 'px';
+
+    const bOffX = Math.max(cardW - bLeft + 60, 120);
+    const bOffY = Math.min(-(bTop + bH + 60), -120);
+    boyImg.style.transform = `translate(${bOffX}px, ${bOffY}px)`;
+
+    // Girl hand
+    const gW = cardW * GIRL_CW;
+    const gH = gW / GIRL_ASPECT;
+    const gRakhiPx = { x: gW * GIRL_RAKHI.x, y: gH * GIRL_RAKHI.y };
+    const gLeft = meetX - gRakhiPx.x;
+    const gTop  = meetY - gRakhiPx.y;
+
+    girlImg.style.width  = gW + 'px';
+    girlImg.style.height = gH + 'px';
+    girlImg.style.left   = gLeft + 'px';
+    girlImg.style.top    = gTop  + 'px';
+
+    const gOffX = Math.min(-(gLeft + gW + 60), -120);
+    const gOffY = Math.max(cardH - gTop + 60, 120);
+    girlImg.style.transform = `translate(${gOffX}px, ${gOffY}px)`;
+  }
+
+  /* ── Stage Switcher ── */
+  const stages = [
+    document.getElementById('stage-teaser'),
+    document.getElementById('stage-memories'),
+    document.getElementById('stage-rakhi'),
+    document.getElementById('stage-gift'),
+    document.getElementById('stage-certificate'),
+    document.getElementById('stage-secret'),
+  ];
+  let currentStage = 0;
+
+  function goToStage(index) {
+    stages.forEach((st, i) => {
+      st.classList.toggle('active', i === index);
+    });
+    bSteps.forEach((step, i) => {
+      step.classList.toggle('active', i === index);
+    });
+    currentStage = index;
+
+    if (index === 2) {
+      runCeremonyTimeline();
+    } else if (index === 3) {
+      startTypewriter();
+    }
+  }
+
+  bSteps.forEach(s => {
+    s.addEventListener('click', () => {
+      goToStage(parseInt(s.dataset.stage));
+    });
+  });
+
+  /* ── Stage 0: Playful Dodge ── */
+  const btnNo  = document.getElementById('btnNo');
+  const btnYes = document.getElementById('btnYes');
+
+  function dodgeBtn() {
+    const rx = (Math.random() - 0.5) * 130;
+    const ry = (Math.random() - 0.5) * 80;
+    btnNo.style.transform = `translate(${rx}px, ${ry}px)`;
+  }
+  btnNo.addEventListener('mouseenter', dodgeBtn);
+  btnNo.addEventListener('touchstart', (e) => {
+    e.preventDefault();
+    dodgeBtn();
+  });
+
+  btnYes.addEventListener('click', () => {
+    goToStage(1);
+    startBhaiyaMere();
+  });
+
+  /* ── Stage 1: Polaroid Card Swipe & Drag Logic ── */
+  const polaroids = document.querySelectorAll('.art-card');
+  const deckContainer = document.getElementById('polaroidDeck');
+  const btnNextPhoto = document.getElementById('btnNextPhoto');
+  const btnGoRakhi   = document.getElementById('btnGoRakhi');
+  let currentCardIndex = 0;
+
+  function updateDeckLayout() {
+    polaroids.forEach((card, idx) => {
+      const order = (idx - currentCardIndex + polaroids.length) % polaroids.length;
+      card.style.zIndex = polaroids.length - order;
+      if (order === 0) {
+        card.style.transform = 'scale(1) rotate(-3deg)';
+        card.style.opacity = '1';
+      } else if (order === 1) {
+        card.style.transform = 'scale(0.96) rotate(4deg) translateY(-8px)';
+        card.style.opacity = '0.92';
+      } else if (order === 2) {
+        card.style.transform = 'scale(0.92) rotate(-2deg) translateY(-16px)';
+        card.style.opacity = '0.78';
+      } else {
+        card.style.transform = 'scale(0.88) rotate(2deg) translateY(-22px)';
+        card.style.opacity = '0.5';
+      }
+    });
+
+    if (currentCardIndex === polaroids.length - 1) {
+      btnNextPhoto.innerText = 'Tie Rakhi 🌸';
+    } else {
+      btnNextPhoto.innerText = 'Next Memory 🔄';
+    }
+  }
+
+  function advanceCard() {
+    currentCardIndex++;
+    if (currentCardIndex >= polaroids.length) {
+      goToStage(2);
+      currentCardIndex = 0;
+      return;
+    }
+    updateDeckLayout();
+  }
+
+  btnNextPhoto.addEventListener('click', advanceCard);
+  btnGoRakhi.addEventListener('click', () => goToStage(2));
+
+  // Touch & Drag Swipe Handler
+  let startX = 0, currentX = 0, isDragging = false;
+  
+  deckContainer.addEventListener('mousedown', (e) => {
+    startX = e.clientX;
+    isDragging = true;
+  });
+  window.addEventListener('mousemove', (e) => {
+    if (!isDragging) return;
+    currentX = e.clientX - startX;
+    const topCard = polaroids[currentCardIndex];
+    if (topCard) {
+      topCard.style.transform = `translate(${currentX}px, 0) rotate(${currentX * 0.05 - 3}deg)`;
+    }
+  });
+  window.addEventListener('mouseup', () => {
+    if (!isDragging) return;
+    isDragging = false;
+    if (Math.abs(currentX) > 50) {
+      advanceCard();
+    } else {
+      updateDeckLayout();
+    }
+    currentX = 0;
+  });
+
+  deckContainer.addEventListener('touchstart', (e) => {
+    startX = e.touches[0].clientX;
+  }, { passive: true });
+  deckContainer.addEventListener('touchmove', (e) => {
+    currentX = e.touches[0].clientX - startX;
+  }, { passive: true });
+  deckContainer.addEventListener('touchend', () => {
+    if (Math.abs(currentX) > 40) {
+      advanceCard();
+    }
+    currentX = 0;
+  });
+
+  /* ── Stage 2: Ceremony Animation & Confetti Burst ── */
+  function runCeremonyTimeline() {
+    positionHands();
+    boyImg.style.transform = 'translate(0px, 0px)';
+    girlImg.style.transform = 'translate(0px, 0px)';
+    boyImg.classList.add('arrived');
+    girlImg.classList.add('arrived');
+
+    setTimeout(() => {
+      glowCenter.classList.add('lit');
+      triggerConfettiBurst();
+    }, 1200);
+
+    setTimeout(() => {
+      bottomMsg.classList.add('visible');
+    }, 1600);
+  }
+
+  document.getElementById('btnOpenLetter').addEventListener('click', () => {
+    goToStage(3);
+  });
+
+  /* ── User Dynamic Data State ── */
+  let letterMessage = "No matter how much we fight, argue over silly things, or how far apart life takes us, you will always be my favourite person. Thank you for always having my back, keeping my secrets, and making our childhood pure magic!";
+  let siblingBrother = "Brother";
+  let siblingSister = "Sister";
+
+  async function initTemplateData() {
+    try {
+      if (typeof window.getPookieData === 'function') {
+        const orderData = await window.getPookieData('rakshabandhan2');
+        if (orderData) {
+          if (orderData.message) {
+            letterMessage = orderData.message;
+          } else if (orderData.wishMessage) {
+            letterMessage = orderData.wishMessage;
+          }
+          if (orderData.brother_name || orderData.brotherName) {
+            siblingBrother = orderData.brother_name || orderData.brotherName;
+          }
+          if (orderData.sister_name || orderData.sisterName) {
+            siblingSister = orderData.sister_name || orderData.sisterName;
+          }
+          // If only recipient_name is passed
+          if (orderData.recipient_name && !orderData.brother_name && !orderData.sister_name) {
+            siblingBrother = orderData.recipient_name;
+            if (orderData.sender_name) siblingSister = orderData.sender_name;
+          }
+
+          const bElem = document.getElementById('brotherName');
+          const sElem = document.getElementById('sisterName');
+          if (bElem) bElem.textContent = siblingBrother;
+          if (sElem) sElem.textContent = siblingSister;
+        }
+      }
+    } catch(e) {
+      console.warn("Template data fetch error:", e);
+    }
+  }
+  initTemplateData();
+
+  const typewriterElem = document.getElementById('typewriterText');
+  let typeIndex = 0;
+  let typeInterval = null;
+
+  function startTypewriter() {
+    clearInterval(typeInterval);
+    typewriterElem.innerHTML = '';
+    typeIndex = 0;
+    typeInterval = setInterval(() => {
+      if (typeIndex < letterMessage.length) {
+        typewriterElem.innerHTML = letterMessage.slice(0, typeIndex + 1) + '<span class="cursor-blink"></span>';
+        typeIndex++;
+      } else {
+        typewriterElem.innerHTML = letterMessage;
+        clearInterval(typeInterval);
+      }
+    }, 26);
+  }
+
+  document.getElementById('btnGoCert').addEventListener('click', () => {
+    goToStage(4);
+  });
+
+  /* ── Stage 4: High-Res Canvas Certificate Generator & Share ── */
+  function renderCertificateCanvas(callback) {
+    const bName = siblingBrother || 'Brother';
+    const sName = siblingSister || 'Sister';
+
+    const canvas = document.createElement('canvas');
+    canvas.width = 1200;
+    canvas.height = 800;
+    const ctx = canvas.getContext('2d');
+
+    const bgImg = new Image();
+    bgImg.crossOrigin = 'anonymous';
+    bgImg.onload = () => {
+      ctx.drawImage(bgImg, 0, 0, 1200, 800);
+
+      // Certificate Title
+      ctx.font = 'bold 42px "Playfair Display", Georgia, serif';
+      ctx.fillStyle = '#7D2B05';
+      ctx.textAlign = 'center';
+      ctx.fillText('CERTIFICATE OF ETERNAL BOND', 600, 260);
+
+      ctx.font = '600 22px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#9A5228';
+      ctx.fillText('RAKSHA BANDHAN 2026', 600, 310);
+
+      // Sibling Names
+      ctx.font = 'bold 54px "Caveat", cursive';
+      ctx.fillStyle = '#5A1E04';
+      ctx.fillText(`${bName}   &   ${sName}`, 600, 440);
+
+      // Divider line
+      ctx.strokeStyle = '#B83A08';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(340, 460);
+      ctx.lineTo(860, 460);
+      ctx.stroke();
+
+      // Description
+      ctx.font = 'italic 24px "Playfair Display", serif';
+      ctx.fillStyle = '#4A1B07';
+      ctx.fillText('"Certified to protect, tease, steal snacks,', 600, 540);
+      ctx.fillText('and love unconditionally forever and ever."', 600, 580);
+
+      ctx.font = '18px "Plus Jakarta Sans", sans-serif';
+      ctx.fillStyle = '#B83A08';
+      ctx.fillText('Official Seal of Siblinghood • Rakhi 2026', 600, 680);
+
+      callback(canvas);
+    };
+    bgImg.src = 'assets/cert_bg.jpg';
+  }
+
+  document.getElementById('btnDownloadCert').addEventListener('click', () => {
+    renderCertificateCanvas((canvas) => {
+      const link = document.createElement('a');
+      link.download = `Rakhi_Certificate_${siblingBrother}_${siblingSister}.jpg`;
+      link.href = canvas.toDataURL('image/jpeg', 0.95);
+      link.click();
+    });
+  });
+
+  document.getElementById('btnShareCert').addEventListener('click', () => {
+    const bName = siblingBrother || 'Brother';
+    const sName = siblingSister || 'Sister';
+    const text = `🌸 *Happy Raksha Bandhan 2026!* 🌸\n\n📜 Official Sibling Bond Certified between *${bName}* & *${sName}*!\n\nCelebrate our memories & tie Rakhi here: ${window.location.href}`;
+    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+  });
+
+  /* ── Easter Egg Modal (shared by pill + Stage 5) ── */
+  const easterModal = document.getElementById('easterModal');
+  document.getElementById('btnSecretPill').addEventListener('click', () => {
+    easterModal.classList.add('active');
+  });
+  document.getElementById('btnCloseEaster').addEventListener('click', () => {
+    easterModal.classList.remove('active');
+  });
+
+  /* ── Certificate → Stage 5 ── */
+  document.getElementById('btnGoSecret').addEventListener('click', () => {
+    goToStage(5);
+  });
+
+  /* ── Stage 5: Reveal Code + Restart ── */
+  document.getElementById('btnRevealCode').addEventListener('click', () => {
+    easterModal.classList.add('active');
+  });
+  document.getElementById('btnRestartFinal').addEventListener('click', () => {
+    goToStage(0);
+  });
+
+  /* ══════════════════════════════════════════════════════
+     REAL AUDIO PLAYER — "Bhaiya Mere Rakhi Ke Bandhan Ko Nibhana"
+     Uses the actual MP3: assets/bhaiya_mere.mp3
+  ══════════════════════════════════════════════════════ */
+  const bgAudio   = document.getElementById('bgAudio');
+  const musicPill = document.getElementById('musicPill');
+  const musicStatus = document.getElementById('musicStatus');
+  let isPlaying = false;
+
+  function startBhaiyaMere() {
+    if (isPlaying) return;
+    bgAudio.play().then(() => {
+      isPlaying = true;
+      musicPill.classList.add('playing');
+      musicStatus.innerText = 'Playing 🎶';
+    }).catch(() => {
+      /* Autoplay blocked — user must tap pill manually */
+    });
+  }
+
+  function stopMusic() {
+    bgAudio.pause();
+    isPlaying = false;
+    musicPill.classList.remove('playing');
+    musicStatus.innerText = 'Tap to Play 🎵';
+  }
+
+  musicPill.addEventListener('click', () => {
+    if (isPlaying) {
+      stopMusic();
+    } else {
+      startBhaiyaMere();
+    }
+  });
+
+  /* Sync UI if audio ends unexpectedly or loops reset */
+  bgAudio.addEventListener('pause', () => {
+    if (isPlaying) {
+      isPlaying = false;
+      musicPill.classList.remove('playing');
+      musicStatus.innerText = 'Tap to Play 🎵';
+    }
+  });
+  bgAudio.addEventListener('play', () => {
+    isPlaying = true;
+    musicPill.classList.add('playing');
+    musicStatus.innerText = 'Playing 🎶';
+  });
+
+  /* ── Load Gate ── */
+  let loaded = 0;
+  function onImgLoad() {
+    loaded++;
+    if (loaded >= 2) {
+      positionHands();
+      requestAnimationFrame(() => requestAnimationFrame(() => {
+        card.classList.add('revealed');
+        startPetals();
+        /* Auto-play song on page load (browser may block — fallback on btnYes) */
+        startBhaiyaMere();
+      }));
+    }
+  }
+
+  if (boyImg.complete && boyImg.naturalWidth) { onImgLoad(); }
+  else { boyImg.addEventListener('load', onImgLoad); }
+
+  if (girlImg.complete && girlImg.naturalWidth) { onImgLoad(); }
+  else { girlImg.addEventListener('load', onImgLoad); }
+
+  /* ── ResizeObserver ── */
+  const ro = new ResizeObserver(() => {
+    const bArrived = boyImg.classList.contains('arrived');
+    const gArrived = girlImg.classList.contains('arrived');
+
+    const prevBoy  = boyImg.style.transition;
+    const prevGirl = girlImg.style.transition;
+    boyImg.style.transition  = 'none';
+    girlImg.style.transition = 'none';
+
+    positionHands();
+
+    if (bArrived) boyImg.style.transform  = 'translate(0px,0px)';
+    if (gArrived) girlImg.style.transform = 'translate(0px,0px)';
+
+    requestAnimationFrame(() => {
+      boyImg.style.transition  = prevBoy;
+      girlImg.style.transition = prevGirl;
+    });
+  });
+  ro.observe(card);
+
+  /* ════════════════════════════════════════════════════
+     PETAL PARTICLES & CONFETTI SYSTEM
+  ════════════════════════════════════════════════════ */
+  let outerPetals = [];
+  let innerPetals = [];
+
+  function triggerConfettiBurst() {
+    const r = card.getBoundingClientRect();
+    for (let i = 0; i < 45; i++) {
+      innerPetals.push({
+        x: r.width * 0.5,
+        y: r.height * 0.49,
+        sz: Math.random() * 9 + 4,
+        col: ['#FFD040', '#B83A08', '#FF8800', '#E86C50', '#C99545'][Math.floor(Math.random() * 5)],
+        vx: (Math.random() - 0.5) * 5,
+        vy: (Math.random() - 0.5) * 5 - 1.5,
+        rot: Math.random() * Math.PI * 2,
+        rotV: (Math.random() - 0.5) * 0.1,
+        sw: 0.03,
+        sOff: Math.random() * Math.PI * 2,
+        life: 0,
+      });
+    }
+  }
+
+  function startPetals() {
+    const inner    = document.getElementById('petalsCanvas');
+    const innerCtx = inner.getContext('2d');
+    function resizeInner() {
+      const r = card.getBoundingClientRect();
+      inner.width  = r.width;
+      inner.height = r.height;
+    }
+    resizeInner();
+    new ResizeObserver(resizeInner).observe(card);
+
+    const outer    = document.getElementById('outerPetalsCanvas');
+    const outerCtx = outer.getContext('2d');
+    function resizeOuter() {
+      outer.width  = window.innerWidth;
+      outer.height = window.innerHeight;
+    }
+    resizeOuter();
+    window.addEventListener('resize', resizeOuter);
+
+    const COLORS = [
+      'rgba(215, 72, 55, 0.62)',
+      'rgba(255,135, 65, 0.55)',
+      'rgba(235, 85,115, 0.52)',
+      'rgba(255,190,100, 0.50)',
+      'rgba(180, 40, 72, 0.58)',
+    ];
+
+    function makePetal(x, y) {
+      return {
+        x, y,
+        sz:   Math.random() * 8 + 4,
+        col:  COLORS[Math.floor(Math.random() * COLORS.length)],
+        vx:   (Math.random() - 0.5) * 1.1,
+        vy:   Math.random() * 1.1 + 0.4,
+        rot:  Math.random() * Math.PI * 2,
+        rotV: (Math.random() - 0.5) * 0.055,
+        sw:   Math.random() * 0.03 + 0.008,
+        sOff: Math.random() * Math.PI * 2,
+        life: 0,
+      };
+    }
+
+    function drawPetal(ctx, p) {
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate(p.rot);
+      ctx.beginPath();
+      ctx.ellipse(0, 0, p.sz * 0.42, p.sz, 0, 0, Math.PI * 2);
+      ctx.fillStyle = p.col;
+      ctx.fill();
+      ctx.restore();
+    }
+
+    let frame = 0;
+    (function tick() {
+      innerCtx.clearRect(0, 0, inner.width, inner.height);
+      outerCtx.clearRect(0, 0, outer.width, outer.height);
+      frame++;
+
+      if (frame % 14 === 0) innerPetals.push(makePetal(Math.random() * inner.width, -15));
+      if (frame % 16 === 0) outerPetals.push(makePetal(Math.random() * outer.width, -15));
+
+      for (let i = innerPetals.length - 1; i >= 0; i--) {
+        const p = innerPetals[i];
+        p.life++;
+        p.rot += p.rotV;
+        p.x   += p.vx + Math.sin(p.life * p.sw + p.sOff) * 0.75;
+        p.y   += p.vy;
+        drawPetal(innerCtx, p);
+        if (p.y > inner.height + 20) innerPetals.splice(i, 1);
+      }
+
+      for (let i = outerPetals.length - 1; i >= 0; i--) {
+        const p = outerPetals[i];
+        p.life++;
+        p.rot += p.rotV;
+        p.x   += p.vx + Math.sin(p.life * p.sw + p.sOff) * 0.75;
+        p.y   += p.vy;
+        drawPetal(outerCtx, p);
+        if (p.y > outer.height + 20) outerPetals.splice(i, 1);
+      }
+
+      requestAnimationFrame(tick);
+    })();
+  }
+  </script>
+</body>
+</html>

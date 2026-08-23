@@ -488,6 +488,49 @@
         "thumbnail": "rakshabandhan/assets/images/gen-scene1-hero.jpg",
         "gallery": []
       }
+    },
+    {
+      "id": "rakshabandhan2",
+      "name": "Raksha Bandhan Luxury",
+      "tagline": "A Sacred Bond of Sibling Love 🌸✨",
+      "badge": "New Theme ✨",
+      "emoji": "🌸",
+      "price": 49,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "hasPhotos": false,
+      "demoUrl": "../templates/rakshabandhan2-template/index.html",
+      "tags": [
+        "rakhi",
+        "rakshabandhan",
+        "festival",
+        "sibling",
+        "brother",
+        "sister",
+        "love",
+        "family",
+        "wishes"
+      ],
+      "shortDesc": "An ultra-luxury interactive Raksha Bandhan surprise with memories, animated ceremony, typewriter note, and official certificate.",
+      "longDesc": "Celebrate the eternal sibling bond with this luxury editorial Rakhi experience. Includes interactive brother-sister meme memories, ceremony animation with live audio, personal heartfelt typewriter letter, and a downloadable high-res Sibling Protection Certificate.",
+      "vibe": "Royal & Emotional",
+      "features": [
+        "🌸 Interactive Rakhi tying ceremony animation",
+        "📜 Downloadable high-res Sibling Protection Certificate",
+        "💌 Heartfelt typewriter letter reveal",
+        "🎵 Atmospheric background audio",
+        "🤫 Secret sibling code easter egg"
+      ],
+      "submitDetails": [
+        { "icon": "👦", "label": "Brother's Name", "key": "brother_name", "type": "text", "required": true, "desc": "Brother's name for the certificate and surprise" },
+        { "icon": "👧", "label": "Sister's Name", "key": "sister_name", "type": "text", "required": true, "desc": "Sister's name for the certificate and surprise" },
+        { "icon": "💌", "label": "Personal Letter / Note", "key": "message", "type": "textarea", "required": true, "desc": "Heartfelt letter revealed during Chapter 3" },
+        { "icon": "✍️", "label": "Sender Name", "key": "sender_name", "type": "text", "required": false, "desc": "Who is sending this surprise" }
+      ],
+      "media": {
+        "thumbnail": "templates/rakshabandhan2-template/assets/rakhi_cover.jpg",
+        "gallery": []
+      }
     }
   ]
 }
