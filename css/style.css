@@ -664,109 +664,111 @@ a { text-decoration: none; color: inherit; }
   z-index: 10;
 }
 
-.phone-screen {
-  flex: 1;
-  background: linear-gradient(180deg, #FBF8F3 0%, #F5EDE4 100%);
-  padding: 30px 16px 16px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  text-align: center;
-  color: #1A1715;
-}
-[data-theme="dark"] .phone-screen {
-  background: linear-gradient(180deg, #1C1A22 0%, #14131A 100%);
-  color: #F7F5F2;
+.phone-screen-slider {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: #000;
 }
 
-.screen-header {
-  margin-top: 8px;
+.phone-slide {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  transform: scale(1.04);
+  transition: opacity 0.8s cubic-bezier(0.4, 0, 0.2, 1), transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+  pointer-events: none;
 }
-.screen-badge {
+.phone-slide.active {
+  opacity: 1;
+  transform: scale(1);
+  pointer-events: auto;
+}
+
+.slide-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.slide-overlay-badge {
+  position: absolute;
+  top: 26px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(14, 13, 16, 0.85);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--bdr-gold);
+  color: var(--gold-l);
   font-family: var(--fs);
   font-size: 0.68rem;
   font-weight: 700;
-  background: rgba(200, 55, 85, 0.12);
-  color: var(--pink);
-  padding: 4px 10px;
+  padding: 4px 12px;
   border-radius: var(--r-pill);
-  display: inline-block;
+  box-shadow: 0 4px 14px rgba(0,0,0,0.4);
+  white-space: nowrap;
+  letter-spacing: 0.3px;
+  z-index: 2;
 }
 
-.screen-animation-box {
-  margin: auto 0;
-  padding: 14px 10px;
-}
-.animated-rakhi-glow {
-  font-size: 2.2rem;
-  margin-bottom: 8px;
-  animation: pulseRakhi 2s infinite ease-in-out;
-}
-@keyframes pulseRakhi {
-  0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px rgba(201,154,69,0.5)); }
-  50% { transform: scale(1.15); filter: drop-shadow(0 0 18px rgba(201,154,69,0.9)); }
-}
-
-.screen-hero-title {
-  font-family: var(--fd);
-  font-size: 1.15rem;
-  font-weight: 700;
-  color: var(--pink);
-  margin-bottom: 8px;
-  line-height: 1.25;
-}
-
-.screen-typewriter-mock {
-  font-family: 'Caveat', cursive, var(--fb);
-  font-size: 0.95rem;
-  color: var(--text2);
-  line-height: 1.4;
-  min-height: 48px;
-  background: rgba(255,255,255,0.65);
-  border: 1px dashed var(--bdr-pink);
-  border-radius: 10px;
-  padding: 8px 10px;
-  margin-bottom: 12px;
-}
-[data-theme="dark"] .screen-typewriter-mock {
-  background: rgba(0,0,0,0.3);
-}
-
-.screen-mini-cards {
+.phone-slide-dots {
+  position: absolute;
+  bottom: 58px;
+  left: 50%;
+  transform: translateX(-50%);
   display: flex;
   gap: 6px;
-  justify-content: center;
+  z-index: 5;
 }
-.mini-card-item {
-  font-size: 0.65rem;
-  font-weight: 600;
-  padding: 5px 8px;
-  border-radius: 6px;
-  background: rgba(0,0,0,0.04);
-  border: 1px solid var(--bdr);
-  color: var(--muted);
+.ps-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.4);
+  cursor: pointer;
+  transition: all 0.3s var(--ease);
 }
-.mini-card-item.active {
-  background: var(--pink);
-  color: #fff;
-  border-color: var(--pink);
+.ps-dot.active {
+  width: 18px;
+  border-radius: 10px;
+  background: #FFF;
+  box-shadow: 0 0 8px rgba(255,255,255,0.8);
 }
 
-.screen-bottom-action {
-  width: 100%;
+.phone-bottom-tap {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 5;
 }
-.screen-btn-demo {
+.phone-tap-btn {
   width: 100%;
-  padding: 10px;
-  background: var(--g-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(14, 13, 16, 0.9);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   color: #fff;
   font-family: var(--fs);
-  font-size: 0.76rem;
+  font-size: 0.72rem;
   font-weight: 700;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(200,55,85,0.3);
+  padding: 8px 12px;
+  border-radius: 12px;
+  text-decoration: none;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+  transition: all 0.22s var(--ease);
+}
+.phone-tap-btn:hover {
+  background: var(--pink);
+  border-color: var(--pink);
+  transform: translateY(-2px);
 }
 
 /* Floating Decorative Cards */

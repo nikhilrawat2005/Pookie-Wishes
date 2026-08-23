@@ -324,4 +324,38 @@ function _handlePendingCheckout() {
   setTimeout(() => { window.location.href = (isPages ? '' : 'pages/') + 'checkout.html'; }, 400);
 }
 
-Object.assign(window, { selectCategory, googleLogin, emailSignIn, emailRegister, resetPassword, doLogout, toggleFav, addToCart, removeFromCart, openCart, closeCart, checkoutCart, openModal, closeModal, toggleDd, closeDd, handleSearch, clearSearch, scrollRow, vidTogglePlay, vidToggleMute, vidFullscreen, vidSeek, galShowVideo, galShowImg, isAdmin, getCached, initReveals, addDashboardLink, getEffectivePrice });
+/* ── Hero Phone Auto-Cycling Slider Controller ── */
+let currentHeroSlide = 0;
+let heroSlideInterval = null;
+
+function setHeroSlide(idx) {
+  const slides = document.querySelectorAll('.phone-slide');
+  const dots = document.querySelectorAll('.ps-dot');
+  if (!slides.length) return;
+  
+  currentHeroSlide = (idx + slides.length) % slides.length;
+  slides.forEach((s, i) => s.classList.toggle('active', i === currentHeroSlide));
+  dots.forEach((d, i) => d.classList.toggle('active', i === currentHeroSlide));
+}
+window.setHeroSlide = setHeroSlide;
+
+function initHeroSlider() {
+  const slider = document.getElementById('hero-phone-carousel');
+  if (!slider) return;
+  
+  clearInterval(heroSlideInterval);
+  heroSlideInterval = setInterval(() => {
+    setHeroSlide(currentHeroSlide + 1);
+  }, 3800);
+
+  slider.addEventListener('mouseenter', () => clearInterval(heroSlideInterval));
+  slider.addEventListener('mouseleave', () => {
+    clearInterval(heroSlideInterval);
+    heroSlideInterval = setInterval(() => {
+      setHeroSlide(currentHeroSlide + 1);
+    }, 3800);
+  });
+}
+document.addEventListener('DOMContentLoaded', initHeroSlider);
+
+Object.assign(window, { selectCategory, googleLogin, emailSignIn, emailRegister, resetPassword, doLogout, toggleFav, addToCart, removeFromCart, openCart, closeCart, checkoutCart, openModal, closeModal, toggleDd, closeDd, handleSearch, clearSearch, scrollRow, vidTogglePlay, vidToggleMute, vidFullscreen, vidSeek, galShowVideo, galShowImg, isAdmin, getCached, initReveals, addDashboardLink, getEffectivePrice, setHeroSlide });

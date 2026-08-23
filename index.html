@@ -159,29 +159,46 @@
         </div>
       </div>
 
-      <!-- Floating Smartphone Device Frame -->
-      <div class="hero-phone-device">
+      <!-- Floating Smartphone Device Frame with Auto-Cycling Surprise Showcase -->
+      <div class="hero-phone-device" id="hero-phone-carousel">
         <div class="phone-speaker"></div>
-        <div class="phone-screen">
-          <div class="screen-header">
-            <span class="screen-badge">🌸 Raksha Bandhan & Birthday</span>
+        <div class="phone-screen-slider">
+          <!-- Slide 1: Raksha Bandhan (Featured New Launch) -->
+          <div class="phone-slide active" data-index="0">
+            <img src="assets/hero-slides/slide-rakhi.jpg" alt="Raksha Bandhan Digital Surprise Preview" class="slide-img">
+            <div class="slide-overlay-badge">🪔 Raksha Bandhan Luxury</div>
           </div>
-          <div class="screen-animation-box">
-            <div class="animated-rakhi-glow">✨</div>
-            <div class="screen-hero-title">Happy Birthday, Pookie! 🎀</div>
-            <div class="screen-typewriter-mock">
-              <span id="hero-typewriter-text">"You are my favourite person in the whole universe..."</span>
-              <span class="cursor-blink"></span>
-            </div>
-            <div class="screen-mini-cards">
-              <div class="mini-card-item active">📸 Memory 1</div>
-              <div class="mini-card-item">🍰 Cake Cut</div>
-              <div class="mini-card-item">📜 Certificate</div>
-            </div>
+          <!-- Slide 2: Birthday Wishes -->
+          <div class="phone-slide" data-index="1">
+            <img src="assets/hero-slides/slide-birthday.jpg" alt="Birthday Digital Surprise Preview" class="slide-img">
+            <div class="slide-overlay-badge">🎂 Birthday Magic</div>
           </div>
-          <div class="screen-bottom-action">
-            <button class="screen-btn-demo" onclick="window.location.href='#browse-templates'">Tap to Preview Experience 💖</button>
+          <!-- Slide 3: Love Life & Romance -->
+          <div class="phone-slide" data-index="2">
+            <img src="assets/hero-slides/slide-lovelife.jpg" alt="Love Life & Proposal Surprise Preview" class="slide-img">
+            <div class="slide-overlay-badge">💘 Love Life & Proposal</div>
           </div>
+          <!-- Slide 4: Wishes & Royal Celebrations -->
+          <div class="phone-slide" data-index="3">
+            <img src="assets/hero-slides/slide-wishes.jpg" alt="Royal Wedding & Milestone Wishes Preview" class="slide-img">
+            <div class="slide-overlay-badge">💍 Royal Wedding & Wishes</div>
+          </div>
+        </div>
+
+        <!-- Slider Navigation Indicators -->
+        <div class="phone-slide-dots">
+          <span class="ps-dot active" onclick="setHeroSlide(0)"></span>
+          <span class="ps-dot" onclick="setHeroSlide(1)"></span>
+          <span class="ps-dot" onclick="setHeroSlide(2)"></span>
+          <span class="ps-dot" onclick="setHeroSlide(3)"></span>
+        </div>
+
+        <!-- Bottom Tap CTA on Phone -->
+        <div class="phone-bottom-tap">
+          <a href="#browse-templates" class="phone-tap-btn">
+            <span>Explore All Themes</span>
+            <i class="ph ph-arrow-up-right" style="font-size:13px"></i>
+          </a>
         </div>
       </div>
 
