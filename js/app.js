@@ -324,9 +324,9 @@ function _handlePendingCheckout() {
   setTimeout(() => { window.location.href = (isPages ? '' : 'pages/') + 'checkout.html'; }, 400);
 }
 
-/* ── Hero Phone Auto-Cycling Slider Controller ── */
+/* ── Hero Phone Auto-Cycling Slider Controller (Dynamic 5x Timing for Featured Slide) ── */
 let currentHeroSlide = 0;
-let heroSlideInterval = null;
+let heroSlideTimeout = null;
 
 function setHeroSlide(idx) {
   const slides = document.querySelectorAll('.phone-slide');
@@ -336,25 +336,28 @@ function setHeroSlide(idx) {
   currentHeroSlide = (idx + slides.length) % slides.length;
   slides.forEach((s, i) => s.classList.toggle('active', i === currentHeroSlide));
   dots.forEach((d, i) => d.classList.toggle('active', i === currentHeroSlide));
+
+  scheduleNextHeroSlide();
 }
 window.setHeroSlide = setHeroSlide;
+
+function scheduleNextHeroSlide() {
+  clearTimeout(heroSlideTimeout);
+  // Slide 0 (Raksha Bandhan) stays 5x longer (15s), others stay 3s
+  const duration = currentHeroSlide === 0 ? 15000 : 3000;
+  heroSlideTimeout = setTimeout(() => {
+    setHeroSlide(currentHeroSlide + 1);
+  }, duration);
+}
 
 function initHeroSlider() {
   const slider = document.getElementById('hero-phone-carousel');
   if (!slider) return;
   
-  clearInterval(heroSlideInterval);
-  heroSlideInterval = setInterval(() => {
-    setHeroSlide(currentHeroSlide + 1);
-  }, 3800);
+  scheduleNextHeroSlide();
 
-  slider.addEventListener('mouseenter', () => clearInterval(heroSlideInterval));
-  slider.addEventListener('mouseleave', () => {
-    clearInterval(heroSlideInterval);
-    heroSlideInterval = setInterval(() => {
-      setHeroSlide(currentHeroSlide + 1);
-    }, 3800);
-  });
+  slider.addEventListener('mouseenter', () => clearTimeout(heroSlideTimeout));
+  slider.addEventListener('mouseleave', () => scheduleNextHeroSlide());
 }
 document.addEventListener('DOMContentLoaded', initHeroSlider);
 
