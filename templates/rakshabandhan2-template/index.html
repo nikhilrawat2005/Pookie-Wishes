@@ -1744,7 +1744,39 @@
     const bName = siblingBrother || 'Brother';
     const sName = siblingSister || 'Sister';
     const text = `🌸 *Happy Raksha Bandhan 2026!* 🌸\n\n📜 Official Sibling Bond Certified between *${bName}* & *${sName}*!\n\nCelebrate our memories & tie Rakhi here: ${window.location.href}`;
-    window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+
+    renderCertificateCanvas(async (canvas) => {
+      // Direct Image Sharing via Web Share API (WhatsApp / Instagram / etc.)
+      if (navigator.share && navigator.canShare) {
+        canvas.toBlob(async (blob) => {
+          if (!blob) {
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+            return;
+          }
+          const file = new File([blob], `Rakhi_Certificate_${siblingBrother}_${siblingSister}.jpg`, { type: 'image/jpeg' });
+          if (navigator.canShare({ files: [file] })) {
+            try {
+              await navigator.share({
+                files: [file],
+                title: 'Sibling Protection Certificate 📜✨',
+                text: text,
+              });
+              return;
+            } catch (err) {
+              if (err.name !== 'AbortError') {
+                window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+              }
+              return;
+            }
+          } else {
+            window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+          }
+        }, 'image/jpeg', 0.95);
+      } else {
+        // Fallback for desktop browsers without Web Share files support
+        window.open(`https://api.whatsapp.com/send?text=${encodeURIComponent(text)}`, '_blank');
+      }
+    });
   });
 
   /* ── Easter Egg Modal (shared by pill + Stage 5) ── */
