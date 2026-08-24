@@ -633,7 +633,7 @@ function setTab(tab, el) {
   if(secB) secB.style.display = 'none';
   if(secA) secA.style.display = 'none';
   
-  if(filter === 'templates') {
+  if(tab === 'templates') {
     if(st) st.style.display = 'none';
     if(tbl) tbl.style.display = 'none';
     if(grid) grid.style.display = 'grid';
@@ -641,7 +641,7 @@ function setTab(tab, el) {
     if(rfBtn) rfBtn.style.display = 'none';
     hdr.textContent = "All Templates";
     if(!grid.innerHTML.trim()) createTemplateGrid();
-  } else if(filter === 'suggestions') {
+  } else if(tab === 'suggestions') {
     if(st) st.style.display = 'none';
     if(tbl) tbl.style.display = 'none';
     if(grid) grid.style.display = 'none';
@@ -649,7 +649,7 @@ function setTab(tab, el) {
     if(rfBtn) rfBtn.style.display = 'none';
     hdr.textContent = "Theme Suggestions 💡";
     loadSuggestions();
-  } else if(filter === 'users') {
+  } else if(tab === 'users') {
     if(st) st.style.display = 'none';
     if(tbl) tbl.style.display = 'none';
     if(grid) grid.style.display = 'none';
@@ -658,7 +658,7 @@ function setTab(tab, el) {
     if(rfBtn) rfBtn.style.display = 'none';
     hdr.textContent = "Registered Customers";
     loadUsers();
-  } else if(filter === 'broadcast') {
+  } else if(tab === 'broadcast') {
     if(st) st.style.display = 'none';
     if(tbl) tbl.style.display = 'none';
     if(grid) grid.style.display = 'none';
@@ -667,7 +667,7 @@ function setTab(tab, el) {
     if(rfBtn) rfBtn.style.display = 'none';
     hdr.textContent = "Broadcast / Email Center";
     loadBroadcastUsers();
-  } else if(filter === 'ranking') {
+  } else if(tab === 'ranking') {
     if(st) st.style.display = 'grid';
     if(tbl) tbl.style.display = 'none';
     if(grid) grid.style.display = 'none';
@@ -1010,7 +1010,7 @@ function renderTable() {
     return;
   }
   
-  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers', 'wedding', 'hiphop', 'anniversary-journey', 'ninja-game', 'rakshabandhan'];
+  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers', 'wedding', 'hiphop', 'anniversary-journey', 'ninja-game', 'rakshabandhan', 'rakshabandhan2'];
 
   let html = list.map(o => {
     const oid = o.orderId || o._docId;
@@ -1075,7 +1075,7 @@ function openDrawer(oid) {
   const o = orders.find(x => (x.orderId || x._docId) === oid);
   if(!o) return;
   
-  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers', 'wedding', 'hiphop', 'anniversary-journey', 'ninja-game'];
+  const ztTemplates = ['sorry', 'hello-kitty', 'harry-potter', 'love-trap', 'celestial', 'among-us', 'hoppers', 'wedding', 'hiphop', 'anniversary-journey', 'ninja-game', 'rakshabandhan', 'rakshabandhan2'];
   const tId = o.templateId || (o.items?.[0]?.id);
   const isZT = ztTemplates.includes(tId);
   

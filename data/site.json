@@ -56,6 +56,86 @@
       }
     },
     {
+      "id": "rakshabandhan2",
+      "name": "Raksha Bandhan Luxury",
+      "tagline": "A Sacred Bond of Sibling Love 🌸✨",
+      "badge": "New Theme ✨",
+      "emoji": "🌸",
+      "price": 99,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "hasPhotos": false,
+      "demoUrl": "../templates/rakshabandhan2-template/index.html",
+      "tags": [
+        "rakhi",
+        "rakshabandhan",
+        "festival",
+        "sibling",
+        "brother",
+        "sister",
+        "love",
+        "family",
+        "wishes"
+      ],
+      "shortDesc": "An ultra-luxury interactive Raksha Bandhan surprise with memories, animated ceremony, typewriter note, and official certificate.",
+      "longDesc": "Celebrate the eternal sibling bond with this luxury editorial Rakhi experience. Includes interactive brother-sister meme memories, ceremony animation with live audio, personal heartfelt typewriter letter, and a downloadable high-res Sibling Protection Certificate.",
+      "vibe": "Royal & Emotional",
+      "features": [
+        "🌸 Interactive Rakhi tying ceremony animation",
+        "📜 Downloadable high-res Sibling Protection Certificate",
+        "💌 Heartfelt typewriter letter reveal",
+        "🎵 Atmospheric background audio",
+        "🤫 Secret sibling code easter egg"
+      ],
+      "submitDetails": [
+        { "icon": "👦", "label": "Brother's Name", "key": "brother_name", "type": "text", "required": true, "desc": "Brother's name for the certificate and surprise" },
+        { "icon": "👧", "label": "Sister's Name", "key": "sister_name", "type": "text", "required": true, "desc": "Sister's name for the certificate and surprise" },
+        { "icon": "💌", "label": "Personal Letter / Note", "key": "message", "type": "textarea", "required": true, "desc": "Heartfelt letter revealed during Chapter 3" },
+        { "icon": "✍️", "label": "Sender Name", "key": "sender_name", "type": "text", "required": false, "desc": "Who is sending this surprise" }
+      ],
+      "media": {
+        "thumbnail": "templates/rakshabandhan2-template/assets/rakhi_cover.jpg",
+        "gallery": []
+      }
+    },
+    {
+      "id": "rakshabandhan",
+      "name": "Raksha Bandhan",
+      "tagline": "Ek Pavitra Bandhan 🪔✨",
+      "badge": "New Theme ✨",
+      "emoji": "🪔",
+      "price": 39,
+      "currency": "₹",
+      "currencyCode": "INR",
+      "hasPhotos": false,
+      "demoUrl": "../templates/rakshabandhan-template/index.html",
+      "tags": [
+        "rakhi",
+        "rakshabandhan",
+        "festival",
+        "sibling",
+        "love",
+        "family",
+        "wishes"
+      ],
+      "shortDesc": "A sacred and heartfelt Raksha Bandhan surprise filled with memories, rakhi themes, and personal notes.",
+      "longDesc": "Celebrate the special bond of protection and love. A journey through memories, sacred vows, childhood nostalgia, and a heartfelt personal note for your brother or sister.",
+      "vibe": "Sacred & Nostalgic",
+      "features": [
+        "🪔 Sacred Raksha Bandhan theme",
+        "📜 Memories timeline journey",
+        "💌 Heartfelt personal letter",
+        "✨ Magical interactive moments"
+      ],
+      "submitDetails": [
+        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this surprise" }
+      ],
+      "media": {
+        "thumbnail": "templates/rakshabandhan-template/assets/images/gen-scene1-hero.jpg",
+        "gallery": []
+      }
+    },
+    {
       "id": "hello-kitty",
       "name": "Hello Kitty",
       "tagline": "Kawaii Birthday Vibes 🎀",
@@ -450,86 +530,6 @@
       ],
       "media": {
         "thumbnail": "media/hiphop/thumbnail.jpg",
-        "gallery": []
-      }
-    },
-    {
-      "id": "rakshabandhan",
-      "name": "Raksha Bandhan",
-      "tagline": "Ek Pavitra Bandhan 🪔✨",
-      "badge": "New Theme ✨",
-      "emoji": "🪔",
-      "price": 39,
-      "currency": "₹",
-      "currencyCode": "INR",
-      "hasPhotos": false,
-      "demoUrl": "../templates/rakshabandhan-template/index.html",
-      "tags": [
-        "rakhi",
-        "rakshabandhan",
-        "festival",
-        "sibling",
-        "love",
-        "family",
-        "wishes"
-      ],
-      "shortDesc": "A sacred and heartfelt Raksha Bandhan surprise filled with memories, rakhi themes, and personal notes.",
-      "longDesc": "Celebrate the special bond of protection and love. A journey through memories, sacred vows, childhood nostalgia, and a heartfelt personal note for your brother or sister.",
-      "vibe": "Sacred & Nostalgic",
-      "features": [
-        "🪔 Sacred Raksha Bandhan theme",
-        "📜 Memories timeline journey",
-        "💌 Heartfelt personal letter",
-        "✨ Magical interactive moments"
-      ],
-      "submitDetails": [
-        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this surprise" }
-      ],
-      "media": {
-        "thumbnail": "templates/rakshabandhan-template/assets/images/gen-scene1-hero.jpg",
-        "gallery": []
-      }
-    },
-    {
-      "id": "rakshabandhan2",
-      "name": "Raksha Bandhan Luxury",
-      "tagline": "A Sacred Bond of Sibling Love 🌸✨",
-      "badge": "New Theme ✨",
-      "emoji": "🌸",
-      "price": 99,
-      "currency": "₹",
-      "currencyCode": "INR",
-      "hasPhotos": false,
-      "demoUrl": "../templates/rakshabandhan2-template/index.html",
-      "tags": [
-        "rakhi",
-        "rakshabandhan",
-        "festival",
-        "sibling",
-        "brother",
-        "sister",
-        "love",
-        "family",
-        "wishes"
-      ],
-      "shortDesc": "An ultra-luxury interactive Raksha Bandhan surprise with memories, animated ceremony, typewriter note, and official certificate.",
-      "longDesc": "Celebrate the eternal sibling bond with this luxury editorial Rakhi experience. Includes interactive brother-sister meme memories, ceremony animation with live audio, personal heartfelt typewriter letter, and a downloadable high-res Sibling Protection Certificate.",
-      "vibe": "Royal & Emotional",
-      "features": [
-        "🌸 Interactive Rakhi tying ceremony animation",
-        "📜 Downloadable high-res Sibling Protection Certificate",
-        "💌 Heartfelt typewriter letter reveal",
-        "🎵 Atmospheric background audio",
-        "🤫 Secret sibling code easter egg"
-      ],
-      "submitDetails": [
-        { "icon": "👦", "label": "Brother's Name", "key": "brother_name", "type": "text", "required": true, "desc": "Brother's name for the certificate and surprise" },
-        { "icon": "👧", "label": "Sister's Name", "key": "sister_name", "type": "text", "required": true, "desc": "Sister's name for the certificate and surprise" },
-        { "icon": "💌", "label": "Personal Letter / Note", "key": "message", "type": "textarea", "required": true, "desc": "Heartfelt letter revealed during Chapter 3" },
-        { "icon": "✍️", "label": "Sender Name", "key": "sender_name", "type": "text", "required": false, "desc": "Who is sending this surprise" }
-      ],
-      "media": {
-        "thumbnail": "templates/rakshabandhan2-template/assets/rakhi_cover.jpg",
         "gallery": []
       }
     }
