@@ -880,51 +880,100 @@ a { text-decoration: none; color: inherit; }
 @media (max-width: 860px) {
   .hero-split {
     grid-template-columns: 1fr;
-    padding-top: 72px;
+    padding-top: 76px;
     min-height: auto;
     overflow: visible;
   }
   .hero-content {
-    padding: 28px 20px 16px;
+    padding: 24px 20px 16px;
     max-width: 100%;
     text-align: center;
+    margin: 0 auto;
   }
   .hero-sub { margin: 0 auto 20px; }
-  .hero-ctas { justify-content: center; }
-  .hero-visual { padding: 10px 20px 32px; }
-  .hero-img-wrap { max-width: 100%; }
-  .hero-stat-pill { bottom: -14px; left: 12px; }
-  .hero-price-pill { top: -10px; right: 12px; }
+  .hero-ctas { justify-content: center; gap: 10px; }
+  .hero-visual {
+    padding: 16px 20px 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+  }
+  .hero-mockup-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    max-width: 100%;
+    padding: 0;
+  }
+  .hero-phone-device {
+    width: min(270px, 76vw);
+    height: 480px;
+    margin: 0 auto;
+  }
+  .float-card { display: none; }
+  .hero-stat-pill {
+    position: static;
+    margin-top: 14px;
+    border-radius: 12px;
+    width: auto;
+    max-width: 90%;
+    justify-content: center;
+  }
+  .hero-price-pill {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 0.76rem;
+    padding: 6px 14px;
+  }
   .hero-heading { font-size: clamp(1.9rem, 7vw, 2.6rem); }
   .hero-trust-bar { justify-content: center; gap: 10px; margin-top: 20px; }
 }
 
-/* Small phone — shrink phone device mockup */
+/* Small phone (iPhone SE, compact Androids) */
 @media (max-width: 480px) {
-  .hero-phone-device {
-    width: 220px;
-    height: 390px;
-    border-radius: 30px;
-    border-width: 7px;
+  .hero-split {
+    padding-top: 68px;
   }
-  .hero-mockup-wrap { max-width: 100%; padding: 10px 0; }
-  .float-card { display: none; }
-  .hero-stat-pill { position: static; margin-top: 14px; border-radius: 10px; }
-  .hero-price-pill { position: static; margin: 8px auto 0; display: inline-block; }
-  .hero-visual {
-    flex-direction: column;
-    align-items: center;
-    padding: 10px 16px 24px;
-    gap: 10px;
+  .hero-phone-device {
+    width: min(240px, 74vw);
+    height: 420px;
+    border-radius: 32px;
+    border-width: 8px;
   }
   .hero-content {
-    padding: 20px 16px 8px;
+    padding: 16px 16px 10px;
   }
-  .hero-heading { font-size: clamp(1.7rem, 7vw, 2.2rem); letter-spacing: -0.5px; }
-  .hero-sub { font-size: 0.88rem; margin-bottom: 16px; }
-  .hero-eyebrow-pill { font-size: 0.72rem; padding: 5px 12px; }
-  .hero-ctas { gap: 8px; }
-  .btn-lg { font-size: 0.9rem; padding: 10px 20px; }
+  .hero-heading { font-size: clamp(1.7rem, 6.8vw, 2.1rem); letter-spacing: -0.5px; }
+  .hero-sub { font-size: 0.85rem; line-height: 1.6; margin-bottom: 16px; }
+  .hero-eyebrow-pill { font-size: 0.7rem; padding: 4px 10px; margin-bottom: 12px; }
+  .hero-ctas { gap: 8px; flex-direction: column; width: 100%; max-width: 280px; margin: 0 auto; }
+  .hero-ctas .btn { width: 100%; }
+  .btn-lg { font-size: 0.88rem; padding: 10px 18px; }
+  .hero-trust-bar {
+    gap: 8px;
+    font-size: 0.74rem;
+  }
+  .trust-item {
+    font-size: 0.74rem;
+  }
+  .trust-sep {
+    display: none;
+  }
+  .hero-stat-pill {
+    padding: 8px 14px;
+    gap: 12px;
+  }
+  .hero-stat-pill .stat-num {
+    font-size: 1.1rem;
+  }
+  .hero-stat-pill .stat-label {
+    font-size: 0.62rem;
+  }
 }
 
 /* ────────────────────────────────────────────────────────────────────────────
@@ -3344,6 +3393,13 @@ html { transition: background-color 0.3s ease, color 0.3s ease; }
   background:
     radial-gradient(ellipse 60% 80% at 75% 50%, rgba(255,62,108,0.06) 0%, transparent 70%),
     radial-gradient(ellipse 40% 60% at 20% 80%, rgba(168,158,232,0.04) 0%, transparent 70%);
+}
+@media (max-width: 860px) {
+  [data-theme="dark"] .hero-split::before {
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 30%, rgba(255,62,108,0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 70% 50% at 50% 80%, rgba(168,158,232,0.05) 0%, transparent 70%);
+  }
 }
 
 /* Dark: Form inputs */
