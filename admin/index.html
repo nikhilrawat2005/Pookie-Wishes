@@ -304,11 +304,39 @@
     <div id="templates-grid" class="templates-grid" style="display:none;"></div>
     <div id="suggestions-grid" style="display:none; padding-bottom:40px;"></div>
     
-    <div class="tbl" id="users-tbl" style="display:none;">
-      <div class="tbl-hd" style="grid-template-columns: 40px 1fr 1.2fr 100px 140px;">
-        <div>#</div><div>Name</div><div>Email / Guest</div><div style="text-align:right">Templates</div><div>Last Active</div>
+    <div id="users-sec" style="display:none; padding-bottom:60px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+        <div style="display:flex; align-items:center; gap:8px; flex:1; min-width:240px; max-width:360px;">
+          <input type="text" id="users-search" class="f-inp" placeholder="Search by name or email..." oninput="filterAndRenderUsers()">
+        </div>
+        <div style="display:flex; align-items:center; gap:12px; flex-wrap:wrap;">
+          <div style="display:flex; align-items:center; gap:6px;">
+            <label for="users-sort" style="font-size:0.75rem; color:var(--muted); font-weight:600;">Sort:</label>
+            <select id="users-sort" class="f-inp" onchange="filterAndRenderUsers()" style="width:auto; padding:8px 12px; cursor:pointer;">
+              <option value="date-desc">Newest First (Date ⬇)</option>
+              <option value="date-asc">Oldest First (Date ⬆)</option>
+              <option value="templates-desc">Most Templates (Top Buyers ⬇)</option>
+              <option value="templates-asc">Least Templates (⬆)</option>
+              <option value="name-asc">Name (A-Z)</option>
+            </select>
+          </div>
+          <div style="display:flex; align-items:center; gap:6px;">
+            <label for="users-type-filter" style="font-size:0.75rem; color:var(--muted); font-weight:600;">Filter:</label>
+            <select id="users-type-filter" class="f-inp" onchange="filterAndRenderUsers()" style="width:auto; padding:8px 12px; cursor:pointer;">
+              <option value="all">All (Registered + Guests)</option>
+              <option value="registered">Registered Only</option>
+              <option value="guest">Guest Orders Only</option>
+            </select>
+          </div>
+        </div>
       </div>
-      <div id="users-tbl-body"><div class="empty"><i data-lucide="loader" class="spin"></i> Loading...</div></div>
+
+      <div class="tbl" id="users-tbl">
+        <div class="tbl-hd" style="grid-template-columns: 40px 1fr 1.2fr 100px 140px;">
+          <div>#</div><div>Name</div><div>Email / Guest</div><div style="text-align:right">Templates</div><div>Last Active / Date</div>
+        </div>
+        <div id="users-tbl-body"><div class="empty"><i data-lucide="loader" class="spin"></i> Loading...</div></div>
+      </div>
     </div>
 
     <!-- ANALYTICS SECTION -->
@@ -625,7 +653,7 @@ function setTab(tab, el) {
   const hdr = document.getElementById('main-title');
   const rfBtn = document.querySelector('.main-hd .btn-soft');
   
-  const secU = document.getElementById('users-tbl');
+  const secU = document.getElementById('users-sec') || document.getElementById('users-tbl');
   const secB = document.getElementById('broadcast-sec');
   const secA = document.getElementById('analytics-sec');
   
@@ -692,8 +720,6 @@ async function loadBroadcastUsers() {
   const container = document.getElementById('broadcast-user-list');
   if(!container) return;
   
-  // We can reuse the logic from loadUsers to get all unique emails
-  // For simplicity here, we'll fetch them specifically for the broadcaster
   container.innerHTML = '<div class="empty">Scanning database...</div>';
   
   try {
@@ -709,7 +735,6 @@ async function loadBroadcastUsers() {
     });
     
     // 2. Buyers / Guests (from orders)
-    // Note: 'orders' is already globally populated in the admin panel
     orders.forEach(o => {
       const em = (o.user?.email || o.buyerEmail || '').toLowerCase();
       if(em && !emailData[em]) {
@@ -774,7 +799,7 @@ async function sendBroadcast() {
       body: JSON.stringify({
         recipients: selected,
         subject: subject,
-        html: body.replace(/\n/g, '<br>') // Convert newlines to breaks for basic HTML support
+        html: body.replace(/\n/g, '<br>')
       })
     });
     
@@ -797,6 +822,20 @@ async function sendBroadcast() {
   }
 }
 
+let rawUsersList = [];
+
+function getUserTimestamp(d) {
+  if (!d) return 0;
+  if (d.toDate && typeof d.toDate === 'function') return d.toDate().getTime();
+  if (d instanceof Date) return d.getTime();
+  if (typeof d === 'number') return d;
+  if (typeof d === 'string') {
+    const parsed = Date.parse(d);
+    return isNaN(parsed) ? 0 : parsed;
+  }
+  return 0;
+}
+
 async function loadUsers() {
   const b = document.getElementById('users-tbl-body');
   if (!b) return;
@@ -804,21 +843,15 @@ async function loadUsers() {
   lucide.createIcons();
   
   try {
-    // We fetch without 'orderBy' because older legacy accounts might omit the 'createdAt' field
     const snap = await db.collection('users').limit(300).get();
     const registered = snap.empty ? [] : snap.docs.map(d => ({ id: d.id, ...d.data() }));
 
-    // Count templates per email using the loaded orders array
     const emailData = {};
     
     // Process registered users first
     registered.forEach(u => {
       if (u.email) {
         emailData[u.email.toLowerCase()] = {
-          // IMPORTANT: never fall back to lastLogin here — lastLogin updates on
-          // every sign-in, which made the date column jump to "today" whenever
-          // a user just logged in without placing any new order. Only real
-          // account-creation date (or '—' if truly missing) should show here.
           name: u.name || 'Pookie User',
           email: u.email,
           createdAt: u.createdAt || null,
@@ -838,7 +871,7 @@ async function loadUsers() {
         emailData[em] = {
           name: o.user?.name || o.buyerName || 'Guest User',
           email: em,
-          createdAt: o.createdAt,
+          createdAt: o.createdAt || null,
           isUser: false,
           count: 0
         };
@@ -847,42 +880,94 @@ async function loadUsers() {
       const tc = o.orders ? o.orders.length : (o.items ? o.items.length : 1);
       emailData[em].count += tc;
       
-      // "Last Active" = most recent ORDER date, for both guests and registered users.
-      // (Deliberately not using Firebase Auth's lastLogin here — that updates on every
-      // sign-in even without a new order, which made this column jump to "today" and
-      // looked like the order date had changed.)
-      if (o.createdAt && (!emailData[em].createdAt || o.createdAt > emailData[em].createdAt)) {
-         emailData[em].createdAt = o.createdAt;
+      if (o.createdAt) {
+        const orderTime = getUserTimestamp(o.createdAt);
+        const existingTime = getUserTimestamp(emailData[em].createdAt);
+        if (orderTime > existingTime) {
+          emailData[em].createdAt = o.createdAt;
+        }
       }
     });
 
-    const items = Object.values(emailData).sort((a,b) => b.count - a.count);
-
-    if (items.length === 0) {
-      b.innerHTML = '<div class="empty">No customers found.</div>';
-      return;
-    }
-
-    b.innerHTML = items.map((u, i) => {
-      const dt = u.createdAt?.toDate?.().toLocaleDateString('en-IN', { day:'2-digit', month: 'short', year:'2-digit' }) || '—';
-      const badge = u.isUser ? '<span style="font-size:0.6rem; background:rgba(16,185,129,0.1); color:#10b981; padding:2px 6px; border-radius:100px; margin-left:8px;">Registered</span>' : '<span style="font-size:0.6rem; background:var(--bg3); color:var(--muted); padding:2px 6px; border-radius:100px; margin-left:8px;">Guest Order</span>';
-      
-      let highlight = '';
-      if (u.count >= 5) highlight = 'color: var(--pink); font-weight: bold;';
-      
-      return `
-        <div class="tbl-row" style="grid-template-columns: 40px 1fr 1.2fr 100px 140px; cursor: default;">
-          <div class="tc mono" style="color:var(--dim); font-size:0.8rem; margin-top:2px;">${i + 1}</div>
-          <div class="tc">${u.name || '—'}</div>
-          <div class="tc" style="color:var(--text2);">${u.email || '—'} ${badge}</div>
-          <div class="tc mono" style="text-align:right; font-size:1.1rem; ${highlight}">${u.count}</div>
-          <div class="tc mono">${dt}</div>
-        </div>`;
-    }).join('');
+    rawUsersList = Object.values(emailData);
+    filterAndRenderUsers();
   } catch(e) {
     b.innerHTML = '<div class="empty" style="color:#fca5a5;">Error compiling user analytics.</div>';
     console.error(e);
   }
+}
+
+function filterAndRenderUsers() {
+  const b = document.getElementById('users-tbl-body');
+  if (!b) return;
+
+  const q = (document.getElementById('users-search')?.value || '').toLowerCase().trim();
+  const sortMode = document.getElementById('users-sort')?.value || 'date-desc';
+  const typeFilter = document.getElementById('users-type-filter')?.value || 'all';
+
+  let list = [...rawUsersList];
+
+  // User type filter
+  if (typeFilter === 'registered') {
+    list = list.filter(u => u.isUser);
+  } else if (typeFilter === 'guest') {
+    list = list.filter(u => !u.isUser);
+  }
+
+  // Search filter
+  if (q) {
+    list = list.filter(u => 
+      (u.name || '').toLowerCase().includes(q) || 
+      (u.email || '').toLowerCase().includes(q)
+    );
+  }
+
+  // Sorting
+  list.sort((a, b) => {
+    if (sortMode === 'date-desc') {
+      return getUserTimestamp(b.createdAt) - getUserTimestamp(a.createdAt);
+    } else if (sortMode === 'date-asc') {
+      return getUserTimestamp(a.createdAt) - getUserTimestamp(b.createdAt);
+    } else if (sortMode === 'templates-desc') {
+      return b.count - a.count;
+    } else if (sortMode === 'templates-asc') {
+      return a.count - b.count;
+    } else if (sortMode === 'name-asc') {
+      return (a.name || '').localeCompare(b.name || '');
+    }
+    return 0;
+  });
+
+  if (list.length === 0) {
+    b.innerHTML = '<div class="empty">No matching customers found.</div>';
+    return;
+  }
+
+  b.innerHTML = list.map((u, i) => {
+    let dt = '—';
+    if (u.createdAt?.toDate && typeof u.createdAt.toDate === 'function') {
+      dt = u.createdAt.toDate().toLocaleDateString('en-IN', { day:'2-digit', month: 'short', year:'2-digit' });
+    } else if (u.createdAt instanceof Date) {
+      dt = u.createdAt.toLocaleDateString('en-IN', { day:'2-digit', month: 'short', year:'2-digit' });
+    } else if (typeof u.createdAt === 'string') {
+      const parsed = new Date(u.createdAt);
+      if (!isNaN(parsed.getTime())) dt = parsed.toLocaleDateString('en-IN', { day:'2-digit', month: 'short', year:'2-digit' });
+    }
+    
+    const badge = u.isUser ? '<span style="font-size:0.6rem; background:rgba(16,185,129,0.1); color:#10b981; padding:2px 6px; border-radius:100px; margin-left:8px;">Registered</span>' : '<span style="font-size:0.6rem; background:var(--bg3); color:var(--muted); padding:2px 6px; border-radius:100px; margin-left:8px;">Guest Order</span>';
+    
+    let highlight = '';
+    if (u.count >= 5) highlight = 'color: var(--pink); font-weight: bold;';
+    
+    return `
+      <div class="tbl-row" style="grid-template-columns: 40px 1fr 1.2fr 100px 140px; cursor: default;">
+        <div class="tc mono" style="color:var(--dim); font-size:0.8rem; margin-top:2px;">${i + 1}</div>
+        <div class="tc">${u.name || '—'}</div>
+        <div class="tc" style="color:var(--text2);">${u.email || '—'} ${badge}</div>
+        <div class="tc mono" style="text-align:right; font-size:1.1rem; ${highlight}">${u.count}</div>
+        <div class="tc mono">${dt}</div>
+      </div>`;
+  }).join('');
 }
 
 function createTemplateGrid() {
