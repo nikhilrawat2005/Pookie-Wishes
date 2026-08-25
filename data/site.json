@@ -128,7 +128,9 @@
         "✨ Magical interactive moments"
       ],
       "submitDetails": [
-        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this surprise" }
+        { "icon": "🎁", "label": "Recipient's Name (Brother/Sister)", "key": "recipient_name", "type": "text", "required": true, "desc": "Who is this surprise for? (e.g. Rohan, Priya)" },
+        { "icon": "✍️", "label": "Your Name (Sender)", "key": "sender_name", "type": "text", "required": true, "desc": "Who is sending this surprise" },
+        { "icon": "💌", "label": "Personal Message / Note", "key": "message", "type": "textarea", "required": false, "desc": "Write a heartfelt message for your brother or sister (optional)" }
       ],
       "media": {
         "thumbnail": "templates/rakshabandhan-template/assets/images/gen-scene1-hero.jpg",
